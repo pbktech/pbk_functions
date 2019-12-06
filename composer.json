@@ -1,0 +1,12 @@
+{
+    "require": {
+        "twilio/sdk": "^5.34",
+        "phpmailer/phpmailer": "^6.0",
+        "league/oauth2-google": "^2.2",
+        "psr/log": "^1.0",
+        "symfony/polyfill-mbstring": "^1.10",
+        "phpoffice/phpspreadsheet": "^1.5",
+        "mpdf/mpdf": "^7.1",
+        "dmitry-ivanov/dark-sky-api": "^1.0"
+    }
+}
