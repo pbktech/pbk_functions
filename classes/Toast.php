@@ -1,10 +1,10 @@
 <?php
 class Toast{
-	private $config=json_decode(file_get_contents(dirname(__DIR__) . '/config.json'));
-	var $ToastClient=$this->config->ToastClient;
-	var $ToastSecret=$this->config->ToastSecret;
-	var $url=$this->config->ToastURL;
-	var $localDB=$this->config->dBase;
+	private $config;
+	private $ToastClient;
+	private $ToastSecret;
+	private $url;
+	private $localDB;
 	var $auth=null;
 	public $mysqli=null;
 	var $restaurantID=0;
@@ -16,6 +16,7 @@ class Toast{
 	var $dateOfBusiness=null;
 
 	function __construct($b=null) {
+		$this->setConfig();
 		$this->auth=$this->getAuthorized();
 		$this->connectDB();
 		if(isset($b) ) {
@@ -24,6 +25,14 @@ class Toast{
 			$this->loadGUIDs();
 			date_default_timezone_set($this->getTimeZone());
 		}
+	}
+	public function setConfig(){
+		$default = dirname(__DIR__) . '/config.json';
+		$this->config=json_decode(file_get_contents($default));
+		$this->ToastClient=$this->config->ToastClient;
+		$this->ToastSecret=$this->config->ToastSecret;
+		$this->url=$this->config->ToastURL;
+		$this->localDB=$this->config->dBase;
 	}
 	function getAuthorized() {
 		$ch = curl_init();
@@ -286,7 +295,7 @@ class Toast{
 		return json_decode($result);
 	}
 	function findCustomerID($ph) {
-//		$ph=array("CustomerSearchRequest" => array( "CustomerSearchQuery" => array("query" => array("phone"=>$ph))));
+		echo $ph;
 		$ph=array("query" => array("phone"=>$ph));
 		$ph=json_encode($ph);
 		$ch = curl_init();

@@ -68,7 +68,7 @@ function pbr_nho_setup(){
   }elseif(isset($_GET['nhoDate']) && isset($_GET['nhoLocation'])) {
     echo $restaurant->nho_sign_up_manage($_GET);
   }else{
-    require_once( 'admin/nhoList.php' );
+    require_once( 'classes/nhoList.php' );
     $myListTable = new nhoList();
     $myListTable->prepare_items();
     $myListTable->display();

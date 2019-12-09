@@ -2,9 +2,6 @@
 /*include_once 'Mail.php';
 include_once 'Mail/mime.php';*/
 
-use PHPMailer\PHPMailer\PHPMailer;
-use PHPMailer\PHPMailer\Exception;
-require __DIR__ . '/vendor/autoload.php';
 require __DIR__ . '/BindParam.php';
 
 /*

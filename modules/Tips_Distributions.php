@@ -4,7 +4,6 @@ global $wp;
 global $wpdb;
 $page = home_url( add_query_arg( array(), $wp->request ) );
 $latest=date("Y-m-d",time() - 60 * 60 * 24)." 23:59:59";
-require("/var/www/html/c2.theproteinbar.com/wp-content/plugins/pbr_finance/includes/ToastFunctions/classes/ToastReport.php");
 $toast = new ToastReport();
 $rests=$toast->getAvailableRestaurants();
 $cu = wp_get_current_user();
@@ -14,7 +13,7 @@ if(in_array("administrator", $cu->roles) || in_array("editor", $cu->roles)) {
 if($toast->isAboveStore==0) {
 	$_REQUEST['rid']=$rests[0]->restaurantID;
 }
-if ($_REQUEST['rid']==4) {
+if (isset($_REQUEST['rid']) && $_REQUEST['rid']==4) {
 	$bot="2018-11-26 00:00:00";
 }else {
 	$bot="2019-01-07 00:00:00";
@@ -126,6 +125,3 @@ if(!isset($_REQUEST['rid'])) {
 		$ret.="There are not any orders that need their tips assigned to employees.";
 	}
 }
-$finish = microtime();
-$total_time = round(($finish - $start), 4);
-//echo 'Page generated in '.$total_time.' seconds.';

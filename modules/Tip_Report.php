@@ -2,13 +2,12 @@
 global $wp;
 global $wpdb;
 $page = home_url( add_query_arg( array(), $wp->request ) );
-require("/var/www/html/c2.theproteinbar.com/wp-content/plugins/pbr_finance/includes/ToastFunctions/classes/ToastReport.php");
 $toast = new ToastReport();
 $rests=$toast->getAvailableRestaurants();
 $cu = wp_get_current_user();
 if(in_array("administrator", $cu->roles) || in_array("editor", $cu->roles)) {
 	$toast->isAboveStore=1;
-	$_REQUEST['rid']=$_GET['rid'];
+	if(isset($_GET['rid'])){$_REQUEST['rid']=$_GET['rid'];}
 }else {
 	$_REQUEST['rid']=$rests[0]->restaurantID;
 }

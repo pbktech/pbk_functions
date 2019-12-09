@@ -1,29 +1,34 @@
 <?php
-/* Include Client Libraries*/
-
 class ToastReport{
-
-	private $config=json_decode(file_get_contents(dirname(__DIR__) . '/config.json'));
+	private $config;
+	private $localDB;
 	var $restaurantID=0;
 	var $mysqli=null;
 	var $businessDate=null;
 	var $startTime=null;
 	var $endTime=null;
-	var $localDB=$this->config->dBase;
 	var $isAboveStore=0;
 	var $tipsBot="2018-10-15 00:00:00";
-	var $docSaveLocation="/var/www/html/c2.theproteinbar.com/RaupCWYghyVCKxyP6Vwa/";
-	var $docDownloadLocation="https://c2.theproteinbar.com/RaupCWYghyVCKxyP6Vwa/";
+	var $docSaveLocation="";
+	var $docDownloadLocation="";
 	var $otThreshold=32;
 	var $weekDays=null;
 	var $quarters=array(1=>1,2=>1,3=>1,4=>2,5=>2,6=>2,7=>3,8=>3,9=>3,10=>4,11=>4,12=>4);
 
 	function __construct($b=null) {
+		$this->setConfig();
 		$this->connectDB();
 		if(isset($b) ) {
 			$this->setRestaurantID($b);
 			$this->checkAuthority();
 		}
+	}
+	public function setConfig(){
+		$default = dirname(__DIR__) . '/config.json';
+		$this->config=json_decode(file_get_contents($default));
+		$this->localDB=$this->config->dBase;
+		$this->docSaveLocation=$this->config->docSaveLocation;
+		$this->docDownloadLocation=$this->config->docDownloadLocation;
 	}
 	function connectDB() {
 		$this->mysqli = new mysqli($this->config->host, $this->config->username, $this->config->password, $this->config->dBase);

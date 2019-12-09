@@ -2,7 +2,6 @@
 global $wp;
 global $wpdb;
 $page = home_url( add_query_arg( array(), $wp->request ) );
-require("/var/www/html/c2.theproteinbar.com/wp-content/plugins/pbr_finance/includes/ToastFunctions/classes/ToastReport.php");
 if($_SERVER['REQUEST_METHOD'] == 'POST') {
 	$toast = new ToastReport($_REQUEST['rid']);
 	$payment=$toast->getPaymentInfo($_REQUEST['order']);

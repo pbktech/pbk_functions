@@ -1,9 +1,10 @@
 <?php
 function pbrf_showReportBuilder( $atts ) {
+  $ret=null;
   $a = shortcode_atts( array(
         'report' => '',
     ), $atts );
-    $directory = (__DIR__) . '/modules';
+    $directory = dirname(__DIR__) . '/modules';
     if($a['report']=='' || !isset($a['report'])) {
       $scanned_directory = array_diff(scandir($directory), array('..', '.'));
       foreach($scanned_directory as $file){

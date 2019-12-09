@@ -28,15 +28,15 @@ jQuery(document).ready(function() {
 				<div>
 					<input type='submit' value='SEARCH' />
 				</div>
-			</form>		
-		</div>		
-			
-		
+			</form>
+		</div>
+
+
 		";
 }else {
 	global $wpdb;
-	$result=$wpdb->get_results("SELECT * FROM pbc2.pbc_paymentDetails LEFT JOIN pbc2.pbc_pbrestaurants ON pbc2.pbc_paymentDetails.restaurantID=pbc2.pbc_pbrestaurants.restaurantID 
-WHERE pbc2.pbc_paymentDetails.restaurantID!=0 AND paymentType!='Cash' AND paidDate BETWEEN '".$_REQUEST['startDate']." 00:00:00' AND '".$_REQUEST['endDate']." 23:59:59' AND checkID IN 
+	$result=$wpdb->get_results("SELECT * FROM pbc2.pbc_paymentDetails LEFT JOIN pbc2.pbc_pbrestaurants ON pbc2.pbc_paymentDetails.restaurantID=pbc2.pbc_pbrestaurants.restaurantID
+WHERE pbc2.pbc_paymentDetails.restaurantID!=0 AND paymentType!='Cash' AND paidDate BETWEEN '".$_REQUEST['startDate']." 00:00:00' AND '".$_REQUEST['endDate']." 23:59:59' AND checkID IN
 (select checkID FROM pbc2.pbc_paymentDetails WHERE paymentType='Cash'  AND checkAmount < 0) ORDER by pbc_paymentDetails.restaurantID, paidDate");
 	$file = fopen(temp_dl_folder.'cash_refunds_'.$_REQUEST['startDate'].'_'.$_REQUEST['endDate'].'.csv', 'w');
 	$ret.="<table>";

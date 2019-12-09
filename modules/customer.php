@@ -1,4 +1,5 @@
 <?php
+global $ret;
 global $wp;
 global $wpdb;
 $current_user = wp_get_current_user();
@@ -110,6 +111,9 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
 	}
 		$ret.="<hr>";
 }
+if(!isset($_POST['phone'])){$_POST['phone']='';}
+if(!isset($_POST['restaurant'])){$_POST['restaurant']='';}
+
 $ret.="
 <script>
 	function validatePhoneNumber(elementValue){
@@ -131,7 +135,7 @@ $ret.="
 		<br /><select required name='restaurant' id='restaurant'>\n<option value='' >Choose a Restaurant</option>
 		";
 foreach($rests as $r=>$guid){
-	if($guid==$_POST['restaurant']) {$selected="selected='selected'";}else {$selected='';}
+	if($guid==$_POST['restaurant'] && isset($_POST['restaurant'])) {$selected="selected='selected'";}else {$selected='';}
 	$ret.="\n<option value='$guid' $selected>$r</option>";
 }
 $ret.="

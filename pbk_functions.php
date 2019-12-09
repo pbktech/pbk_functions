@@ -1,4 +1,5 @@
 <?php
+error_reporting(E_ALL);
 /*
 Plugin Name: Protein Bar & Kitchen Custom Functions
 Description: This is a combination of multiple former plugins to be streamlined and work better.
@@ -34,7 +35,6 @@ include('classes/task_engine.php');
 include('classes/Restaurant.php');
 
 /*Shortcodes*/
-include('shortcodes/pbrf_showToastFunctions.php');
 include('shortcodes/pbrf_showToastFunctions.php');
 include('shortcodes/pbrf_depositCalculator.php');
 include('shortcodes/pbrf_showReportBuilder.php');

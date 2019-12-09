@@ -583,8 +583,6 @@ jQuery(document).ready(function(jQuery){jQuery.datepicker.setDefaults({"closeTex
 		return $return;
 	}
 	function buildNHORosterFile($item){
-		require_once("/var/www/html/c2.theproteinbar.com/wp-content/plugins/pbr_finance/includes/ToastFunctions/classes/vendor/autoload.php");
-	  require_once("/var/www/html/c2.theproteinbar.com/wp-content/plugins/pbr_finance/includes/ToastFunctions/classes/ToastReport.php");
 	  $report=new ToastReport();
 	  $title="NHO Roster for ".date("m-d-Y",strtotime($item['nhoDate']));
 	  $mpdf = new \Mpdf\Mpdf([
