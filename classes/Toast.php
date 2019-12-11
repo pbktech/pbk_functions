@@ -27,7 +27,7 @@ class Toast{
 		}
 	}
 	public function setConfig(){
-		$default = dirname(__DIR__) . '/config.json';
+		$default = dirname(ABSPATH) . '/config.json';
 		$this->config=json_decode(file_get_contents($default));
 		$this->ToastClient=$this->config->ToastClient;
 		$this->ToastSecret=$this->config->ToastSecret;

@@ -24,7 +24,7 @@ class ToastReport{
 		}
 	}
 	public function setConfig(){
-		$default = dirname(__DIR__) . '/config.json';
+		$default = dirname(ABSPATH) . '/config.json';
 		$this->config=json_decode(file_get_contents($default));
 		$this->localDB=$this->config->dBase;
 		$this->docSaveLocation=$this->config->docSaveLocation;
