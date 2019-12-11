@@ -10,15 +10,34 @@ if (!function_exists("get_option")) {
   header('HTTP/1.0 403 Forbidden');
  die;  // Silence is golden, direct call is prohibited
 }
+global $wp;
+$aboveStore=0;
 date_default_timezone_set('America/Chicago');
 setlocale(LC_MONETARY, 'en_US');
 error_reporting(E_ALL);
+$latLong["Chicago"]=array("Lat"=>41.885858,"Long"=>-87.632561);
+$latLong["District of Columbia"]=array("Lat"=>38.893481,"Long"=>-77.022022);
+$latLong["Colorado"]=array("Lat"=>39.752327,"Long"=>-105.001158);
+/*Checking Above Store*/
+function pbk_check_privledge(){
+  $cu = wp_get_current_user();
+  if(in_array("administrator", $cu->roles) || in_array("editor", $cu->roles)) {
+    $aboveStore=1;
+  }
+}
+add_action('init','pbk_check_privledge');
 /*Scripts and CSS*/
-wp_enqueue_style( 'style', 'https://cdn.jsdelivr.net/npm/select2@4.0.12/dist/css/select2.min.css');
-wp_enqueue_script( 'script', 'https://cdn.jsdelivr.net/npm/select2@4.0.12/dist/js/select2.min.js');
-wp_enqueue_style( 'style', 'https//cdnjs.cloudflare.com/ajax/libs/timepicker/1.3.5/jquery.timepicker.min.css');
-wp_enqueue_script( 'script', 'https://cdnjs.cloudflare.com/ajax/libs/timepicker/1.3.5/jquery.timepicker.min.js');
-wp_enqueue_script( 'script', 'https://code.jquery.com/jquery-1.10.1.min.js');
+function pbk_scripts(){
+  wp_enqueue_style( 'select_style', 'https://cdn.jsdelivr.net/npm/select2@4.0.12/dist/css/select2.min.css');
+  wp_enqueue_style( 'timepicker_style', '//cdnjs.cloudflare.com/ajax/libs/timepicker/1.3.5/jquery.timepicker.min.css');
+//  wp_enqueue_style( 'bootstrap_style', 'https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css');
+  wp_enqueue_script( 'select_script', 'https://cdn.jsdelivr.net/npm/select2@4.0.12/dist/js/select2.min.js');
+  wp_enqueue_script( 'timepicker_script', '//cdnjs.cloudflare.com/ajax/libs/timepicker/1.3.5/jquery.timepicker.min.js');
+//  wp_enqueue_script( 'jq3_script', 'https://code.jquery.com/jquery-3.4.1.min.js');
+//  wp_enqueue_script( 'popper_script', 'https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js');
+//  wp_enqueue_script( 'bootstrap_script', 'https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js');
+}
+add_action( 'wp_enqueue_scripts', 'pbk_scripts' );
 
 /*Classes*/
 require __DIR__ . '/vendor/autoload.php';

@@ -224,8 +224,24 @@ class Restaurant {
 			$return.= "\n
 			<script>
 	jQuery(document).ready(function() {
-		jQuery('#time_picker".$ia."o').timepicker({ 'timeFormat': 'g:i a'});
-		jQuery('#time_picker".$ia."c').timepicker({ 'timeFormat': 'g:i a'});
+		jQuery('#time_picker".$ia."o').timepicker({
+			'timeFormat': 'h:mm p',
+			interval: 15,
+			    minTime: '5:00 am',
+			    maxTime: '9:00 pm',
+					dynamic: false,
+					dropdown: true,
+	 	    	scrollbar: true
+		});
+		jQuery('#time_picker".$ia."c').timepicker({
+			'timeFormat': 'h:mm p',
+			interval: 15,
+			    minTime: '5:00 am',
+			    maxTime: '9:00 pm',
+					dynamic: false,
+					dropdown: true,
+	 	    	scrollbar: true
+		});
 	});
 </script><tr><td><label for='".date("l",$ia)."'>".date("l",$ia)." Open</label></td><td><label for='".date("l",$ia)."'>".date("l",$ia)." Close</label></td></tr>
 <tr><td>
@@ -442,8 +458,24 @@ jQuery(document).ready(function() {
     jQuery('#nhoDate').datepicker({
         dateFormat : 'yy-mm-dd'
     });
-		jQuery('#time_picker_start').timepicker({ 'timeFormat': 'g:i a'});
-		jQuery('#time_picker_end').timepicker({ 'timeFormat': 'g:i a'});
+		jQuery('#time_picker_start').timepicker({
+			'timeFormat': 'h:mm p',
+			interval: 15,
+			    minTime: '5:00 am',
+			    maxTime: '9:00 pm',
+					dynamic: false,
+					dropdown: true,
+	 	    	scrollbar: true
+		 });
+		jQuery('#time_picker_end').timepicker({
+			'timeFormat': 'h:mm p',
+			interval: 15,
+			    minTime: '5:00 am',
+			    maxTime: '9:00 pm',
+					dynamic: false,
+					dropdown: true,
+	 	    	scrollbar: true
+		 });
 });
 </script>
 		<div>

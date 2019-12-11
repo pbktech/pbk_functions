@@ -30,15 +30,17 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
 		$tasks->delete_task($_POST["task_id"]);
 	}
 }
-		$ret.="
-		<script type=\"text/javascript\">
-
+$jQuery="
+<script>
 jQuery(document).ready(function() {
 	jQuery('#time_picker').timepicker({
-		'timeFormat': 'g:i a',
+		'timeFormat': 'h:mm p',
 		interval: 15,
 		    minTime: '5:00 am',
-		    maxTime: '9:00 pm'
+		    maxTime: '9:00 pm',
+				dynamic: false,
+				dropdown: true,
+ 	    	scrollbar: true
 	});
   jQuery('#startDate').datepicker({
       dateFormat : 'yy-mm-dd'
@@ -47,8 +49,9 @@ jQuery(document).ready(function() {
   	theme: \"classic\"
 	});
 });
-
 </script>
+";
+		$ret.=$jQuery."
 	<div>
 		<h4>Things to remember when using this system</h4>
 		<ul>
@@ -98,3 +101,9 @@ jQuery(document).ready(function() {
 		}
 		$ret.="</table></div>";
 	}
+	/*
+function addInlineScripts_sluc(){
+	wp_add_inline_script("runtime_jquery_sluc",$jQuery,'before');
+}
+add_action( 'wp_enqueue_scripts', 'addInlineScripts_sluc');
+*/

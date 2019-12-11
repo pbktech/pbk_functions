@@ -8,7 +8,7 @@ $ts[]=array("T" => "kds_detail","Q" => "SELECT date(max(clk_in_date_tm)) as MaxD
 $ts[]=array("T" => "v_R_TendersFromArchive","Q" => "SELECT date(max(BusinessDate)) FROM pbc2.v_R_TendersFromArchive");
 		$ret.="
 		<div>
-			<table><tr><td><strong>Table</strong></td><td><strong>Last Import Date</strong></td></tr>
+			<table class=\"table table-striped\"><tr><td><strong>Table</strong></td><td><strong>Last Import Date</strong></td></tr>
 		";
 		foreach($ts as $t){
 			$lastImport = $wpdb->get_var( $t['Q']);

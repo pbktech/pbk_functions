@@ -1,7 +1,5 @@
 <?php
 use DmitryIvanov\DarkSkyApi\DarkSkyApi;
-require_once '/var/www/html/c2.theproteinbar.com/wp-content/plugins/pbr_finance/includes/ToastFunctions/classes/vendor/autoload.php';
-require_once '/var/www/html/c2.theproteinbar.com/wp-content/plugins/pbr_finance/includes/ToastFunctions/classes/ToastReport.php';
 if(!isset($_REQUEST['endDate']) || !isset($_REQUEST['startDate'])) {
 		$ret.="
 		<script type=\"text/javascript\">
@@ -35,9 +33,6 @@ jQuery(document).ready(function() {
 	$report=new ToastReport();
 	$file = fopen($report->docSaveLocation.date("Ymd",strtotime($_REQUEST['startDate']))."-".date("Ymd",strtotime($_REQUEST['endDate'])).'-Weather-YoY.csv', 'w');
 	fputcsv($file, array("Date","IL","Sales","Summary","DC","Sales","Summary","CO","Sales","Summary"));
-	$latLong["Chicago"]=array("Lat"=>41.885858,"Long"=>-87.632561);
-	$latLong["District of Columbia"]=array("Lat"=>38.893481,"Long"=>-77.022022);
-	$latLong["Colorado"]=array("Lat"=>39.752327,"Long"=>-105.001158);
 	$start=strtotime($_REQUEST['startDate']);
 	$end=strtotime($_REQUEST['endDate']);
 	for ($i=$start; $i <= $end; $i+=86400) {

@@ -44,7 +44,7 @@ function no_items() {
 }
 function column_nhoDate($item) {
   $actions['edit']= sprintf('<a href="?page=%s&amp;nhoDate=%s&amp;nhoLocation=%s&amp;r=0">Edit</a>','pbr-nho',$item['nhoDate'],$item['nhoLocation']);
-  $actions['roster']=sprintf('<a href="?page=%s&amp;nhoDate=%s&amp;nhoLocation=%s&amp;r=1">Roster</a>','pbr-nho',$item['nhoDate'],$item['nhoLocation']);
+  $actions['roster']=sprintf('<a href="?page=%s&amp;nhoDate=%s&amp;nhoLocation=%s&amp;r=1" target="_blank">Roster</a>','pbr-nho',$item['nhoDate'],$item['nhoLocation']);
   return sprintf('%1$s %2$s', date("m/d/Y",strtotime($item['nhoDate'])), $this->row_actions($actions) );
 }
 function column_nhoHost($item) {

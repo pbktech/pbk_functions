@@ -2,7 +2,7 @@
 if ( file_exists( ABSPATH . 'wp-config.php') ) {
 require_once( ABSPATH . 'wp-config.php' );
 }
-
+add_action('admin_enqueue_scripts', 'pbk_scripts');
 require_once( ABSPATH . 'wp-admin/includes/screen.php' );
     add_action('admin_menu', 'pbr_setup_menu');
     add_action( 'admin_post_pbr_save_restaurant_option', 'pbr_update_restaurant' );
@@ -32,7 +32,7 @@ function pbr_edit_restaurant(){
             </h2>
             </div>";
 	if(!isset($_GET['restaurant']) && !is_numeric()) {
-		require_once( 'admin/testlisttable.php' );
+		require_once( 'classes/testlisttable.php' );
 	   $myListTable = new My_Example_List_Table();
 		$myListTable->prepare_items();
 		$myListTable->display();
