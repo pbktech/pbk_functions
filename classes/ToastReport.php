@@ -2,6 +2,10 @@
 class ToastReport{
 	private $config;
 	private $localDB;
+	private $MSDS_PASSWORD;
+	private $MSDS_DB;
+	private $MSDS_USER;
+	private $MSDS_HOST;
 	var $restaurantID=0;
 	var $mysqli=null;
 	var $businessDate=null;
@@ -29,6 +33,10 @@ class ToastReport{
 		$this->localDB=$this->config->dBase;
 		$this->docSaveLocation=$this->config->docSaveLocation;
 		$this->docDownloadLocation=$this->config->docDownloadLocation;
+		$this->MSDS_DB=$this->config->MSDS_DB;
+		$this->MSDS_PASSWORD=$this->config->MSDS_PASSWORD;
+		$this->MSDS_USER=$this->config->MSDS_USER;
+		$this->MSDS_HOST=$this->config->MSDS_HOST;
 	}
 	function connectDB() {
 		$this->mysqli = new mysqli($this->config->host, $this->config->username, $this->config->password, $this->config->dBase);
@@ -873,6 +881,7 @@ ORDER BY msr.orders.entered_by,date_reqd ";
 		return FALSE;
 	}
 	function reportEmail($to,$body,$subject,$attach=null) {
+		use PHPMailer\PHPMailer\PHPMailer;
 		$mail = new PHPMailer;
 		$mail->isSMTP();
 		$mail->SMTPDebug = 0;
