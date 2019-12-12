@@ -1,4 +1,11 @@
 <?php
+use PHPMailer\PHPMailer\PHPMailer;
+use Twilio\Rest\Client;
+use Twilio\Twiml\MessagingResponse;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
+require dirname(__DIR__) . '/vendor/autoload.php';
+
 class ToastReport{
 	private $config;
 	private $localDB;
@@ -884,12 +891,12 @@ ORDER BY msr.orders.entered_by,date_reqd ";
 		$mail = new PHPMailer;
 		$mail->isSMTP();
 		$mail->SMTPDebug = 0;
-		$mail->Host = 'smtp.mailgun.org';
+		$mail->Host = $this->config->SMTP_HOST;
 		$mail->Port = 587;
 		$mail->SMTPSecure = 'tls';
 		$mail->SMTPAuth = true;
-		$mail->Username = "postmaster@otrs.theproteinbar.com";
-		$mail->Password = "a36b43e2b08a4b08e5928aed6cc4f46d";
+		$mail->Username = $this->config->SMTP_USERNAME;
+		$mail->Password = $this->config->SMTP_PASSWORD;
 		$mail->setFrom('otrs@theproteinbar.com', 'PBK SYSTEM NOTIFY');
 		$addresses=explode(",",$to);
 		foreach($addresses as $address){

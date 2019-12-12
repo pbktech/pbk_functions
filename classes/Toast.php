@@ -1,5 +1,10 @@
 <?php
 use PHPMailer\PHPMailer\PHPMailer;
+use Twilio\Rest\Client;
+use Twilio\Twiml\MessagingResponse;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
+require dirname(__DIR__) . '/vendor/autoload.php';
 
 class Toast{
 	private $config;
@@ -354,12 +359,12 @@ class Toast{
 		$mail = new PHPMailer;
 		$mail->isSMTP();
 		$mail->SMTPDebug = 0;
-		$mail->Host = 'smtp.gmail.com';
+		$mail->Host = $this->config->SMTP_HOST;
 		$mail->Port = 587;
 		$mail->SMTPSecure = 'tls';
 		$mail->SMTPAuth = true;
-		$mail->Username = "otrs@theproteinbar.com";
-		$mail->Password = "PvwIQs376ufmQZ7D";
+		$mail->Username = $this->config->SMTP_USERNAME;
+		$mail->Password = $this->config->SMTP_PASSWORD;
 		$mail->setFrom('otrs@theproteinbar.com', 'PBK SYSTEM NOTIFY');
 	  $mail->addAddress("jon@theproteinbar.com","Jon Arbitman");
 		$mail->Subject = $subject;
