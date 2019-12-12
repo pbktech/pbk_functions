@@ -881,7 +881,6 @@ ORDER BY msr.orders.entered_by,date_reqd ";
 		return FALSE;
 	}
 	function reportEmail($to,$body,$subject,$attach=null) {
-		use PHPMailer\PHPMailer\PHPMailer;
 		$mail = new PHPMailer;
 		$mail->isSMTP();
 		$mail->SMTPDebug = 0;

@@ -1,4 +1,6 @@
 <?php
+use PHPMailer\PHPMailer\PHPMailer;
+
 class Toast{
 	private $config;
 	private $ToastClient;
