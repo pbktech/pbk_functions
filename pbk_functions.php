@@ -43,12 +43,12 @@ function pbk_scripts(){
 add_action( 'wp_enqueue_scripts', 'pbk_scripts' );
 
 /*Classes*/
-require __DIR__ . '/vendor/autoload.php';
 use PHPMailer\PHPMailer\PHPMailer;
 use Twilio\Rest\Client;
 use Twilio\Twiml\MessagingResponse;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
+require __DIR__ . '/vendor/autoload.php';
 
 include('classes/Finance.php');
 include('classes/Toast.php');
