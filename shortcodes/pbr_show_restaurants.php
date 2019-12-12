@@ -2,7 +2,7 @@
 function pbr_show_restaurants() {
 
 	$return="\n<div style='overflow:auto;background-color:#FFFFFF;'>
-	\n<table >\n
+	\n<table class=\"table table-striped\">\n
 	<thead>
 <tr style=\"height: 65px;\">
 <td style=\"text-align: center; color: #ffffff; background-color: #f36c21; width: 994.8px; height: 65px;\" colspan=\"6\">

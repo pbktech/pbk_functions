@@ -32,13 +32,13 @@ function pbk_scripts(){
   wp_enqueue_style( 'select_style', 'https://cdn.jsdelivr.net/npm/select2@4.0.12/dist/css/select2.min.css');
   wp_enqueue_style( 'timepicker_style', '//cdnjs.cloudflare.com/ajax/libs/timepicker/1.3.5/jquery.timepicker.min.css');
   wp_enqueue_style( 'jquery-ui_style', PBKF_URL . '/assets/css/jquery-ui.min.css');
-//  wp_enqueue_style( 'bootstrap_style', 'https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css');
+  wp_enqueue_style( 'bootstrap_style', 'https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css');
   wp_enqueue_script( 'select_script', 'https://cdn.jsdelivr.net/npm/select2@4.0.12/dist/js/select2.min.js');
   wp_enqueue_script( 'timepicker_script', '//cdnjs.cloudflare.com/ajax/libs/timepicker/1.3.5/jquery.timepicker.min.js');
   wp_enqueue_script( 'jquery-ui_script', PBKF_URL . '/assets/js/jquery-ui.min.js');
-//  wp_enqueue_script( 'jq3_script', 'https://code.jquery.com/jquery-3.4.1.min.js');
-//  wp_enqueue_script( 'popper_script', 'https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js');
-//  wp_enqueue_script( 'bootstrap_script', 'https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js');
+  wp_enqueue_script( 'jq3_script', 'https://code.jquery.com/jquery-3.4.1.min.js');
+  wp_enqueue_script( 'popper_script', 'https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js');
+  wp_enqueue_script( 'bootstrap_script', 'https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js');
 }
 add_action( 'wp_enqueue_scripts', 'pbk_scripts' );
 
