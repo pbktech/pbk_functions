@@ -285,7 +285,7 @@ AND ToastOrderID IN (SELECT GUID FROM pbc_ToastOrderHeaders WHERE restaurantID=?
 
 			  <td style=\"text-align:center;\">".$data['levelUpOrders']['Count']."</td>
 			  <td style=\"text-align:center;\">$".$this->switchNegNumber($data['levelUpOrders']['Total'],0)."</td>
-			  <td style=\"text-align:right;width:5%;\">".trim($data['lylevelUpOrders']['Count'])."</td>
+			  <td style=\"text-align:right;\">".trim($data['lylevelUpOrders']['Count'])."</td>
 			  <td style=\"border-right:1px solid #e3e6ea;text-align:center;\">$".$this->switchNegNumber($data['lylevelUpOrders']['Total'],0)."</td>
 
 			  <td style=\"text-align:center;\">".$data['monkeyCount']['Count']."</td>
