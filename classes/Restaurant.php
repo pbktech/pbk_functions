@@ -15,6 +15,7 @@ class Restaurant {
 	public $rinfo=array();
 	public $restaurantID=null;
 	public $isAboveStore=0;
+
 	public $myRestaurants=array();
 	public $nhoSatus=array(
 	"Position"=>array(1=>"TM",2=>"TLIT",3=>"MIT"),
@@ -792,5 +793,39 @@ AND pbc_users.id=nhoHost AND pbc_pbrestaurants.restaurantID=nhoLocation");
 	public function getRestaurantName($type) {
 		global $wpdb;
 		return $wpdb->get_var( "SELECT restaurantName FROM pbc_pbrestaurants WHERE restaurantID='".$type."'");
+	}
+	public function buildLoggedInName($name="reporterName"){
+		global $wpdb;
+		global $wp;
+		$cu = wp_get_current_user();
+		$verify=$wpdb->get_var( "SELECT mgrType FROM pbc_pbr_managers WHERE managerID='".$cu->ID."'");
+		if(isset($verify->mgrType) && $verify->mgrType=="STR"){
+			$value="";
+		}else {
+			$value=esc_html( $cu->user_firstname ) . " " . esc_html( $cu->user_lastname );
+		}
+		return "<input class=\"form-control\" type='text' name='".$name."' value='".$value."' required />";
+	}
+	public function buildRestaurantSelector($single=0){
+			if(count($this->myRestaurants)==0){
+				return "<div class='alert alert-danger'>No Restaurants Assigned</div>";
+			}elseif (count($this->myRestaurants)==1) {
+				return "<input type='hidden' value='".$this->myRestaurants[1]."' name='restaurantID' /><div>".$this->myRestaurants[0]."</div>";
+			}else {
+				if($single==0){
+					$return= "
+						<select name='restaurantID' class=\"custom-select\" required>
+							<option value=''>Choose One</option>
+						";
+						foreach($this->myRestaurants as $id=>$name){
+							$return.="
+							<option value='$id'>$name</option>
+							";
+						}
+						$return.="
+						</select>";
+				}
+				return $return;
+			}
 	}
 }

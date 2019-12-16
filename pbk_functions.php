@@ -11,7 +11,6 @@ if (!function_exists("get_option")) {
  die;  // Silence is golden, direct call is prohibited
 }
 global $wp;
-$aboveStore=0;
 date_default_timezone_set('America/Chicago');
 setlocale(LC_MONETARY, 'en_US');
 error_reporting(E_ALL);
@@ -20,10 +19,12 @@ $latLong["District of Columbia"]=array("Lat"=>38.893481,"Long"=>-77.022022);
 $latLong["Colorado"]=array("Lat"=>39.752327,"Long"=>-105.001158);
 /*Checking Above Store*/
 function pbk_check_privledge(){
+  $aboveStore=0;
   $cu = wp_get_current_user();
   if(in_array("administrator", $cu->roles) || in_array("editor", $cu->roles)) {
     $aboveStore=1;
   }
+  return $aboveStore;
 }
 define( "PBKF_URL", WP_PLUGIN_URL . '/' . plugin_basename( dirname( __FILE__ ) ) );
 add_action('init','pbk_check_privledge');
@@ -94,3 +95,10 @@ function switchpbrMessages($m) {
    <div id='message' class='updated fade'><p><strong><?php echo switchpbrMessages($_GET['m']);?></strong></p></div>
 <?php
   }
+function pbk_load_form_elements() {
+  if ( isset($_REQUEST) ) {
+    return "<div class='alert'>You requested ".$_REQUEST['incidentType']."</div>";
+  }
+  die();
+}
+add_action( 'wp_ajax_pbk_load_form_elements', 'pbk_load_form_elements' );
