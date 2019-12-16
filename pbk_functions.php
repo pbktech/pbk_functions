@@ -36,7 +36,6 @@ function pbk_scripts(){
   wp_enqueue_script( 'select_script', 'https://cdn.jsdelivr.net/npm/select2@4.0.12/dist/js/select2.min.js');
   wp_enqueue_script( 'timepicker_script', '//cdnjs.cloudflare.com/ajax/libs/timepicker/1.3.5/jquery.timepicker.min.js');
   wp_enqueue_script( 'jquery-ui_script', PBKF_URL . '/assets/js/jquery-ui.min.js');
-  wp_enqueue_script( 'jq3_script', 'https://code.jquery.com/jquery-3.4.1.min.js');
   wp_enqueue_script( 'popper_script', 'https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js');
   wp_enqueue_script( 'bootstrap_script', 'https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js');
 }
@@ -71,7 +70,18 @@ add_shortcode( 'show_deposit_calculator', 'pbrf_depositCalculator' );
 add_shortcode( 'show_finance_report_builder', 'pbrf_showReportBuilder' );
 add_shortcode( 'show_restaurants', 'pbr_show_restaurants' );
 add_shortcode( 'show_restaurant_hours', 'pbr_show_restaurant_hours' );
-
+function pbk_show_response($m){
+  return "
+  <script src=\"https://code.jquery.com/jquery-1.10.1.min.js\"></script>
+      <div class='alert ".$m['class']."' id='pbk_message' >".$m['message']."</div>
+      <script type=\"text/javascript\">
+        $(document).ready(function(){
+          setTimeout(function(){
+          $(\"#pbk_message\").hide(\"20000\")
+        }, 30000);
+        });
+      </script>";
+}
 function switchpbrMessages($m) {
 	switch($m) {
 		case 1: return "Restaurant updated."; break;

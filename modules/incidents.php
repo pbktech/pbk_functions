@@ -4,81 +4,36 @@ global $wpdb;
 global $ret;
 $cu = wp_get_current_user();
 $page = home_url( add_query_arg( array(), $wp->request ) );
-require_once("/var/www/html/c2.theproteinbar.com/wp-content/plugins/pbrestaurants/includes/admin/Restaurant.php");
 $restaurant=new Restaurant();
 if (isset($_REQUEST['event']) && is_numeric($_REQUEST['event'])) {
   $event=$restaurant->getNHOInfo($_REQUEST['event']);
 }
 if($_SERVER['REQUEST_METHOD'] == 'POST'){
-  $save=$restaurant->updateNHOAttendee($_POST);
-  if($save=="Success"){
-    $message="<div class='success' id='message' style='text-align:center;'><p style='padding:3px;'>The updates have been saved.</p></div>";
-  }else{
-    $message="<div class='alert' id='message' style='text-align:center;'><p style='padding:3px;'>There was an error saving. This error has been reported.</p></div>";
-  }
-  $ret.="<script src=\"https://code.jquery.com/jquery-1.10.1.min.js\"></script>
-      ".$message."
-      <script type=\"text/javascript\">
-        $(document).ready(function(){
-          setTimeout(function(){
-          $(\"#message\").hide(\"20000\")
-        }, 30000);
-        });
-      </script>
+
+}
+$ret.="
+<script>
+jQuery(document).ready(function() {
+  jQuery('#dateOfIncident').datepicker({
+    dateFormat : 'dd-mm-yy'
+  });
+});
+</script>
+
+<div class=\"container\">
+  <div class=\"row\">
+    <div class=\"col\">
+      <label for='dateOfIncident'>Date of Incident</label><br />
+      <input type=\"text\" id=\"dateOfIncident\" name=\"startDate\" value=\"\"/>
+    </div>
+    <div class=\"col\">
+      <label for='reporterName'>Your Name</label><br />
+      <input type=\"text\" id=\"reporterName\" name=\"reporterName\" value=\"\"/>
+    </div>
+    <div class=\"col\">
+      <label for='restaurantID'>Restaurant</label><br />
+      <input type=\"text\" id=\"restaurantID\" name=\"restaurantID\" value=\"\"/>
+    </div>
+  </div>
+</div>
 ";
-}
-if (!isset($_REQUEST['event']) || !isset($event->nhoID) || $event->nhoID=="") {
-  $nhoEvents=$restaurant->getNHOEvents();
-  $ret.="\n
-	<div>
-		<form method='get' action='".$page."'  name='restaurantSelector'>
-			<select name='event' onchange=\"this.form.submit()\"><option value=''>Choose an Event</option>";
-	foreach($nhoEvents as $event){
-		$ret.="\n<option value='".$event['nhoID']."'>".date("m/d/Y",strtotime($event['nhoDate']))." at ".$restaurant->getRestaurantName($event['nhoLocation'])."</option>";
-	}
-	$ret.="</select></form></div>";
-}else{
-  $attendees=$restaurant->getNHOAttendees($event->nhoID);
-  $cutOffTime=strtotime('-1 day', strtotime($event->nhoDate))+61200;
-  if(time()>$cutOffTime && $restaurant->isAboveStore==0){$disabled=1;}else {$disabled=0;}
-  $ret.="
-  <script>
-  function changeBackground(field,fieldID,number){
-    if(number==2){
-      var bgColor='#1a8914';
-    }else{
-      var bgColor='#d61111';
-    }
-    document.getElementById(field+\"_td_\"+fieldID).style.backgroundColor = bgColor;
-  }
-  </script>
-  <div style='width:100%;'>
-    <form method='post' action='".$page."'>
-    <input type='hidden' name='nhoID' value='".$event->nhoID."' />
-    <input type='hidden' name='event' value='".$event->nhoID."' />
-      <input type='hidden' name='redirect' value='".$page . "?event=". $event->nhoID ."' />
-      <table style=\"width:100%;\">
-    ";
-    $ret.=$restaurant->nhoHeader(array("nhoDate"=>$event->nhoDate,"restaurantName"=>$event->restaurantName,"display_name"=>$event->display_name,"nhoTIme"=>$event->nhoTIme));
-    if($attendees){
-			foreach($attendees as $attendee){
-        if($attendee->attendeeID!=''){
-          $ret.=$restaurant->buildNHOAttendeeLine($attendee->attendeeID,$disabled);
-        }
-      }
-    }
-    if($disabled==0){
-      $ret.=$restaurant->buildNHOAttendeeLine();
-      $ret.="<tr><td colspan='7'><input type='submit' value='Save' />";
-    }
-    $ret.="
-    </tbody>
-      </table>
-    </form>
-    </div>
-    <div style='text-align:center;'>
-    <h3>Updates can be made until ".date("m/d/Y g:i a",$cutOffTime)." </h3><br>
-    <h1 style='color:#d61111;'><strong>Verfy the date, time and location</strong></h1><br>
-    </div>
-    ";
-}
