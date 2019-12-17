@@ -16,6 +16,7 @@ jQuery(document).ready(function() {
   jQuery('#dateOfIncident').datepicker({
     dateFormat : 'dd-mm-yy'
   });
+  jQuery(\"#submit\").prop(\"disabled\", true);
   jQuery(\"#incidentType\").change(function () {
     var elementToChange=jQuery(\"#incidentType\").val();
     jQuery(\"#foodborneIllness\").hide();
@@ -75,6 +76,7 @@ jQuery(document).ready(function() {
       </div>
     </div>
   </div>
+  <div class='alert' id='choose' >Please Select an Incident Type</div>
   <div class=\"form-group\" id='foodborneIllness' style=\"display: none;\">
     foodborneIllness
   </div>
@@ -84,9 +86,8 @@ jQuery(document).ready(function() {
   <div class=\"form-group\" id='lostStolenProperty' style=\"display: none;\">
     lostStolenProperty
   </div>
-  <div class=\"form-group\" id='lostStolenProperty'>
-    <input type='submit' id='submit' disabled />
+  <div class=\"form-group\" id=''>
+    <input type='submit' id='submit' value='Save Incident Report' />
   </div>
 </form>
-<div class='alert' id='choose' >Please Select an Incident Type</div>
 ";
