@@ -23,6 +23,9 @@ jQuery(document).ready(function() {
     jQuery(\"#lostStolenProperty\").hide();
     jQuery(\"#\" + elementToChange).show();
   });
+  jQuery(\"#restaurantID\").select2({
+  	theme: \"classic\"
+	});
 });
 </script>
 <form>
