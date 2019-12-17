@@ -21,6 +21,7 @@ jQuery(document).ready(function() {
     jQuery(\"#foodborneIllness\").hide();
     jQuery(\"#injury\").hide();
     jQuery(\"#lostStolenProperty\").hide();
+    jQuery(\"#choose\").hide();
     jQuery(\"#\" + elementToChange).show();
   });
   jQuery(\"#restaurantID\").select2({
@@ -63,7 +64,7 @@ jQuery(document).ready(function() {
         <div class=\"col\">
           <label for='incidentType'>Type of Incident</label>
           <select class=\"custom-select\" name='incidentType' id='incidentType' required>
-            <option value=''>Choose One</option>
+            <option value='choose'>Choose One</option>
             <option value='foodborneIllness'>Foodborne Illness</option>
             <option value='injury'>Injury</option>
             <option value='lostStolenProperty'>Lost or Stolen Property</option>
@@ -82,4 +83,5 @@ jQuery(document).ready(function() {
     lostStolenProperty
   </div>
 </form>
+<div class='alert' id='choose' >Please Select an Incident Type</div>
 ";
