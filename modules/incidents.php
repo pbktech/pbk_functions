@@ -23,7 +23,7 @@ jQuery(document).ready(function() {
     jQuery(\"#lostStolenProperty\").hide();
     jQuery(\"#choose\").hide();
     jQuery(\"#\" + elementToChange).show();
-    jQuery(\"#\" + elementToChange).prop(\"disabled\", true);
+    jQuery(\"#incidentType\).prop(\"disabled\", true);
     jQuery(\"#submit\").prop(\"disabled\", false);
   });
   jQuery(\"#restaurantID\").select2({
