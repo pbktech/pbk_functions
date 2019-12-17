@@ -17,6 +17,7 @@ jQuery(document).ready(function() {
     dateFormat : 'dd-mm-yy'
   });
   jQuery(\"#submit\").prop(\"disabled\", true);
+  jQuery(\"#submit\").addClass(\"btn btn-secondary btn-lg disabled\");
   jQuery(\"#incidentType\").change(function () {
     var elementToChange=jQuery(\"#incidentType\").val();
     jQuery(\"#foodborneIllness\").hide();
@@ -25,6 +26,7 @@ jQuery(document).ready(function() {
     jQuery(\"#choose\").hide();
     jQuery(\"#\" + elementToChange).show();
     jQuery(\"#incidentType\").prop(\"disabled\", true);
+    jQuery(\"#submit\").removeClass(\"btn btn-secondary btn-lg disabled\");
     jQuery(\"#submit\").prop(\"disabled\", false);
   });
   jQuery(\"#restaurantID\").select2({
