@@ -17,10 +17,10 @@ jQuery(document).ready(function() {
     dateFormat : 'dd-mm-yy'
   });
   jQuery(\"#incidentType\").change(function () {
-    var elementToChange=jQuery(\"#incidentType\").val(),
-    jQuery(\"#foodborneIllness\").hide(),
-    jQuery(\"#injury\").hide(),
-    jQuery(\"#lostStolenProperty\").hide(),
+    var elementToChange=jQuery(\"#incidentType\").val();
+    jQuery(\"#foodborneIllness\").hide();
+    jQuery(\"#injury\").hide();
+    jQuery(\"#lostStolenProperty\").hide();
     jQuery(\"#\" + elementToChange).show();
   });
 });
