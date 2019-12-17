@@ -23,6 +23,8 @@ jQuery(document).ready(function() {
     jQuery(\"#lostStolenProperty\").hide();
     jQuery(\"#choose\").hide();
     jQuery(\"#\" + elementToChange).show();
+    jQuery(\"#\" + elementToChange).prop(\"disabled\", true);
+    jQuery(\"#submit\").prop(\"disabled\", false);
   });
   jQuery(\"#restaurantID\").select2({
   	theme: \"classic\"
@@ -81,6 +83,9 @@ jQuery(document).ready(function() {
   </div>
   <div class=\"form-group\" id='lostStolenProperty' style=\"display: none;\">
     lostStolenProperty
+  </div>
+  <div class=\"form-group\" id='lostStolenProperty'>
+    <input type='submit' id='submit' disabled />
   </div>
 </form>
 <div class='alert' id='choose' >Please Select an Incident Type</div>
