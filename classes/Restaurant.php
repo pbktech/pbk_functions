@@ -814,7 +814,7 @@ AND pbc_users.id=nhoHost AND pbc_pbrestaurants.restaurantID=nhoLocation");
 			}else {
 				if($single==0){
 					$return= "
-						<select name='restaurantID' class=\"custom-select\" required>
+						<select name='restaurantID' class=\"js-example-basic-multiple\" required>
 							<option value=''>Choose One</option>
 						";
 						foreach($this->myRestaurants as $id=>$name){

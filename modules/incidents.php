@@ -17,20 +17,11 @@ jQuery(document).ready(function() {
     dateFormat : 'dd-mm-yy'
   });
   jQuery(\"#incidentType\").change(function () {
-    jQuery.ajax({
-      url: example_ajax_obj.ajaxurl,
-      data: {
-        'action': 'pbk_load_form_elements',
-        'incidentType': jQuery(\"#incidentType\").val())
-      },
-      success:function(data) {
-          
-          console.log(data);
-      },
-      error: function(errorThrown){
-          console.log(errorThrown);
-      }
-    });
+    var elementToChange=jQuery(\"#incidentType\").val(),
+    jQuery(\"#foodborneIllness\").hide(),
+    jQuery(\"#injury\").hide(),
+    jQuery(\"#lostStolenProperty\").hide(),
+    jQuery(\"#\" + elementToChange).show();
   });
 });
 </script>
@@ -78,8 +69,14 @@ jQuery(document).ready(function() {
       </div>
     </div>
   </div>
-  <div class=\"form-group\" id='formData'>
-
+  <div class=\"form-group\" id='foodborneIllness' style=\"display: none;\">
+    foodborneIllness
+  </div>
+  <div class=\"form-group\" id='injury' style=\"display: none;\">
+    injury
+  </div>
+  <div class=\"form-group\" id='lostStolenProperty' style=\"display: none;\">
+    lostStolenProperty
   </div>
 </form>
 ";

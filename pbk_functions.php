@@ -95,10 +95,3 @@ function switchpbrMessages($m) {
    <div id='message' class='updated fade'><p><strong><?php echo switchpbrMessages($_GET['m']);?></strong></p></div>
 <?php
   }
-function pbk_load_form_elements() {
-  if ( isset($_REQUEST) ) {
-    return "<div class='alert'>You requested ".$_REQUEST['incidentType']."</div>";
-  }
-  die();
-}
-add_action( 'wp_ajax_pbk_load_form_elements', 'pbk_load_form_elements' );
