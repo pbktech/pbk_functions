@@ -397,7 +397,6 @@ class Restaurant {
 			",$json,$attendeeID));
 		}
 		$email.="</table>";
-		require("/var/www/html/c2.theproteinbar.com/wp-content/plugins/pbr_finance/includes/ToastFunctions/classes/ToastReport.php");
 		$cu = wp_get_current_user();
 		$report=new ToastReport();
 		$report->reportEmail($cu->user_email.",hr@theproteinbar.com",$email,"NHO Attendance Report for ".date("m/d/Y", strtotime($atts['nhoDate'])));
@@ -636,6 +635,29 @@ jQuery(document).ready(function(jQuery){jQuery.datepicker.setDefaults({"closeTex
 			return false;
 		}
 	}
+	function buildHTMLPDF($content){
+		$content=json_decode($content);
+	  $report=new ToastReport();
+	  $mpdf = new \Mpdf\Mpdf([
+	  	'mode' => 'c',
+	    'format' => $content->format,
+	  	'margin_left' => 5,
+	  	'margin_right' => 5,
+	  	'margin_top' => 5,
+	  	'margin_bottom' => 5,
+	  	'margin_header' => 0,
+	  	'margin_footer' => 0
+	  ]);
+		$stylesheet=file_get_contents(dirname(dirname(__FILE__)) . "/assets/css/mpdf-bootstrap.css");
+	  $mpdf->SetTitle($content->title);
+	  $mpdf->SetAuthor("Protein Bar & Kitchen");
+		$mpdf->WriteHTML($stylesheet,\Mpdf\HTMLParserMode::HEADER_CSS);
+	  $mpdf->WriteHTML(utf8_encode($content->html),\Mpdf\HTMLParserMode::HTML_BODY);
+	  $mpdf->Output($report->docSaveLocation.str_replace(" ","_",$content->title).".pdf", 'F');
+		if(file_exists($report->docSaveLocation.str_replace(" ","_",$content->title).".pdf")){return $report->docDownloadLocation.str_replace(" ","_",$content->title).".pdf";}else {
+			return false;
+		}
+	}
 	function getNHOEvents(){
 		global $wpdb;
 		return $wpdb->get_results("SELECT * FROM pbc2.pbc_NHOSchedule WHERE nhoDate>=CURDATE()-2", ARRAY_A);
@@ -665,7 +687,6 @@ jQuery(document).ready(function(jQuery){jQuery.datepicker.setDefaults({"closeTex
 				}
 			}
 			if($wpdb->last_error !== '') {
-				require_once("/var/www/html/c2.theproteinbar.com/wp-content/plugins/pbr_finance/includes/ToastFunctions/classes/ToastReport.php");
 				$rpt= new ToastReport();
 				$rpt->reportEmail("jon@theproteinbar.com","SQL Error \n".$wpdb->print_error()."\n\nPosted Data \n".print_r($nho,true),"NHO Save Error");
 				return "Fail";
