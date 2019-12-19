@@ -453,9 +453,9 @@ class Toast{
 	function storeCheckSum($i,$stmt){
 		$stmt->bind_param('ssssssssssss',$i['orderGUID'],$i['restaurantID'],$i['businessDate'],$i['checkIds'],$i['checkAmount'],$i['orderSource'],$i['diningOption'],$i['taxAmount'],$i['serviceCharges'],$i['discounts'],$i['voidBusinessDate'],$i['isCatering']);
 		$stmt->execute();
-		if($stmt['stmt']->error!='') {
+		if($stmt->error!='') {
 			$this->notifyIT(
-				"checkSum \n\n".$stmt['checkSum']->error."\n\n<pre>".print_r($i,true)."</pre>\n",
+				"checkSum \n\n".$stmt->error."\n\n<pre>".print_r($i,true)."</pre>\n",
 				"SQL Import Error");
 		}
 
