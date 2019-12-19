@@ -379,7 +379,7 @@ class Toast{
 		$encJSON=json_encode($json);
 		$stmt->bind_param('sssss',$this->restaurantID,$json->guid,$dateOfBusiness,$encJSON,$entityType);
 		$stmt->execute();
-		if($stmt->error!='') {$this->notifyIT("storeRawJSON \n\n".$stmt->error."\n\n","SQL Import Error");}
+		if($stmt->error!='') {$this->notifyIT("storeRawJSON \n\n".$stmt->error."\n\ndob: " . $dob."\n\nentity: " . $entityType . "\n\n " . print_r($json,true),"SQL Import Error");}
 	}
 	function createImportRecord($json, $dob, $timeToComplete, $stmt) {
 		$dateOfBusiness=date("Y-m-d",strtotime($dob));
