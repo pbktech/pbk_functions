@@ -115,12 +115,13 @@ jQuery(document).ready(function() {
       jQuery(\"#incidentForm\").hide();
       jQuery(\"#processingGif\").show();
       jQuery(\"#submit\").prop(\"disabled\", true);
+      jQuery(\"#incidentReport\").submit();
     }
   });
 });
 </script>
 <div id='incidentForm'>
-<form method='post' action='".home_url( add_query_arg( array(), $wp->request ) )."' >
+<form method='post' action='".home_url( add_query_arg( array(), $wp->request ) )."' id='incidentReport' >
   <div class=\"form-group\">
     ".pbk_form_incident_header()."
   </div>
