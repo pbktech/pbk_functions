@@ -128,10 +128,10 @@ $return.="
         }else{
           $return.= "
           <div class=\"input-group-text\">
-            <input type=\"radio\" aria-label=\"Yes\" value='Yes' id='medicalRequired' name='reportInfo[injury][medicalRequired]'> Yes
+            <input type=\"radio\" aria-label=\"Yes\" value='Yes' id='medicalRequired_yes' name='reportInfo[injury][medicalRequired]'> Yes
           </div>
           <div class=\"input-group-text\">
-            <input type=\"radio\" aria-label=\"No\" value='No' id='medicalRequired' name='reportInfo[injury][medicalRequired]'> No
+            <input type=\"radio\" aria-label=\"No\" value='No' id='medicalRequired_no' name='reportInfo[injury][medicalRequired]'> No
           </div>
           ";
           }
@@ -146,15 +146,15 @@ $return.="
         ";
         if($new==0){
         $return.="
-          <input  class=\"form-control\" type='text' value='".$data['emergencyCalled']."' id='emergencyCalled' />
+          <input  class=\"form-control\" type='text' value='".$data['emergencyCalled']."' id='emergencyCalled_label' />
           ";
         }else{
           $return.= "
           <div class=\"input-group-text\">
-            <input type=\"radio\" aria-label=\"Yes\"  value='Yes' id='emergencyCalled' name='reportInfo[injury][emergencyCalled]'> Yes
+            <input type=\"radio\" aria-label=\"Yes\"  value='Yes' id='emergencyCalled_yes' name='reportInfo[injury][emergencyCalled]'> Yes
           </div>
           <div class=\"input-group-text\">
-            <input type=\"radio\" aria-label=\"No\" value='No' id='emergencyCalled' name='reportInfo[injury][emergencyCalled]'> No
+            <input type=\"radio\" aria-label=\"No\" value='No' id='emergencyCalled_no' name='reportInfo[injury][emergencyCalled]'> No
           </div>
           ";
           }
@@ -169,15 +169,15 @@ $return.="
         ";
         if($new==0){
         $return.="
-          <input  class=\"form-control\" type='text' value='".$data['isEmployee']."' id='isEmployee' />
+          <input  class=\"form-control\" type='text' value='".$data['isEmployee']."' id='isEmployee_label' />
           ";
         }else{
           $return.= "
           <div class=\"input-group-text\">
-            <input type=\"radio\" aria-label=\"Yes\" value='Yes' id='isEmployee' name='reportInfo[injury][isEmployee]'> Yes
+            <input type=\"radio\" aria-label=\"Yes\" value='Yes' id='isEmployee_yes' name='reportInfo[injury][isEmployee]'> Yes
           </div>
           <div class=\"input-group-text\">
-            <input type=\"radio\" aria-label=\"No\" value='No' id='isEmployee' name='reportInfo[injury][isEmployee]'> No
+            <input type=\"radio\" aria-label=\"No\" value='No' id='isEmployee_no' name='reportInfo[injury][isEmployee]'> No
           </div>
           ";
           }
