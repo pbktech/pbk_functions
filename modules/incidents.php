@@ -32,11 +32,26 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
       $incidentTypeName="lostStolenProperty";
       break;
   }
+  $email= new ToastReport();
+  if($incidentTypeName=="foodborneIllness" && isset($_POST['reportInfo']['foodborneIllness']['guestCheck']) && is_numeric($_POST['reportInfo']['foodborneIllness']['guestCheck'])){
+    $email->setRestaurantID($_POST['restaurantID']);
+    $email->setBusinessDate($dateOfIncident);
+    if($checkItems=$email->getCheckItemsFromNumber($_POST['reportInfo']['foodborneIllness']['guestCheck'])){
+      $content['html'].="<h4>CHECK DETAILS</h4>
+        <ol>
+      ";
+      foreach($checkItems as $item){
+        $content['html'].="<li>(" . $item->quantity . ")" .  $item->quantity . "</li>";
+      }
+      $content['html'].="</ol>";
+    }else{
+      $content['html'].="<h4>CHECK NOT FOUND</h4>";
+    }
+  }
   $wpdb->query(
     $wpdb->prepare(
       "INSERT INTO pbc_incident_reports (dateOfIncident,reporterName,restaurantID,guestInfo,incidentType,reportInfo)
       VALUES(%s,%s,%s,%s,%s,%s)",$dateOfIncident,$_POST['reporterName'],$_POST['restaurantID'],$guestInfo,$incidentTypeName,$reportInfo));
-  $email= new ToastReport();
   if($wpdb->last_error !== '') {
   $ret.=  pbk_show_response(array("class"=>"alert","message"=>  "There was an error saving. This error has been reported.<br>" . $wpdb->print_error()));
     $email->reportEmail("jon@theproteinbar.com","SQL Error \n".$wpdb->print_error()."\n\nPosted Data \n".print_r($_POST,true),"Incident Report Save Error");
@@ -68,10 +83,7 @@ jQuery(document).ready(function() {
   jQuery(\"#submit\").addClass(\"btn btn-secondary btn-lg disabled\");
   jQuery(\"#incidentType\").change(function () {
     var elementToChange=jQuery(\"#incidentType\").val();
-    jQuery(\"#foodborneIllness\").hide();
-    jQuery(\"#injury\").hide();
-    jQuery(\"#lostStolenProperty\").hide();
-    jQuery(\"#choose\").hide();
+    jQuery(\".to-hide\").hide();
     jQuery(\"#\" + elementToChange).show();
     jQuery(\"#incidentType\").prop(\"disabled\", true);
     jQuery(\"#submit\").removeClass(\"btn btn-secondary btn-lg disabled\");
@@ -82,14 +94,14 @@ jQuery(document).ready(function() {
   	theme: \"classic\"
 	});
   jQuery(\"#submit\").click(function(event){
+    var error_free=true;
+    var elementToCheck=jQuery(\"#incidentType\").val();
     if(jQuery(\"#guest_Phone\").val()=='' && jQuery(\"#guest_Email\").val()==''){
       alert('Please Provide a Contact Method');
       jQuery(\"#guest_Phone\").css(\"border\",\"1px solid red\");
       jQuery(\"#guest_Email\").css(\"border\",\"1px solid red\");
       error_free=false;
     }
-  	var error_free=true;
-    var elementToCheck=jQuery(\"#incidentType\").val();
     if(elementToCheck=='foodborneIllness'){
       if(!jQuery(\"#conclusions\").is(':checked')){jQuery(\"#conclusions_label\").after('<span class=\"alert alert-danger\">Please Confirm</span>');error_free=false;}
       if(!jQuery(\"#contacted\").is(':checked')){jQuery(\"#contacted_label\").after('<span class=\"alert alert-danger\">Please Confirm</span>');error_free=false;}
@@ -114,8 +126,6 @@ jQuery(document).ready(function() {
       window.scrollTo(0,0);
       jQuery(\"#incidentForm\").hide();
       jQuery(\"#processingGif\").show();
-      jQuery(\"#submit\").prop(\"disabled\", true);
-      jQuery(\"#incidentReport\").submit();
     }
   });
 });
@@ -125,14 +135,14 @@ jQuery(document).ready(function() {
   <div class=\"form-group\">
     ".pbk_form_incident_header()."
   </div>
-  <div class='alert alert-primary' id='choose' >Please Select an Incident Type</div>
-    <div class=\"form-group\" id='foodborneIllness' style=\"display: none;\">
+  <div class='alert alert-primary to-hide' id='choose' >Please Select an Incident Type</div>
+    <div class=\"form-group to-hide\" id='foodborneIllness' style=\"display: none;\">
     ".pbk_form_foodborneIllness()."
     </div>
-    <div class=\"form-group\" id='injury' style=\"display: none;\">
+    <div class=\"form-group to-hide\" id='injury' style=\"display: none;\">
   ".pbk_form_injury()."
     </div>
-    <div class=\"form-group\" id='lostStolenProperty' style=\"display: none;\">
+    <div class=\"form-group to-hide\" id='lostStolenProperty' style=\"display: none;\">
   ".pbk_form_lostStolenProperty()."
     </div>
     <div class=\"form-group\" id=''>

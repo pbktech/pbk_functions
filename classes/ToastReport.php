@@ -860,6 +860,16 @@ ORDER BY msr.orders.entered_by,date_reqd ";
 		while($row=$result->fetch_object()){$r[]=$row;}
 		return $r;
 	}
+	function getCheckItemsFromNumber($d) {
+		$q="SELECT * FROM pbc2.pbc_ToastCheckItems WHERE ToastCheckID IN (SELECT GUID FROM pbc_ToastCheckHeaders WHERE checkNumber='$d' AND
+		ToastOrderID IN (SELECT GUID FROM pbc_ToastOrderHeaders WHERE restaurantID='".$this->restaurantID."' AND businessDate='".$this->businessDate."'))";
+		$stmt = $this->mysqli->prepare($q);
+		$stmt->execute();
+		if($stmt->error!='') {echo $stmt->error."\n\n";}
+		$result = $stmt->get_result();
+		while($row=$result->fetch_object()){$r[]=$row;}
+		return $r;
+	}
 	function getMonkeyRestaurants() {
 		$q="SELECT mnkyID,restaurantName FROM pbc2.pbc_pbrestaurants WHERE restaurantID!=0 AND isOpen=1 AND mnkyID is not null";
 		$stmt = $this->mysqli->prepare($q);
