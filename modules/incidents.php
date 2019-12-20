@@ -37,13 +37,10 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
     $email->setRestaurantID($_POST['restaurantID']);
     $email->setBusinessDate($dateOfIncident);
     if($checkItems=$email->getCheckItemsFromNumber($_POST['reportInfo']['foodborneIllness']['guestCheck'])){
-      echo "<pre>";
-      print_r($checkItems);
-      echo "</pre>";
       $content['html'].="<h4>CHECK DETAILS</h4>
         <ol>
       ";
-      foreach($checkItems as $item){
+      foreach($checkItems as $items =>$item){
         $content['html'].="<li>(" . $item->quantity . ")" .  $item->quantity . "</li>";
       }
       $content['html'].="</ol>";
