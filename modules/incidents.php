@@ -52,7 +52,8 @@ $ret.="
 <script>
 jQuery(document).ready(function() {
   jQuery('#dateOfIncident').datepicker({
-    dateFormat : 'dd-mm-yy'
+    dateFormat : 'MM d, yy',
+    maxDate: '0'
   });
   jQuery('#time_picker').timepicker({
 		'timeFormat': 'h:mm p',
@@ -80,11 +81,41 @@ jQuery(document).ready(function() {
   jQuery(\"#restaurantID\").select2({
   	theme: \"classic\"
 	});
-  jQuery(\"form\").submit(function(){
+  jQuery(\"#submit\").click(function(event){
+    if(jQuery(\"#guest_Phone\").val()=='' && jQuery(\"#guest_Email\").val()==''){
+      alert('Please Provide a Contact Method');
+      jQuery(\"#guest_Phone\").css(\"border\",\"1px solid red\");
+      jQuery(\"#guest_Email\").css(\"border\",\"1px solid red\");
+      error_free=false;
+    }
+  	var error_free=true;
     var elementToCheck=jQuery(\"#incidentType\").val();
-    jQuery(\"#incidentForm\").hide();
-    jQuery(\"#processingGif\").show();
-    jQuery(\"#submit\").prop(\"disabled\", true);
+    if(elementToCheck=='foodborneIllness'){
+      if(!jQuery(\"#conclusions\").is(':checked')){jQuery(\"#conclusions_label\").after('<span class=\"alert alert-danger\">Please Confirm</span>');error_free=false;}
+      if(!jQuery(\"#contacted\").is(':checked')){jQuery(\"#contacted_label\").after('<span class=\"alert alert-danger\">Please Confirm</span>');error_free=false;}
+      if(jQuery(\"#fbi_summary\").val()==''){jQuery(\"#fbi_summary\").after('<span class=\"alert alert-danger\">Please Add a Summary</span>');error_free=false;}
+    }
+    if(elementToCheck=='lostStolenProperty'){
+      if(jQuery(\"#isStolen\").val()==''){jQuery(\"#isStolen\").after('<span class=\"alert alert-danger\">Required</span>');error_free=false;}
+      if(jQuery(\"#itemValue\").val()==''){jQuery(\"#contacted_label\").after('<span class=\"alert alert-danger\">Required</span>');error_free=false;}
+      if(jQuery(\"#property_summary\").val()==''){jQuery(\"#property_summary\").after('<span class=\"alert alert-danger\">Required</span>');error_free=false;}
+      if(jQuery(\"#property_witness\").val()==''){jQuery(\"#property_witness\").after('<span class=\"alert alert-danger\">Required</span>');error_free=false;}
+    }
+    if(elementToCheck=='injury'){
+      if(jQuery(\"#injuryType :selected\").length==0){jQuery(\"#injuryType\").after('<span class=\"alert alert-danger\">Required</span>');error_free=false;}
+      if(jQuery(\"#bodyPart :selected\").length==0){jQuery(\"#bodyPart\").after('<span class=\"alert alert-danger\">Required</span>');error_free=false;}
+      if(jQuery(\"#bodySide :selected\").length==0){jQuery(\"#bodySide\").after('<span class=\"alert alert-danger\">Required</span>');error_free=false;}
+      if(jQuery(\"#injury_summary\").val()==''){jQuery(\"#injury_summary\").after('<span class=\"alert alert-danger\">Required</span>');error_free=false;}
+      if(jQuery(\"#injury_witness\").val()==''){jQuery(\"#injury_witness\").after('<span class=\"alert alert-danger\">Required</span>');error_free=false;}
+    }
+    if (!error_free){
+    		event.preventDefault();
+    }else{
+      window.scrollTo(0,0);
+      jQuery(\"#incidentForm\").hide();
+      jQuery(\"#processingGif\").show();
+      jQuery(\"#submit\").prop(\"disabled\", true);
+    }
   });
 });
 </script>

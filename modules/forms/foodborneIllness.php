@@ -24,7 +24,7 @@ $return="
           $return.=    "<input class=\"form-control\" type=\"text\" id=\"guest[Name]\" name=\"guest[Name]\" value=\"CONFIRMED\"/>";
       }else{
       $return.=    "
-            <input type='checkbox' id='conclusions' name='reportInfo[foodborneIllness][conclusions]'/> <label for='conclusions'>Click to Confirm</label>";
+            <input type='checkbox' id='conclusions' name='reportInfo[foodborneIllness][conclusions]'/> <label id='conclusions_label' for='conclusions'>Click to Confirm</label>";
       }
       $return.=      "
           </div>
@@ -42,7 +42,7 @@ $return="
         $return.=    "<input class=\"form-control\" type=\"text\" id=\"guest[Name]\" name=\"guest[Name]\" value=\"CONFIRMED\"/>";
     }else{
     $return.=    "
-            <input type='checkbox' id='conclusions' name='reportInfo[foodborneIllness][contacted]'/> <label for='contacted'>Click to Confirm</label>";
+            <input type='checkbox' id='contacted' name='reportInfo[foodborneIllness][contacted]'/> <label id='contacted_label' for='contacted'>Click to Confirm</label>";
     }
     $return.=      "
           </div>
@@ -56,7 +56,7 @@ $return="
   if(isset($data['summary']) && $data['summary']!=''){
     $return.=    "<div class=\"container-fluid\" style='border:solid 1px #000000;'><textarea id='summary' name='reportInfo[foodborneIllness][summary]' class='form-control'/>".$data['summary']."</textarea></div>";
   }else{
-    $return.=    "<textarea id='summary' name='reportInfo[foodborneIllness][summary]' class='form-control'/></textarea>";
+    $return.=    "<textarea id='fbi_summary' name='reportInfo[foodborneIllness][summary]' class='form-control'/></textarea>";
   }
   $return.=    "
     </div>

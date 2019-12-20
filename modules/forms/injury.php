@@ -123,7 +123,7 @@ $return.="
         ";
         if($new==0){
         $return.="
-          <input  class=\"form-control\" type='text' value='".$data['medicalRequired']."' id='medicalRequired' />
+          <input  class=\"form-control\" type='text' value='".$data['medicalRequired']."' id='medicalRequired_label' />
           ";
         }else{
           $return.= "
@@ -212,7 +212,7 @@ $return.="
         ";
       }else{
         $return.= "
-      <textarea id='injury_witness' name='reportInfo[injury][witness]' class='form-control'/></textarea>
+      <textarea id='injury_witness' name='reportInfo[injury][witness]'  placeholder='If there were no witnesses, please indicate by entering \"None\".' class='form-control'/></textarea>
       ";
       }
   $return.= "

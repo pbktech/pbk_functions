@@ -41,7 +41,7 @@ $return="
         <label for='property_witness'>Please list any and all witnesses in detail.</label>";
         if(isset($data['witness']) && $data['witness']!=''){$value=$data['witness'];}else{$value='';}
   $return.="
-        <div class=\"container-fluid\" style='border:solid 1px #000000;'><textarea id='property_witness' name='reportInfo[lostStolenProperty][witness]' class='form-control'/>".$value."</textarea></div>
+        <div class=\"container-fluid\" style='border:solid 1px #000000;'><textarea id='property_witness' name='reportInfo[lostStolenProperty][witness]' placeholder='If there were no witnesses, please indicate by entering \"None\".' class='form-control'/>".$value."</textarea></div>
       </div>
     </div>
 </div>

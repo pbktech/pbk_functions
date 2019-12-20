@@ -73,12 +73,11 @@ add_shortcode( 'show_restaurants', 'pbr_show_restaurants' );
 add_shortcode( 'show_restaurant_hours', 'pbr_show_restaurant_hours' );
 function pbk_show_response($m){
   return "
-  <script src=\"https://code.jquery.com/jquery-1.10.1.min.js\"></script>
       <div class='alert ".$m['class']."' id='pbk_message' >".$m['message']."</div>
       <script type=\"text/javascript\">
-        $(document).ready(function(){
+        jQuery(document).ready(function(){
           setTimeout(function(){
-          $(\"#pbk_message\").hide(\"20000\")
+          jQuery(\"#pbk_message\").hide(\"20000\")
         }, 30000);
         });
       </script>";

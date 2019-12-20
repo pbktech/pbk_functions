@@ -50,18 +50,18 @@ $return.="
       <input class=\"form-control\" type=\"text\" id=\"guest[Name]\" name=\"guest[Name]\" value=\"".$value."\" required />
     </div>
     <div class=\"col\">
-      <label for='guest[Phone]'>Complainant Phone</label><br />
+      <label for='guest_Phone'>Complainant Phone</label><br />
       ";
       if($new==1){$value="";}else{$value=$data['guest']['Phone'];}
       $return.= "
-      <input class=\"form-control\" type=\"text\" id=\"guest[Phone]\" name=\"guest[Phone]\" value=\"".$value."\"/>
+      <input class=\"form-control\" type=\"text\" id=\"guest_Phone\" name=\"guest[Phone]\" value=\"".$value."\"/>
     </div>
     <div class=\"col\">
-      <label for='guest[Email]'>Complainant Email</label><br />
+      <label for='gues_Email'>Complainant Email</label><br />
       ";
       if($new==1){$value="";}else{$value=$data['guest']['Email'];}
       $return.= "
-      <input class=\"form-control\" type=\"text\" id=\"guest[Email]\" name=\"guest[Email]\" value=\"".$value."\"/>
+      <input class=\"form-control\" type=\"text\" id=\"guest_Email\" name=\"guest[Email]\" value=\"".$value."\"/>
     </div>
   </div>
   <div class=\"row\">
