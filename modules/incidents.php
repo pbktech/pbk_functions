@@ -41,7 +41,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
         <ol>
       ";
       foreach($checkItems as $items =>$item){
-        $content['html'].="<li>(" . $item->quantity . ")" .  $item->quantity . "</li>";
+        $content['html'].="<li>(" . $item->quantity . ")" .  $item->displayName . "</li>";
       }
       $content['html'].="</ol>";
     }else{
