@@ -36,11 +36,11 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
   if($incidentTypeName=="foodborneIllness" && isset($_POST['reportInfo']['foodborneIllness']['guestCheck']) && is_numeric($_POST['reportInfo']['foodborneIllness']['guestCheck'])){
     $email->setRestaurantID($_POST['restaurantID']);
     $email->setBusinessDate($dateOfIncident);
-    if($checkItems=$email->getCheckItemsFromNumber($_POST['reportInfo']['foodborneIllness']['guestCheck'])){
+    if($item=$email->getCheckItemsFromNumber($_POST['reportInfo']['foodborneIllness']['guestCheck'])){
       $content['html'].="<h4>CHECK DETAILS</h4>
         <ol>
       ";
-      foreach($checkItems as $item){
+      while($item){
         $content['html'].="<li>(" . $item->quantity . ")" .  $item->quantity . "</li>";
       }
       $content['html'].="</ol>";

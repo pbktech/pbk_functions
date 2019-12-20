@@ -866,9 +866,9 @@ ORDER BY msr.orders.entered_by,date_reqd ";
 		$stmt = $this->mysqli->prepare($q);
 		$stmt->execute();
 		if($stmt->error!='') {echo $stmt->error."\n\n";}
-		$result = $stmt->get_result();
-		while($row=$result->fetch_object()){$r[]=$row;}
-		return $r;
+		return $stmt->get_result();
+//		while($row=$result->fetch_object()){$r[]=$row;}
+//		 $r;
 	}
 	function getMonkeyRestaurants() {
 		$q="SELECT mnkyID,restaurantName FROM pbc2.pbc_pbrestaurants WHERE restaurantID!=0 AND isOpen=1 AND mnkyID is not null";
