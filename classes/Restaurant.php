@@ -8,14 +8,17 @@
 *
 *
 */
-
 class Restaurant {
 
 	public $allRestaurants=array();
 	public $rinfo=array();
 	public $restaurantID=null;
 	public $isAboveStore=0;
-
+	public $incidentTypes=array(
+		"foodborneIllness"=>array("Name"=>"Foodborne Illness","sendTo"=>array("lcominsky@theproteinbar.com","vwillis@theproteinbar.com")),
+		"injury"=>array("Name"=>"Injury","sendTo"=>array("lcominsky@theproteinbar.com","hr@theproteinbar.com")),
+		"lostStolenProperty"=>array("Name"=>"Lost or Stolen Property","sendTo"=>array("lcominsky@theproteinbar.com","hr@theproteinbar.com","jarbitman@theproteinbar.com"))
+	);
 	public $myRestaurants=array();
 	public $nhoSatus=array(
 	"Position"=>array(1=>"TM",2=>"TLIT",3=>"MIT"),
@@ -646,7 +649,8 @@ jQuery(document).ready(function(jQuery){jQuery.datepicker.setDefaults({"closeTex
 	  	'margin_top' => 5,
 	  	'margin_bottom' => 5,
 	  	'margin_header' => 0,
-	  	'margin_footer' => 0
+	  	'margin_footer' => 0,
+			'CSSselectMedia' => 'Screen'
 	  ]);
 		$stylesheet=file_get_contents(dirname(dirname(__FILE__)) . "/assets/css/mpdf-bootstrap.css");
 	  $mpdf->SetTitle($content->title);
@@ -654,7 +658,9 @@ jQuery(document).ready(function(jQuery){jQuery.datepicker.setDefaults({"closeTex
 		$mpdf->WriteHTML($stylesheet,\Mpdf\HTMLParserMode::HEADER_CSS);
 	  $mpdf->WriteHTML(utf8_encode($content->html),\Mpdf\HTMLParserMode::HTML_BODY);
 	  $mpdf->Output($report->docSaveLocation.str_replace(" ","_",$content->title).".pdf", 'F');
-		if(file_exists($report->docSaveLocation.str_replace(" ","_",$content->title).".pdf")){return $report->docDownloadLocation.str_replace(" ","_",$content->title).".pdf";}else {
+		if(file_exists($report->docSaveLocation.str_replace(" ","_",$content->title).".pdf")){
+			return array("Link"=>$report->docDownloadLocation.str_replace(" ","_",$content->title).".pdf","Local"=>$report->docSaveLocation.str_replace(" ","_",$content->title).".pdf");
+		}else {
 			return false;
 		}
 	}
@@ -849,4 +855,5 @@ AND pbc_users.id=nhoHost AND pbc_pbrestaurants.restaurantID=nhoLocation");
 				return $return;
 			}
 	}
+
 }
