@@ -59,7 +59,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
   }
   if($pdf=$restaurant->buildHTMLPDF(json_encode($content))){
     $email->reportEmail($cu->user_email.",jon@theproteinbar.com","Please see attached PDF","New Incident Report",$pdf);
-  $ret.=  pbk_show_response(array("class"=>"success","message"=>  "The incident report has been saved."));
+  $ret.=  pbk_show_response(array("class"=>"success","message"=>  "The incident report for " . $_POST['guest']['Name'] . " has been saved."));
   }
 }
 if(isset($_POST)){unset($_POST);}
@@ -119,6 +119,9 @@ jQuery(document).ready(function() {
       if(jQuery(\"#bodySide :selected\").length==0){jQuery(\"#bodySide\").after('<span class=\"alert alert-danger\">Required</span>');error_free=false;}
       if(jQuery(\"#injury_summary\").val()==''){jQuery(\"#injury_summary\").after('<span class=\"alert alert-danger\">Required</span>');error_free=false;}
       if(jQuery(\"#injury_witness\").val()==''){jQuery(\"#injury_witness\").after('<span class=\"alert alert-danger\">Required</span>');error_free=false;}
+      if(!jQuery(\"#medicalRequired_yes\").is(':checked') && !jQuery(\"#medicalRequired_no\").is(':checked')){jQuery(\"#medicalRequired_label\").after('<br><span class=\"alert alert-danger\">Required</span>');error_free=false;}
+      if(!jQuery(\"#emergencyCalled_yes\").is(':checked') && !jQuery(\"#emergencyCalled_no\").is(':checked')){jQuery(\"#emergencyCalled_label\").after('<br><span class=\"alert alert-danger\">Required</span>');error_free=false;}
+      if(!jQuery(\"#isEmployee_yes\").is(':checked') && !jQuery(\"#isEmployee_no\").is(':checked')){jQuery(\"#isEmployee_label\").after('<br><span class=\"alert alert-danger\">Required</span>');error_free=false;}
     }
     if (!error_free){
     		event.preventDefault();

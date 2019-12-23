@@ -117,13 +117,13 @@ $return.="
   </div>
   <div class=\"row\">
     <div class=\"col\">
-      <label for='medicalRequired'>Did they require medical attention?</label>
-      <div class=\"input-group\">
+      <label for='medicalRequired'  id='medicalRequired_label'>Did they require medical attention?</label>
+      <div class=\"input-group\" >
         <div class=\"input-group-prepend\">
         ";
         if($new==0){
         $return.="
-          <input  class=\"form-control\" type='text' value='".$data['medicalRequired']."' id='medicalRequired_label' />
+          <input  class=\"form-control\" type='text' value='".$data['medicalRequired']."' />
           ";
         }else{
           $return.= "
@@ -140,13 +140,13 @@ $return.="
       </div>
     </div>
     <div class=\"col\">
-      <label for='emergencyCalled'>Did you call 911?</label>
+      <label for='emergencyCalled' id='emergencyCalled_label'>Did you call 911?</label>
       <div class=\"input-group\">
         <div class=\"input-group-prepend\">
         ";
         if($new==0){
         $return.="
-          <input  class=\"form-control\" type='text' value='".$data['emergencyCalled']."' id='emergencyCalled_label' />
+          <input  class=\"form-control\" type='text' value='".$data['emergencyCalled']."' />
           ";
         }else{
           $return.= "
@@ -163,13 +163,13 @@ $return.="
       </div>
     </div>
     <div class=\"col\">
-      <label for='isEmployee'>Is the injured a PBK Employee?</label>
+      <label for='isEmployee' id='isEmployee_label'>Is the injured a PBK Employee?</label>
       <div class=\"input-group\">
         <div class=\"input-group-prepend\">
         ";
         if($new==0){
         $return.="
-          <input  class=\"form-control\" type='text' value='".$data['isEmployee']."' id='isEmployee_label' />
+          <input  class=\"form-control\" type='text' value='".$data['isEmployee']."' />
           ";
         }else{
           $return.= "
