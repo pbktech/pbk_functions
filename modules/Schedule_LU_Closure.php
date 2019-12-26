@@ -4,16 +4,29 @@ global $wpdb;
 global $ret;
 $cu = wp_get_current_user();
 $page = home_url( add_query_arg( array(), $wp->request ) );
+$actionValue="add";
+$onChecked="";
+$offChecked="";
+$dateValue="";
+$timeValue="";
 if(isset($_GET['id'])){
-
+	$mysqli = new mysqli(DB_HOST, DB_USER, DB_PASSWORD, DB_NAME);
+	$tasks=new task_engine($mysqli);
+	$task=$tasks->get_task(array("id"=>$_GET['id']));
+	$taskActions=json_decode($task->files);
+	$actionValue="update";
+	$dateValue=date("Y-m-d",strtotime($task->dueDate));
+	$timeValue=date("H:i:s",strtotime($task->dueDate));
+	if($taskActions->action=="true"){$onChecked="checked='checked'";}else{$offChecked="checked='checked'";}
 }
 $query = "SELECT levelUpID,restaurantName FROM pbc2.pbc_pbrestaurants WHERE levelUpID is not null";
 $records=$wpdb->get_results($query);
 if(!empty($records)){
-	$restaurants="<div style='width:100%;'><select style='width:100%;' class=\"js-example-basic-multiple\" name=\"change[restaurants][]\" multiple=\"multiple\">";
+	$restaurants="<div style='width:100%;'><select style='width:100%;' class=\"custom-select multipleSelect\" name=\"change[restaurants][]\" multiple=\"multiple\">";
 	foreach($records as $rec){
 		$boards[$rec->levelUpID]=$rec->restaurantName;
-		$restaurants.="\n<option value='".$rec->levelUpID."'>".$rec->restaurantName."</option>";
+		if(is_array($taskActions->restaurants) && in_array($rec->levelUpID,$taskActions->restaurants)){$ch=" checked='checked' ";}else{$ch="";}
+		$restaurants.="\n<option value='".$rec->levelUpID."'$ch>".$rec->restaurantName."</option>";
 	}
 	$restaurants.="</select>";
 }
@@ -31,6 +44,11 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
 	}
 	if($_POST['action']=='delete'){
 		$tasks->delete_task($_POST["task_id"]);
+	}
+	if($_POST['action']=='update'){
+		$date=date("Y-m-d",strtotime($_POST["startDate"]));
+		$time=date("H:i:s",strtotime($_POST["time_picker"]));
+		$tasks->update_task ($_POST['id'], array('files' => json_encode($_POST['change']),'dueDate' => $date . " " . $time]));
 	}
 }
 $jQuery="
@@ -64,13 +82,15 @@ jQuery(document).ready(function() {
 	</div>
 		<div>
 			<form method='post' action='".$page."' >
-			<input type='hidden' name='action' value='add' />
+			<input type='hidden' name='action' value='".$actionValue."' />";
+	if(isset($task->id)){$ret.="<input type='hidden' name='id' value='".$task->id."' />";}
+			$ret.="
 				<div>
 				<h4>Please choose a date and time</h4>
-					<label for='startDate'>Date</label><br /><input type=\"text\" id=\"startDate\" name=\"startDate\" value=\"\"/><br />
-					<label for='time_picker'>Time</label><br /><input id='time_picker' name='time_picker' id='time_picker' value='' style='width: 100px;'/><br />
+					<label for='startDate'>Date</label><br /><input type=\"text\" id=\"startDate\" name=\"startDate\" value=\"".$dateValue."\"/><br />
+					<label for='time_picker'>Time</label><br /><input id='time_picker' name='time_picker' id='time_picker' value='' style='width: 100px;' value=\"".$timeValue."\"/><br />
 					<h4>Set App State</h4>
-				 <input type='radio' value='true' name='change[action]' id='ocAction-open' />	<label for='ocAction-open'>On</label> <input type='radio' value='false' name='change[action]' id='ocAction-close' /> <label for='ocAction-close'>Off</label><br />
+				 <input type='radio' value='true' name='change[action]' id='ocAction-open' ".$onChecked." />	<label for='ocAction-open'>On</label> <input type='radio' value='false' name='change[action]' id='ocAction-close' ".$offChecked." /> <label for='ocAction-close'>Off</label><br />
 				</div>
 				<h4>Select the restaurants</h4>
 				" . $restaurants . "
@@ -87,7 +107,7 @@ jQuery(document).ready(function() {
 	$stateChange["true"]="On";
 	if(!empty($records)){
 		$ret.="<div><h4>Upcoming Changes</h4>
-		<table><tr><th><strong>Date/Time</strong></th><th><strong>Restaurant(s)</strong></th><th><strong>State Change</strong></th><th></th></tr>";
+		<table><tr><th><strong>Date/Time</strong></th><th><strong>Restaurant(s)</strong></th><th><strong>State Change</strong></th><th></th><th></th></tr>";
 		foreach($records as $rec){
 			$data=json_decode($rec->files);
 			$rets=array();
@@ -100,6 +120,9 @@ jQuery(document).ready(function() {
 					<input type='submit' value='Delete' />
 				</form>
 			</td>
+			<td>
+				<button type='button' onclick=\"window.location.href='".$page."?id=".$rec->id."';\" value='Edit' />
+			</dt>
 			</tr>";
 		}
 		$ret.="</table></div>";
