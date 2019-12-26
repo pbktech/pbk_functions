@@ -71,7 +71,7 @@ jQuery(document).ready(function() {
 		allowClear: true,
   	theme: \"classic\"
 	})";
-	if(isset($selectedRestaurants)){$jQuery.=".select2('data',[".$selectedRestaurants."])";}
+	if(isset($selectedRestaurants)){$jQuery.=".select2('val',[".$selectedRestaurants."])";}
 	$jQuery.=";
 });
 </script>
