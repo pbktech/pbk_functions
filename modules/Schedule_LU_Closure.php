@@ -72,7 +72,9 @@ jQuery(document).ready(function() {
 		allowClear: true,
   	theme: \"classic\"
 	});";
-	if(isset($selectedRestaurants)){$jQuery.="jQuery('#restaurantPicker').val,[".$selectedRestaurants."]); \n jQuery(\"#restaurantPicker\").trigger(\"change\");";}
+	if(isset($selectedRestaurants)){$jQuery.="
+		jQuery('#restaurantPicker').val([".$selectedRestaurants."]);
+		jQuery(\"#restaurantPicker\").trigger(\"change\");";}
 	$jQuery.="
 });
 </script>
