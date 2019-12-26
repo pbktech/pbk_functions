@@ -72,7 +72,7 @@ jQuery(document).ready(function() {
   	theme: \"classic\"
 	})";
 	if(isset($selectedRestaurants)){$jQuery.=".select2('val',[".$selectedRestaurants."])";}
-	$jQuery.";
+	$jQuery.=";
 });
 </script>
 ";
