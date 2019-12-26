@@ -17,6 +17,7 @@ if(isset($_GET['id'])){
 	$actionValue="update";
 	$dateValue=date("Y-m-d",strtotime($task['dueDate']));
 	$timeValue=date("g:i a",strtotime($task['dueDate']));
+	$selectedRestaurants=implode(", "$taskActions->restaurants),
 	if($taskActions->action=="true"){$onChecked="checked='checked'";}else{$offChecked="checked='checked'";}
 }
 $query = "SELECT levelUpID,restaurantName FROM pbc2.pbc_pbrestaurants WHERE levelUpID is not null";
@@ -25,7 +26,6 @@ if(!empty($records)){
 	$restaurants="<div style='width:100%;'><select style='width:100%;' class=\"custom-select multipleSelect\" id=\"restaurantPicker\" name=\"change[restaurants][]\" multiple=\"multiple\">";
 	foreach($records as $rec){
 		$boards[$rec->levelUpID]=$rec->restaurantName;
-		if(is_array($taskActions->restaurants) && in_array($rec->levelUpID,$taskActions->restaurants)){$ch=" selected' ";}else{$ch="";}
 		$restaurants.="\n<option value='".$rec->levelUpID."'$ch>".$rec->restaurantName."</option>";
 	}
 	$restaurants.="</select>";
@@ -57,18 +57,22 @@ jQuery(document).ready(function() {
 	jQuery('#time_picker').timepicker({
 		'timeFormat': 'h:mm p',
 		interval: 15,
-		    minTime: '5:00 am',
-		    maxTime: '9:00 pm',
-				dynamic: false,
-				dropdown: true,
- 	    	scrollbar: true
+		minTime: '5:00 am',
+		maxTime: '9:00 pm',
+		dynamic: false,
+		dropdown: true,
+ 	  scrollbar: true
 	});
   jQuery('#startDate').datepicker({
       dateFormat : 'yy-mm-dd'
   });
 	jQuery('#restaurantPicker').select2({
+		placeholder: 'Choose your restaurants',
+		allowClear: true,
   	theme: \"classic\"
-	});
+	})";
+	if(isset($selectedRestaurants)){$ret.=".select2('val',[".$selectedRestaurants."])";}
+	";
 });
 </script>
 ";
