@@ -100,7 +100,7 @@ jQuery(document).ready(function() {
 			</form>
 		</div>
 	";
-	$query = "SELECT files,dueDate,id FROM pbc2.pbc_tasks WHERE target ='/home/jewmanfoo/levelup-website-bot/change.sh ' AND dueDate >= CURDATE() AND deleted='0' AND dateCompleted is NULL ORDER BY dueDate DESC ";
+	$query = "SELECT files,dueDate,id FROM pbc2.pbc_tasks WHERE target ='/home/jewmanfoo/levelup-website-bot/change.sh ' AND dueDate >= CURDATE() AND deleted='0' AND dateCompleted is NULL ORDER BY dueDate ";
 	$records=$wpdb->get_results($query);
 	$count=0;
 	$stateChange["false"]="Off";
