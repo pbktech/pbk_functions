@@ -17,7 +17,7 @@ if(isset($_GET['id'])){
 	$actionValue="update";
 	$dateValue=date("Y-m-d",strtotime($task['dueDate']));
 	$timeValue=date("g:i a",strtotime($task['dueDate']));
-	$selectedRestaurants=implode(", "$taskActions->restaurants);
+	$selectedRestaurants=implode(", ",$taskActions->restaurants);
 	if($taskActions->action=="true"){$onChecked="checked='checked'";}else{$offChecked="checked='checked'";}
 }
 $query = "SELECT levelUpID,restaurantName FROM pbc2.pbc_pbrestaurants WHERE levelUpID is not null";
