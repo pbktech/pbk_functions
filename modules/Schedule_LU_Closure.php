@@ -112,7 +112,7 @@ jQuery(document).ready(function() {
 	$stateChange["true"]="On";
 	if(!empty($records)){
 		$ret.="<h4>Upcoming Changes</h4><div style='height:500px;overflow: auto;'>
-		<table class='table table-striped'><tr><th><strong>Date/Time</strong></th><th><strong>Restaurant(s)</strong></th><th><strong>State Change</strong></th><th></th><th></th></tr>";
+		<table class='table table-striped'><thead><tr><th><strong>Date/Time</strong></th><th><strong>Restaurant(s)</strong></th><th><strong>State Change</strong></th><th></th><th></th></thead></tr><tbody>";
 		foreach($records as $rec){
 			$data=json_decode($rec->files);
 			$rets=array();
@@ -133,7 +133,7 @@ jQuery(document).ready(function() {
 			</td>
 			</tr>";
 		}
-		$ret.="</table></div>";
+		$ret.="</tbody></table></div>";
 	}
 	/*
 function addInlineScripts_sluc(){
