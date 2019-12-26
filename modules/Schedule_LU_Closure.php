@@ -48,7 +48,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
 	if($_POST['action']=='update'){
 		$date=date("Y-m-d",strtotime($_POST["startDate"]));
 		$time=date("H:i:s",strtotime($_POST["time_picker"]));
-		$tasks->update_task ($_POST['id'], array('files' => json_encode($_POST['change']),'dueDate' => $date . " " . $time]));
+		$tasks->update_task ($_POST['id'], array('files' => json_encode($_POST['change']),'dueDate' => $date . " " . $time));
 	}
 }
 $jQuery="
