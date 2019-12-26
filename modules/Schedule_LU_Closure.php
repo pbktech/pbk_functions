@@ -71,8 +71,8 @@ jQuery(document).ready(function() {
 		allowClear: true,
   	theme: \"classic\"
 	})";
-	if(isset($selectedRestaurants)){$ret.=".select2('val',[".$selectedRestaurants."])";}
-	$ret.";
+	if(isset($selectedRestaurants)){$jQuery.=".select2('val',[".$selectedRestaurants."])";}
+	$jQuery.";
 });
 </script>
 ";
