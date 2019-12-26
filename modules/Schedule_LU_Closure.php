@@ -16,13 +16,13 @@ if(isset($_GET['id'])){
 	echo "<pre>";
 	print_r($task);
 	echo "</pre>";
-	$taskActions=json_decode($task->files);
+	$taskActions=json_decode($task['files']);
 	echo "<pre>";
 	print_r($taskActions);
 	echo "</pre>";
 	$actionValue="update";
-	$dateValue=date("Y-m-d",strtotime($task->dueDate));
-	$timeValue=date("H:i:s",strtotime($task->dueDate));
+	$dateValue=date("Y-m-d",strtotime($task['dueDate']));
+	$timeValue=date("H:i a",strtotime($task['dueDate']));
 	if($taskActions->action=="true"){$onChecked="checked='checked'";}else{$offChecked="checked='checked'";}
 }
 $query = "SELECT levelUpID,restaurantName FROM pbc2.pbc_pbrestaurants WHERE levelUpID is not null";
