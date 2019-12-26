@@ -13,13 +13,7 @@ if(isset($_GET['id'])){
 	$mysqli = new mysqli(DB_HOST, DB_USER, DB_PASSWORD, DB_NAME);
 	$tasks=new task_engine($mysqli);
 	$task=$tasks->get_task(array("id"=>$_GET['id']));
-	echo "<pre>";
-	print_r($task);
-	echo "</pre>";
 	$taskActions=json_decode($task['files']);
-	echo "<pre>";
-	print_r($taskActions);
-	echo "</pre>";
 	$actionValue="update";
 	$dateValue=date("Y-m-d",strtotime($task['dueDate']));
 	$timeValue=date("H:i a",strtotime($task['dueDate']));
@@ -31,7 +25,7 @@ if(!empty($records)){
 	$restaurants="<div style='width:100%;'><select style='width:100%;' class=\"custom-select multipleSelect\" id=\"restaurantPicker\" name=\"change[restaurants][]\" multiple=\"multiple\">";
 	foreach($records as $rec){
 		$boards[$rec->levelUpID]=$rec->restaurantName;
-		if(is_array($taskActions->restaurants) && in_array($rec->levelUpID,$taskActions->restaurants)){$ch=" checked='checked' ";}else{$ch="";}
+		if(is_array($taskActions->restaurants) && in_array($rec->levelUpID,$taskActions->restaurants)){$ch=" selected' ";}else{$ch="";}
 		$restaurants.="\n<option value='".$rec->levelUpID."'$ch>".$rec->restaurantName."</option>";
 	}
 	$restaurants.="</select>";
