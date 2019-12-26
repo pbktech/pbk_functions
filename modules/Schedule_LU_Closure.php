@@ -4,6 +4,9 @@ global $wpdb;
 global $ret;
 $cu = wp_get_current_user();
 $page = home_url( add_query_arg( array(), $wp->request ) );
+if(isset($_GET[])){
+
+}
 $query = "SELECT levelUpID,restaurantName FROM pbc2.pbc_pbrestaurants WHERE levelUpID is not null";
 $records=$wpdb->get_results($query);
 if(!empty($records)){
@@ -77,7 +80,7 @@ jQuery(document).ready(function() {
 			</form>
 		</div>
 	";
-	$query = "SELECT files,dueDate,id FROM pbc2.pbc_tasks WHERE target ='/home/jewmanfoo/levelup-website-bot/change.sh ' AND dueDate >= CURDATE() AND deleted='0' AND dateCompleted is NULL";
+	$query = "SELECT files,dueDate,id FROM pbc2.pbc_tasks WHERE target ='/home/jewmanfoo/levelup-website-bot/change.sh ' AND dueDate >= CURDATE() AND deleted='0' AND dateCompleted is NULL ORDER BY dueDate DESC ";
 	$records=$wpdb->get_results($query);
 	$count=0;
 	$stateChange["false"]="Off";
