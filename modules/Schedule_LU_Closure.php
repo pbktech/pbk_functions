@@ -121,7 +121,10 @@ jQuery(document).ready(function() {
 				</form>
 			</td>
 			<td>
-				<button type='button' onclick=\"window.location.href='".$page."?id=".$rec->id."';\" value='Edit' />
+			<form method='get' action='".$page."' >
+				<input type='hidden' name='id' value='".$rec->id."' />
+				<input type='submit' value='Edit' />
+			</form>
 			</td>
 			</tr>";
 		}
