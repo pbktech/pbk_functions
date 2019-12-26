@@ -16,7 +16,7 @@ if(isset($_GET['id'])){
 	$taskActions=json_decode($task['files']);
 	$actionValue="update";
 	$dateValue=date("Y-m-d",strtotime($task['dueDate']));
-	$timeValue=date("H:i a",strtotime($task['dueDate']));
+	$timeValue=date("g:i a",strtotime($task['dueDate']));
 	if($taskActions->action=="true"){$onChecked="checked='checked'";}else{$offChecked="checked='checked'";}
 }
 $query = "SELECT levelUpID,restaurantName FROM pbc2.pbc_pbrestaurants WHERE levelUpID is not null";
@@ -112,7 +112,7 @@ jQuery(document).ready(function() {
 			$data=json_decode($rec->files);
 			$rets=array();
 			foreach($data->restaurants as $r){$rets[]=$boards[$r];}
-			$ret.="<tr><td>".date("m/d/Y H:i a",strtotime($rec->dueDate))."</td><td>".implode(", ",$rets)."</td><td>".$stateChange[$data->action]."</td>
+			$ret.="<tr><td>".date("m/d/Y g:i a",strtotime($rec->dueDate))."</td><td>".implode(", ",$rets)."</td><td>".$stateChange[$data->action]."</td>
 			<td>
 				<form method='post' action='".$page."' >
 					<input type='hidden' name='action' value='delete' />
