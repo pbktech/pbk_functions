@@ -71,9 +71,9 @@ jQuery(document).ready(function() {
 		placeholder: 'Choose your restaurants',
 		allowClear: true,
   	theme: \"classic\"
-	})";
-	if(isset($selectedRestaurants)){$jQuery.=".select2('val',[".$selectedRestaurants."])";}
-	$jQuery.=";
+	});";
+	if(isset($selectedRestaurants)){$jQuery.="jQuery('#restaurantPicker').val,[".$selectedRestaurants."]); \n jQuery(\"#restaurantPicker\").trigger("change");";}
+	$jQuery.="
 });
 </script>
 ";
