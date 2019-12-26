@@ -13,7 +13,13 @@ if(isset($_GET['id'])){
 	$mysqli = new mysqli(DB_HOST, DB_USER, DB_PASSWORD, DB_NAME);
 	$tasks=new task_engine($mysqli);
 	$task=$tasks->get_task(array("id"=>$_GET['id']));
+	echo "<pre>";
+	print_r($task);
+	echo "</pre>";
 	$taskActions=json_decode($task->files);
+	echo "<pre>";
+	print_r($taskActions);
+	echo "</pre>";
 	$actionValue="update";
 	$dateValue=date("Y-m-d",strtotime($task->dueDate));
 	$timeValue=date("H:i:s",strtotime($task->dueDate));
@@ -88,7 +94,7 @@ jQuery(document).ready(function() {
 				<div>
 				<h4>Please choose a date and time</h4>
 					<label for='startDate'>Date</label><br /><input type=\"text\" id=\"startDate\" name=\"startDate\" value=\"".$dateValue."\"/><br />
-					<label for='time_picker'>Time</label><br /><input id='time_picker' name='time_picker' id='time_picker' value='' style='width: 100px;' value=\"".$timeValue."\"/><br />
+					<label for='time_picker'>Time</label><br /><input id='time_picker' name='time_picker' id='time_picker' style='width: 100px;' value=\"".$timeValue."\"/><br />
 					<h4>Set App State</h4>
 				 <input type='radio' value='true' name='change[action]' id='ocAction-open' ".$onChecked." />	<label for='ocAction-open'>On</label> <input type='radio' value='false' name='change[action]' id='ocAction-close' ".$offChecked." /> <label for='ocAction-close'>Off</label><br />
 				</div>
