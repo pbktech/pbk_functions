@@ -4,7 +4,7 @@ global $wpdb;
 global $ret;
 $cu = wp_get_current_user();
 $page = home_url( add_query_arg( array(), $wp->request ) );
-if(isset($_GET[])){
+if(isset($_GET['id'])){
 
 }
 $query = "SELECT levelUpID,restaurantName FROM pbc2.pbc_pbrestaurants WHERE levelUpID is not null";
