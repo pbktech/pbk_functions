@@ -22,7 +22,7 @@ if(isset($_GET['id'])){
 $query = "SELECT levelUpID,restaurantName FROM pbc2.pbc_pbrestaurants WHERE levelUpID is not null";
 $records=$wpdb->get_results($query);
 if(!empty($records)){
-	$restaurants="<div style='width:100%;'><select style='width:100%;' class=\"custom-select multipleSelect\" name=\"change[restaurants][]\" multiple=\"multiple\">";
+	$restaurants="<div style='width:100%;'><select style='width:100%;' class=\"custom-select multipleSelect\" id=\"restaurantPicker\" name=\"change[restaurants][]\" multiple=\"multiple\">";
 	foreach($records as $rec){
 		$boards[$rec->levelUpID]=$rec->restaurantName;
 		if(is_array($taskActions->restaurants) && in_array($rec->levelUpID,$taskActions->restaurants)){$ch=" checked='checked' ";}else{$ch="";}
@@ -66,7 +66,7 @@ jQuery(document).ready(function() {
   jQuery('#startDate').datepicker({
       dateFormat : 'yy-mm-dd'
   });
-	jQuery('.js-example-basic-multiple').select2({
+	jQuery('#restaurantPicker').select2({
   	theme: \"classic\"
 	});
 });
@@ -122,7 +122,7 @@ jQuery(document).ready(function() {
 			</td>
 			<td>
 				<button type='button' onclick=\"window.location.href='".$page."?id=".$rec->id."';\" value='Edit' />
-			</dt>
+			</td>
 			</tr>";
 		}
 		$ret.="</table></div>";
