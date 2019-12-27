@@ -67,7 +67,7 @@ jQuery(document).ready(function() {
  	  scrollbar: true
 	});
   jQuery('#startDate').datepicker({
-      dateFormat : 'yy-mm-dd'
+      dateFormat : 'MM d, yy'
   });
 	jQuery('#restaurantPicker').select2({
 		allowClear: true,
