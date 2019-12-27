@@ -68,7 +68,6 @@ jQuery(document).ready(function() {
       dateFormat : 'yy-mm-dd'
   });
 	jQuery('#restaurantPicker').select2({
-		placeholder: 'Choose your restaurants',
 		allowClear: true,
   	theme: \"classic\"
 	});";
@@ -90,7 +89,7 @@ jQuery(document).ready(function() {
 		<div>
 			<form method='post' action='".$page."' >
 			<input type='hidden' name='action' value='".$actionValue."' />";
-	if(isset($task->id)){$ret.="<input type='hidden' name='id' value='".$task->id."' />";}
+	if(isset($task['id'])){$ret.="<input type='hidden' name='id' value='".$task['id']."' />";}
 			$ret.="
 				<div>
 				<h4>Please choose a date and time</h4>
@@ -119,7 +118,7 @@ jQuery(document).ready(function() {
 			$data=json_decode($rec->files);
 			$rets=array();
 			foreach($data->restaurants as $r){$rets[]=$boards[$r];}
-			$ret.="<tr><td>".date("m/d/Y g:i a",strtotime($rec->dueDate))."</td><td>".implode(", ",$rets)."</td><td>".$stateChange[$data->action]."</td>
+			$ret.="<tr><td>".date("m/d/Y",strtotime($rec->dueDate)) . "<br>" . date("g:i a",strtotime($rec->dueDate)) ."</td><td>".implode(", ",$rets)."</td><td>".$stateChange[$data->action]."</td>
 			<td>
 				<form method='post' action='".$page."' >
 					<input type='hidden' name='action' value='delete' />

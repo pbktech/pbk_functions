@@ -224,6 +224,7 @@ function update_task ($id, Array $vars) {
   $type=array_shift($param);
   $sth->bind_param($type, ...$param);
   $sth->execute();
+  if(isset($sth->error) && $sth->error!=''){echo "<div class='alert alert-danger'>".$sth->error."</div>";}
 }
 
 }
