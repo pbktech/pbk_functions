@@ -3,7 +3,7 @@ function pbr_show_restaurant_hours() {
 //	echo 'date_default_timezone_set: ' . date_default_timezone_get() . '<br />';
 	$return="\n<div style=\"overflow:auto;\">
 	<table  class=\"table table-striped table-hover\" style=\"width: 100%;\">\n
-	<thead  class=\"thead-dark\">\n<tr>\n<th style=\"text-align: center;\">\nRESTAURANT\n</th>";
+	<thead  style='background-color:#0e2244; color: #ffffff; text-align: center;font-weight:bold;'>\n<tr>\n<th style=\"text-align: center;\">Restaurant\n</th>";
 	for($ia=1419206400;$ia<=1419724800;$ia+=86400) {
 		$return.="\n<th style=\"text-align: center;\">\n".date("l",$ia)."\n</th>";
 	}
