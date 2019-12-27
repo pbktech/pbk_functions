@@ -17,7 +17,7 @@ function pbr_show_restaurant_hours() {
 			for($ia=1419206400;$ia<=1419724800;$ia+=86400) {
 				$openName=$res->getHours(date("l",$ia).'open');
 				$closeName=$res->getHours(date("l",$ia).'close');
-				if(date("l",$ia)==date("l")){$openClass="p-3 mb-2 bg-primary text-white";}else{$openClass="p-3 mb-2 bg-white text-dark";}
+				if(date("l",$ia)==date("l")){$openClass="p-3 mb-2 bg-primary text-white";}else{$openClass="";}
 				if((isset($openName) && $openName!=0) && (isset($closeName) && $closeName!=0) ) {
 					$return.="\n<td class=\"".$openClass."\"style=\"text-align: center;\">".$openName."<br />-<br />".$closeName."</td>";
 				}else {
