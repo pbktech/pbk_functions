@@ -11,9 +11,9 @@ if (isset($_REQUEST['event']) && is_numeric($_REQUEST['event'])) {
 if($_SERVER['REQUEST_METHOD'] == 'POST'){
   $save=$restaurant->updateNHOAttendee($_POST);
   if($save=="Success"){
-    $message="<div class='success' id='message' style='text-align:center;'><p style='padding:3px;'>The updates have been saved.</p></div>";
+    $message="<div class='alert alert-success' id='message' style='text-align:center;'><p style='padding:3px;'>The updates have been saved.</p></div>";
   }else{
-    $message="<div class='alert' id='message' style='text-align:center;'><p style='padding:3px;'>There was an error saving. This error has been reported.</p></div>";
+    $message="<div class='alert alert-danger' id='message' style='text-align:center;'><p style='padding:3px;'>There was an error saving. This error has been reported.</p></div>";
   }
   $ret.= $message."
       <script type=\"text/javascript\">
@@ -43,19 +43,18 @@ if (!isset($_REQUEST['event']) || !isset($event->nhoID) || $event->nhoID=="") {
   <script>
   function changeBackground(field,fieldID,number){
     if(number==2){
-      var bgColor='#1a8914';
+      var bgColor='p-3 mb-2 bg-success text-white';
     }else{
-      var bgColor='#d61111';
+      var bgColor='p-3 mb-2 bg-danger text-white';
     }
-    document.getElementById(field+\"_td_\"+fieldID).style.backgroundColor = bgColor;
+    document.getElementById(field+\"_td_\"+fieldID).className = bgColor;
   }
   </script>
-  <div style='width:100%;'>
+  <div class='container'>
     <form method='post' action='".$page."'>
-    <input type='hidden' name='nhoID' value='".$event->nhoID."' />
-    <input type='hidden' name='event' value='".$event->nhoID."' />
+      <input type='hidden' name='nhoID' value='".$event->nhoID."' />
+      <input type='hidden' name='event' value='".$event->nhoID."' />
       <input type='hidden' name='redirect' value='".$page . "?event=". $event->nhoID ."' />
-      <table style=\"width:100%;\">
     ";
     $ret.=$restaurant->nhoHeader(array("nhoDate"=>$event->nhoDate,"restaurantName"=>$event->restaurantName,"display_name"=>$event->display_name,"nhoTIme"=>$event->nhoTIme));
     if($attendees){
@@ -67,11 +66,10 @@ if (!isset($_REQUEST['event']) || !isset($event->nhoID) || $event->nhoID=="") {
     }
     if($disabled==0){
       $ret.=$restaurant->buildNHOAttendeeLine();
-      $ret.="<tr><td colspan='7'><input type='submit' value='Save' />";
+      $ret.="
+      <div class=\"row\"><div class=\"col\"><input type='submit' value='Save' /></div></div>";
     }
     $ret.="
-    </tbody>
-      </table>
     </form>
     </div>
     <div style='text-align:center;'>

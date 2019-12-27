@@ -321,33 +321,32 @@ class Restaurant {
 	function switchBackgroundColor($color){
 		switch($color){
 			case 2:
-				return "#1a8914";
+				return "p-3 mb-2 bg-success text-white";
 			case 1:
-				return "#d61111";
+				return "p-3 mb-2 bg-danger text-white";
 		}
-		return "#d61111";
+		return "p-3 mb-2 bg-danger text-white";
 	}
 	function nhoHeader($atts){
 		$nhoTime=json_decode($atts['nhoTIme']);
 		return '
-				<thead>
-					<tr style="text-align: center; color: #ffffff; background-color: #f36c21;">
-						<td colspan="8"><h3 style="color: #ffffff;">NHO Roster for '.date("m/d/Y",strtotime($atts['nhoDate'])).' at '.$atts['restaurantName'].'<br>hosted by '.$atts['display_name'].'</h3></td></tr>
-				</thead>
-				<tbody>
-				<tr style="background-color: #B2D235; color: #ffffff; text-align: center;">
-					<td colspan="8"><h3 style="color: #ffffff;">'.$nhoTime->Start.' - '.$nhoTime->End.'</h3></td>
-				</tr>
-				<tr style="background-color: #0e2244; color: #ffffff; text-align: center;">
-					<td><h5 style="color: #ffffff;">Name</h5></td>
-					<td><h5 style="color: #ffffff;">Location</h5></td>
-					<td><h5 style="color: #ffffff;">Position</h5></td>
-					<td><h5 style="color: #ffffff;">FOH/BOH</h5></td>
-					<td><h5 style="color: #ffffff;">Uniform</h5></td>
-					<td><h5 style="color: #ffffff;">FHR Onboarding</h5></td>
-					<td><h5 style="color: #ffffff;">Food Handler</h5></td>
-					<td><h5 style="color: #ffffff;">Schedule</h5></td>
-				</tr>
+			<div class="form-group">
+					<div class="row" style="text-align: center; color: #ffffff; background-color: #f36c21;">
+						<div class="col"><h3 style="color: #ffffff;">NHO Roster for '.date("m/d/Y",strtotime($atts['nhoDate'])).' at '.$atts['restaurantName'].'<br>hosted by '.$atts['display_name'].'</h3></div>
+				</div>
+				<div class="row"  style="background-color: #B2D235; color: #ffffff; text-align: center;">
+					<div class="col"><h3 style="color: #ffffff;">'.$nhoTime->Start.' - '.$nhoTime->End.'</h3></div>
+				</div>
+				<div class="row" style="background-color: #0e2244; color: #ffffff; text-align: center;">
+					<div class="col" ><div style="width:180px;"><strong>Name</strong><br><strong>Location</strong></div></div>
+					<div class="col"><strong>Position</strong></div>
+					<div class="col"><strong>FOH/BOH</strong></div>
+					<div class="col"><strong>Uniform</strong></div>
+					<div class="col"><strong>FHR Onboarding</strong></div>
+					<div class="col"><strong>Food Handler</strong></div>
+					<div class="col"><strong>Schedule</strong></div>
+					</div>
+				</div>
 		';
 	}
 	function nho_attendance($nho){
@@ -418,11 +417,11 @@ class Restaurant {
 				<td>'.stripslashes($attendee->employeeName).'</td>
 				<td>'.$this->getRestaurantName($attendee->restaurant).'</td>
 				<td>'.$this->nhoSatus["Position"][$json->uni].'</td>
-				<td style="color:#FFFFFF;background-color:'.$this->switchBackgroundColor($json->section).';">'.$this->nhoSatus["Section"][$json->section].'</td>
-				<td style="color:#FFFFFF;background-color:'.$this->switchBackgroundColor($json->uni).';">'.$this->nhoSatus["Uniform"][$json->uni].'</td>
-				<td style="color:#FFFFFF;background-color:'.$this->switchBackgroundColor($json->fhro).';">'.$this->nhoSatus["FHR Onboarding"][$json->fhro].'</td>
-				<td style="color:#FFFFFF;background-color:'.$this->switchBackgroundColor($json->fh).';">'.$this->nhoSatus["Food Handler"][$json->fh].'</td>
-				<td style="color:#FFFFFF;background-color:'.$this->switchBackgroundColor($json->schedule).';">'.$this->nhoSatus["Schedule"][$json->schedule].'</td>
+				<td class="'.$this->switchBackgroundColor($json->section).'">'.$this->nhoSatus["Section"][$json->section].'</td>
+				<td class="'.$this->switchBackgroundColor($json->uni).'">'.$this->nhoSatus["Uniform"][$json->uni].'</td>
+				<td class="'.$this->switchBackgroundColor($json->fhro).'">'.$this->nhoSatus["FHR Onboarding"][$json->fhro].'</td>
+				<td class="'.$this->switchBackgroundColor($json->fh).'">'.$this->nhoSatus["Food Handler"][$json->fh].'</td>
+				<td class="'.$this->switchBackgroundColor($json->schedule).'">'.$this->nhoSatus["Schedule"][$json->schedule].'</td>
 			</tr>
 			';
 		}
@@ -459,7 +458,7 @@ class Restaurant {
 
 jQuery(document).ready(function() {
     jQuery('#nhoDate').datepicker({
-        dateFormat : 'yy-mm-dd'
+        dateFormat : 'mm/dd/yy'
     });
 		jQuery('#time_picker_start').timepicker({
 			'timeFormat': 'h:mm p',
@@ -542,10 +541,10 @@ jQuery(document).ready(function(jQuery){jQuery.datepicker.setDefaults({"closeTex
 		}
 		$json=json_decode($attendee['attData']);
 		$return='
-		<tr style="background-color: #ffffff; text-align: center;">
-			<td><input type="text" name="nhoStatus['.$attendee['attendeeID'].'][employeeName]" id="employeeName" value="'.$attendee['employeeName'].'" style="width:180px;"/>
-			<input type="hidden" name="nhoStatus['.$attendee['attendeeID'].'][attendeeID]" value="'.$attendee['attendeeID'].'" /></td>
-			<td>';
+		<div class="row" style="text-align: center;">
+			<div class="col"><input type="text" class="form-control" name="nhoStatus['.$attendee['attendeeID'].'][employeeName]" id="employeeName" value="'.$attendee['employeeName'].'" style="width:180px;"/>
+			<input type="hidden" name="nhoStatus['.$attendee['attendeeID'].'][attendeeID]" value="'.$attendee['attendeeID'].'" /><br>
+			';
 		if(is_array($this->myRestaurants) && count($this->myRestaurants)==1 && $attendee['attendeeID']=='NEW'){
 			foreach($this->myRestaurants as $key => $value){
 				$return.='<input type="hidden" name="nhoStatus['.$attendee['attendeeID'].'][restaurantID]" value="'.$key.'"/>'.$value;
@@ -554,7 +553,7 @@ jQuery(document).ready(function(jQuery){jQuery.datepicker.setDefaults({"closeTex
 			$return.='<input type="hidden" name="nhoStatus['.$attendee['attendeeID'].'][restaurantID]" value="'.$attendee['restaurant'].'"/>'.$this->getRestaurantName($attendee['restaurant']);
 		}else{
 			$return.='
-			<select name="nhoStatus['.$attendee['attendeeID'].'][restaurantID]" '.$disabled.'>
+			<select class="custom-select custom-select-sm" name="nhoStatus['.$attendee['attendeeID'].'][restaurantID]" '.$disabled.'>
 			<option value="">Choose One</option>';
 			foreach ($this->myRestaurants as $key => $value) {
 				if($key==$attendee['restaurant']){$selected='selected';}else{$selected='';}
@@ -564,56 +563,56 @@ jQuery(document).ready(function(jQuery){jQuery.datepicker.setDefaults({"closeTex
 		}
 		$return.='';
 		$return.='
-			</td>
-			<td style="text-align:left;white-space:nowrap;">';
+			</div>
+			<div class="col" style="text-align:left;">';
 			foreach ($this->nhoSatus["Position"] as $key => $value) {
 				if($key==$json->position){$selected=' checked="checked" ';}else{$selected='';}
 				$return.='
 				<input type="radio" name="nhoStatus['.$attendee['attendeeID'].'][position]" value="'.$key.'"'.$selected.' '.$disabled.'/> '.$value.'<br>';
 			}
 			$return.='
-				</td>
-				<td style="text-align:left;white-space:nowrap;">';
+				</div>
+				<div class="col" style="text-align:left;">';
 				foreach ($this->nhoSatus["Section"] as $key => $value) {
 					if($key==$json->section){$selected=' checked="checked" ';}else{$selected='';}
 					$return.='
 					<input type="radio" name="nhoStatus['.$attendee['attendeeID'].'][section]" value="'.$key.'"'.$selected.' '.$disabled.'/> '.$value.'<br>';
 				}
 			$return.='
-			</td>
-			<td style="background-color:'.$this->switchBackgroundColor($json->uni).';color:#FFFFFF;text-align:left;white-space:nowrap;"  id="Uniform_td_'.$attendee['attendeeID'].'">';
+			</div>
+			<div class="col '.$this->switchBackgroundColor($json->uni).'" style="text-align:left;white-space:nowrap;"  id="Uniform_td_'.$attendee['attendeeID'].'">';
 			foreach ($this->nhoSatus["Uniform"] as $key => $value) {
 				if($key==$json->uni){$selected=' checked="checked" ';}else{$selected='';}
 				$return.='
 				<input type="radio" name="nhoStatus['.$attendee['attendeeID'].'][uni]" value="'.$key.'" id="Uniform_'.$attendee['nhoID'].'"'.$selected.' '.$disabled.' onclick="changeBackground(\'Uniform\',\''.$attendee['attendeeID'].'\','.$key.');"/> '.$value.'<br>';
 			}
 			$return.='
-			</td>
-			<td style="background-color:'.$this->switchBackgroundColor($json->fhro).';color:#FFFFFF;text-align:left;white-space:nowrap;" id="FirstHR_td_'.$attendee['attendeeID'].'">';
+			</div>
+			<div class="col '.$this->switchBackgroundColor($json->fhro).'" style="text-align:left;white-space:nowrap;" id="FirstHR_td_'.$attendee['attendeeID'].'">';
 			foreach ($this->nhoSatus["FHR Onboarding"] as $key => $value) {
 				if($key==$json->fhro){$selected=' checked="checked" ';}else{$selected='';}
 				$return.='
 				<input type="radio" name="nhoStatus['.$attendee['attendeeID'].'][fhro]" value="'.$key.'" id="FirstHR_'.$attendee['nhoID'].'"'.$selected.' '.$disabled.' onclick="changeBackground(\'FirstHR\',\''.$attendee['attendeeID'].'\','.$key.');"/> '.$value.'<br>';
 			}
 			$return.='
-			</td>
-			<td style="background-color:'.$this->switchBackgroundColor($json->fh).';color:#FFFFFF;text-align:left;white-space:nowrap;" id="FoodHandler_td_'.$attendee['attendeeID'].'">';
+			</div>
+			<div class="col '.$this->switchBackgroundColor($json->fh).'" style="text-align:left;white-space:nowrap;" id="FoodHandler_td_'.$attendee['attendeeID'].'">';
 			foreach ($this->nhoSatus["Food Handler"] as $key => $value) {
 				if($key==$json->fh){$selected=' checked="checked" ';}else{$selected='';}
 				$return.='
 				<input type="radio" name="nhoStatus['.$attendee['attendeeID'].'][fh]" value="'.$key.'" id="FoodHandler_'.$attendee['nhoID'].'"'.$selected.' '.$disabled.' onclick="changeBackground(\'FoodHandler\',\''.$attendee['attendeeID'].'\','.$key.');"/> '.$value.'<br>';
 			}
 			$return.='
-			</td>
-			<td style="background-color:'.$this->switchBackgroundColor($json->schedule).';color:#FFFFFF;text-align:left;white-space:nowrap;" id="Schedule_td_'.$attendee['attendeeID'].'">';
+			</div>
+			<div class="col '.$this->switchBackgroundColor($json->schedule).'" style="text-align:left;white-space:nowrap;" id="Schedule_td_'.$attendee['attendeeID'].'">';
 						foreach ($this->nhoSatus["Schedule"] as $key => $value) {
 							if($key==$json->schedule){$selected=' checked="checked" ';}else{$selected='';}
 							$return.='
 							<input type="radio" name="nhoStatus['.$attendee['attendeeID'].'][schedule]" value="'.$key.'" id="Schedule_'.$attendee['nhoID'].'"'.$selected.' '.$disabled.' onclick="changeBackground(\'Schedule\',\''.$attendee['attendeeID'].'\','.$key.');"/> '.$value.'<br>';
 						}
 						$return.='
-				</td>
-		</tr>
+				</div>
+		</div>
 		';
 		return $return;
 	}
@@ -737,16 +736,16 @@ jQuery(document).ready(function(jQuery){jQuery.datepicker.setDefaults({"closeTex
 					<td colspan="10"><h3 style="color: #ffffff;text-align:center;">'.$nhoTime->Start.' - '.$nhoTime->End.'</h3></td>
 				</tr>
 				<tr style="background-color: #0e2244; color: #ffffff; text-align: center;">
-					<td><h5 style="color: #ffffff;">Name</h5></td>
-					<td><h5 style="color: #ffffff;">Location</h5></td>
-					<td><h5 style="color: #ffffff;">Position</h5></td>
-					<td><h5 style="color: #ffffff;">FOH/BOH</h5></td>
-					<td><h5 style="color: #ffffff;">Uniform</h5></td>
-					<td><h5 style="color: #ffffff;">FHR Onboarding</h5></td>
-					<td><h5 style="color: #ffffff;">Food Handler</h5></td>
-					<td><h5 style="color: #ffffff;">Schedule</h5></td>
-					<td><h5 style="color: #ffffff;">Attendance</h5></td>
-					<td><h5 style="color: #ffffff;">Notes</h5></td>
+					<td><strong>Name</h5></td>
+					<td><strong>Location</h5></td>
+					<td><strong>Position</h5></td>
+					<td><strong>FOH/BOH</h5></td>
+					<td><strong>Uniform</h5></td>
+					<td><strong>FHR Onboarding</h5></td>
+					<td><strong>Food Handler</h5></td>
+					<td><strong>Schedule</h5></td>
+					<td><strong>Attendance</h5></td>
+					<td><strong>Notes</h5></td>
 				</tr>
 				';
 			foreach($event as $e){
