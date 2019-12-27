@@ -9,6 +9,8 @@ $onChecked="";
 $offChecked="";
 $dateValue="";
 $timeValue="";
+$cellBG['On']="p-3 mb-2 bg-success text-white";
+$cellBG['Off']="p-3 mb-2 bg-danger text-white";
 if(isset($_GET['id'])){
 	$mysqli = new mysqli(DB_HOST, DB_USER, DB_PASSWORD, DB_NAME);
 	$tasks=new task_engine($mysqli);
@@ -101,7 +103,7 @@ jQuery(document).ready(function() {
 				<h4>Select the restaurants</h4>
 				" . $restaurants . "
 				<div>
-					<input type='submit' value='ADD' />
+					<input type='submit' value='".strtoupper($actionValue)."' />
 				</div>
 			</form>
 		</div>
@@ -118,7 +120,7 @@ jQuery(document).ready(function() {
 			$data=json_decode($rec->files);
 			$rets=array();
 			foreach($data->restaurants as $r){$rets[]=$boards[$r];}
-			$ret.="<tr><td>".date("m/d/Y",strtotime($rec->dueDate)) . "<br>" . date("g:i a",strtotime($rec->dueDate)) ."</td><td>".implode(", ",$rets)."</td><td>".$stateChange[$data->action]."</td>
+			$ret.="<tr><td>".date("m/d/Y",strtotime($rec->dueDate)) . "<br>" . date("g:i a",strtotime($rec->dueDate)) ."</td><td>".implode(", ",$rets)."</td><td class='".$cellBG[$stateChange[$data->action]]."'>".$stateChange[$data->action]."</td>
 			<td>
 				<form method='post' action='".$page."' >
 					<input type='hidden' name='action' value='delete' />
