@@ -114,7 +114,7 @@ jQuery(document).ready(function() {
 	$stateChange["false"]="Off";
 	$stateChange["true"]="On";
 	if(!empty($records)){
-		$ret.="<h4>Upcoming Changes</h4><div style='height:500px;overflow: auto;'>
+		$ret.="<h4 id='uc'>Upcoming Changes</h4><div style='height:500px;overflow: auto;'>
 		<table class='table table-striped'><thead><tr><th><strong>Date/Time</strong></th><th><strong>Restaurant(s)</strong></th><th colspan='3'><strong>State Change</strong></th></thead></tr><tbody>";
 		foreach($records as $rec){
 			$data=json_decode($rec->files);
