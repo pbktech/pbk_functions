@@ -17,7 +17,7 @@ if(isset($_GET['id'])){
 	$task=$tasks->get_task(array("id"=>$_GET['id']));
 	$taskActions=json_decode($task['files']);
 	$actionValue="update";
-	$dateValue=date("Y-m-d",strtotime($task['dueDate']));
+	$dateValue=date("F j, Y",strtotime($task['dueDate']));
 	$timeValue=date("g:i a",strtotime($task['dueDate']));
 	foreach($taskActions->restaurants as $r){$restaurants[]='"'.$r.'"';}
 	$selectedRestaurants=implode(", ",$restaurants);
