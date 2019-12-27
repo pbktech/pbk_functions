@@ -1,10 +1,13 @@
 <?php
 function pbr_show_restaurant_hours() {
 //	echo 'date_default_timezone_set: ' . date_default_timezone_get() . '<br />';
-	$return="\n<div style=\"overflow:auto;\"><table style=\"width: 100%;\">\n<tbody>\n<tr>\n<td style=\"text-align: center;\">\n<h5>RESTAURANT</h5>\n</td>";
+	$return="\n<div style=\"overflow:auto;\">
+	<table  class=\"table table-striped table-hover\" style=\"width: 100%;\">\n
+	<thead  class=\"thead-dark\">\n<tr>\n<th style=\"text-align: center;\">\nRESTAURANT\n</th>";
 	for($ia=1419206400;$ia<=1419724800;$ia+=86400) {
-		$return.="\n<td style=\"text-align: center;\">\n<h5>".date("l",$ia)."</h5>\n</td>";
+		$return.="\n<th style=\"text-align: center;\">\n".date("l",$ia)."\n</th>";
 	}
+	$return.="</thead><tbody>";
 	global $wpdb;
 	$restaurants = $wpdb->get_results("SELECT * FROM pbc_pbrestaurants");
 	foreach($restaurants as $restaurant){
@@ -14,10 +17,11 @@ function pbr_show_restaurant_hours() {
 			for($ia=1419206400;$ia<=1419724800;$ia+=86400) {
 				$openName=$res->getHours(date("l",$ia).'open');
 				$closeName=$res->getHours(date("l",$ia).'close');
+				if(date("l",$ia)==date("l")){$openClass="p-3 mb-2 bg-primary text-white";}else{$openClass="p-3 mb-2 bg-white text-dark";}
 				if((isset($openName) && $openName!=0) && (isset($closeName) && $closeName!=0) ) {
-					$return.="\n<td style=\"text-align: center;\">".$openName."<br />-<br />".$closeName."</td>";
+					$return.="\n<td class=\"".$openClass."\"style=\"text-align: center;\">".$openName."<br />-<br />".$closeName."</td>";
 				}else {
-					$return.="\n<td style=\"text-align: center;\"><br />CLOSED<br /></td>";
+					$return.="\n<td class=\"p-3 mb-2 bg-danger text-white\" style=\"text-align: center;\"><br />CLOSED<br /></td>";
 				}
 			}
 			$return.="</tr>";
