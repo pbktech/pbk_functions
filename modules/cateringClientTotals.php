@@ -15,7 +15,7 @@ jQuery(document).ready(function() {
 
 </script>
 		<div>
-			<form method='post' action='".site_url()."/operations/catering-rewards-totals/' >
+			<form method='get' action='".site_url()."/operations/catering-rewards-totals/' >
 				<h4>Please choose a date range</h4>
 				<div>
 					<label for='startDate'>Start Date</label><br /><input type=\"text\" id=\"startDate\" name=\"startDate\" value=\"\"/><br />
@@ -33,8 +33,8 @@ jQuery(document).ready(function() {
 	$reportArray[]=array("Report Dates",date("m/d/Y",strtotime($_REQUEST['startDate'])),date("m/d/Y",strtotime($_REQUEST['endDate'])));
 	$reportArray[]=array("Client","Total $","Number of Orders");
 	$report=new ToastReport();
-	$report->setStartTime($_REQUEST['startDate']);
-	$report->setEndTime($_REQUEST['endDate']);
+	$report->setStartTime(date("Y-m-d",strtotime($_REQUEST['startDate'])));
+	$report->setEndTime(date("Y-m-d",strtotime($_REQUEST['endDate'])));
 	$orders=$report->getMonkeyRewardsSales();
 	$ret.="
 	<div><h4>Catering Total Sales for ".date("m/d/Y",strtotime($_REQUEST['startDate']))." - ".date("m/d/Y",strtotime($_REQUEST['endDate']))."</h4></div>
