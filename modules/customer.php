@@ -29,10 +29,14 @@ if(isset($_GET['cguid']) && isset($_GET['sguid'])) {
 }
 if($_SERVER['REQUEST_METHOD'] == 'POST') {
 	$toast = new Toast(trim($_POST['restaurant']));
+	$restaurant=new Restaurant();
 	date_default_timezone_set($toast->getTimeZone());
 	if($_POST['part']==1) {
 		$customers=$toast->findCustomerID(preg_replace("/[^0-9]/", "",$_POST['phone']));
 		$ret.="<script>
+		jQuery(\"#restaurantID\").select2({
+	  	theme: \"classic\"
+		});
 			function validateFormPart(formName){
 				var amount=document.forms[formName]['credit'].value;
 				var note=document.forms[formName]['note'].value;
@@ -131,16 +135,17 @@ $ret.="
 <div>
 	<h3>Search for a Customer</h3>
 	<form method='POST' name='phoneSearch' action='".home_url( $wp->request )."' onsubmit='return validateForm()'>
-		<br /><input type='text' name='phone' id='phone' value='".$_POST['phone']."' placeholder='Customer Phone Number'/>
-		<br /><select required name='restaurant' id='restaurant'>\n<option value='' >Choose a Restaurant</option>
+		<div class=\"form-group\">
+			<input type='text' name='phone' id='phone' value='".$_POST['phone']."' placeholder='Customer Phone Number'/>
+		</div>
+		<div class=\"form-group\">
 		";
-foreach($rests as $r=>$guid){
-	if($guid==$_POST['restaurant'] && isset($_POST['restaurant'])) {$selected="selected='selected'";}else {$selected='';}
-	$ret.="\n<option value='$guid' $selected>$r</option>";
-}
+$ret.=$restaurant->buildRestaurantSelector();
 $ret.="
-		</select>
+</div>
+<div class=\"form-group\">
 		<input type='hidden' name='part' value='1' />
-		<br /><input type='submit' value='Search' />
+		<input type='submit' value='Search' />
+		</div>
 	</form>
 </div>";
