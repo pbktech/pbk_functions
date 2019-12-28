@@ -9,10 +9,7 @@ if(!isset($_REQUEST['endDate']) || !isset($_REQUEST['startDate'])) {
 		<script type=\"text/javascript\">
 
 jQuery(document).ready(function() {
-    jQuery('#startDate').datepicker({
-        dateFormat : 'yy-mm-dd'
-    });
-    jQuery('#endDate').datepicker({
+    jQuery('.datePickker').datepicker({
         dateFormat : 'yy-mm-dd'
     });
 });
@@ -22,8 +19,8 @@ jQuery(document).ready(function() {
 			<form method='get' action='".site_url()."/finance/finance-reports/cash_refunds/' >
 				<h4>Please choose a date range</h4>
 				<div>
-					<label for='startDate'>Start Date</label><br /><input type=\"text\" id=\"startDate\" name=\"startDate\" value=\"\"/><br />
-					<label for='endDate'>End Date</label><br /><input type=\"text\" id=\"endDate\" name=\"endDate\" value=\"\"/>
+					<label for='startDate'>Start Date</label><br /><input type=\"text\" class=\" datePicker\" id=\"startDate\" name=\"startDate\" value=\"\"/><br />
+					<label for='endDate'>End Date</label><br /><input type=\"text\" class=\" datePicker\" id=\"endDate\" name=\"endDate\" value=\"\"/>
 				</div>
 				<div>
 					<input type='submit' value='SEARCH' />
@@ -39,7 +36,7 @@ jQuery(document).ready(function() {
 WHERE pbc2.pbc_paymentDetails.restaurantID!=0 AND paymentType!='Cash' AND paidDate BETWEEN '".$_REQUEST['startDate']." 00:00:00' AND '".$_REQUEST['endDate']." 23:59:59' AND checkID IN
 (select checkID FROM pbc2.pbc_paymentDetails WHERE paymentType='Cash'  AND checkAmount < 0) ORDER by pbc_paymentDetails.restaurantID, paidDate");
 	$file = fopen(temp_dl_folder.'cash_refunds_'.$_REQUEST['startDate'].'_'.$_REQUEST['endDate'].'.csv', 'w');
-	$ret.="<table>";
+	$ret.="<table class='table '>";
 	fputcsv($file, array("Restaurant","Check Number","Order Date","Payment Type","Check Amount"));
 	foreach($result as $r){
 		$ret.="\n<tr><td>".$r->restaurantName."</td>
