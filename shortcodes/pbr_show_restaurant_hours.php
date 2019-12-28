@@ -21,7 +21,7 @@ function pbr_show_restaurant_hours() {
 				if((isset($openName) && $openName!=0) && (isset($closeName) && $closeName!=0) ) {
 					$return.="\n<td class=\"".$openClass."\"style=\"text-align: center;\">".$openName."<br />-<br />".$closeName."</td>";
 				}else {
-					$return.="\n<td class=\"p-3 mb-2 bg-danger text-white\" style=\"text-align: center;\"><br />CLOSED<br /></td>";
+					$return.="\n<td class=\"p-3 mb-2 text-danger\" style=\"text-align: center;font-weight:bold;\"><br />CLOSED<br /></td>";
 				}
 			}
 			$return.="</tr>";
