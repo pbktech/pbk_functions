@@ -50,7 +50,7 @@ class Restaurant {
 		 global $wp;
 		 global $wpdb;
  		$cu = wp_get_current_user();
-		$q="SELECT restaurantID,restaurantName FROM pbc_pbrestaurants WHERE isOpen=1 AND restaurantID!=0";
+		$q="SELECT ".$field.",restaurantName FROM pbc_pbrestaurants WHERE isOpen=1 AND restaurantID!=0";
 		if($this->isAboveStore==0){
 			$q.=" AND restaurantID IN (SELECT restaurantID FROM pbc2.pbc_pbr_managers WHERE managerID='".$cu->ID."')";
 		}
