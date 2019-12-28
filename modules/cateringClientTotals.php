@@ -6,10 +6,10 @@ if(!isset($_REQUEST['endDate']) || !isset($_REQUEST['startDate'])) {
 
 jQuery(document).ready(function() {
     jQuery('#startDate').datepicker({
-        dateFormat : 'yy-mm-dd'
+        dateFormat : 'mm/dd/yy'
     });
     jQuery('#endDate').datepicker({
-        dateFormat : 'yy-mm-dd'
+        dateFormat : 'mm/dd/yy'
     });
 });
 
@@ -38,8 +38,8 @@ jQuery(document).ready(function() {
 	$orders=$report->getMonkeyRewardsSales();
 	$ret.="
 	<div><h4>Catering Total Sales for ".date("m/d/Y",strtotime($_REQUEST['startDate']))." - ".date("m/d/Y",strtotime($_REQUEST['endDate']))."</h4></div>
-		<table>
-			<thead>
+		<table class=\"table table-striped table-hover\" style=\"width: 100%;\">
+			<thead style='background-color:#0e2244; color: #ffffff; text-align: center;font-weight:bold;'>
 					<tr><th>Client</th><th>Total $</th><th>Number of Orders</th></tr>
 			</thead>
 			<tbody>
