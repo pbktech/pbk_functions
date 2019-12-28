@@ -45,7 +45,7 @@ class Restaurant {
 		$this->checkAboveStore();
 		$this->getMyRestaurants();
    }
-	 function getMyRestaurants(){
+	 function getMyRestaurants($field='restaurantID'){
 		 if(isset($this->myRestaurants)){unset($this->myRestaurants);}
 		 global $wp;
 		 global $wpdb;
@@ -54,9 +54,9 @@ class Restaurant {
 		if($this->isAboveStore==0){
 			$q.=" AND restaurantID IN (SELECT restaurantID FROM pbc2.pbc_pbr_managers WHERE managerID='".$cu->ID."')";
 		}
-		 $rests=$wpdb->get_results($q);
+		 $rests=$wpdb->get_results($q,'ARRAY_A');
 		 foreach ( $rests as $rest ){
-			 $this->myRestaurants[$rest->restaurantID]=$rest->restaurantName;
+			 $this->myRestaurants[$rest[$field]]=$rest['restaurantName'];
 		 }
 	 }
 	public function checkAboveStore(){
@@ -832,27 +832,28 @@ AND pbc_users.id=nhoHost AND pbc_pbrestaurants.restaurantID=nhoLocation");
 		}
 		return "<input class=\"form-control\" type='text' name='".$name."' value='".$value."' required />";
 	}
-	public function buildRestaurantSelector($single=0){
-			if(count($this->myRestaurants)==0){
-				return "<div class='alert alert-danger'>No Restaurants Assigned</div>";
-			}elseif (count($this->myRestaurants)==1) {
-				return "<input type='hidden' value='".$this->myRestaurants[1]."' name='restaurantID' /><div>".$this->myRestaurants[0]."</div>";
-			}else {
-				if($single==0){
-					$return= "
-						<select name='restaurantID' class=\"custom-select multipleSelect\" required id='restaurantID'>
-							<option value=''>Choose One</option>
+	public function buildRestaurantSelector($single=0,$field='restaurantID'){
+		$this->getMyRestaurants($field);
+		if(count($this->myRestaurants)==0){
+			return "<div class='alert alert-danger'>No Restaurants Assigned</div>";
+		}elseif (count($this->myRestaurants)==1) {
+			return "<input type='hidden' value='".$this->myRestaurants[1]."' name='restaurantID' /><div>".$this->myRestaurants[0]."</div>";
+		}else {
+			if($single==0){
+				$return= "
+					<select name='".$field."' class=\"custom-select multipleSelect\" required id='restaurantID'>
+						<option value=''>Choose One</option>
+					";
+				foreach($this->myRestaurants as $id=>$name){
+					$return.="
+						<option value='$id'>$name</option>
 						";
-						foreach($this->myRestaurants as $id=>$name){
-							$return.="
-							<option value='$id'>$name</option>
-							";
-						}
-						$return.="
-						</select>";
 				}
-				return $return;
-			}
+				$return.="
+					</select>";
+				}
+			return $return;
+		}
 	}
 
 }

@@ -7,8 +7,8 @@ $userLevel=get_currentuserinfo();
 if($userLevel->user_level<=7) {
 	$sql="SELECT GUID,restaurantName FROM pbc_pbrestaurants WHERE isOpen=1";
 }else {
-	$sql="SELECT GUID,restaurantName FROM pbc_pbrestaurants WHERE isOpen=1 AND pbc_pbrestaurants.restaurantID IN
-(SELECT restaurantID FROM pbc_pbr_managers WHERE pbc_pbr_managers.managerID='" . $current_user->ID . "')";
+	$sql="SELECT GUID,restaurantName FROM pbc_pbrestaurants WHERE isOpen=1 AND pbc_pbrestaurants.GUID IN
+(SELECT GUID FROM pbc_pbr_managers WHERE pbc_pbr_managers.managerID='" . $current_user->ID . "')";
 }
 $files=$wpdb->get_results($sql);
 foreach($files as $file){
@@ -28,7 +28,7 @@ if(isset($_GET['cguid']) && isset($_GET['sguid'])) {
 	";
 }
 if($_SERVER['REQUEST_METHOD'] == 'POST') {
-	$toast = new Toast(trim($_POST['restaurant']));
+	$toast = new Toast(trim($_POST['GUID']));
 	date_default_timezone_set($toast->getTimeZone());
 	if($_POST['part']==1) {
 		$customers=$toast->findCustomerID(preg_replace("/[^0-9]/", "",$_POST['phone']));
@@ -55,7 +55,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
 			<input type='text' name='credit' placeholder='Credit Amount'/><br />
 			<input type='text' name='note' maxlength='250' placeholder='Credit Reason' /><br />
 			<input type='hidden' name='part' value='2' /><input type='hidden' name='phone' value='".preg_replace("/[^0-9]/", "",$_POST['phone'])."' />
-			<input type='hidden' name='restaurant' value='".$_POST['restaurant']."' />
+			<input type='hidden' name='GUID' value='".$_POST['GUID']."' />
 		<br /><input type='submit' value='Add' />
 		</form></div>	";
 		}else {
@@ -68,7 +68,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
 							$ret.="No Credits Assigned Yet";
 						}else {
 							$ret.="
-							<a href='".home_url( $wp->request )."?cguid=".$c->guid."&amp;sguid=".trim($_POST['restaurant'])."' target='_blank' >".money_format('%(#4n', $credits->amount)." Expires: ".date("m/d/Y",strtotime($credits->earliestExpirationDate))."</a>";
+							<a href='".home_url( $wp->request )."?cguid=".$c->guid."&amp;sguid=".trim($_POST['GUID'])."' target='_blank' >".money_format('%(#4n', $credits->amount)." Expires: ".date("m/d/Y",strtotime($credits->earliestExpirationDate))."</a>";
 						}
 				$ret.="	</p>
 							<p><form method='POST' name='addCust".$count."' action='".home_url( $wp->request )."' onsubmit='return validateFormPart(\"addCust".$count."\")'>
@@ -77,7 +77,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
 								<input type='hidden' name='firstName' value='".$c->firstName."' />
 								<input type='hidden' name='lastName' value='".$c->lastName."' />
 								<input type='hidden' name='phone' value='".$c->phone."' />
-								<input type='hidden' name='restaurant' value='".$_POST['restaurant']."' /><input type='hidden' name='part' value='2' />
+								<input type='hidden' name='GUID' value='".$_POST['GUID']."' /><input type='hidden' name='part' value='2' />
 								<br /><input type='submit' value='Add' />
 								</form>
 							</p>
@@ -107,12 +107,12 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
 	'pbc_ToastCreditAdds',
 	array('userID' => $current_user->ID, 'creditAmount' => $_POST['credit'], 'restaurantGUID' => $_POST['guid'],'note' => $_POST['note']),
 	array('%d','%f','%s','%s') );
-		echo "<script>window.location = \"".home_url( $wp->request )."?cguid=".$_POST['guid']."&sguid=".trim($_POST['restaurant'])."\"</script>";
+		echo "<script>window.location = \"".home_url( $wp->request )."?cguid=".$_POST['guid']."&sguid=".trim($_POST['GUID'])."\"</script>";
 	}
 		$ret.="<hr>";
 }
 if(!isset($_POST['phone'])){$_POST['phone']='';}
-if(!isset($_POST['restaurant'])){$_POST['restaurant']='';}
+if(!isset($_POST['GUID'])){$_POST['GUID']='';}
 $restaurant=new Restaurant();
 $ret.="
 <script>
@@ -127,7 +127,7 @@ $ret.="
         return false;
      }
 	}
-	jQuery(\"#restaurantID\").select2({
+	jQuery(\"#GUID\").select2({
 		theme: \"classic\"
 	});
 </script>
@@ -139,7 +139,7 @@ $ret.="
 		</div>
 		<div class=\"form-group\">
 		";
-$ret.=$restaurant->buildRestaurantSelector();
+$ret.=$restaurant->buildRestaurantSelector(0,'GUID');
 $ret.="
 </div>
 <div class=\"form-group\">
