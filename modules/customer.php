@@ -29,14 +29,10 @@ if(isset($_GET['cguid']) && isset($_GET['sguid'])) {
 }
 if($_SERVER['REQUEST_METHOD'] == 'POST') {
 	$toast = new Toast(trim($_POST['restaurant']));
-	$restaurant=new Restaurant();
 	date_default_timezone_set($toast->getTimeZone());
 	if($_POST['part']==1) {
 		$customers=$toast->findCustomerID(preg_replace("/[^0-9]/", "",$_POST['phone']));
 		$ret.="<script>
-		jQuery(\"#restaurantID\").select2({
-	  	theme: \"classic\"
-		});
 			function validateFormPart(formName){
 				var amount=document.forms[formName]['credit'].value;
 				var note=document.forms[formName]['note'].value;
@@ -117,7 +113,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
 }
 if(!isset($_POST['phone'])){$_POST['phone']='';}
 if(!isset($_POST['restaurant'])){$_POST['restaurant']='';}
-
+$restaurant=new Restaurant();
 $ret.="
 <script>
 	function validatePhoneNumber(elementValue){
@@ -131,6 +127,9 @@ $ret.="
         return false;
      }
 	}
+	jQuery(\"#restaurantID\").select2({
+		theme: \"classic\"
+	});
 </script>
 <div>
 	<h3>Search for a Customer</h3>
