@@ -49,11 +49,11 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
 		if(count($customers)==0){
 			$ret.="<div>Customer Not Found, please create one below:</div><div>
 			<form method='POST' name='addCust0' action='".home_url( $wp->request )."' onsubmit='return validateFormPart(\"addCust0\")' >
-			<input type='text' name='firstName' id='' placeholder='Customer First Name'/><br />
-			<input type='text' name='lastName' id='' placeholder='Customer Last Name'/><br />
-			<input type='text' name='email' id='' placeholder='E-mail Address'/><br />
-			<input type='text' name='credit' placeholder='Credit Amount'/><br />
-			<input type='text' name='note' maxlength='250' placeholder='Credit Reason' /><br />
+			<input type='text' class=\"form-control\" name='firstName' id='' placeholder='Customer First Name'/><br />
+			<input type='text' class=\"form-control\" name='lastName' id='' placeholder='Customer Last Name'/><br />
+			<input type='text' class=\"form-control\" name='email' id='' placeholder='E-mail Address'/><br />
+			<input type='text' class=\"form-control\" name='credit' placeholder='Credit Amount'/><br />
+			<input type='text' class=\"form-control\" name='note' maxlength='250' placeholder='Credit Reason' /><br />
 			<input type='hidden' name='part' value='2' /><input type='hidden' name='phone' value='".preg_replace("/[^0-9]/", "",$_POST['phone'])."' />
 			<input type='hidden' name='GUID' value='".$_POST['GUID']."' />
 		<br /><input type='submit' value='Add' />
@@ -73,7 +73,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
 				$ret.="	</p>
 							<p><form method='POST' name='addCust".$count."' action='".home_url( $wp->request )."' onsubmit='return validateFormPart(\"addCust".$count."\")'>
 								<input type='hidden' name='part' value='2' /><input type='hidden' name='guid' value='".$c->guid."' />
-								<input type='text' name='credit' placeholder='Credit Amount' /><br /><input type='text' name='note' maxlength='250' placeholder='Credit Reason' />
+								<input type='text' class=\"form-control\" name='credit' placeholder='Credit Amount' /><br /><input type='text' class=\"form-control\" name='note' maxlength='250' placeholder='Credit Reason' />
 								<input type='hidden' name='firstName' value='".$c->firstName."' />
 								<input type='hidden' name='lastName' value='".$c->lastName."' />
 								<input type='hidden' name='phone' value='".$c->phone."' />
@@ -135,7 +135,7 @@ $ret.="
 	<h3>Search for a Customer</h3>
 	<form method='POST' name='phoneSearch' action='".home_url( $wp->request )."' onsubmit='return validateForm()'>
 		<div class=\"form-group\">
-			<input type='text' name='phone' id='phone' value='".$_POST['phone']."' placeholder='Customer Phone Number'/>
+			<input type='text' class=\"form-control\" name='phone' id='phone' value='".$_POST['phone']."' placeholder='Customer Phone Number'/>
 		</div>
 		<div class=\"form-group\">
 		";
