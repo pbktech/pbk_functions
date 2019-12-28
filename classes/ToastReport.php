@@ -798,9 +798,8 @@ ORDER BY msr.orders.entered_by,date_reqd ";
 		$conn = sqlsrv_connect( $this->MSDS_HOST, $connectionInfo);
 		if( !$conn ) {print_r( sqlsrv_errors(), true);}
 		$sql = "SELECT client_name,client_id,SUM(subtotal) as Total,COUNT(*) as Orders from msr.orders where is_promo=0 AND msr.orders.client_id!=0 AND locked=1
-		AND billing_id!=429 AND billing_id!=744 AND billing_id!=679 AND msr.orders.client_id!=5459 AND date_reqd BETWEEN ? AND ? AND deleted!=1 group by client_id,client_name order by Total DESC";
+		AND billing_id!=429 AND billing_id!=744 AND billing_id!=679 AND msr.orders.client_id!=5459 AND date_reqd BETWEEN ".$this->startTime." AND ".$this->endTime." AND deleted!=1 group by client_id,client_name order by Total DESC";
 		$params=array($this->startTime,$this->endTime);
-		$stmt = sqlsrv_query( $conn, $sql,$params);
 		$stmt = sqlsrv_query( $conn, $sql,$params);
 		if( $stmt === false ) {print_r( sqlsrv_errors(), true);}
 		while ($result=sqlsrv_fetch_object( $stmt)){
