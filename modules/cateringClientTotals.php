@@ -15,7 +15,7 @@ jQuery(document).ready(function() {
 
 </script>
 		<div>
-			<form method='get' action='".site_url()."/operations/catering-rewards-totals/' >
+			<form method='post' action='".site_url()."/operations/catering-rewards-totals/' >
 				<h4>Please choose a date range</h4>
 				<div>
 					<label for='startDate'>Start Date</label><br /><input type=\"text\" id=\"startDate\" name=\"startDate\" value=\"\"/><br />
