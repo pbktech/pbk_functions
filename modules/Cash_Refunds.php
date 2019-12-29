@@ -4,7 +4,7 @@ function getRefundReceipt($orderID) {
 	$result=$wpdb->get_var( "SELECT receiptID FROM pbc2.pbc_paymentDetails WHERE orderID='$orderID' AND checkAmount<0" );
 	return $result;
 }
-if(!isset($_GET['endDate']) || !isset($startDate)) {
+if(!isset($_GET['endDate']) || !isset($_GET['endDate'])) {
 		$ret.="
 		<script type=\"text/javascript\">
 
