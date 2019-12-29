@@ -4,7 +4,7 @@ function getRefundReceipt($orderID) {
 	$result=$wpdb->get_var( "SELECT receiptID FROM pbc2.pbc_paymentDetails WHERE orderID='$orderID' AND checkAmount<0" );
 	return $result;
 }
-if(!isset($_GET['endDate']) || !isset($_GET['endDate'])) {
+if(!isset($_GET['endDate']) || !isset($_GET['startDate'])) {
 		$ret.="
 		<script type=\"text/javascript\">
 
@@ -34,11 +34,8 @@ jQuery(document).ready(function() {
 
 		";
 }else {
-	echo "<pre>";
-	print_r($_GET);
-	echo "</pre>";
 	global $wpdb;
-	$startDate=date('Y-m-d',strtotime($startDate));
+	$startDate=date('Y-m-d',strtotime($_GET['startDate']));
 	$endDate=date('Y-m-d',strtotime($_GET['endDate']));
 	$result=$wpdb->get_results("SELECT * FROM pbc2.pbc_paymentDetails LEFT JOIN pbc2.pbc_pbrestaurants ON pbc2.pbc_paymentDetails.restaurantID=pbc2.pbc_pbrestaurants.restaurantID
 WHERE pbc2.pbc_paymentDetails.restaurantID!=0 AND paymentType!='Cash' AND paidDate BETWEEN '".$_REQUEST['startDate']." 00:00:00' AND '".$endDate." 23:59:59' AND checkID IN
