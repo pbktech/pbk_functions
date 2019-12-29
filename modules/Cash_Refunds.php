@@ -40,10 +40,12 @@ jQuery(document).ready(function() {
 	global $wpdb;
 	$startDate=date('Y-m-d',strtotime($_GET['startDate']));
 	$endDate=date('Y-m-d',strtotime($_GET['endDate']));
+	echo $startDate . "<br>" . $endDate;
 	$result=$wpdb->get_results("SELECT * FROM pbc2.pbc_paymentDetails LEFT JOIN pbc2.pbc_pbrestaurants ON pbc2.pbc_paymentDetails.restaurantID=pbc2.pbc_pbrestaurants.restaurantID
-WHERE pbc2.pbc_paymentDetails.restaurantID!=0 AND paymentType!='Cash' AND paidDate BETWEEN '".$_REQUEST['startDate']." 00:00:00' AND '".$endDate." 23:59:59' AND checkID IN
+WHERE pbc2.pbc_paymentDetails.restaurantID!=0 AND paymentType!='Cash' AND paidDate BETWEEN '".$startDate." 00:00:00' AND '".$endDate." 23:59:59' AND checkID IN
 (select checkID FROM pbc2.pbc_paymentDetails WHERE paymentType='Cash'  AND checkAmount < 0) ORDER by pbc_paymentDetails.restaurantID, paidDate");
-	$file = fopen(temp_dl_folder.'cash_refunds_'.$_REQUEST['startDate'].'_'.$endDate.'.csv', 'w');
+
+	$file = fopen(temp_dl_folder.'cash_refunds_'.$startDate.'_'.$endDate.'.csv', 'w');
 	$ret.="<table class=\"table table-striped table-hover\">";
 	fputcsv($file, array("Restaurant","Check Number","Order Date","Payment Type","Check Amount"));
 	$ret.="
