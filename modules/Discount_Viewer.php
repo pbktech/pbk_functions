@@ -67,7 +67,7 @@ jQuery(document).ready(function() {
 						$rests=$toast -> getAvailableRestaurants();
 						foreach($rests as $r){
 							$ret.="
-						<option value='".$r->restaurantID."' >".$r->restaurantID."</option>";
+						<option value='".$r->restaurantID."' >".$r->restaurantName."</option>";
 						}
 						$ret.="
 						</select>
@@ -84,7 +84,7 @@ jQuery(document).ready(function() {
 						$ret.="
 						</select>
 				</div>
-				<strong>Please choose a date range</strong>
+				<label>Please choose a date range</label>
 				<div class='form-group'>
 					<label for='startDate'>Start Date</label><br /><input type=\"text\" id=\"startDate\" name=\"startDate\" value=\"\"/><br />
 					<label for='endDate'>End Date</label><br /><input type=\"text\" id=\"endDate\" name=\"endDate\" value=\"\"/>
