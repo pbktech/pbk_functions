@@ -34,6 +34,9 @@ jQuery(document).ready(function() {
 
 		";
 }else {
+	echo "<pre>";
+	print_r($_GET);
+	echo "</pre>";
 	global $wpdb;
 	$startDate=date('Y-m-d',strtotime($_GET['startDate']));
 	$endDate=date('Y-m-d',strtotime($_GET['endDate']));
