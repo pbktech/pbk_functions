@@ -2,12 +2,14 @@
 $toast = new ToastReport();
 $page = home_url( add_query_arg( array(), $wp->request ) );
 if($_SERVER['REQUEST_METHOD'] == 'POST') {
+	$startDate=date('Y-m-d',strtotime($_GET['startDate']));
+	$endDate=date('Y-m-d',strtotime($_GET['endDate']));
 	$dataArray[]=array("Restaurant"=>"Restaurant","businessDate"=>"Date of Business","checkNumber"=>"Check Number","tabName"=>"Check Name",
 	"discount"=>"Discount","discountAmount"=>"Amount Off","appliedPromoCode"=>"Card Name",	"displayName"=>"Item Name");
-//	$toast ->setStartTime(date($_REQUEST['startDate'],strtotime($bot))." 00:00:00");
-//	$toast ->setEndTime(date($_REQUEST['endDate'],strtotime($latest))." 23:59:59");
+//	$toast ->setStartTime(date($startDate,strtotime($bot))." 00:00:00");
+//	$toast ->setEndTime(date($endDate,strtotime($latest))." 23:59:59");
 	$dis=0;
-	for($i=strtotime($_REQUEST['startDate']);$i<=strtotime($_REQUEST['endDate']);$i+=86400) {
+	for($i=strtotime($startDate);$i<=strtotime($endDate);$i+=86400) {
 		$toast->setBusinessDate(date("Y-m-d",$i));
 		$ret.="<div><h4>".date("m/d/Y",$i)."</h4>";
 		foreach($_POST['restaurants'] as $r){
@@ -32,56 +34,62 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
 		}
 		$ret.="</div>";
 	}
-	if($dlLink=$toast->buildSCV($dataArray,"discount-report_".$_REQUEST['startDate']."--".$_REQUEST['endDate'])) {echo "<p><a href='".$dlLink."' target='_blank'>Download the file</a> This download is only valid for 30 minutes.</p>";}
+	if($dlLink=$toast->buildSCV($dataArray,"discount-report_".$startDate."--".$endDate)) {echo "<p><a href='".$dlLink."' target='_blank'>Download the file</a> This download is only valid for 30 minutes.</p>";}
 	$ret.="Number of Discounts: ".$dis;
 }else {
 		$ret.="
 		<script type=\"text/javascript\">
 
 jQuery(document).ready(function() {
-    jQuery('#startDate').datepicker({
-        dateFormat : 'yy-mm-dd'
-    });
-    jQuery('#endDate').datepicker({
-        dateFormat : 'yy-mm-dd'
-    });
+	jQuery('#startDate').datepicker({
+			dateFormat : 'mm/dd/yy'
+	});
+	jQuery('#endDate').datepicker({
+			dateFormat : 'mm/dd/yy'
+	});
+	jQuery('#restaurantPicker').select2({
+		allowClear: true,
+  	theme: \"classic\"
+	});
+	jQuery('#discountPicker').select2({
+		allowClear: true,
+  	theme: \"classic\"
+	});
 });
 
 </script>
-		<div>
+		<div class=''>
 			<form method='POST' action='".get_permalink()."' >
-				<div>
-					<label for='restaurants'>Please Select Your Restaurants</label><br />
+				<div class='form-group'>
+					<label for='restaurantPicker'>Please Select Your Restaurants</label>
+					<select style='width:100%;' class=\"custom-select multipleSelect\" id=\"restaurantPicker\" name=\"restaurants[]\" multiple=\"multiple\">
 						";
 						$rests=$toast -> getAvailableRestaurants();
-							$count=0;
 						foreach($rests as $r){
 							$ret.="
-						<input type='checkbox' name='restaurants[]' value='".$r->restaurantID."' id='r".$r->restaurantID."' /><label for='r".$r->restaurantID."'>".$r->restaurantName."</label>";
-						if(($count % 5)==4){$ret.="<br />";}
-						$count++;
+						<option value='".$r->restaurantID."' >".$r->restaurantID."</option>";
 						}
 						$ret.="
+						</select>
 				</div>
-				<div>
-					<label for='discounts'>Please Select Your Discounts</label><br />
-						";
-						$count=0;
+				<div class='form-group'>
+					<label for='discountPicker'>Please Select Your Discounts</label>
+					<select style='width:100%;' class=\"custom-select multipleSelect\" id=\"discountPicker\" name=\"discounts[]\" multiple=\"multiple\">
+								";
 						$discounts=$toast -> getAvailableDiscounts();
 						foreach($discounts as $d){
 							$ret.="
-						<input type='checkbox' name='discounts[]' value='".$d->discount."' id='d".$count."' ><label for='d".$count."'>".$d->discount."</label>";
-						if(($count % 5)==4){$ret.="<br />";}
-						$count++;
+						<option value='".$d->discount."'>".$d->discount."</option>";
 						}
 						$ret.="
+						</select>
 				</div>
 				<strong>Please choose a date range</strong>
-				<div>
+				<div class='form-group'>
 					<label for='startDate'>Start Date</label><br /><input type=\"text\" id=\"startDate\" name=\"startDate\" value=\"\"/><br />
 					<label for='endDate'>End Date</label><br /><input type=\"text\" id=\"endDate\" name=\"endDate\" value=\"\"/>
 				</div>
-				<div>
+				<div class='form-group'>
 					<input type='submit' value='SEARCH' />
 				</div>
 			</form>
