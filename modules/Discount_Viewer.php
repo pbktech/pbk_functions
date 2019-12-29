@@ -2,8 +2,8 @@
 $toast = new ToastReport();
 $page = home_url( add_query_arg( array(), $wp->request ) );
 if($_SERVER['REQUEST_METHOD'] == 'POST') {
-	$startDate=date('Y-m-d',strtotime($_GET['startDate']));
-	$endDate=date('Y-m-d',strtotime($_GET['endDate']));
+	$startDate=date('Y-m-d',strtotime($_POST['startDate']));
+	$endDate=date('Y-m-d',strtotime($_POST['endDate']));
 	$dataArray[]=array("Restaurant"=>"Restaurant","businessDate"=>"Date of Business","checkNumber"=>"Check Number","tabName"=>"Check Name",
 	"discount"=>"Discount","discountAmount"=>"Amount Off","appliedPromoCode"=>"Card Name",	"displayName"=>"Item Name");
 //	$toast ->setStartTime(date($startDate,strtotime($bot))." 00:00:00");
