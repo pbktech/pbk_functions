@@ -30,21 +30,14 @@ jQuery(document).ready(function() {
 				</div>
 			</form>
 		</div>
-
-
 		";
 }else {
-	echo "<pre>";
-	print_r($_GET);
-	echo "</pre>";
 	global $wpdb;
 	$startDate=date('Y-m-d',strtotime($_GET['startDate']));
 	$endDate=date('Y-m-d',strtotime($_GET['endDate']));
-	echo $startDate . "<br>" . $endDate;
 	$result=$wpdb->get_results("SELECT * FROM pbc2.pbc_paymentDetails LEFT JOIN pbc2.pbc_pbrestaurants ON pbc2.pbc_paymentDetails.restaurantID=pbc2.pbc_pbrestaurants.restaurantID
 WHERE pbc2.pbc_paymentDetails.restaurantID!=0 AND paymentType!='Cash' AND paidDate BETWEEN '".$startDate." 00:00:00' AND '".$endDate." 23:59:59' AND checkID IN
 (select checkID FROM pbc2.pbc_paymentDetails WHERE paymentType='Cash'  AND checkAmount < 0) ORDER by pbc_paymentDetails.restaurantID, paidDate");
-
 	$file = fopen(temp_dl_folder.'cash_refunds_'.$startDate.'_'.$endDate.'.csv', 'w');
 	$ret.="<table class=\"table table-striped table-hover\">";
 	fputcsv($file, array("Restaurant","Check Number","Order Date","Payment Type","Check Amount"));
@@ -67,8 +60,8 @@ WHERE pbc2.pbc_paymentDetails.restaurantID!=0 AND paymentType!='Cash' AND paidDa
 	}
 	fclose($file);
 	$ret.="</table>";
-	if(file_exists(temp_dl_folder.'cash_refunds_'.$_REQUEST['startDate'].'_'.$endDate.'.csv')) {
-		$ret.="<p><a href='".temp_dl_addy."cash_refunds_".$_REQUEST['startDate']."_".$endDate.".csv' target='_blank'>Download the file</a> This download is only valid for 30 minutes.</p>";
+	if(file_exists(temp_dl_folder.'cash_refunds_'.$startDate.'_'.$endDate.'.csv')) {
+		$ret.="<p><a href='".temp_dl_addy."cash_refunds_".$startDate."_".$endDate.".csv' target='_blank'>Download the file</a> This download is only valid for 30 minutes.</p>";
 	}
 	/*
 print "<pre>";
