@@ -415,7 +415,7 @@ AND ToastOrderID IN (SELECT GUID FROM pbc_ToastOrderHeaders WHERE restaurantID=?
 		$stmt->execute();
 		$result = $stmt->get_result();
 		$row=$result->fetch_object();
-		$row->S-=$this->getTotalGCSales($this->restaurantID);
+//		$row->S-=$this->getTotalGCSales($this->restaurantID);
 		return array("Sales"=>$row->S,"Checks"=>$row->C);
 	}
 	function getNetSalesByRestaurantDateRange($start,$end) {
@@ -424,8 +424,17 @@ AND ToastOrderID IN (SELECT GUID FROM pbc_ToastOrderHeaders WHERE restaurantID=?
 		$stmt->execute();
 		$result = $stmt->get_result();
 		$row=$result->fetch_object();
-		$row->S-=$this->getTotalGCSales($this->restaurantID);
+//		$row->S-=$this->getTotalGCSales($this->restaurantID);
 		return array("Sales"=>$row->S,"Checks"=>$row->C);
+	}
+	function getNetSalesSubtraction($isCatering=0){
+		$q="SELECT (SUM(taxAmount)-SUM(serviceCharges)-SUM(gcSold)) as 'Amount' FROM pbc2.pbc_sum_CheckSales  WHERE restaurantID=? AND dateOfBusiness BETWEEN ? AND ? AND isCatering=?";
+		$stmt = $this->mysqli->prepare($q);
+		$stmt->bind_param("ssss",$this->restaurantID,$this->startTime,$this->endTime,$isCatering);
+		$stmt->execute();
+		$result = $stmt->get_result();
+		$row=$result->fetch_object();
+		return $row->Amount;
 	}
 	function sendText($n,$m) {
 		$client = new Client($this->account_sid, $this->auth_token);
