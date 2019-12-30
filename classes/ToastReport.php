@@ -410,9 +410,7 @@ AND ToastOrderID IN (SELECT GUID FROM pbc_ToastOrderHeaders WHERE restaurantID=?
 		return array("Sales"=>$row->S,"Checks"=>$row->C);
 	}
 	function getNetSalesByMarket($mkt) {
-		$q="SELECT SUM(amount) as 'S',COUNT(*) as 'C' FROM pbc_ToastCheckHeaders,pbc_ToastOrderHeaders
-where pbc_ToastOrderHeaders.GUID=pbc_ToastCheckHeaders.ToastOrderID AND
- pbc_ToastOrderHeaders.businessDate='".$this->businessDate."' AND restaurantID IN (SELECT restaurantID FROM pbc_pbrestaurants WHERE isOpen=1 AND market='".$mkt."')";
+		$q="SELECT (SUM(checkAmount)-SUM(taxAmount)-SUM(serviceCharges)-SUM(gcSold)) as 'S',COUNT(*) as 'C' FROM pbc2.pbc_sum_CheckSales WHERE businessDate='".$this->businessDate."' AND restaurantID IN (SELECT restaurantID FROM pbc_pbrestaurants WHERE isOpen=1 AND market='".$mkt."')";
 		$stmt = $this->mysqli->prepare($q);
 		$stmt->execute();
 		$result = $stmt->get_result();
@@ -421,9 +419,7 @@ where pbc_ToastOrderHeaders.GUID=pbc_ToastCheckHeaders.ToastOrderID AND
 		return array("Sales"=>$row->S,"Checks"=>$row->C);
 	}
 	function getNetSalesByRestaurantDateRange($start,$end) {
-		$q="SELECT SUM(amount) as 'S',COUNT(*) as 'C' FROM pbc_ToastCheckHeaders,pbc_ToastOrderHeaders
-where pbc_ToastOrderHeaders.GUID=pbc_ToastCheckHeaders.ToastOrderID AND
- pbc_ToastOrderHeaders.businessDate BETWEEN '".$start."' AND '".$end."' AND restaurantID='".$this->restaurantID."'";
+		$q="SELECT (SUM(checkAmount)-SUM(taxAmount)-SUM(serviceCharges)-SUM(gcSold)) as 'S',COUNT(*) as 'C'  FROM pbc2.pbc_sum_CheckSales WHERE businessDate BETWEEN '".$start."' AND '".$end."' AND restaurantID='".$this->restaurantID."'";
 		$stmt = $this->mysqli->prepare($q);
 		$stmt->execute();
 		$result = $stmt->get_result();
