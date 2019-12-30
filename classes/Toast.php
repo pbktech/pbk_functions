@@ -451,7 +451,7 @@ class Toast{
 		if($stmt->error!='') {$this->notifyIT("storeServiceChargeInfo \n\n".$stmt->error."\n\n<pre>".print_r($d,true)."</pre>\n".$ToastOrderID."\n","SQL Import Error");}
 	}
 	function storeCheckSum($i,$stmt){
-		$stmt->bind_param('ssssssssssss',$i['orderGUID'],$i['restaurantID'],$i['businessDate'],$i['checkIds'],$i['checkAmount'],$i['orderSource'],$i['diningOption'],$i['taxAmount'],$i['serviceCharges'],$i['discounts'],$i['voidBusinessDate'],$i['isCatering']);
+		$stmt->bind_param('sssssssssssss',$i['orderGUID'],$i['restaurantID'],$i['businessDate'],$i['checkIds'],$i['checkAmount'],$i['orderSource'],$i['diningOption'],$i['taxAmount'],$i['serviceCharges'],$i['discounts'],$i['voidBusinessDate'],$i['isCatering'],$i['gcSold']);
 		$stmt->execute();
 		if($stmt->error!='') {
 			$this->notifyIT(
