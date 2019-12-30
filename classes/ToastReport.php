@@ -394,7 +394,7 @@ AND ToastOrderID IN (SELECT GUID FROM pbc_ToastOrderHeaders WHERE restaurantID=?
 	function getNetSales() {
 		$q="SELECT (SUM(checkAmount)-SUM(taxAmount)-SUM(serviceCharges)-SUM(gcSold)) as 'Amount' FROM pbc2.pbc_sum_CheckSales WHERE businessDate=? ";
 		$stmt = $this->mysqli->prepare($q);
-		$stmt->bind_param('s',$this->$this->businessDate);
+		$stmt->bind_param('s',$this->businessDate);
 		$stmt->execute();
 		$result = $stmt->get_result();
 		$row=$result->fetch_object();
