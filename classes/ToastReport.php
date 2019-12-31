@@ -429,6 +429,7 @@ AND ToastOrderID IN (SELECT GUID FROM pbc_ToastOrderHeaders WHERE restaurantID=?
 	}
 	function getNetSalesSubtraction($isCatering=0){
 		$q="SELECT (SUM(taxAmount)-SUM(serviceCharges)-SUM(gcSold)) as 'Amount' FROM pbc2.pbc_sum_CheckSales  WHERE restaurantID=? AND dateOfBusiness BETWEEN ? AND ? AND isCatering=?";
+		echo "SELECT (SUM(taxAmount)-SUM(serviceCharges)-SUM(gcSold)) as 'Amount' FROM pbc2.pbc_sum_CheckSales  WHERE restaurantID=".$this->restaurantID." AND dateOfBusiness BETWEEN ".$this->startTime." AND ".$this->endTime." AND isCatering=".$isCatering."";
 		$stmt = $this->mysqli->prepare($q);
 		$stmt->bind_param("ssss",$this->restaurantID,$this->startTime,$this->endTime,$isCatering);
 		$stmt->execute();
