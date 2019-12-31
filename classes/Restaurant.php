@@ -838,7 +838,7 @@ AND pbc_users.id=nhoHost AND pbc_pbrestaurants.restaurantID=nhoLocation");
 		if(count($this->myRestaurants)==0){
 			return "<div class='alert alert-danger'>No Restaurants Assigned</div>";
 		}elseif (count($this->myRestaurants)==1) {
-			return "<input type='hidden' value='".$this->myRestaurants[1]."' name='restaurantID' /><div>".$this->myRestaurants[0]."</div>";
+			return "<input type='hidden' value='".$this->myRestaurants[1]."' name='$field' /><div>".$this->myRestaurants[0]."</div>";
 		}else {
 			if($single==0){
 				$return= "

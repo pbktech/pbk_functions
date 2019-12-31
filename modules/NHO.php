@@ -30,7 +30,7 @@ if (!isset($_REQUEST['event']) || !isset($event->nhoID) || $event->nhoID=="") {
   $ret.="\n
 	<div>
 		<form method='get' action='".$page."'  name='restaurantSelector'>
-			<select name='event' onchange=\"this.form.submit()\"><option value=''>Choose an Event</option>";
+			<select name='event' class='custom-select' onchange=\"this.form.submit()\"><option value=''>Choose an Event</option>";
 	foreach($nhoEvents as $event){
 		$ret.="\n<option value='".$event['nhoID']."'>".date("m/d/Y",strtotime($event['nhoDate']))." at ".$restaurant->getRestaurantName($event['nhoLocation'])."</option>";
 	}
