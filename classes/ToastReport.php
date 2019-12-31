@@ -392,22 +392,30 @@ AND ToastOrderID IN (SELECT GUID FROM pbc_ToastOrderHeaders WHERE restaurantID=?
 		return array("Temp"=>$weather->daily->data[0]->temperatureHigh,"Summary"=>$weather->daily->data[0]->summary);
 	}
 	function getNetSales() {
-		$q="SELECT (SUM(checkAmount)-SUM(taxAmount)-SUM(serviceCharges)-SUM(gcSold)) as 'Amount' FROM pbc2.pbc_sum_CheckSales WHERE restaurantID=? AND businessDate BETWEEN ? AND ? AND isCatering=?";
+		$q="SELECT (SUM(checkAmount)-SUM(taxAmount)-SUM(serviceCharges)-SUM(gcSold)) as 'Amount' FROM pbc2.pbc_sum_CheckSales WHERE restaurantID=? AND businessDate BETWEEN ? AND ?";
 		$stmt = $this->mysqli->prepare($q);
-		$stmt->bind_param("sss",$this->startTime,$this->endTime,$isCatering);
+		$stmt->bind_param("sss",$this->restaurantID,$this->startTime,$this->endTime);
+		$stmt->execute();
+		$result = $stmt->get_result();
+		$row=$result->fetch_object();
+		return $row->Amount;
+	}
+	function getCateringNetSales() {
+		$q="SELECT (SUM(checkAmount)-SUM(taxAmount)-SUM(serviceCharges)-SUM(gcSold)) as 'Amount' FROM pbc2.pbc_sum_CheckSales WHERE restaurantID=? AND businessDate BETWEEN ? AND ? AND isCatering='1'";
+		$stmt = $this->mysqli->prepare($q);
+		$stmt->bind_param("sss",$this->restaurantID,$this->startTime,$this->endTime);
 		$stmt->execute();
 		$result = $stmt->get_result();
 		$row=$result->fetch_object();
 		return $row->Amount;
 	}
 	function getNetSalesByRestaurant() {
-		$q="SELECT (SUM(checkAmount)-SUM(taxAmount)-SUM(serviceCharges)-SUM(gcSold)) as 'S',COUNT(*) as 'C' FROM pbc2.pbc_sum_CheckSales WHERE restaurantID=? AND businessDate BETWEEN ? AND ? AND isCatering=?";
+		$q="SELECT (SUM(checkAmount)-SUM(taxAmount)-SUM(serviceCharges)-SUM(gcSold)) as 'S',COUNT(*) as 'C' FROM pbc2.pbc_sum_CheckSales WHERE restaurantID=? AND businessDate BETWEEN ? AND ?";
 		$stmt = $this->mysqli->prepare($q);
-		$stmt->bind_param("ssss",$this->restaurantID,$this->startTime,$this->endTime,$isCatering);
+		$stmt->bind_param("sss",$this->restaurantID,$this->startTime,$this->endTime);
 		$stmt->execute();
 		$result = $stmt->get_result();
 		$row=$result->fetch_object();
-		$row->S-=$this->getTotalGCSales($this->restaurantID);
 		return array("Sales"=>$row->S,"Checks"=>$row->C);
 	}
 	function getNetSalesByMarket($mkt) {
@@ -416,7 +424,6 @@ AND ToastOrderID IN (SELECT GUID FROM pbc_ToastOrderHeaders WHERE restaurantID=?
 		$stmt->execute();
 		$result = $stmt->get_result();
 		$row=$result->fetch_object();
-//		$row->S-=$this->getTotalGCSales($this->restaurantID);
 		return array("Sales"=>$row->S,"Checks"=>$row->C);
 	}
 	function getNetSalesByRestaurantDateRange($start,$end) {
