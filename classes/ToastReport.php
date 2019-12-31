@@ -519,7 +519,7 @@ pbc2.pbc_ToastCheckHeaders.ToastOrderID=pbc2.pbc_ToastOrderHeaders.GUID";
 	}
 	function getTippedOrders() {
 		$q="SELECT * FROM pbc2.pbc_ToastOrderPayment where restaurantID is not null and tipAmount!=0 AND  restaurantID=".$this->restaurantID." AND businessDate BETWEEN '".$this->startTime."' AND '".$this->endTime."'
-		AND tipsAssigned = 0";
+		AND pbc_ToastOrderPayment.ToastCheckID NOT IN (SELECT orderGUID FROM pbc2.pbc_TipDistribution)";
 		$stmt = $this->mysqli->prepare($q);
 		$stmt->execute();
 		$result = $stmt->get_result();
