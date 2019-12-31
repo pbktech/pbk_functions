@@ -417,7 +417,7 @@ AND ToastOrderID IN (SELECT GUID FROM pbc_ToastOrderHeaders WHERE restaurantID=?
 		$stmt->execute();
 		if($this->mysqli->error!='') {echo $this->mysqli->error."\n";}
 		$result = $stmt->get_result();
-		return $result->fetch_array();
+		return $result->fetchF_array(ARRAY_A);
 //		return array("Sales"=>$row->S,"Checks"=>$row->C);
 	}
 	function getNetSalesByMarket($mkt) {
@@ -917,7 +917,7 @@ ORDER BY msr.orders.entered_by,date_reqd ";
 		if($day==0){$week++;}
 		$sameDayLastYear = new \DateTime();
 		$sameDayLastYear->setISODate($year - 1, $week, $day);
-		if(date('Y-m-d')=="2019-12-30"){return "2018-12-31";}
+		if($d=="2019-12-30"){return "2018-12-31";}
 		return $sameDayLastYear->format('Y-m-d');
 	}
 	function buildPDF($htmlPages,$title){
