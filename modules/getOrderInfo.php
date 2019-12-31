@@ -31,7 +31,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
 	$toast = new Toast(trim($_POST['GUID']));
 	date_default_timezone_set($toast->getTimeZone());
 	$toast->setOrderGUID($_POST['orderGUID']);
-	$json=$toast->getOrderInfo($_POST['orderGUID']);
+	$json=$toast->getOrderInfo(trim($_POST['orderGUID']));
 	echo "<pre>";
 	print_r($json);
 	echo "</pre>";
