@@ -911,6 +911,10 @@ ORDER BY msr.orders.entered_by,date_reqd ";
 		return $r;
 	}
 	function sameDayLastYear($d) {
+		$d=date('Y-m-d', strtotime('-1 year', strtotime($d))));
+		if(date("L")==1){$addDays=2;}else{$addDays=1;}
+		return date('Y-m-d', strtotime('+' . $addDays . ' days', strtotime($d))));
+		/*
 		$today = new \DateTime($d);
 		$year  = (int) $today->format('Y');
 		$week  = (int) $today->format('W'); // Week of the year
@@ -920,6 +924,7 @@ ORDER BY msr.orders.entered_by,date_reqd ";
 		$sameDayLastYear->setISODate($year - 1, $week, $day);
 		if($d=="2019-12-30"){return "2018-12-31";}
 		return $sameDayLastYear->format('Y-m-d');
+		*/
 	}
 	function buildPDF($htmlPages,$title){
 		require_once('vendor/tecnickcom/tcpdf/tcpdf.php');
