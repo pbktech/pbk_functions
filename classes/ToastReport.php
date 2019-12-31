@@ -912,7 +912,7 @@ ORDER BY msr.orders.entered_by,date_reqd ";
 	}
 	function sameDayLastYear($d) {
 		$d=date('Y-m-d', strtotime('-1 year', strtotime($d)));
-		if(date("L")==1){$addDays=2;}else{$addDays=1;}
+		if(date("L")==1 && (date("n")>2 || (date("n")==2 && date("d")==29))){$addDays=2;}else{$addDays=1;}
 		return date('Y-m-d', strtotime('+' . $addDays . ' days', strtotime($d)));
 		/*
 		$today = new \DateTime($d);
