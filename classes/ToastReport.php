@@ -408,6 +408,7 @@ AND ToastOrderID IN (SELECT GUID FROM pbc_ToastOrderHeaders WHERE restaurantID=?
 		if($this->mysqli->error!='') {echo $this->mysqli->error."\n";}
 		$result = $stmt->get_result();
 		$row=$result->fetch_object();
+		if($row->Amount==0 || $row->Amount==''){return 0;}
 		return $row->Amount;
 	}
 	function getNetSalesByRestaurant() {
@@ -417,7 +418,7 @@ AND ToastOrderID IN (SELECT GUID FROM pbc_ToastOrderHeaders WHERE restaurantID=?
 		$stmt->execute();
 		if($this->mysqli->error!='') {echo $this->mysqli->error."\n";}
 		$result = $stmt->get_result();
-		return $result->fetchF_array(ARRAY_A);
+		return $result->fetch_array(ARRAY_A);
 //		return array("Sales"=>$row->S,"Checks"=>$row->C);
 	}
 	function getNetSalesByMarket($mkt) {
