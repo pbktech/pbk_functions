@@ -669,14 +669,12 @@ jQuery(document).ready(function(jQuery){jQuery.datepicker.setDefaults({"closeTex
 	}
 	function updateNHO($nho){
 		global $wpdb;
-		echo "<pre>";
-		print_r($nho);
-		echo "</pre>";
+		$nho['nhoDate']=date("Y-m-d",strtotime($nho['nhoDate']));
 		$nhoTime=json_encode($nho['nhoTime']);
 		$wpdb->query(
 			$wpdb->prepare( "
 				REPLACE INTO pbc_NHOSchedule (nhoDate,nhoHost,nhoLocation,maxParticipants,nhoID,nhoTime)VALUES(%s,%s,%s,%s,%s,%s)",$nho['nhoDate'],$nho['nhoHost'],$nho['nhoLocation'],$nho['maxParticipants'],$nho['nhoID'],$nhoTime));
-	//		wp_redirect(  admin_url( 'admin.php?page=pbr-nho' ) );
+			wp_redirect(  admin_url( 'admin.php?page=pbr-nho' ) );
 	}
 	function updateNHOAttendee($nhos){
 		global $wpdb;
