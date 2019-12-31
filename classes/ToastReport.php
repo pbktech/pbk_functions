@@ -911,9 +911,9 @@ ORDER BY msr.orders.entered_by,date_reqd ";
 		return $r;
 	}
 	function sameDayLastYear($d) {
-		$d=date('Y-m-d', strtotime('-1 year', strtotime($d))));
+		$d=date('Y-m-d', strtotime('-1 year', strtotime($d)));
 		if(date("L")==1){$addDays=2;}else{$addDays=1;}
-		return date('Y-m-d', strtotime('+' . $addDays . ' days', strtotime($d))));
+		return date('Y-m-d', strtotime('+' . $addDays . ' days', strtotime($d)));
 		/*
 		$today = new \DateTime($d);
 		$year  = (int) $today->format('Y');
