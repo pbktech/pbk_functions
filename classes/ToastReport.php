@@ -432,8 +432,6 @@ AND ToastOrderID IN (SELECT GUID FROM pbc_ToastOrderHeaders WHERE restaurantID=?
 	function getNetSalesByRestaurantDateRange($start,$end) {
 		$q="SELECT (SUM(checkAmount)-SUM(taxAmount)-SUM(serviceCharges)-SUM(gcSold)) as 'S',COUNT(*) as 'C'  FROM
 		pbc2.pbc_sum_CheckSales WHERE businessDate BETWEEN '".$start."' AND '".$end."' AND restaurantID='".$this->restaurantID."'";
-		echo $q;
-		die();
 		$stmt = $this->mysqli->prepare($q);
 		$stmt->execute();
 		$result = $stmt->get_result();
