@@ -392,9 +392,9 @@ AND ToastOrderID IN (SELECT GUID FROM pbc_ToastOrderHeaders WHERE restaurantID=?
 		return array("Temp"=>$weather->daily->data[0]->temperatureHigh,"Summary"=>$weather->daily->data[0]->summary);
 	}
 	function getNetSales() {
-		$q="SELECT (SUM(checkAmount)-SUM(taxAmount)-SUM(serviceCharges)-SUM(gcSold)) as 'Amount' FROM pbc2.pbc_sum_CheckSales WHERE restaurantID=? AND businessDate BETWEEN ? AND ?";
+		$q="SELECT (SUM(checkAmount)-SUM(taxAmount)-SUM(serviceCharges)-SUM(gcSold)) as 'Amount' FROM pbc2.pbc_sum_CheckSales WHERE businessDate BETWEEN ? AND ?";
 		$stmt = $this->mysqli->prepare($q);
-		$stmt->bind_param("sss",$this->restaurantID,$this->startTime,$this->endTime);
+		$stmt->bind_param("ss",$this->startTime,$this->endTime);
 		$stmt->execute();
 		$result = $stmt->get_result();
 		$row=$result->fetch_object();
