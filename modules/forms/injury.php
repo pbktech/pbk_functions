@@ -24,7 +24,7 @@ $return.="
 <div class=\"container\">
   <div class=\"row\">
     <div class=\"col\">
-      <label for='injuryType'>What type of ingury injured?</label>
+      <label for='injuryType'>What type of injury occurred?</label>
       ";
       if($new==0){
       $return.="
@@ -117,7 +117,7 @@ $return.="
   </div>
   <div class=\"row\">
     <div class=\"col\">
-      <label for='medicalRequired'  id='medicalRequired_label'>Did they require medical attention?</label>
+      <label for='medicalRequired'  id='medicalRequired_label'>Did they need medical attention?</label>
       <div class=\"input-group\" >
         <div class=\"input-group-prepend\">
         ";

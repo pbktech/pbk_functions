@@ -7,6 +7,7 @@
         "symfony/polyfill-mbstring": "^1.10",
         "phpoffice/phpspreadsheet": "^1.5",
         "mpdf/mpdf": "^7.1",
-        "dmitry-ivanov/dark-sky-api": "^1.0"
+        "dmitry-ivanov/dark-sky-api": "^1.0",
+        "google/apiclient": "^2.0"
     }
 }

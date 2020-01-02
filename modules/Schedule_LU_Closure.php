@@ -95,10 +95,23 @@ jQuery(document).ready(function() {
 			$ret.="
 				<div>
 				<h4>Please choose a date and time</h4>
-					<label for='startDate'>Date</label><br /><input type=\"text\" id=\"startDate\" name=\"startDate\" value=\"".$dateValue."\"/><br />
-					<label for='time_picker'>Time</label><br /><input id='time_picker' name='time_picker' id='time_picker' style='width: 100px;' value=\"".$timeValue."\"/><br />
+					<div class=\"input-group\" >
+						<label for='startDate'>Date</label><br /><input type=\"text\" id=\"startDate\" name=\"startDate\" value=\"".$dateValue."\"/>
+					</div>
+					<div class=\"input-group\" >
+						<label for='time_picker'>Time</label><br /><input id='time_picker' name='time_picker' id='time_picker' style='width: 100px;' value=\"".$timeValue."\"/><br />
 					<h4>Set App State</h4>
-				 <input type='radio' value='true' name='change[action]' id='ocAction-open' ".$onChecked." />	<label for='ocAction-open'>On</label> <input type='radio' value='false' name='change[action]' id='ocAction-close' ".$offChecked." /> <label for='ocAction-close'>Off</label><br />
+					<div class=\"input-group\" >
+						<div class=\"input-group-prepend\">
+							<div class=\"input-group-text\">
+				 				<input type='radio' value='true' name='change[action]' id='ocAction-open' ".$onChecked." />	<label for='ocAction-open'>On</label>
+							</div>
+							<div class=\"input-group-text\">
+								<input type='radio' value='false' name='change[action]' id='ocAction-close' ".$offChecked." /> <label for='ocAction-close'>Off</label><br />
+							</div>
+						</div>
+					</div>
+				</div>
 				</div>
 				<h4>Select the restaurants</h4>
 				" . $restaurants . "
