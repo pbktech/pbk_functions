@@ -780,10 +780,13 @@ SELECT GUID FROM pbc2.pbc_ToastOrderHeaders WHERE restaurantID='".$this->restaur
 			return false;
 		}
 	}
-	function getMonkeyPromoSalesDateRange($restaurantID=null){
+	private function monkeyConnectObject(){
 		$connectionInfo = array( "Database"=>$this->MSDS_DB, "UID"=>$this->MSDS_USER, "PWD"=>$this->MSDS_PASSWORD );
 		$conn = sqlsrv_connect( $this->MSDS_HOST, $connectionInfo);
-		if( !$conn ) {print_r( sqlsrv_errors(), true);}
+		if( !$conn ) {print_r( sqlsrv_errors(), true);die();}else{return $conn;}
+	}
+	function getMonkeyPromoSalesDateRange($restaurantID=null){
+		$conn=$this->monkeyConnectObject();
 		if(isset($restaurantID) && is_numeric($restaurantID)){
 			$sql = "SELECT msr.accounts.company_name,store_id,date_reqd,msr.orders.entered_by as 'SalesPerson',subtotal,msr.orders.client_id as 'client' from msr.orders,msr.accounts,msr.clients_and_leads where is_promo=1 AND msr.clients_and_leads.account_id=msr.accounts.account_id
 AND msr.orders.client_id=msr.clients_and_leads.client_id AND msr.accounts.account_id>10
@@ -805,19 +808,28 @@ ORDER BY msr.orders.entered_by,date_reqd ";
 		return $return;
 	}
 	function getMonkeySales($restaurantID){
-		$connectionInfo = array( "Database"=>$this->MSDS_DB, "UID"=>$this->MSDS_USER, "PWD"=>$this->MSDS_PASSWORD );
-		$conn = sqlsrv_connect( $this->MSDS_HOST, $connectionInfo);
-		if( !$conn ) {print_r( sqlsrv_errors(), true);}
+		$conn=$this->monkeyConnectObject();
 		$sql = "SELECT SUM(subtotal) as 'Sales',COUNT(*) as 'Total' FROM msr.orders WHERE date_reqd BETWEEN ? AND ? AND status='confirmed' AND store_id=? AND deleted!=1 AND order_type='order'";
 		$params=array($this->startTime,$this->endTime,$restaurantID);
 		$stmt = sqlsrv_query( $conn, $sql,$params);
 		if( $stmt === false ) {print_r( sqlsrv_errors(), true);}
 		return sqlsrv_fetch_object( $stmt);
 	}
+	function getMonkeyActiveItems(){
+		$return=array();
+		$conn=$this->monkeyConnectObject();
+		$sql = "SELECT item_id,item_group,item_category,item_name FROM msr.items where is_production_item=0 AND status='Active' order by item_category;";
+		$params=array();
+		$stmt = sqlsrv_query( $conn, $sql,$params);
+		if( $stmt === false ) {print_r( sqlsrv_errors(), true);}
+		while ($result=sqlsrv_fetch_object( $stmt)){
+			$return[$result->item_category][$result->item_group][$result->item_id]=$result->item_name;
+		}
+		return $return;
+	}
 	function getMonkeyRewardsSales(){
-		$connectionInfo = array( "Database"=>$this->MSDS_DB, "UID"=>$this->MSDS_USER, "PWD"=>$this->MSDS_PASSWORD );
-		$conn = sqlsrv_connect( $this->MSDS_HOST, $connectionInfo);
-		if( !$conn ) {echo "<pre>"; print_r( sqlsrv_errors()); echo "</pre>";}
+		$return=array();
+		$conn=$this->monkeyConnectObject();
 		$sql = "SELECT client_name,client_id,SUM(subtotal) as Total,COUNT(*) as Orders from msr.orders where is_promo=0 AND msr.orders.client_id!=0 AND locked=1
 		AND billing_id!=429 AND billing_id!=744 AND billing_id!=679 AND msr.orders.client_id!=5459 AND date_reqd BETWEEN ? AND ? AND deleted!=1 group by client_id,client_name order by Total DESC";
 		$params=array($this->startTime,$this->endTime);
@@ -828,10 +840,25 @@ ORDER BY msr.orders.entered_by,date_reqd ";
 		}
 		return $return;
 	}
+	function getMonkeySalesFromItems($data){
+		foreach($data['items'] as $item){$i[]="menu_item_id=".$item;}
+		$data['startDate']=date("Y-m-d",strtotime($data['startDate']));
+		$data['endDate']=date("Y-m-d",strtotime($data['endDate']));
+		$return=array();
+		$conn=$this->monkeyConnectObject();
+		$sql = "SELECT * from msr.orders where order_id IN
+		(SELECT order_id from msr.order_items WHERE (" . implode(' OR ',$i) . "))
+		AND date_reqd BETWEEN ? AND ? AND status='confirmed' AND deleted!=1 order by store_id";
+		$params=array($data['startDate'],$data['endDate']);
+		$stmt = sqlsrv_query( $conn, $sql,$params);
+		if( $stmt === false ) {echo "<pre>"; print_r( sqlsrv_errors()); echo "</pre>";}
+		while ($result=sqlsrv_fetch_object( $stmt)){
+			$return[]=$result;
+		}
+		return $return;
+	}
 	function getMonkeyClientSales($restaurantID){
-		$connectionInfo = array( "Database"=>$this->MSDS_DB, "UID"=>$this->MSDS_USER, "PWD"=>$this->MSDS_PASSWORD );
-		$conn = sqlsrv_connect( $this->MSDS_HOST, $connectionInfo);
-		if( !$conn ) {print_r( sqlsrv_errors(), true);}
+		$conn=$this->monkeyConnectObject();
 		$sql = "SELECT SUM(subtotal) as 'Sales',COUNT(*) as 'Total' FROM msr.orders WHERE date_reqd BETWEEN ? AND ? AND status='confirmed' AND client_id=? AND deleted!=1 AND is_promo=0";
 		$params=array($this->startTime,$this->endTime,$restaurantID);
 		$stmt = sqlsrv_query( $conn, $sql,$params);
@@ -840,9 +867,7 @@ ORDER BY msr.orders.entered_by,date_reqd ";
 	}
 	function getUnpostedMonkey($rid){
 		$return=array();
-		$connectionInfo = array( "Database"=>$this->MSDS_DB, "UID"=>$this->MSDS_USER, "PWD"=>$this->MSDS_PASSWORD );
-		$conn = sqlsrv_connect( $this->MSDS_HOST, $connectionInfo);
-		if( !$conn ) {print_r( sqlsrv_errors(), true);}
+		$conn=$this->monkeyConnectObject();
 		$sql = "SELECT order_id FROM msr.orders WHERE date_reqd BETWEEN ? AND ? AND status='confirmed' AND store_id=? AND pos_order_id is null AND deleted!=1 AND order_id!='19868' AND order_type!='quote'";
 		$params=array($this->startTime,$this->endTime,$rid);
 		$stmt = sqlsrv_query( $conn, $sql,$params);
@@ -854,9 +879,7 @@ ORDER BY msr.orders.entered_by,date_reqd ";
 	}
 	function getUnpostedMonkeyTotal(){
 		$return=array();
-		$connectionInfo = array( "Database"=>$this->MSDS_DB, "UID"=>$this->MSDS_USER, "PWD"=>$this->MSDS_PASSWORD );
-		$conn = sqlsrv_connect( $this->MSDS_HOST, $connectionInfo);
-		if( !$conn ) {print_r( sqlsrv_errors(), true);}
+		$conn=$this->monkeyConnectObject();
 		$sql = "SELECT COUNT(*) as 'Orders',SUM(subtotal-discount) as 'Total' FROM msr.orders WHERE date_reqd BETWEEN ? AND ? AND status='confirmed' AND pos_order_id is null AND deleted!=1 AND order_id!='19868' AND order_type!='quote'";
 		$params=array($this->startTime,$this->endTime,$rid);
 		$stmt = sqlsrv_query( $conn, $sql,$params);
