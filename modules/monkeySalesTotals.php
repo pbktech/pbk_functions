@@ -113,16 +113,17 @@ jQuery('#myTable').DataTable();
         <th>Entered By</th>
       </tr>
     </tfoot>
-  </table>
+  </table>";
+  fclose($handle);
+  if(file_exists($report->docSaveLocation . $filename)){
+    $ret.="
+    <div>
+      <a href='" . $report->docDownloadLocation . $filename . "' target='_blank'>Download the file</a> This download is only valid for 30 minutes.
+    </div>
+    ";
+  $ret.="
 </div>
 ";
-fclose($handle);
-if(file_exists($report->docSaveLocation . $filename)){
-  $ret.="
-  <div>
-    <a href='" . $report->docDownloadLocation . $filename . "' target='_blank'>Download the file</a> This download is only valid for 30 minutes.
-  </div>
-  ";
 }
   }else {
 		$ret.="<div class='alert alert-warning' id='#notFound'>There were no orders found</div>";
