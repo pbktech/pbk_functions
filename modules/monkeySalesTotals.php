@@ -66,7 +66,7 @@ if(isset($_GET['endDate']) && isset($_GET['startDate']) && isset($_GET['items'])
   $results=$report->getMonkeySalesFromItems($_GET);
   if(isset($results) && count($results)!=0){
     $filename= 'monkey_sales_'.date("m-d-Y",strtotime($_REQUEST['startDate'])).'_'.date("m-d-Y",strtotime($_REQUEST['endDate'])).'.csv';
-    $handle = fopen($report->$docSaveLocation . $filename, 'w');
+    $handle = fopen($report->docSaveLocation . $filename, 'w');
     $ret.="
 <script>
 jQuery(document).ready( function () {
@@ -116,10 +116,10 @@ jQuery('#myTable').DataTable();
 </div>
 ";
 fclose($handle);
-if(file_exists($report->$docSaveLocation . $filename)){
+if(file_exists($report->docSaveLocation . $filename)){
   $ret.="
   <div>
-    <a href='" . $report->$docSaveLocation . $filename . "' target='_blank'>Download the file</a> This download is only valid for 30 minutes.
+    <a href='" . $report->docDownloadLocation . $filename . "' target='_blank'>Download the file</a> This download is only valid for 30 minutes.
   </div>
   ";
 }
