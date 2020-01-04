@@ -65,6 +65,8 @@ if(isset($_GET['endDate']) && isset($_GET['startDate']) && isset($_GET['items'])
   global $wpdb;
   $results=$report->getMonkeySalesFromItems($_GET);
   if(isset($results) && count($results)!=0){
+    $filename= 'monkey_sales_'.date("m-d-Y",strtotime($_REQUEST['startDate'])).'_'.date("m-d-Y",strtotime($_REQUEST['endDate'])).'.csv';
+    $handle = fopen($report->$docSaveLocation . $filename, 'w');
     $ret.="
 <script>
 jQuery(document).ready( function () {
@@ -97,6 +99,7 @@ jQuery('#myTable').DataTable();
         <td>" . $r->entered_by . "</td>
       </tr>
       ";
+      fputcsv($handle, array($restaurant,$r->order_id,date_format($r->date_reqd,"m/d/Y"),$report->switchNegNumber(($r->subtotal-$r->discount),2),$r->client_name,$r->entered_by));
     }
     $ret.="
     <tfoot style='background-color:#0e2244; color: #ffffff; text-align: center;font-weight:bold;'>
@@ -112,6 +115,14 @@ jQuery('#myTable').DataTable();
   </table>
 </div>
 ";
+fclose($handle);
+if(file_exists($report->$docSaveLocation . $filename)){
+  $ret.="
+  <div>
+    <a href='" . $report->$docSaveLocation . $filename . "' target='_blank'>Download the file</a> This download is only valid for 30 minutes.
+  </div>
+  ";
+}
   }else {
 		$ret.="<div class='alert alert-warning' id='#notFound'>There were no orders found</div>";
 	}
