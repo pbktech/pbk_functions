@@ -371,7 +371,7 @@ AND ToastOrderID IN (SELECT GUID FROM pbc_ToastOrderHeaders WHERE restaurantID=?
 		return $row->Total;
 	}
 	function getNetSalesbyHour() {
-		$q="SELECT SUM(amount) FROM pbc2.pbc_ToastCheckHeaders where pbc2.pbc_ToastCheckHeaders.closedDate between '".$this->startTime."' AND  '".$this->endTime."' ";
+		$q="SELECT (SUM(checkAmount)-SUM(serviceCharges)-SUM(gcSold)) as 'Amount' FROM pbc2.pbc_sum_CheckSales WHERE guid IN (SELECT GUID FROM pbc2.pbc_ToastOrderHeaders WHERE openedDate between '".$this->startTime."' AND  '".$this->endTime."')";
 		$stmt = $this->mysqli->prepare($q);
 		$stmt->execute();
 		$result = $stmt->get_result();
