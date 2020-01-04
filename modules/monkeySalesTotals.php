@@ -87,6 +87,7 @@ jQuery('#myTable').DataTable();
       </tr>
     </thead>
 ";
+    fputcsv($handle, array("Restaurant","Monkey Order Number","Due Date","Order Amount","Client Name","Entered By"));
     foreach($results as $r){
       $restaurant=$wpdb->get_var( 'SELECT restaurantName FROM pbc_pbrestaurants WHERE mnkyID="'.$r->store_id.'"');
       $ret.="
