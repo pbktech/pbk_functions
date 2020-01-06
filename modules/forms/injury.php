@@ -10,6 +10,12 @@ function pbk_form_injury($data=null){
       jQuery('.multipleSelect').select2({
       	theme: \"classic\"
     	});
+      jQuery(\"#isEmployee_yes\").click(function() {
+        jQuery(\"#ConcentraInfo\").show();
+      });
+      jQuery(\"#isEmployee_no\").click(function() {
+        jQuery(\"#ConcentraInfo\").hide();
+      });
       jQuery(\".multipleSelect\").change(function () {
         var elementVal=jQuery(this).val();
         if(elementVal==\"Other\"){
@@ -184,6 +190,13 @@ $return.="
       $return.= "
         </div>
       </div>
+    </div>
+  </div>
+  <div id='ConcentraInfo' class=\"row\" style='display: none;'>
+    <div class=\"col\">
+    <a href='" . PBKF_URL . "/assets/pdf/IL_CO-Conentra_EmployerAuthorization_Form.pdf' target='_blank'>IL & CO - Conentra EmployerAuthorization Form</a> |
+    <a href='" . PBKF_URL . "/assets/pdf/IL_CO-Concentra_Patient_Information_Form.pdf' target='_blank'>IL & CO - Concentra Patient Information Form</a> |
+    <a href='" . PBKF_URL . "/assets/pdf/IL-Concentra_Locations.pdf' target='_blank'>IL - Concentra Locations</a>
     </div>
   </div>
   <div class=\"row\">

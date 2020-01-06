@@ -11,6 +11,11 @@ include dirname(__FILE__) . '/forms/foodborneIllness.php';
 include dirname(__FILE__) . '/forms/injury.php';
 include dirname(__FILE__) . '/forms/lostStolenProperty.php';
 if($_SERVER['REQUEST_METHOD'] == 'POST'){
+  $restaurant->restaurantID=$_POST['restaurantID'];
+  $restaurant->loadRestaurant();
+  if($GM=$restaurant->getManagerEmail("GM")){$emailAddress[]=$GM;}
+  if($AGM=$restaurant->getManagerEmail("AGM")){$emailAddress[]=$AGM;}
+  if($AM=$restaurant->getManagerEmail("AM")){$emailAddress[]=$AM;}
   $incidentType=$_POST['incidentType'];
   $reportInfo=json_encode($_POST['reportInfo'][$incidentType]);
   $guestInfo=json_encode($_POST['guest']);
@@ -22,14 +27,20 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
     case "foodborneIllness":
       $content['html'].=pbk_form_foodborneIllness($_POST['reportInfo']['foodborneIllness']);
       $incidentTypeName="foodborneIllness";
+      $emailAddress[]="vwillis@theproteinbar.com";
+      $emailAddress[]="lcominsky@theproteinbar.com";
       break;
     case "injury":
       $content['html'].=pbk_form_injury($_POST['reportInfo']['injury']);
       $incidentTypeName="injury";
+      $emailAddress[]="hr@theproteinbar.com";
+      $emailAddress[]="lcominsky@theproteinbar.com";
       break;
     case "lostStolenProperty":
       $content['html'].=pbk_form_lostStolenProperty($_POST['reportInfo']['lostStolenProperty']);
       $incidentTypeName="lostStolenProperty";
+      $emailAddress[]="jarbitman@theproteinbar.com";
+      $emailAddress[]="lcominsky@theproteinbar.com";
       break;
   }
   $email= new ToastReport();
@@ -58,7 +69,8 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
     exit();
   }
   if($pdf=$restaurant->buildHTMLPDF(json_encode($content))){
-    $email->reportEmail($cu->user_email.",jon@theproteinbar.com","Please see attached PDF","New Incident Report",$pdf);
+    $emailAddress[]=$cu->user_email;
+    $email->reportEmail(implode(",",$emailAddress),"Please see attached PDF","New Incident Report",$pdf);
   $ret.=  pbk_show_response(array("class"=>"success","message"=>  "The incident report for " . $_POST['guest']['Name'] . " has been saved."));
   }
 }

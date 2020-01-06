@@ -16,7 +16,7 @@ $return="
   </div>
   <div class=\"row\">
     <div class=\"col\">
-      <label for='conclusions'>Do not give the guest information or draw conclusions. It's very important that a member of the Store Support Center works through the complaint first.</label>
+      <strong>Do not give the guest information or draw conclusions. It's very important that a member of the Store Support Center works through the complaint first.</strong>
       <div class=\"input-group\">
         <div class=\"input-group-prepend\">
           <div class=\"input-group-text\">";
@@ -34,7 +34,10 @@ $return="
   </div>
   <div class=\"row\">
     <div class=\"col\">
-      <label for='contacted'>Say to the guest: \"Thank you so much for the information. A member of the Store Support Center will contact you within 24 hours to investigate.\" Provide the guest with your name and phone number and encourage them to reach out in the off chance that they are not contacted in 24 hours.</label>
+    <strong>Say to the guest:</strong>
+      <blockquote class=\"blockquote\">
+        <p class=\"mb-0\">“Thank you so much for the information. A member of the Store Support Center will contact you within 24 hours to investigate.”</p></blockquote>
+        <p><strong>Provide the guest with your name and phone number and encourage them to reach out in the off chance that they are not contacted in 24 hours.</strong></p>
       <div class=\"input-group\">
         <div class=\"input-group-prepend\">
           <div class=\"input-group-text\">";
@@ -59,6 +62,14 @@ $return="
     $return.=    "<textarea id='fbi_summary' name='reportInfo[foodborneIllness][summary]' class='form-control'/></textarea>";
   }
   $return.=    "
+    </div>
+  </div>
+  <div class=\"row\">
+    <div class=\"col\">
+    <strong>Say to the guest:</strong>
+      <blockquote class=\"blockquote\">
+        <p class=\"mb-0\">“Thank you; I have all the information I need at this point. I have not received any other complaints of this nature today. We will investigate your complaint today, and someone from Protein Bar & Kitchen will be in contact with you within the next 24 hours. Thank you very much for letting me know about this incident. Is there anything I can do for you right now?”</p>
+      </blockquote>
     </div>
   </div>
 </div>";
