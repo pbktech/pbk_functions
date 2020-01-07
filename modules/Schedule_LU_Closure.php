@@ -93,14 +93,17 @@ jQuery(document).ready(function() {
 			<input type='hidden' name='action' value='".$actionValue."' />";
 	if(isset($task['id'])){$ret.="<input type='hidden' name='id' value='".$task['id']."' />";}
 			$ret.="
-				<div>
-				<h4>Please choose a date and time</h4>
+				<div class='form-group'>
+				<strong>Please choose a date and time</strong>
 					<div class=\"input-group\" >
-						<label for='startDate'>Date</label><br /><input type=\"text\" id=\"startDate\" name=\"startDate\" value=\"".$dateValue."\"/>
+						<label for='startDate'>Date</label>
+						<input type=\"text\" id=\"startDate\" name=\"startDate\" value=\"".$dateValue."\"/>
 					</div>
 					<div class=\"input-group\" >
-						<label for='time_picker'>Time</label><br /><input id='time_picker' name='time_picker' id='time_picker' style='width: 100px;' value=\"".$timeValue."\"/><br />
-					<h4>Set App State</h4>
+						<label for='time_picker'>Time</label>
+						<input id='time_picker' name='time_picker' style='width: 100px;' value=\"".$timeValue."\"/><br />
+					</div>
+					<strong>Set App State</strong>
 					<div class=\"input-group\" >
 						<div class=\"input-group-prepend\">
 							<div class=\"input-group-text\">
@@ -113,7 +116,7 @@ jQuery(document).ready(function() {
 					</div>
 				</div>
 				</div>
-				<h4>Select the restaurants</h4>
+				<strong>Select the restaurants</strong>
 				" . $restaurants . "
 				<div>
 					<input type='submit' value='".strtoupper($actionValue)."' />
