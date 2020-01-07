@@ -88,38 +88,50 @@ jQuery(document).ready(function() {
 			<li>All times are in Cental. You need to adjust for CO and DC</li>
 		</ul>
 	</div>
-		<div>
+		<div class='form-group'>
 			<form method='post' action='".$page."' >
 			<input type='hidden' name='action' value='".$actionValue."' />";
 	if(isset($task['id'])){$ret.="<input type='hidden' name='id' value='".$task['id']."' />";}
 			$ret.="
 				<div class='form-group'>
-				<strong>Please choose a date and time</strong>
-					<div class=\"input-group\" >
-						<label for='startDate'>Date</label>
-						<input type=\"text\" id=\"startDate\" name=\"startDate\" value=\"".$dateValue."\"/>
-					</div>
-					<div class=\"input-group\" >
-						<label for='time_picker'>Time</label>
-						<input id='time_picker' name='time_picker' style='width: 100px;' value=\"".$timeValue."\"/><br />
-					</div>
-					<strong>Set App State</strong>
-					<div class=\"input-group\" >
-						<div class=\"input-group-prepend\">
-							<div class=\"input-group-text\">
-				 				<input type='radio' value='true' name='change[action]' id='ocAction-open' ".$onChecked." />	<label for='ocAction-open'>On</label>
+					<div class='row'>
+						<div class='col'>
+							<div class=\"form-group\" >
+								<label for=\"startDate\">Date</label>
+								<input class=\"form-control\" type=\"text\" id=\"startDate\" name=\"startDate\" value=\"".$dateValue."\"/>
 							</div>
-							<div class=\"input-group-text\">
-								<input type='radio' value='false' name='change[action]' id='ocAction-close' ".$offChecked." /> <label for='ocAction-close'>Off</label><br />
+						</div>
+						<div class='col'>
+							<div class=\"form-group\" >
+								<label for='time_picker'>Time</label>
+								<input class=\"form-control\" id='time_picker' name='time_picker' style='width: 100px;' value=\"".$timeValue."\"/><br />
+							</div>
+						</div>
+						<div class='col'>
+						<label for=''>App State</label>
+							<div class=\"input-group\" >
+								<div class=\"input-group-prepend\">
+									<div class=\"input-group-text\">
+				 						<input type='radio' value='true' name='change[action]' id='ocAction-open' ".$onChecked." />	<label for='ocAction-open'>On</label>
+									</div>
+									<div class=\"input-group-text\">
+										<input type='radio' value='false' name='change[action]' id='ocAction-close' ".$offChecked." /> <label for='ocAction-close'>Off</label><br />
+									</div>
+								</div>
 							</div>
 						</div>
 					</div>
-				</div>
-				</div>
-				<strong>Select the restaurants</strong>
-				" . $restaurants . "
-				<div>
-					<input type='submit' value='".strtoupper($actionValue)."' />
+					<div class='row'>
+						<div class='col'>
+						<label for=''>Restaurants</label>
+							" . $restaurants . "
+						</div>
+					</div>
+					<div class='row'>
+						<div class='col'>
+							<input type='submit' value='".strtoupper($actionValue)."' />
+						</div>
+					</div>
 				</div>
 			</form>
 		</div>
