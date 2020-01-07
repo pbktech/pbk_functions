@@ -15,7 +15,7 @@ class Restaurant {
 	public $restaurantID=null;
 	public $isAboveStore=0;
 	public $incidentTypes=array(
-		"foodborneIllness"=>array("Name"=>"Foodborne Illness","sendTo"=>array("lcominsky@theproteinbar.com","vwillis@theproteinbar.com")),
+		"foodborneIllness"=>array("Name"=>"Foodborne Illness/Foreign Object","sendTo"=>array("lcominsky@theproteinbar.com","vwillis@theproteinbar.com")),
 		"injury"=>array("Name"=>"Injury","sendTo"=>array("lcominsky@theproteinbar.com","hr@theproteinbar.com")),
 		"lostStolenProperty"=>array("Name"=>"Lost or Stolen Property","sendTo"=>array("lcominsky@theproteinbar.com","hr@theproteinbar.com","jarbitman@theproteinbar.com"))
 	);
