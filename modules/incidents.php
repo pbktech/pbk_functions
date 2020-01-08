@@ -21,7 +21,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
   $guestInfo=json_encode($_POST['guest']);
   $dateOfIncident=date("Y-m-d",strtotime($_POST['startDate'])) . " " . date("G:i:s",strtotime($_POST['timeOfIncident']));
   $content['format']='A4-P';
-  $content['title']=stripslashes($restaurant->incidentTypes[$incidentType]["Name"]) . ' Incident Report ' . $_POST['restaurantID'] . "-" . date("Ymd");
+  $content['title']=$restaurant->incidentTypes[$incidentType]["Name"] . ' Incident Report ' . $_POST['restaurantID'] . "-" . date("Ymd");
   $content['html']=pbk_form_incident_header($_POST)."<h3>" . $restaurant->incidentTypes[$incidentType]["Name"] . "</h3>";
   switch($incidentType){
     case "foodborneIllness":
