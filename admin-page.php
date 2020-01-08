@@ -76,7 +76,7 @@ function pbr_search_incident(){
     jQuery(document).ready( function () {
         jQuery('#myTable').DataTable();
         jQuery(\".itemName\").on(\"click\", function(e) {
-          jQuery(\"#report_\" + e.target.id).toggle();
+          jQuery(\"#report_\" + e.target.id).show();
         })
     } );
     </script>
@@ -105,10 +105,10 @@ function pbr_search_incident(){
         $ih["startDate"]=$r->dateOfIncident;
         $ih["timeOfIncident"]=$r->dateOfIncident;
         $ih["restaurantID"]=$r->restaurantID;
-        $i=array_merge($ih,json_decode($r->guestInfo,true));
+        $ih['guest']=json_decode($r->guestInfo,true);
         $content['format']='A4-P';
-        $content['title']=$restaurant->incidentTypes[$r->incidentType]["Name"] . ' Incident Report ' . $ih['restaurantID'] . "-" . date("Ymd");
-        $content['html']=pbk_form_incident_header($i)."<h3>" . $restaurant->incidentTypes[$r->incidentType]["Name"] . "</h3>";
+        $content['title']=$restaurant->incidentTypes[$r->incidentType]["Name"] . ' Incident Report ' . $ih['restaurantID'] . "-" . date("Ymd",strtotime($r->dateOfIncident));
+        $content['html']=pbk_form_incident_header($ih)."<h3>" . $restaurant->incidentTypes[$r->incidentType]["Name"] . "</h3>";
         switch($r->incidentType){
           case "foodborneIllness":
             $content['html'].=pbk_form_foodborneIllness(json_decode($r->reportInfo,true));
@@ -120,7 +120,7 @@ function pbr_search_incident(){
             $content['html'].=pbk_form_lostStolenProperty(json_decode($r->reportInfo,true));
             break;
         }
-        if($link=$restaurant->buildHTMLPDF($content)){$download="<a href='" . $link['Link'] . "' target='_blank'>Download</a>";}else{$download='';}
+        if($link=$restaurant->buildHTMLPDF(json_encode($content))){$download="<a href='" . $link['Link'] . "' target='_blank'>Download</a>";}else{$download='';}
         echo "
         <tr>
           <td><div class='itemName' id='".$r->id_pbc_incident_reports."'>" . $restaurant->getRestaurantName($r->restaurantID) . "</div></td>
@@ -129,9 +129,6 @@ function pbr_search_incident(){
           <td>" . $restaurant->incidentTypes[$r->incidentType]["Name"] . "</td>
           <td>" . date("m/d/Y",strtotime($r->reportAdded)) . "</td>
           <td>" . $download . "</td>
-        </tr>
-        <tr style='display: none;' id='report_".$r->id_pbc_incident_reports."'>
-          <td colspan='6'>" . $content['html'] . "</td>
         </tr>
         ";
       }
