@@ -4,44 +4,164 @@ require_once( ABSPATH . 'wp-config.php' );
 }
 add_action('admin_enqueue_scripts', 'pbk_scripts');
 require_once( ABSPATH . 'wp-admin/includes/screen.php' );
-    add_action('admin_menu', 'pbr_setup_menu');
+add_action('admin_menu', 'pbr_setup_menu');
     add_action( 'admin_post_pbr_save_restaurant_option', 'pbr_update_restaurant' );
     add_action( 'admin_post_pbr_save_nho', 'pbr_update_nho' );
     add_action('admin_post_pbr_nho_attendance_update','pbr_nho_attendance');
     function pbr_setup_menu(){
-            add_menu_page( 'Manage PB Restaurants', 'PBR Restaurants', 'manage_options', 'Manage-PB-Restaurants', 'pbr_edit_restaurant');
-            add_submenu_page( 'Manage-PB-Restaurants', 'Edit a Restaurant', 'Edit a Restaurant', 'manage_options', 'pbr-edit-restaurant', 'pbr_edit_restaurant' );
-            add_submenu_page( 'Manage-PB-Restaurants', 'Add a Restaurant', 'Add a Restaurant', 'manage_options', 'pbr-add-restaurant', 'pbr_add_restaurant' );
-            add_submenu_page( 'Manage-PB-Restaurants', 'Manage NHO Events', 'Manage NHO Events', 'manage_options', 'pbr-nho', 'pbr_nho_setup' );
-            add_submenu_page( 'Manage-PB-Restaurants', 'NHO Archive', 'NHO Archive', 'manage_options', 'pbr-nho-archive', 'pbr_nho_history' );
+            add_menu_page( 'PBK Functions', 'PBK Functions', 'manage_options', 'Manage-PBK', 'pbr_show_admin_functions');
+            add_submenu_page( 'Manage-PBK', 'Edit a Restaurant', 'Edit a Restaurant', 'manage_options', 'pbr-edit-restaurant', 'pbr_edit_restaurant' );
+            add_submenu_page( 'Manage-PBK', 'Add a Restaurant', 'Add a Restaurant', 'manage_options', 'pbr-add-restaurant', 'pbr_add_restaurant' );
+            add_submenu_page( 'Manage-PBK', 'Manage NHO Events', 'Manage NHO Events', 'manage_options', 'pbr-nho', 'pbr_nho_setup' );
+            add_submenu_page( 'Manage-PBK', 'NHO Archive', 'NHO Archive', 'manage_options', 'pbr-nho-archive', 'pbr_nho_history' );
+            add_submenu_page( 'Manage-PBK', 'Incident Archive', 'Incident Archive', 'manage_options', 'pbr-incident-history', 'pbr_search_incident' );
     }
 
     function pbr_admin_init(){
     }
     function pbr_add_restaurant(){
-      echo "<h2>Add a Restaurant</h2>";
-   	$restaurant = new Restaurant();
-   	echo $restaurant->restaurantEditBox();
-   	/* TEST*/
+      echo "<div class='wrap'><h2>Add a Restaurant</h2>";
+   	  $restaurant = new Restaurant();
+   	  echo $restaurant->restaurantEditBox();
+      echo "</div>";
     }
+    function pbr_show_admin_functions(){
+      echo "
+      <div class='wrap'>
+      <h2>PBK Functions</h2>
+        <div class='container-fluid' style='width:100%;'>
+          <div class='row'>
+            <div class='col'>
+              <ul class='nav flex-column'>
+                <li class='nav-item'><a class='nav-link' href='" . admin_url( 'admin.php?page=pbr-edit-restaurant') . "'>Edit a Restaurant</a></li>
+                <li class='nav-item'><a class='nav-link' href='" . admin_url( 'admin.php?page=pbr-add-restaurant') . "'>Add a Restaurant</a></li>
+                <li class='nav-item'><a class='nav-link' href='" . admin_url( 'admin.php?page=pbr-nho') . "'>Manage NHO Events</a></li>
+                <li class='nav-item'><a class='nav-link' href='" . admin_url( 'admin.php?page=pbr-nho-archive') . "'>NHO Archive</a></li>
+                <li class='nav-item'><a class='nav-link' href='" . admin_url( 'admin.php?page=pbr-incident-history') . "'>Incident Archive</a></li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      ";
+    }
+function pbr_search_incident(){
+  $restaurant = new Restaurant();
+  echo "
+  <div class='wrap'>
+    <h2>Incident Archive</h2>
+      <div class='container-fluid' style='width:100%;'>
+      <div class='container'>
+        <form method='get' action='". admin_url( 'admin.php')."' >
+          <input type='hidden' name='page' value='pbr-incident-history' />
+          <div class=\"form-group\">
+            <div class='row'>
+              <div class='col'>
+                " . $restaurant->buildDateSelector('startDate',"Starting Date") . "
+              </div>
+              <div class='col'>
+                " . $restaurant->buildDateSelector('endDate',"Ending Date") . "
+              </div>
+            </div>
+          </div>
+          <div class=\"form-group\">
+            <input id='submit' type='submit' value='SEARCH' />
+          </div>
+        </form>
+        </div>
+    " . $restaurant->pbk_form_processing();
+  if(isset($_GET['startDate']) && isset($_GET['endDate'])){
+    echo "
+    <script>
+    jQuery(document).ready( function () {
+        jQuery('#myTable').DataTable();
+        jQuery(\".itemName\").on(\"click\", function(e) {
+          jQuery(\"#report_\" + e.target.id).toggle();
+        })
+    } );
+    </script>
+    <div id='queryResults'>
+    ";
+    if($results=$restaurant->get_incident_reports()){
+      include dirname(__FILE__) . '/modules/forms/incident_header.php';
+      include dirname(__FILE__) . '/modules/forms/foodborneIllness.php';
+      include dirname(__FILE__) . '/modules/forms/injury.php';
+      include dirname(__FILE__) . '/modules/forms/lostStolenProperty.php';
+      echo "
+      <table id='myTable' class=\"table table-striped table-hover\" style='width:100%;'>
+        <thead style='background-color:#0e2244; color: #ffffff; text-align: center;font-weight:bold;'>
+          <tr>
+            <th>Restaurant</th>
+            <th>Incident Date</th>
+            <th>Reported By</th>
+            <th>Incident Type</th>
+            <th>Reported Date</th>
+            <th></th>
+          </tr>
+        </thead>
+";
+      foreach($results as $r){
+        $ih["reporterName"]=$r->reporterName;
+        $ih["startDate"]=$r->dateOfIncident;
+        $ih["timeOfIncident"]=$r->dateOfIncident;
+        $ih["restaurantID"]=$r->restaurantID;
+        $i=array_merge($ih,json_decode($r->guestInfo,true));
+        $content['format']='A4-P';
+        $content['title']=$restaurant->incidentTypes[$r->incidentType]["Name"] . ' Incident Report ' . $ih['restaurantID'] . "-" . date("Ymd");
+        $content['html']=pbk_form_incident_header($i)."<h3>" . $restaurant->incidentTypes[$r->incidentType]["Name"] . "</h3>";
+        switch($r->incidentType){
+          case "foodborneIllness":
+            $content['html'].=pbk_form_foodborneIllness(json_decode($r->reportInfo,true));
+            break;
+          case "injury":
+            $content['html'].=pbk_form_injury(json_decode($r->reportInfo,true));
+            break;
+          case "lostStolenProperty":
+            $content['html'].=pbk_form_lostStolenProperty(json_decode($r->reportInfo,true));
+            break;
+        }
+        if($link=$restaurant->buildHTMLPDF($content)){$download="<a href='" . $link['Link'] . "' target='_blank'>Download</a>";}else{$download='';}
+        echo "
+        <tr>
+          <td><div class='itemName' id='".$r->id_pbc_incident_reports."'>" . $restaurant->getRestaurantName($r->restaurantID) . "</div></td>
+          <td>" . date("m/d/Y",strtotime($r->dateOfIncident)) . "</td>
+          <td>" . $r->reporterName . "</td>
+          <td>" . $restaurant->incidentTypes[$r->incidentType]["Name"] . "</td>
+          <td>" . date("m/d/Y",strtotime($r->reportAdded)) . "</td>
+          <td>" . $download . "</td>
+        </tr>
+        <tr style='display: none;' id='report_".$r->id_pbc_incident_reports."'>
+          <td colspan='6'>" . $content['html'] . "</td>
+        </tr>
+        ";
+      }
+      echo "</table>";
+    }else {
+      echo "<div class='alert alert-warning'>There were no reports found for " . $_GET['startDate'] . " - " . $_GET['endDate'] . "</div>";
+    }
+    echo "</div>";
+  }
+  echo "
+    </div>
+  </div>";
+}
 function pbr_edit_restaurant(){
 	if(!class_exists('WP_List_Table')){
 	   require_once( ABSPATH . 'wp-admin/includes/class-wp-list-table.php' );
 	}
    echo "<div class=\"wrap\"><div id=\"icon-users\" class=\"icon32\"></div><h2>Edit an Existing Restaurant <a href=\"?page=pbr-add-restaurant\" class=\"add-new-h2\">Add New</a>
             </h2>
-            </div>";
+            ";
 	if(!isset($_GET['restaurant']) && !is_numeric()) {
 		require_once( 'classes/testlisttable.php' );
 	   $myListTable = new My_Example_List_Table();
 		$myListTable->prepare_items();
 		$myListTable->display();
-//		echo '</div>';
 	}else {
    	$restaurant = new Restaurant($_GET['restaurant']);
    	echo $restaurant->restaurantEditBox();
 	}
-//	echo '</div>';
+  echo "</div>";
 }
 function pbr_update_restaurant() {
 	print_r($_POST);
@@ -85,6 +205,8 @@ function pbr_nho_attendance(){
   exit;
 }
 function pbr_nho_history(){
+  echo "<div class='wrap'><h2>View the NHO History for the last 3 months.</h2>";
   $restaurant = new Restaurant();
   echo $restaurant->nhoHistory($_GET);
+  echo "</div>";
 }

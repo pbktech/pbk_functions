@@ -706,7 +706,6 @@ jQuery(document).ready(function(jQuery){jQuery.datepicker.setDefaults({"closeTex
 			$nhoEvents=$this->getPreviousNHOEvents(3);
 			$return="
 			<div>
-			<div><h2>View the NHO History for the last 3 months.</h2></div>
 			<form method=\"get\" action=\"admin.php\">
 				<input type=\"hidden\" name=\"page\" value=\"pbr-nho-archive\" />
 				<select name='nhoID' onchange='this.form.submit()'>
@@ -772,6 +771,14 @@ jQuery(document).ready(function(jQuery){jQuery.datepicker.setDefaults({"closeTex
 			</div>";
 		}
 		return $return;
+	}
+	 function get_incident_reports(){
+		global $wpdb;
+		$results=$wpdb->get_results("SELECT * FROM pbc_incident_reports WHERE dateOfIncident BETWEEN '".date("Y-m-d",strtotime($_GET['startDate']))." 00:00:00' AND '".date("Y-m-d",strtotime($_GET['endDate']))." 23:59:59' OR reportAdded  BETWEEN '".date("Y-m-d",strtotime($_GET['startDate']))." 00:00:00' AND '".date("Y-m-d",strtotime($_GET['endDate']))." 23:59:59'");
+		if($results){
+			return $results;
+		}
+		return false;
 	}
 		private function getPreviousNHOEvents($months) {
 			global $wpdb;
@@ -855,6 +862,34 @@ AND pbc_users.id=nhoHost AND pbc_pbrestaurants.restaurantID=nhoLocation");
 				}
 			return $return;
 		}
+	}
+	public function pbk_form_processing(){
+		return "
+		<script>
+			jQuery(document).ready(function() {
+				jQuery(\"#submit\").click(function(){
+	    		window.scrollTo(0,0);
+	    		jQuery(\"#queryResults\").hide();
+	    		jQuery(\"#processingGif\").show();
+	  		});
+			});
+		</script>
+		<div id='processingGif' style=\"display: none;text-align:center;\"><img src='" . PBKF_URL . "/assets/images/processing.gif' style='height:92px;width:92px;' /></div>
+		";
+	}
+	public function buildDateSelector($field='startDate',$label="Starting Date"){
+		if(isset($_GET[$field])){$dateValue=$_GET[$field];}else{$dateValue="";}
+		return "
+		<script>
+			jQuery(document).ready(function() {
+				jQuery('#".$field."').datepicker({
+			      dateFormat : 'mm/dd/yy'
+				});
+			});
+		</script>
+		<label for='$field'>$label</label>
+		<input class=\"form-control\" type=\"text\" id=\"".$field."\" name=\"".$field."\" value=\"".$dateValue."\"/>
+		";
 	}
 
 }
