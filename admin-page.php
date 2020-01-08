@@ -108,7 +108,7 @@ function pbr_search_incident(){
         $ih['guest']=json_decode($r->guestInfo,true);
         $content['format']='A4-P';
         $content['title']=$restaurant->incidentTypes[$r->incidentType]["Name"] . ' Incident Report ' . $ih['restaurantID'] . "-" . date("Ymd",strtotime($r->dateOfIncident));
-        $content['html']=pbk_form_incident_header($ih)."<h3>" . $restaurant->incidentTypes[$r->incidentType]["Name"] . "</h3>";
+        $content['html']=pbk_form_incident_header($ih)."<h3>" . stripslashes($restaurant->incidentTypes[$r->incidentType]["Name"]) . "</h3>";
         switch($r->incidentType){
           case "foodborneIllness":
             $content['html'].=pbk_form_foodborneIllness(json_decode($r->reportInfo,true));
