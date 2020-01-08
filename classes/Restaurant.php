@@ -658,7 +658,7 @@ jQuery(document).ready(function(jQuery){jQuery.datepicker.setDefaults({"closeTex
 	  $mpdf->WriteHTML(utf8_encode($content->html),\Mpdf\HTMLParserMode::HTML_BODY);
 	  $mpdf->Output($report->docSaveLocation.str_replace(" ","_",str_replace("/","_",$content->title)).".pdf", 'F');
 		if(file_exists($report->docSaveLocation.str_replace(" ","_",str_replace("/","_",$content->title)).".pdf")){
-			return array("Link"=>$report->docDownloadLocation.str_replace(" ","_",$content->title).".pdf","Local"=>$report->docSaveLocation.str_replace(" ","_",$content->title).".pdf");
+			return array("Link"=>$report->docDownloadLocation.str_replace(" ","_",str_replace("/","_",$content->title)).".pdf","Local"=>$report->docSaveLocation.str_replace(" ","_",str_replace("/","_",$content->title)).".pdf");
 		}else {
 			return false;
 		}
