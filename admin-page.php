@@ -5,17 +5,17 @@ require_once( ABSPATH . 'wp-config.php' );
 add_action('admin_enqueue_scripts', 'pbk_scripts');
 require_once( ABSPATH . 'wp-admin/includes/screen.php' );
 add_action('admin_menu', 'pbr_setup_menu');
-    add_action( 'admin_post_pbr_save_restaurant_option', 'pbr_update_restaurant' );
-    add_action( 'admin_post_pbr_save_nho', 'pbr_update_nho' );
-    add_action('admin_post_pbr_nho_attendance_update','pbr_nho_attendance');
-    function pbr_setup_menu(){
-            add_menu_page( 'PBK Functions', 'PBK Functions', 'manage_options', 'Manage-PBK', 'pbr_show_admin_functions');
-            add_submenu_page( 'Manage-PBK', 'Edit a Restaurant', 'Edit a Restaurant', 'manage_options', 'pbr-edit-restaurant', 'pbr_edit_restaurant' );
-            add_submenu_page( 'Manage-PBK', 'Add a Restaurant', 'Add a Restaurant', 'manage_options', 'pbr-add-restaurant', 'pbr_add_restaurant' );
-            add_submenu_page( 'Manage-PBK', 'Manage NHO Events', 'Manage NHO Events', 'manage_options', 'pbr-nho', 'pbr_nho_setup' );
-            add_submenu_page( 'Manage-PBK', 'NHO Archive', 'NHO Archive', 'manage_options', 'pbr-nho-archive', 'pbr_nho_history' );
-            add_submenu_page( 'Manage-PBK', 'Incident Archive', 'Incident Archive', 'manage_options', 'pbr-incident-history', 'pbr_search_incident' );
-    }
+add_action( 'admin_post_pbr_save_restaurant_option', 'pbr_update_restaurant' );
+add_action( 'admin_post_pbr_save_nho', 'pbr_update_nho' );
+add_action('admin_post_pbr_nho_attendance_update','pbr_nho_attendance');
+function pbr_setup_menu(){
+  add_menu_page( 'PBK Functions', 'PBK Functions', 'manage_options', 'Manage-PBK', 'pbr_show_admin_functions');
+  add_submenu_page( 'Manage-PBK', 'Edit a Restaurant', 'Edit a Restaurant', 'manage_options', 'pbr-edit-restaurant', 'pbr_edit_restaurant' );
+  add_submenu_page( 'Manage-PBK', 'Add a Restaurant', 'Add a Restaurant', 'manage_options', 'pbr-add-restaurant', 'pbr_add_restaurant' );
+  add_submenu_page( 'Manage-PBK', 'Manage NHO Events', 'Manage NHO Events', 'manage_options', 'pbr-nho', 'pbr_nho_setup' );
+  add_submenu_page( 'Manage-PBK', 'NHO Archive', 'NHO Archive', 'manage_options', 'pbr-nho-archive', 'pbr_nho_history' );
+  add_submenu_page( 'Manage-PBK', 'Incident Archive', 'Incident Archive', 'manage_options', 'pbr-incident-history', 'pbr_search_incident' );
+}
 
     function pbr_admin_init(){
     }
@@ -45,8 +45,48 @@ add_action('admin_menu', 'pbr_setup_menu');
         </div>
       ";
     }
-function pbr_search_incident(){
+  function pbr_incident_pdf(){
+    global $wpdb;
+    $r=$wpdb->get_row("SELECT * FROM pbc_incident_reports WHERE id_pbc_incident_reports='".$_GET['incident']."'");
+    if(!$r){
+      echo "<div class='wrap'><div class='alert alert-warning'>Report Not Found</div></div>";
+      exit;
+    }
+    $restaurant = new Restaurant();
+    include dirname(__FILE__) . '/modules/forms/incident_header.php';
+    include dirname(__FILE__) . '/modules/forms/foodborneIllness.php';
+    include dirname(__FILE__) . '/modules/forms/injury.php';
+    include dirname(__FILE__) . '/modules/forms/lostStolenProperty.php';
+    $ih["reporterName"]=$r->reporterName;
+    $ih["startDate"]=$r->dateOfIncident;
+    $ih["timeOfIncident"]=$r->dateOfIncident;
+    $ih["restaurantID"]=$r->restaurantID;
+    $ih['guest']=json_decode($r->guestInfo,true);
+    $content['format']='A4-P';
+    $content['title']=$restaurant->incidentTypes[$r->incidentType]["Name"] . ' Incident Report ' . $ih['restaurantID'] . "-" . date("Ymd",strtotime($r->dateOfIncident));
+    $content['html']=pbk_form_incident_header($ih)."<h3>" . $restaurant->incidentTypes[$r->incidentType]["Name"] . "</h3>";
+    switch($r->incidentType){
+      case "foodborneIllness":
+        $content['html'].=pbk_form_foodborneIllness(json_decode($r->reportInfo,true));
+        break;
+      case "injury":
+        $content['html'].=pbk_form_injury(json_decode($r->reportInfo,true));
+        break;
+      case "lostStolenProperty":
+        $content['html'].=pbk_form_lostStolenProperty(json_decode($r->reportInfo,true));
+        break;
+    }
+    echo "<div class='wrap'><div class='container'>" . $content['html'];
+    if($link=$restaurant->buildHTMLPDF(json_encode($content))){
+      echo "<a href='".$link['Link']."' target='_blank'>Download PDF</a></div></div>";
+    }
+  }
+  function pbr_search_incident(){
   $restaurant = new Restaurant();
+  if(isset($_GET['incident'])){
+    pbr_incident_pdf();
+    exit;
+  }
   echo "
   <div class='wrap'>
     <h2>Incident Archive</h2>
@@ -83,10 +123,6 @@ function pbr_search_incident(){
     <div id='queryResults'>
     ";
     if($results=$restaurant->get_incident_reports()){
-      include dirname(__FILE__) . '/modules/forms/incident_header.php';
-      include dirname(__FILE__) . '/modules/forms/foodborneIllness.php';
-      include dirname(__FILE__) . '/modules/forms/injury.php';
-      include dirname(__FILE__) . '/modules/forms/lostStolenProperty.php';
       echo "
       <table id='myTable' class=\"table table-striped table-hover\" style='width:100%;'>
         <thead style='background-color:#0e2244; color: #ffffff; text-align: center;font-weight:bold;'>
@@ -101,26 +137,7 @@ function pbr_search_incident(){
         </thead>
 ";
       foreach($results as $r){
-        $ih["reporterName"]=$r->reporterName;
-        $ih["startDate"]=$r->dateOfIncident;
-        $ih["timeOfIncident"]=$r->dateOfIncident;
-        $ih["restaurantID"]=$r->restaurantID;
-        $ih['guest']=json_decode($r->guestInfo,true);
-        $content['format']='A4-P';
-        $content['title']=$restaurant->incidentTypes[$r->incidentType]["Name"] . ' Incident Report ' . $ih['restaurantID'] . "-" . date("Ymd",strtotime($r->dateOfIncident));
-        $content['html']=pbk_form_incident_header($ih)."<h3>" . $restaurant->incidentTypes[$r->incidentType]["Name"] . "</h3>";
-        switch($r->incidentType){
-          case "foodborneIllness":
-            $content['html'].=pbk_form_foodborneIllness(json_decode($r->reportInfo,true));
-            break;
-          case "injury":
-            $content['html'].=pbk_form_injury(json_decode($r->reportInfo,true));
-            break;
-          case "lostStolenProperty":
-            $content['html'].=pbk_form_lostStolenProperty(json_decode($r->reportInfo,true));
-            break;
-        }
-        if($link=$restaurant->buildHTMLPDF(json_encode($content))){$download="<a href='" . $link['Link'] . "' target='_blank'>Download</a>";}else{$download='';}
+        $download="<a href='" . admin_url( 'admin.php?page=pbr-incident-history&amp;incident=' . $r->id_pbc_incident_reports) . "' target='_blank'>Download</a>";
         echo "
         <tr>
           <td><div class='itemName' id='".$r->id_pbc_incident_reports."'>" . $restaurant->getRestaurantName($r->restaurantID) . "</div></td>
