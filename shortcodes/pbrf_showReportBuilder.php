@@ -11,7 +11,7 @@ function pbrf_showReportBuilder( $atts ) {
       if(count($pages)>0){
         return $r->pbk_array_nav($pages);
       }else {
-        return "<div class='alert  alert-primary'>There are not any pages available for you.</div>";
+        return "<div class='alert  alert-primary'>There are not any pages available.</div>";
       }
       /*
       $scanned_directory = array_diff(scandir($directory), array('..', '.'));
