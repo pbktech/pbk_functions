@@ -72,7 +72,7 @@ class Restaurant {
 			global $current_user;
 			$restaurants = $wpdb->get_results("SELECT mgrType FROM pbc_pbr_managers WHERE pbc_pbr_managers.restaurantID='".$this->restaurantID."'", OBJECT );
 			if($restaurants[0]->mgrType != "AGM" && $restaurants[0]->mgrType != "GM" && $restaurants[0]->mgrType != "AM" && $restaurants[0]->mgrType != "SSC") {
-				echo "<div class='error'><p>You do not have access to this restaurant.</p></div>";
+				echo "<div class='alert alert-danger'><p>You do not have access to this restaurant.</p></div>";
 				exit;
 			}
 		}
@@ -866,6 +866,44 @@ AND pbc_users.id=nhoHost AND pbc_pbrestaurants.restaurantID=nhoLocation");
 				}
 			return $return;
 		}
+	}
+	public function pbk_array_nav($array){
+		$return="
+		<div class='container-fluid' style='width:100%;'>
+			<div class='row'>
+				<div class='col'>
+					<ul class='nav flex-column'>";
+						foreach($array as $a){
+							$return.="
+						<li class='nav-item'><a class='nav-link' href='" . $a['Link'] . "'>" . $a['Title'] . "</a></li>
+						";
+						}
+						$return.="
+						</ul>
+					</div>
+				</div>
+			</div>
+		";
+		return $return;
+	}
+	public function pbk_get_children(){
+		$return=array();
+		global $post;
+		global $wpdb;
+		$args = array(
+    'post_type'      => 'page',
+    'posts_per_page' => -1,
+    'post_parent'    => $post->ID,
+    'order'          => 'ASC',
+    'orderby'        => 'menu_order'
+ 		);
+		$parent = new WP_Query( $args );
+		if ( $parent->have_posts() ){
+			foreach ( $parent->posts as $post ){
+				$return[]=array("Link"=>get_permalink($post->ID),"Title"=>$post->post_title);
+			}
+		}
+		return $return;
 	}
 	public function pbk_form_processing(){
 		return "

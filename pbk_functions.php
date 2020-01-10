@@ -64,6 +64,7 @@ include('shortcodes/pbrf_depositCalculator.php');
 include('shortcodes/pbrf_showReportBuilder.php');
 include('shortcodes/pbr_show_restaurants.php');
 include('shortcodes/pbr_show_restaurant_hours.php');
+include('shortcodes/pbk_showChildPages.php');
 
 /*Admin Pages*/
 include('admin-page.php'); // the plugin options page HTML and save functions
@@ -73,6 +74,7 @@ add_shortcode( 'show_deposit_calculator', 'pbrf_depositCalculator' );
 add_shortcode( 'show_finance_report_builder', 'pbrf_showReportBuilder' );
 add_shortcode( 'show_restaurants', 'pbr_show_restaurants' );
 add_shortcode( 'show_restaurant_hours', 'pbr_show_restaurant_hours' );
+add_shortcode( 'show_pbk_child_pages', 'pbr_showChildPages' );
 function pbk_show_response($m){
   return "
       <div class='alert ".$m['class']."' id='pbk_message' >".$m['message']."</div>
