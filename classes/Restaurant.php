@@ -155,13 +155,13 @@ class Restaurant {
 							<div class='form-group'>
 								<div class='row'>
 									<div class='col'>
-										<label for='restaurantID'>Restaurant ID</label><input name='restaurantID' id='restaurantID' type='text' ";
+										<label for='restaurantID'>Restaurant ID</label><br /><input name='restaurantID' id='restaurantID' type='text' ";
 		if(isset($this->rinfo->restaurantID)) { $return.= " value='".$this->rinfo->restaurantID."' ";}
 
 		$return.= "/>
 								</div>
 								<div class='col'>
-		 							<label for='toastID'>Toast ID</label><input name='toastID' id='toastID' type='text' ";
+		 							<label for='toastID'>Toast ID</label><br /><input name='toastID' id='toastID' type='text' ";
 		if(isset($this->rinfo->toastID)) { $return.= " value='".$this->rinfo->toastID."' ";}
 
 		$return.= "/>
@@ -169,7 +169,7 @@ class Restaurant {
 							</div>
 							<div class='row'>
 								<div class='col'>
-		 							<label for='GUID'>Toast GUID</label><input name='GUID' id='GUID' type='text' ";
+		 							<label for='GUID'>Toast GUID</label><br /><input name='GUID' id='GUID' type='text' ";
 		if(isset($this->rinfo->GUID)) { $return.= " value='".$this->rinfo->GUID."' ";}
 
 		$return.= "/>
