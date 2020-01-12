@@ -122,7 +122,7 @@ class Restaurant {
 		$r_info= (array) $this->rinfo;
 		$allUsers=$this->getUserNames();
 		$colOne=array("restaurantName"=>"Restaurant Name","restaurantID"=>"Restaurant ID","restaurantCode"=>"Restaurant Code","toastID"=>"Toast ID",
-	"GUID"=>"Toast GUID","mnkyID"=>"Monkey ID","levelUpID"=>"LevelUp ID","openingDate"=>"Opening Date");
+	"GUID"=>"Toast GUID","mnkyID"=>"Monkey ID","levelUpID"=>"LevelUp ID","openingDate"=>"Opening Date",""=>"");
 		$return= "
 		<script>
 		jQuery( function() {
