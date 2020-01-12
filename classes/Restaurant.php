@@ -119,8 +119,10 @@ class Restaurant {
 	}
 
 	public function restaurantEditBox(){
+		$r_info= (array) $this->rinfo;
 		$allUsers=$this->getUserNames();
-		$colOne=array(""=>"");
+		$colOne=array("restaurantName"=>"Restaurant Name","restaurantID"=>"Restaurant ID","restaurantCode"=>"Restaurant Code","toastID"=>"Toast ID",
+	"GUID"=>"Toast GUID","mnkyID"=>"Monkey ID","levelUpID"=>"LevelUp ID","openingDate"=>"Opening Date");
 		$return= "
 		<script>
 		jQuery( function() {
@@ -154,68 +156,21 @@ class Restaurant {
 						<h4>Service IDs</h4>
 							<div class='form-group'>
 								<div class='row'>
-									<div class='col'>
-										<label for='restaurantID'>Restaurant ID</label><br /><input name='restaurantID' id='restaurantID' type='text' ";
-		if(isset($this->rinfo->restaurantID)) { $return.= " value='".$this->rinfo->restaurantID."' ";}
+									";
+									$count=0;
+									foreach($colOne as $id=>$name){
+										$value='';
+										if(isset($r_info[$id]){$value=$r_info[$id];}
+										if($id=='openingDate'){date("m/d/Y",strtotime($value=$r_info[$id]));}
+										$return.= "
+										<div class='col'>
+											<label for='".$id."'>".$name."</label><br /><input name='".$id."' id='".$id."' value='".$value."' type='text' />
+										</div>";
+										$count++;
+										$return.=($count%3 == 0 ? "</div><div class='row'>" : "");
+									}
 
-		$return.= "/>
-								</div>
-								<div class='col'>
-		 							<label for='toastID'>Toast ID</label><br /><input name='toastID' id='toastID' type='text' ";
-		if(isset($this->rinfo->toastID)) { $return.= " value='".$this->rinfo->toastID."' ";}
-
-		$return.= "/>
-								</div>
-							</div>
-							<div class='row'>
-								<div class='col'>
-		 							<label for='GUID'>Toast GUID</label><br /><input name='GUID' id='GUID' type='text' ";
-		if(isset($this->rinfo->GUID)) { $return.= " value='".$this->rinfo->GUID."' ";}
-
-		$return.= "/>
-								</div>
-								<div class='col'>
-		 							<label for='levelUpID'>LevelUp ID</label><br /><input name='levelUpID' id='levelUpID' type='text' ";
-		if(isset($this->rinfo->levelUpID)) { $return.= " value='".$this->rinfo->levelUpID."' ";}
-
-		$return.= "/>
-								</div>
-							</div>
-							<div class='row'>
-								<div class='col'>
-		 							<label for='mnkyID'>Monkey ID</label><br /><input name='mnkyID' id='mnkyID' type='text' ";
-		if(isset($this->rinfo->mnkyID)) { $return.= " value='".$this->rinfo->mnkyID."' ";}
-
-		$return.= "/>
-								</div>
-								<div class='col'>
-		 							<label for='levelUpID'>LevelUp ID</label><br /><input name='levelUpID' id='levelUpID' type='text' ";
-		if(isset($this->rinfo->levelUpID)) { $return.= " value='".$this->rinfo->levelUpID."' ";}
-
-		$return.= "/>
-								</div>
-							</div>
-							<div class='row'>
-								<div class='col'>
-		 							<input name='microsID' id='microsID' type='hidden' value='".$this->rinfo->microsID."' /><br />\n<label for='restaurantName'>Restaurant Name</label><br /><input name='restaurantName' id='restaurantName' type='text' ";
-		if(isset($this->rinfo->restaurantName)) { $return.= " value='".$this->rinfo->restaurantName."' ";}
-
-		$return.= "/>
-								</div>
-								</div>
-								<div class='col'>
-		 							<label for='restaurantCode'>Restaurant Code</label><br /><input name='restaurantCode' id='restaurantCode' type='text' ";
-		if(isset($this->rinfo->restaurantCode)) { $return.= " value='".$this->rinfo->restaurantCode."' ";}
-
-		$return.= "/>
-								</div>
-							</div>
-							<div class='row'>
-								<div class='col'>
-		 							<label for='openingDate'>Opening Date</label><br /><input name='openingDate' id='openingDate' type='text' ";
-		if(isset($this->rinfo->openingDate)) { $return.= " value='".date("m/d/Y",strtotime($this->rinfo->openingDate))."' ";}
-
-		$return.= "/>
+		$return.= "
 							</div>
 						</div>
 					</div>
