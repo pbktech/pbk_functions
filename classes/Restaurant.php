@@ -202,13 +202,17 @@ class Restaurant {
 
 		$return.= "/>
 								</div>
-							</div>
-							<div class='row'>
+								</div>
 								<div class='col'>
 		 							<label for='restaurantCode'>Restaurant Code</label><br /><input name='restaurantCode' id='restaurantCode' type='text' ";
 		if(isset($this->rinfo->restaurantCode)) { $return.= " value='".$this->rinfo->restaurantCode."' ";}
 
-		$return.= "/>		<label for='openingDate'>Opening Date</label><br /><input name='openingDate' id='openingDate' type='text' ";
+		$return.= "/>
+								</div>
+							</div>
+							<div class='row'>
+								<div class='col'>
+		 							<label for='openingDate'>Opening Date</label><br /><input name='openingDate' id='openingDate' type='text' ";
 		if(isset($this->rinfo->openingDate)) { $return.= " value='".date("m/d/Y",strtotime($this->rinfo->openingDate))."' ";}
 
 		$return.= "/>
