@@ -160,7 +160,7 @@ class Restaurant {
 									$count=0;
 									foreach($colOne as $id=>$name){
 										$value='';
-										if(isset($r_info[$id]){$value=$r_info[$id];}
+										if(isset($r_info[$id])){$value=$r_info[$id];}
 										if($id=='openingDate'){date("m/d/Y",strtotime($value=$r_info[$id]));}
 										$return.= "
 										<div class='col'>
