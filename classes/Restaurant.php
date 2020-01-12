@@ -117,12 +117,22 @@ class Restaurant {
 (SELECT managerID FROM pbc_pbr_managers WHERE pbc_pbr_managers.mgrType='AM' AND pbc_pbr_managers.restaurantID='".$this->restaurantID."'))");
 		return $restaurant;
 	}
-
+	private function restuarant_editor_textfield($id,$name,$r_info){
+		$value='';
+		if(isset($r_info[$id])){$value=$r_info[$id];}
+		if($id=='openingDate'){date("m/d/Y",strtotime($value=$r_info[$id]));}
+		return "
+	<div class='col'>
+		<label for='".$id."'>".$name."</label><br /><input name='".$id."' id='".$id."' value='".$value."' type='text' />
+	</div>";
+	}
 	public function restaurantEditBox(){
 		$r_info= (array) $this->rinfo;
 		$allUsers=$this->getUserNames();
 		$colOne=array("restaurantName"=>"Restaurant Name","restaurantID"=>"Restaurant ID","restaurantCode"=>"Restaurant Code","toastID"=>"Toast ID",
 	"GUID"=>"Toast GUID","mnkyID"=>"Monkey ID","levelUpID"=>"LevelUp ID","openingDate"=>"Opening Date",""=>"");
+	$colTwo=array("address1"=>"Address","address2"=>"Suite","city"=>"City","state"=>"State","zip"=>"Zip","latLong"=>"Latitute & Longitude",
+	"phone"=>"Phone","email"=>"E-mail");
 		$return= "
 		<script>
 		jQuery( function() {
@@ -132,7 +142,7 @@ class Restaurant {
 			jQuery('#openingDate').datepicker({
 					dateFormat : 'mm/dd/yy'
 			});
-			jQuery('.time_picker').timepicker({
+			jQuery('input.timepicker').timepicker({
 				'timeFormat': 'h:mm p',
 				interval: 15,
 				minTime: '5:00 am',
@@ -159,53 +169,33 @@ class Restaurant {
 									";
 									$count=0;
 									foreach($colOne as $id=>$name){
-										$value='';
-										if(isset($r_info[$id])){$value=$r_info[$id];}
-										if($id=='openingDate'){date("m/d/Y",strtotime($value=$r_info[$id]));}
-										$return.= "
-										<div class='col'>
-											<label for='".$id."'>".$name."</label><br /><input name='".$id."' id='".$id."' value='".$value."' type='text' />
-										</div>";
+										if(isset($id) && $id!=''){
+											$return.=$this->restuarant_editor_textfield($id,$name,$r_info);
+										}
 										$count++;
 										$return.=($count%3 == 0 ? "</div><div class='row'>" : "");
 									}
-
 		$return.= "
 						</div>
 					</div>
 				</div>
 				<div id='demographics'>
-					<h4>Location Indormation</h4>
-					<div class='form-group'>
-		<br />\n<label for='address1'>Address 1</label><br /><input name='address1' id='address1' type='text' ";
-		if(isset($this->rinfo->address1)) { $return.= " value='".$this->rinfo->address1."' ";}
-
-		$return.= "/> <br />\n<label for='address2'>Address 2</label><br /><input name='address2' id='address2' type='text' ";
-		if(isset($this->rinfo->address2)) { $return.= " value='".$this->rinfo->address2."' ";}
-
-		$return.= "/> <br />\n<label for='city'>City</label><br /><input name='city' id='city' type='text' ";
-		if(isset($this->rinfo->city)) { $return.= " value='".$this->rinfo->city."' ";}
-
-		$return.= "/> <br />\n<label for='zip'>Zip</label><br /><input name='zip' id='zip' type='text' ";
-		if(isset($this->rinfo->zip)) { $return.= " value='".$this->rinfo->zip."' ";}
-
-		$return.= "/> <br />\n<label for='state'>State</label><br /><input name='state' id='state' type='text' ";
-		if(isset($this->rinfo->state)) { $return.= " value='".$this->rinfo->state."' ";}
-
-		$return.= "/> <br />\n<label for='latLong'>Latitute & Longitude</label><br /><input name='latLong' id='latLong' type='text' ";
-		if(isset($this->rinfo->latLong)) { $return.= " value='".$this->rinfo->latLong."' ";}
-
-		$return.= "/> <br />\n<label for='phone'>Phone</label><br /><input name='phone' id='phone' type='text' ";
-		if(isset($this->rinfo->phone)) { $return.= " value='".$this->rinfo->phone."' ";}
-
-		$return.= "/> <br />\n<label for='email'>E-Mail</label><br /><input name='email' id='email' type='text' ";
-		if(isset($this->rinfo->email)) { $return.= " value='".$this->rinfo->email."' ";}
-
-		$return.= "/> <br />\n<label for='isOpen'>Is Open</label><br /><select name='isOpen' id='isOpen'><option value='1' ";
+					<h4>Location Information</h4>
+					<div class='form-group'>";
+					$count=0;
+					foreach($colTwo as $id=>$name){
+						if(isset($id) && $id!=''){
+							$return.=$this->restuarant_editor_textfield($id,$name,$r_info);
+						}
+						$count++;
+						$return.=($count%3 == 0 ? "</div><div class='row'>" : "");
+					}
+		$return.= "<div class='col'>
+		<label for='isOpen'>Is Open</label><br /><select name='isOpen' id='isOpen'><option value='1' ";
 		if(isset($this->rinfo->isOpen) && $this->rinfo->isOpen==1) { $return.= " selected='selected' ";}
 		$return.= ">Yes</option><option value='0' ";
 		if(isset($this->rinfo->isOpen) && $this->rinfo->isOpen==0) { $return.= " selected='selected' ";}
-		$return.= ">No</option></select>
+		$return.= ">No</option></select></div><div class='row'><div class='col'>
 		";
 		$return.= "<label for='am'>AM</label><br /><select name='am' id='am'><option value=''>----------</option>";
 		foreach($allUsers as $user){
@@ -213,7 +203,7 @@ class Restaurant {
 			if($this->getManagerID("AM")==$user->ID) {$return.=" selected='selected' ";}
 			$return.=">".$user->display_name."</option>";
 		}
-		$return.= "</select><br />";
+		$return.= "</select></div><div class='col'>";
 
 		$return.= "<label for='gm'>GM</label><br /><select name='gm' id='gm'><option value=''>----------</option>";
 		foreach($allUsers as $user){
@@ -221,7 +211,7 @@ class Restaurant {
 			if($this->getManagerID("GM")==$user->ID) {$return.=" selected='selected' ";}
 			$return.=">".$user->display_name."</option>";
 		}
-		$return.= "</select><br />";
+		$return.= "</select></div><div class='col'>";
 
 		$return.= "<label for='agm'>AGM</label><br /><select name='agm' id='agm'><option value=''>----------</option>";
 		foreach($allUsers as $user){
@@ -230,20 +220,20 @@ class Restaurant {
 			$return.=">".$user->display_name."</option>";
 		}
 
-		$return.= "</select><br /><label for='str'>Store Address</label><br /><select name='str' id='str'><option value=''>----------</option>";
+		$return.= "</select></div></div><div class='row'><div class='col'><label for='str'>Store Address</label><br /><select name='str' id='str'><option value=''>----------</option>";
 		foreach($allUsers as $user){
 			$return.="<option value='".$user->ID."'";
 			if($this->getManagerID("STR")==$user->ID) {$return.=" selected='selected' ";}
 			$return.=">".$user->display_name."</option>";
 		}
 
-		$return.= "</select><br /><label for='market'>Market</label><br /><select name='market' id='market'><option value=''>----------</option>";
+		$return.= "</select></div><div class='col'>label for='market'>Market</label><br /><select name='market' id='market'><option value=''>----------</option>";
 		foreach($this->Markets as $market){
 			$return.="<option value='".$market."'";
 			if($this->rinfo->market==$market) {$return.=" selected='selected' ";}
 			$return.=">".$market."</option>";
 		}
-		$return.= "</select>
+		$return.= "</select></div><div class='col'></div></div>
 		</div>
 	</div>
 	<div id='hours'>
