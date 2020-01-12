@@ -153,31 +153,67 @@ class Restaurant {
 					<div id=\"ids\">
 						<h4>Service IDs</h4>
 							<div class='form-group'>
-									<label for='restaurantID'>Restaurant ID</label><input name='restaurantID' id='restaurantID' type='text' ";
+								<div class='row'>
+									<div class='col'>
+										<label for='restaurantID'>Restaurant ID</label><input name='restaurantID' id='restaurantID' type='text' ";
 		if(isset($this->rinfo->restaurantID)) { $return.= " value='".$this->rinfo->restaurantID."' ";}
 
-		$return.= "/> <label for='toastID'>Toast ID</label><input name='toastID' id='toastID' type='text' ";
+		$return.= "/>
+								</div>
+								<div class='col'>
+		 							<label for='toastID'>Toast ID</label><input name='toastID' id='toastID' type='text' ";
 		if(isset($this->rinfo->toastID)) { $return.= " value='".$this->rinfo->toastID."' ";}
 
-		$return.= "/> <br />\n<label for='GUID'>Toast GUID</label><br /><input name='GUID' id='GUID' type='text' ";
+		$return.= "/>
+								</div>
+							</div>
+							<div class='row'>
+								<div class='col'>
+		 							<label for='GUID'>Toast GUID</label><input name='GUID' id='GUID' type='text' ";
 		if(isset($this->rinfo->GUID)) { $return.= " value='".$this->rinfo->GUID."' ";}
 
-		$return.= "/> <br />\n<label for='levelUpID'>LevelUp ID</label><br /><input name='levelUpID' id='levelUpID' type='text' ";
+		$return.= "/>
+								</div>
+								<div class='col'>
+		 							<label for='levelUpID'>LevelUp ID</label><br /><input name='levelUpID' id='levelUpID' type='text' ";
 		if(isset($this->rinfo->levelUpID)) { $return.= " value='".$this->rinfo->levelUpID."' ";}
 
-		$return.= "/> <br />\n<label for='mnkyID'>Monkey ID</label><br /><input name='mnkyID' id='mnkyID' type='text' ";
+		$return.= "/>
+								</div>
+							</div>
+							<div class='row'>
+								<div class='col'>
+		 							<label for='mnkyID'>Monkey ID</label><br /><input name='mnkyID' id='mnkyID' type='text' ";
 		if(isset($this->rinfo->mnkyID)) { $return.= " value='".$this->rinfo->mnkyID."' ";}
 
-		$return.= "/> <input name='microsID' id='microsID' type='hidden' value='".$this->rinfo->microsID."' /><br />\n<label for='restaurantName'>Restaurant Name</label><br /><input name='restaurantName' id='restaurantName' type='text' ";
+		$return.= "/>
+								</div>
+								<div class='col'>
+		 							<label for='levelUpID'>LevelUp ID</label><br /><input name='levelUpID' id='levelUpID' type='text' ";
+		if(isset($this->rinfo->levelUpID)) { $return.= " value='".$this->rinfo->levelUpID."' ";}
+
+		$return.= "/>
+								</div>
+							</div>
+							<div class='row'>
+								<div class='col'>
+		 							<input name='microsID' id='microsID' type='hidden' value='".$this->rinfo->microsID."' /><br />\n<label for='restaurantName'>Restaurant Name</label><br /><input name='restaurantName' id='restaurantName' type='text' ";
 		if(isset($this->rinfo->restaurantName)) { $return.= " value='".$this->rinfo->restaurantName."' ";}
 
-		$return.= "/> <br />\n<label for='restaurantCode'>Restaurant Code</label><br /><input name='restaurantCode' id='restaurantCode' type='text' ";
+		$return.= "/>
+								</div>
+							</div>
+							<div class='row'>
+								<div class='col'>
+		 							<label for='restaurantCode'>Restaurant Code</label><br /><input name='restaurantCode' id='restaurantCode' type='text' ";
 		if(isset($this->rinfo->restaurantCode)) { $return.= " value='".$this->rinfo->restaurantCode."' ";}
 
 		$return.= "/>		<label for='openingDate'>Opening Date</label><br /><input name='openingDate' id='openingDate' type='text' ";
 		if(isset($this->rinfo->openingDate)) { $return.= " value='".date("m/d/Y",strtotime($this->rinfo->openingDate))."' ";}
 
 		$return.= "/>
+							</div>
+						</div>
 					</div>
 				</div>
 				<div id='demographics'>
