@@ -121,14 +121,15 @@ class Restaurant {
 	public function restaurantEditBox(){
 		$allUsers=$this->getUserNames();
 		$return= "
-
+		<div class='container-fluid;'>
 			<form method=\"post\" action=\"admin-post.php\">
          	<input type=\"hidden\" name=\"action\" value=\"pbr_save_restaurant_option\" />
-         	<div style='float:left;'>
-				<label for='restaurantID'>Restaurant ID</label><br /><input name='restaurantID' id='restaurantID' type='text' ";
+					<div class='row'>
+						<div class='col'>
+							<label for='restaurantID'>Restaurant ID</label><input name='restaurantID' id='restaurantID' type='text' ";
 		if(isset($this->rinfo->restaurantID)) { $return.= " value='".$this->rinfo->restaurantID."' ";}
 
-		$return.= "/> <br />\n<label for='toastID'>Toast ID</label><br /><input name='toastID' id='toastID' type='text' ";
+		$return.= "/> <br />\n<label for='toastID'>Toast ID</label><input name='toastID' id='toastID' type='text' ";
 		if(isset($this->rinfo->toastID)) { $return.= " value='".$this->rinfo->toastID."' ";}
 
 		$return.= "/> <br />\n<label for='GUID'>Toast GUID</label><br /><input name='GUID' id='GUID' type='text' ";
@@ -146,7 +147,10 @@ class Restaurant {
 		$return.= "/> <br />\n<label for='restaurantCode'>Restaurant Code</label><br /><input name='restaurantCode' id='restaurantCode' type='text' ";
 		if(isset($this->rinfo->restaurantCode)) { $return.= " value='".$this->rinfo->restaurantCode."' ";}
 
-		$return.= "/> <br />\n<label for='openingDate'>Opening Date</label><br /><input name='openingDate' id='openingDate' type='text' ";
+		$return.= "/>
+						</div>
+						<div class='col'>
+		<label for='openingDate'>Opening Date</label><br /><input name='openingDate' id='openingDate' type='text' ";
 		if(isset($this->rinfo->openingDate)) { $return.= " value='".$this->rinfo->openingDate."' ";}
 
 		$return.= "/> <br />\n<label for='address1'>Address 1</label><br /><input name='address1' id='address1' type='text' ";
@@ -177,10 +181,10 @@ class Restaurant {
 		if(isset($this->rinfo->isOpen) && $this->rinfo->isOpen==1) { $return.= " selected='selected' ";}
 		$return.= ">Yes</option><option value='0' ";
 		if(isset($this->rinfo->isOpen) && $this->rinfo->isOpen==0) { $return.= " selected='selected' ";}
-		$return.= ">No</option></select></div>";
-
-		$return.= "\n\n<div style='float:left;margin-left:50px;'>";
-
+		$return.= ">No</option></select>
+						</div>
+						<div class='col'>
+		";
 		$return.= "<label for='am'>AM</label><br /><select name='am' id='am'><option value=''>----------</option>";
 		foreach($allUsers as $user){
 			$return.="<option value='".$user->ID."'";
@@ -217,7 +221,10 @@ class Restaurant {
 			if($this->rinfo->market==$market) {$return.=" selected='selected' ";}
 			$return.=">".$market."</option>";
 		}
-		$return.= "</select><br />\n<h3>Restaurant Hours</h3>";
+		$return.= "</select>
+						</div>
+						<div class='col'>
+		<h3>Restaurant Hours</h3>";
 		$return.= " <br />\n<label for='timeZone'>Time Zone</label><br /><input name='timeZone' id='timeZone' type='text' ";
 		if(isset($this->rinfo->timeZone)) { $return.= " value='".$this->rinfo->timeZone."' ";}
 
@@ -253,7 +260,10 @@ class Restaurant {
 			<input id='time_picker".$ia."c' name='".date("l",$ia)."close' id='".date("l",$ia)."' value='".$this->getHours(date("l",$ia)."close")."' style='width: 100px;'/></td></tr>
 			<br />";
 	}
-      $return.= "</table></div><div style='clear:both;'></div><br /><br /><input type=\"submit\" value=\"Submit\" class=\"button-primary\"/></form> <button type=\"button\" onclick=\"javascript:window.location='admin.php?page=pbr-edit-restaurant';\">Cancel</button>";
+      $return.= "</table>
+			</div>
+			</div>
+			<input type=\"submit\" value=\"Submit\" class=\"button-primary\"/></form> <button type=\"button\" onclick=\"javascript:window.location='admin.php?page=pbr-edit-restaurant';\">Cancel</button>";
 
       return $return;
 	}
