@@ -171,7 +171,6 @@ class Restaurant {
 									}
 
 		$return.= "
-							</div>
 						</div>
 					</div>
 				</div>
