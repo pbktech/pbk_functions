@@ -302,7 +302,7 @@ class Restaurant {
 		'microsID' => $this->rinfo->microsID,
 		'restaurantName' => $this->rinfo->restaurantName,
 		'restaurantCode' => $this->rinfo->restaurantCode,
-		'openingDate' => date("Y-m-d",stretotime($this->rinfo->openingDate)),
+		'openingDate' => date("Y-m-d",strtotime($this->rinfo->openingDate)),
 		'address1' => $this->rinfo->address1,
 		'address2' => $this->rinfo->address2,
 		'city' => $this->rinfo->city,
