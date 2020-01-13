@@ -166,7 +166,7 @@ function pbr_edit_restaurant(){
    echo "<div class=\"wrap\"><div id=\"icon-users\" class=\"icon32\"></div><h2>Edit an Existing Restaurant <a href=\"?page=pbr-add-restaurant\" class=\"add-new-h2\">Add New</a>
             </h2>
             ";
-	if(!isset($_GET['restaurant']) && !is_numeric()) {
+	if(!isset($_GET['restaurant']) && !is_numeric($_GET['restaurant'])) {
 		require_once( 'classes/testlisttable.php' );
 	   $myListTable = new My_Example_List_Table();
 		$myListTable->prepare_items();
