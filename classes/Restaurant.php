@@ -34,6 +34,7 @@ class Restaurant {
 	private $daysOfWeek=array("","","","","","","");
 
    public function __construct($restID=null) {
+	 	$this->checkAboveStore();
    	if(isset($restID) && is_numeric($restID)) {
    		$this->restaurantID=$restID;
    		if($this->checkNewRestaurant()) {
@@ -43,7 +44,6 @@ class Restaurant {
    	}else {
    		$this->allRestaurants=$this->loadRestaurants();
    	}
-		$this->checkAboveStore();
 		$this->getMyRestaurants();
    }
 	 function getMyRestaurants($field='restaurantID'){
@@ -69,10 +69,9 @@ class Restaurant {
 	}
 	public function checkRestaurantAccess() {
 		if(strpos(strtolower($_SERVER['REQUEST_URI']), 'directory')==false) {
-			global $wpdb;
-			global $current_user;
-			$restaurants = $wpdb->get_results("SELECT mgrType FROM pbc_pbr_managers WHERE pbc_pbr_managers.restaurantID='".$this->restaurantID."'", OBJECT );
-			if($restaurants[0]->mgrType != "AGM" && $restaurants[0]->mgrType != "GM" && $restaurants[0]->mgrType != "AM" && $restaurants[0]->mgrType != "SSC") {
+			if(array_key_exists($this->restaurantID,$this->myRestaurants) || $this->isAboveStore==1) {
+				return;
+			}else{
 				echo "<div class='alert alert-danger'><p>You do not have access to this restaurant.</p></div>";
 				exit;
 			}
@@ -141,7 +140,12 @@ class Restaurant {
 		} );
 		jQuery(document).ready(function() {
 			jQuery('#openingDate').datepicker({
-					dateFormat : 'mm/dd/yy'
+				showButtonPanel: true,";
+		if(isset($r_info['openingDate'])){
+			$return.= "defaultDate: new Date(".date("Y, m, d",strtotime($r_info['openingDate']))."),";
+		}
+		$return.=	"
+				dateFormat : 'mm/dd/yy'
 			});
 			jQuery('input.timepicker').timepicker({
 				'timeFormat': 'h:mm p',
