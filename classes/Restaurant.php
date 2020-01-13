@@ -249,7 +249,7 @@ class Restaurant {
 	<label for='timeZone'>Time Zone</label><br /><select name='timeZone' id='timeZone'><option value=''>----------</option>";
 	foreach($this->timeZones as $value=>$name){
 		$return.="<option value='".$value."'";
-		if($this->rinfo->timeZone==$value) {$return.=" selected='selected' ";}
+		if(trim($this->rinfo->timeZone)==trim($value)) {$return.=" selected='selected' ";}
 		$return.=">".$name."</option>";
 	}
 		$return.="
