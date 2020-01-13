@@ -199,7 +199,7 @@ class Restaurant {
 		if(isset($this->rinfo->isOpen) && $this->rinfo->isOpen==1) { $return.= " selected='selected' ";}
 		$return.= ">Yes</option><option value='0' ";
 		if(isset($this->rinfo->isOpen) && $this->rinfo->isOpen==0) { $return.= " selected='selected' ";}
-		$return.= ">No</option></select></div><div class='row'><div class='col'>
+		$return.= ">No</option></select></div></div><div class='row'><div class='col'>
 		";
 		$return.= "<label for='am'>AM</label><br /><select name='am' id='am'><option value=''>----------</option>";
 		foreach($allUsers as $user){
