@@ -120,7 +120,7 @@ class Restaurant {
 	private function restuarant_editor_textfield($id,$name,$r_info){
 		$value='';
 		if(isset($r_info[$id])){$value=$r_info[$id];}
-		if($id=='openingDate' && isset($r_info[$id])){date("m/d/Y",strtotime($value=$r_info[$id]));}
+		if($id=='openingDate' && isset($r_info[$id])){$value=date("m/d/Y",strtotime($r_info[$id]));}
 		return "
 	<div class='col'>
 		<label for='".$id."'><strong>".$name."</strong></label><br /><input name='".$id."'  class='form-control' id='".$id."' value='".$value."' type='text' />
