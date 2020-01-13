@@ -171,6 +171,8 @@ class Restaurant {
 									foreach($colOne as $id=>$name){
 										if(isset($id) && $id!=''){
 											$return.=$this->restuarant_editor_textfield($id,$name,$r_info);
+										}else{
+											$return.="<div class='col'></div>";
 										}
 										$count++;
 										$return.=($count%3 == 0 ? "</div><div class='row'>" : "");
@@ -186,6 +188,8 @@ class Restaurant {
 					foreach($colTwo as $id=>$name){
 						if(isset($id) && $id!=''){
 							$return.=$this->restuarant_editor_textfield($id,$name,$r_info);
+						}else{
+							$return.="<div class='col'></div>";
 						}
 						$count++;
 						$return.=($count%3 == 0 ? "</div><div class='row'>" : "");
@@ -227,7 +231,7 @@ class Restaurant {
 			$return.=">".$user->display_name."</option>";
 		}
 
-		$return.= "</select></div><div class='col'>label for='market'>Market</label><br /><select name='market' id='market'><option value=''>----------</option>";
+		$return.= "</select></div><div class='col'><label for='market'>Market</label><br /><select name='market' id='market'><option value=''>----------</option>";
 		foreach($this->Markets as $market){
 			$return.="<option value='".$market."'";
 			if($this->rinfo->market==$market) {$return.=" selected='selected' ";}
