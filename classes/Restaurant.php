@@ -158,12 +158,11 @@ class Restaurant {
          	<input type=\"hidden\" name=\"action\" value=\"pbr_save_restaurant_option\" />
 					<div id='tabs'>
 					<ul class=\"nav nav-tabs\">
-						<li class=\"nav-item\"><a href='#ids'>Service IDs</a></li>
+						<li class=\"nav-item\"><a href='#ids'>Base Information</a></li>
 						<li class=\"nav-item\"><a href='#demographics'>Location</a></li>
 						<li class=\"nav-item\"><a href='#hours'>Hours</a></li>
 					</ul>
 					<div id=\"ids\">
-						<h4>Service IDs</h4>
 							<div class='form-group'>
 								<div class='row'>
 									";
@@ -182,7 +181,6 @@ class Restaurant {
 					</div>
 				</div>
 				<div id='demographics'>
-					<h4>Location Information</h4>
 					<div class='form-group'>
 					<div class='row'>";
 					$count=0;
@@ -242,7 +240,6 @@ class Restaurant {
 		</div>
 	</div>
 	<div id='hours'>
-	<h4>Hours</h4>
 	<div class='form-group'>";
 		$return.= "<label for='timeZone'>Time Zone</label><input name='timeZone' id='timeZone' type='text' ";
 		if(isset($this->rinfo->timeZone)) { $return.= " value='".$this->rinfo->timeZone."' ";}
