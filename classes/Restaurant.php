@@ -240,23 +240,42 @@ class Restaurant {
 		</div>
 	</div>
 	<div id='hours'>
-	<div class='form-group'>";
-		$return.= "<label for='timeZone'>Time Zone</label><input name='timeZone' id='timeZone' type='text' ";
-		if(isset($this->rinfo->timeZone)) { $return.= " value='".$this->rinfo->timeZone."' ";}
+	<div class='form-group'>
 
-		$return.="/><table>";
-//		echo strtotime("Monday");
+		<div class='row'>
+	";
+		$return.= $this->restuarant_editor_textfield(="timeZone","Time Zone",$r_info);
+		$return.="
+		</div>
+		";
+		$ocunt=0;
 		for($ia=1419206400;$ia<=1419724800;$ia+=86400) {
-
-			$return.= "\n<tr><td><label for='".date("l",$ia)."'>".date("l",$ia)." Open</label></td><td><label for='".date("l",$ia)."'>".date("l",$ia)." Close</label></td></tr>
-<tr><td>
-<input id='time_picker".$ia."o' name='".date("l",$ia)."open' id='".date("l",$ia)."' value='".$this->getHours(date("l",$ia)."open")."' style='width: 100px;'/></td><td>
-			<input id='time_picker".$ia."c' name='".date("l",$ia)."close' id='".date("l",$ia)."' value='".$this->getHours(date("l",$ia)."close")."' style='width: 100px;'/></td></tr>
-			<br />";
-	}
-      $return.= "</table>
-			</div></div>
-			</div><input type=\"submit\" value=\"Submit\" class=\"button-primary\"/></form> <button type=\"button\" onclick=\"javascript:window.location='admin.php?page=pbr-edit-restaurant';\">Cancel</button>";
+			$return.= "
+			<div class='row'>
+				<div class='col'>
+					<label for='".date("l",$ia)."'>".date("l",$ia)." Open</label><br />
+					<input class='timepicker' id='time_picker".$ia."o' name='".date("l",$ia)."open' id='".date("l",$ia)."' value='".$this->getHours(date("l",$ia)."open")."' />
+				</div>
+				<div class='col'>
+					<label for='".date("l",$ia)."'>".date("l",$ia)." Close</label><br />
+					<input class='timepicker' id='time_picker".$ia."c' name='".date("l",$ia)."close' id='".date("l",$ia)."' value='".$this->getHours(date("l",$ia)."close")."' />
+				</div>
+			</div>";
+		}
+      $return.= "
+			</div>
+			</div>
+			<div class='form-group'>
+				<div class='row'>
+					<div class='col'>
+						<input type=\"submit\" value=\"Submit\" class=\"button-primary\"/>
+					</div>
+					<div class='col'>
+						<button type=\"button\" class='btn btn-warning' onclick=\"javascript:window.location='admin.php?page=pbr-edit-restaurant';\">Cancel</button>
+					</div>
+				</div>
+				</div>
+			</form>";
 
       return $return;
 	}
