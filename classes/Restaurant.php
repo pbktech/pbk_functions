@@ -14,6 +14,7 @@ class Restaurant {
 	public $rinfo=array();
 	public $restaurantID=null;
 	public $isAboveStore=0;
+	public $timeZones=array("America/Chicago"=>"Central","America/New_York"=>"Easter","America/Denver"=>"Mountain");
 	public $incidentTypes=array(
 		"foodborneIllness"=>array("Name"=>"Foodborne Illness/Foreign Object","sendTo"=>array("lcominsky@theproteinbar.com","vwillis@theproteinbar.com")),
 		"injury"=>array("Name"=>"Injury","sendTo"=>array("lcominsky@theproteinbar.com","hr@theproteinbar.com")),
@@ -244,9 +245,15 @@ class Restaurant {
 
 		<div class='row'>
 	";
-		$return.= $this->restuarant_editor_textfield("timeZone","Time Zone",$r_info);
+	$return.= "<div class='col'>
+	<label for='timeZone'>Time Zone</label><br /><select name='timeZone' id='timeZone'><option value=''>----------</option>";
+	foreach($this->timeZones as $value=>$name){
+		$return.="<option value='".$market."'";
+		if($this->rinfo->timeZone==$value) {$return.=" selected='selected' ";}
+		$return.=">".$name."</option>";
+	}
 		$return.="
-		</div>
+		</select></div></div>
 		";
 		$ocunt=0;
 		for($ia=1419206400;$ia<=1419724800;$ia+=86400) {
@@ -275,7 +282,7 @@ class Restaurant {
 				<div class='row'>
 					<div class='col'>
 						<button type=\"submit\" class=\"btn btn-primary\"/>Submit</button>
-						<button type=\"button\" class='btn btn-warning btn-sm' onclick=\"javascript:window.location='admin.php?page=pbr-edit-restaurant';\">Cancel</button>
+						<button type=\"button\" class='btn btn-warning' onclick=\"javascript:window.location='admin.php?page=pbr-edit-restaurant';\">Cancel</button>
 					</div>
 				</div>
 				</div>
