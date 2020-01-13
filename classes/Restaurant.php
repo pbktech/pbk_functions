@@ -260,7 +260,7 @@ class Restaurant {
 			$return.= "
 			<div class='row'>
 				<div class='col'>
-					<h5>".date("l",$ia)."</h5>
+					<h5 style='padding-top:10px;'>".date("l",$ia)."</h5>
 				</div>
 			</div>
 			<div class='row'>
@@ -279,7 +279,7 @@ class Restaurant {
 			</div>
 			</div>
 			<div class='form-group'>
-				<div class='row'>
+				<div class='row' style='padding-left:10px;'>
 					<div class='col'>
 						<button type=\"submit\" class=\"btn btn-primary\"/>Submit</button>
 						<button type=\"button\" class='btn btn-warning' onclick=\"javascript:window.location='admin.php?page=pbr-edit-restaurant';\">Cancel</button>
@@ -302,7 +302,7 @@ class Restaurant {
 		'microsID' => $this->rinfo->microsID,
 		'restaurantName' => $this->rinfo->restaurantName,
 		'restaurantCode' => $this->rinfo->restaurantCode,
-		'openingDate' => $this->rinfo->openingDate,
+		'openingDate' => date("Y-m-d",stretotime($this->rinfo->openingDate)),
 		'address1' => $this->rinfo->address1,
 		'address2' => $this->rinfo->address2,
 		'city' => $this->rinfo->city,
