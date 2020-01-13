@@ -253,11 +253,16 @@ class Restaurant {
 			$return.= "
 			<div class='row'>
 				<div class='col'>
-					<label for='".date("l",$ia)."'>".date("l",$ia)." Open</label><br />
+					".date("l",$ia)."
+				</div>
+			</div>
+			<div class='row'>
+				<div class='col'>
+					<label for='".date("l",$ia)."'>Open</label><br />
 					<input class='timepicker' id='time_picker".$ia."o' name='".date("l",$ia)."open' id='".date("l",$ia)."' value='".$this->getHours(date("l",$ia)."open")."' />
 				</div>
 				<div class='col'>
-					<label for='".date("l",$ia)."'>".date("l",$ia)." Close</label><br />
+					<label for='".date("l",$ia)."'>Close</label><br />
 					<input class='timepicker' id='time_picker".$ia."c' name='".date("l",$ia)."close' id='".date("l",$ia)."' value='".$this->getHours(date("l",$ia)."close")."' />
 				</div>
 				<div class='col'></div>
@@ -269,7 +274,7 @@ class Restaurant {
 			<div class='form-group'>
 				<div class='row'>
 					<div class='col'>
-						<input type=\"submit\" value=\"Submit\" class=\"btn btn-primary\"/>
+						<button type=\"submit\" value=\"Submit\" class=\"btn btn-primary\"/>
 						<button type=\"button\" class='btn btn-warning btn-sm' onclick=\"javascript:window.location='admin.php?page=pbr-edit-restaurant';\">Cancel</button>
 					</div>
 				</div>
