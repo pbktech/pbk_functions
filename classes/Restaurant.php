@@ -271,7 +271,7 @@ class Restaurant {
 						<input type=\"submit\" value=\"Submit\" class=\"button-primary\"/>
 					</div>
 					<div class='col'>
-						<button type=\"button\" class='btn btn-warning' onclick=\"javascript:window.location='admin.php?page=pbr-edit-restaurant';\">Cancel</button>
+						<button type=\"button\" class='btn btn-warning btn-sm' onclick=\"javascript:window.location='admin.php?page=pbr-edit-restaurant';\">Cancel</button>
 					</div>
 				</div>
 				</div>
