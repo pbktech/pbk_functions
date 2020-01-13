@@ -14,7 +14,7 @@ class Restaurant {
 	public $rinfo=array();
 	public $restaurantID=null;
 	public $isAboveStore=0;
-	public $timeZones=array("America/Chicago"=>"Central","America/New_York"=>"Easter","America/Denver"=>"Mountain");
+	public $timeZones=array("America/Chicago"=>"Central","America/New_York"=>"Eastern","America/Denver"=>"Mountain");
 	public $incidentTypes=array(
 		"foodborneIllness"=>array("Name"=>"Foodborne Illness/Foreign Object","sendTo"=>array("lcominsky@theproteinbar.com","vwillis@theproteinbar.com")),
 		"injury"=>array("Name"=>"Injury","sendTo"=>array("lcominsky@theproteinbar.com","hr@theproteinbar.com")),
@@ -121,10 +121,10 @@ class Restaurant {
 	private function restuarant_editor_textfield($id,$name,$r_info){
 		$value='';
 		if(isset($r_info[$id])){$value=$r_info[$id];}
-		if($id=='openingDate'){date("m/d/Y",strtotime($value=$r_info[$id]));}
+		if($id=='openingDate' && isset($r_info[$id])){date("m/d/Y",strtotime($value=$r_info[$id]));}
 		return "
 	<div class='col'>
-		<label for='".$id."'>".$name."</label><br /><input name='".$id."' id='".$id."' value='".$value."' type='text' />
+		<label for='".$id."'><strong>".$name."</strong></label><br /><input name='".$id."'  class='form-control' id='".$id."' value='".$value."' type='text' />
 	</div>";
 	}
 	public function restaurantEditBox(){
@@ -195,46 +195,54 @@ class Restaurant {
 						$return.=($count%3 == 0 ? "</div><div class='row'>" : "");
 					}
 		$return.= "<div class='col'>
-		<label for='isOpen'>Is Open</label><br /><select name='isOpen' id='isOpen'><option value='1' ";
+		<label for='isOpen'><strong>Is Open</strong></label><br /><select name='isOpen' class='form-control' id='isOpen'><option value='1' ";
 		if(isset($this->rinfo->isOpen) && $this->rinfo->isOpen==1) { $return.= " selected='selected' ";}
 		$return.= ">Yes</option><option value='0' ";
 		if(isset($this->rinfo->isOpen) && $this->rinfo->isOpen==0) { $return.= " selected='selected' ";}
 		$return.= ">No</option></select></div></div><div class='row'><div class='col'>
 		";
-		$return.= "<label for='am'>AM</label><br /><select name='am' id='am'><option value=''>----------</option>";
+		$return.= "<label for='am'><strong>AM</strong></label><br /><select name='am' class='form-control' id='am'><option value=''>----------</option>";
 		foreach($allUsers as $user){
 			$return.="<option value='".$user->ID."'";
-			if($this->getManagerID("AM")==$user->ID) {$return.=" selected='selected' ";}
+			if(isset($this->rinfo->restaurantID) && $this->rinfo->restaurantID!=''){
+				if($this->getManagerID("AM")==$user->ID) {$return.=" selected='selected' ";}
+			}
 			$return.=">".$user->display_name."</option>";
 		}
 		$return.= "</select></div><div class='col'>";
 
-		$return.= "<label for='gm'>GM</label><br /><select name='gm' id='gm'><option value=''>----------</option>";
+		$return.= "<label for='gm'><strong>GM</strong></label><br /><select name='gm' class='form-control' id='gm'><option value=''>----------</option>";
 		foreach($allUsers as $user){
 			$return.="<option value='".$user->ID."'";
-			if($this->getManagerID("GM")==$user->ID) {$return.=" selected='selected' ";}
+			if(isset($this->rinfo->restaurantID) && $this->rinfo->restaurantID!=''){
+				if($this->getManagerID("GM")==$user->ID) {$return.=" selected='selected' ";}
+			}
 			$return.=">".$user->display_name."</option>";
 		}
 		$return.= "</select></div><div class='col'>";
 
-		$return.= "<label for='agm'>AGM</label><br /><select name='agm' id='agm'><option value=''>----------</option>";
+		$return.= "<label for='agm'><strong>AGM</strong></label><br /><select name='agm' class='form-control' id='agm'><option value=''>----------</option>";
 		foreach($allUsers as $user){
 			$return.="<option value='".$user->ID."'";
-			if($this->getManagerID("AGM")==$user->ID) {$return.=" selected='selected' ";}
+			if(isset($this->rinfo->restaurantID) && $this->rinfo->restaurantID!=''){
+				if($this->getManagerID("AGM")==$user->ID) {$return.=" selected='selected' ";}
+			}
 			$return.=">".$user->display_name."</option>";
 		}
 
-		$return.= "</select></div></div><div class='row'><div class='col'><label for='str'>Store Address</label><br /><select name='str' id='str'><option value=''>----------</option>";
+		$return.= "</select></div></div><div class='row'><div class='col'><label for='str'><strong>Store Address</strong></label><br /><select name='str' class='form-control' id='str'><option value=''>----------</option>";
 		foreach($allUsers as $user){
 			$return.="<option value='".$user->ID."'";
-			if($this->getManagerID("STR")==$user->ID) {$return.=" selected='selected' ";}
+			if(isset($this->rinfo->restaurantID) && $this->rinfo->restaurantID!=''){
+				if($this->getManagerID("STR")==$user->ID) {$return.=" selected='selected' ";}
+			}
 			$return.=">".$user->display_name."</option>";
 		}
 
-		$return.= "</select></div><div class='col'><label for='market'>Market</label><br /><select name='market' id='market'><option value=''>----------</option>";
+		$return.= "</select></div><div class='col'><label for='market'><strong>Market</strong></label><br /><select name='market' class='form-control' id='market'><option value=''>----------</option>";
 		foreach($this->Markets as $market){
 			$return.="<option value='".$market."'";
-			if($this->rinfo->market==$market) {$return.=" selected='selected' ";}
+			if(isset($this->rinfo->market) && $this->rinfo->market==$market) {$return.=" selected='selected' ";}
 			$return.=">".$market."</option>";
 		}
 		$return.= "</select></div><div class='col'></div></div>
@@ -245,11 +253,10 @@ class Restaurant {
 
 		<div class='row'>
 	";
-	$selected="";
 	$return.= "<div class='col'>
-	<label for='timeZone'>Time Zone</label><br /><select name='timeZone' id='timeZone'><option value=''>----------</option>";
+	<label for='timeZone'><strong>Time Zone</strong></label><br /><select name='timeZone' class='form-control' id='timeZone'><option value=''>----------</option>";
 	foreach($this->timeZones as $value=>$name){
-		if(trim($this->rinfo->timeZone)==trim($value)) {$selected=" selected='selected' ";}
+		if(isset($r_info['timeZone']) && md5($r_info['timeZone'])==md5($value)) {$selected=" selected='selected' ";}else{$selected="";}
 		$return.="<option value='".$value."' $selected >".$name."</option>";
 	}
 		$return.="
@@ -257,20 +264,27 @@ class Restaurant {
 		";
 		$ocunt=0;
 		for($ia=1419206400;$ia<=1419724800;$ia+=86400) {
+			if(isset($this->rinfo->restaurantID)){
+				$open=$this->getHours(date("l",$ia)."open");
+				$close=$this->getHours(date("l",$ia)."close");
+			}else {
+				$open='';
+				$close='';
+			}
 			$return.= "
 			<div class='row'>
 				<div class='col'>
-					<h5 style='padding-top:1.5em;'>".date("l",$ia)."</h5>
+					<h5 style='padding-top:1.5em;'><strong>".date("l",$ia)."</strong></h5>
 				</div>
 			</div>
 			<div class='row'>
 				<div class='col'>
 					<label for='".date("l",$ia)."'>Open</label><br />
-					<input class='timepicker' id='time_picker".$ia."o' name='".date("l",$ia)."open' id='".date("l",$ia)."' value='".$this->getHours(date("l",$ia)."open")."' />
+					<input class='timepicker form-control' id='time_picker".$ia."o' name='".date("l",$ia)."open' id='".date("l",$ia)."' value='".$open."' />
 				</div>
 				<div class='col'>
 					<label for='".date("l",$ia)."'>Close</label><br />
-					<input class='timepicker' id='time_picker".$ia."c' name='".date("l",$ia)."close' id='".date("l",$ia)."' value='".$this->getHours(date("l",$ia)."close")."' />
+					<input class='timepicker form-control' id='time_picker".$ia."c' name='".date("l",$ia)."close' id='".date("l",$ia)."' value='".$close."' />
 				</div>
 				<div class='col'></div>
 			</div>";
@@ -286,7 +300,8 @@ class Restaurant {
 					</div>
 				</div>
 				</div>
-			</form>";
+			</form>
+			</div></div>";
 
       return $return;
 	}
