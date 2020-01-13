@@ -244,7 +244,7 @@ class Restaurant {
 
 		<div class='row'>
 	";
-		$return.= $this->restuarant_editor_textfield(="timeZone","Time Zone",$r_info);
+		$return.= $this->restuarant_editor_textfield("timeZone","Time Zone",$r_info);
 		$return.="
 		</div>
 		";
