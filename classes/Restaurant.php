@@ -253,7 +253,7 @@ class Restaurant {
 			$return.= "
 			<div class='row'>
 				<div class='col'>
-					".date("l",$ia)."
+					<h5>".date("l",$ia)."</h5>
 				</div>
 			</div>
 			<div class='row'>
@@ -274,7 +274,7 @@ class Restaurant {
 			<div class='form-group'>
 				<div class='row'>
 					<div class='col'>
-						<button type=\"submit\" value=\"Submit\" class=\"btn btn-primary\"/>
+						<button type=\"submit\" class=\"btn btn-primary\"/>Submit</button>
 						<button type=\"button\" class='btn btn-warning btn-sm' onclick=\"javascript:window.location='admin.php?page=pbr-edit-restaurant';\">Cancel</button>
 					</div>
 				</div>
