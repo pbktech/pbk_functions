@@ -183,7 +183,8 @@ class Restaurant {
 				</div>
 				<div id='demographics'>
 					<h4>Location Information</h4>
-					<div class='form-group'>";
+					<div class='form-group'>
+					<div class='row'>";
 					$count=0;
 					foreach($colTwo as $id=>$name){
 						if(isset($id) && $id!=''){
