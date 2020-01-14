@@ -607,14 +607,13 @@ if($_GET['nhoDate']!="_new"){
 			global $wpdb;
 			$attendee=$wpdb->get_row("SELECT * FROM pbc2.pbc_nhoAttenndess WHERE attendeeID='$att'",ARRAY_A);
 		}else{
+			$attendee['nhoID']='';
 			$attendee['attendeeID']='NEW';
 			$attendee['employeeName']='';
 			$attendee['restaurant']='';
 			$attendee['attData']=json_encode(array("position"=>"","section"=>"","uni"=>"","fhro"=>"","fh"=>"","schedule"=>""));
 		}
-		if($disable==1){$disabled=' disabled ';}else {
-			$disabled='';
-		}
+		if($disable==1){$disabled=' disabled ';}else {$disabled='';}
 		$json=json_decode($attendee['attData']);
 		$return='
 		<div class="row" style="text-align: center;">

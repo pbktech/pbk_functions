@@ -27,18 +27,23 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
 }
 if (!isset($_REQUEST['event']) || !isset($event->nhoID) || $event->nhoID=="") {
   $nhoEvents=$restaurant->getNHOEvents();
-  $ret.="\n
+  if(count($nhoEvents)==0){
+    $ret.="<div class='alert alert-warning' id='message' style='text-align:center;'>There are not any scheduled NHO events</div>";
+  }else{
+    $ret.="\n
 	<div>
 		<form method='get' action='".$page."'  name='restaurantSelector'>
 			<select name='event' class='custom-select multipleSelect' onchange=\"this.form.submit()\"><option value=''>Choose an Event</option>";
-	foreach($nhoEvents as $event){
-		$ret.="\n<option value='".$event['nhoID']."'>".date("m/d/Y",strtotime($event['nhoDate']))." at ".$restaurant->getRestaurantName($event['nhoLocation'])."</option>";
-	}
-	$ret.="</select></form></div>";
+	  foreach($nhoEvents as $event){
+		  $ret.="\n<option value='".$event['nhoID']."'>".date("m/d/Y",strtotime($event['nhoDate']))." at ".$restaurant->getRestaurantName($event['nhoLocation'])."</option>";
+	 }
+	 $ret.="</select></form></div>";
+  }
 }else{
+  $user = wp_get_current_user();
   $attendees=$restaurant->getNHOAttendees($event->nhoID);
   $cutOffTime=strtotime('-1 day', strtotime($event->nhoDate))+61200;
-  if(time()>$cutOffTime && $restaurant->isAboveStore==0){$disabled=1;}else {$disabled=0;}
+  if(time()<$cutOffTime || user_can( $user->ID, 'delete_posts' )){$disabled=0;}else {$disabled=1;}
   $ret.="
   <script>
   function changeBackground(field,fieldID,number){
