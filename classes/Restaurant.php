@@ -744,7 +744,13 @@ if($_GET['nhoDate']!="_new"){
 	}
 	function getNHOEvents(){
 		global $wpdb;
-		return $wpdb->get_results("SELECT * FROM pbc2.pbc_NHOSchedule WHERE nhoDate>=CURDATE()-2", ARRAY_A);
+		global $wp;
+		$user = wp_get_current_user();
+		if(user_can( $user->ID, 'delete_posts' )){
+			return $wpdb->get_results("SELECT * FROM pbc2.pbc_NHOSchedule WHERE nhoDate>=CURDATE()-2", ARRAY_A);
+		}else {
+			return $wpdb->get_results("SELECT * FROM pbc2.pbc_NHOSchedule WHERE nhoDate>=CURDATE()", ARRAY_A);
+		}
 	}
 	function updateNHO($nho){
 		global $wpdb;
