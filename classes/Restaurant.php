@@ -404,13 +404,19 @@ class Restaurant {
 	function nho_attendance($nho){
 		$attendees=$this->getNHOAttendees($nho['nhoID']);
 		$return="
-		<div>
-			<form method=\"post\" action=\"admin-post.php\">
-			<input type=\"hidden\" name=\"action\" value=\"pbr_nho_attendance_update\" />
-			<input type=\"hidden\" name=\"nhoDate\" value=\"".$nho['nhoDate']."\" />
-			<input type=\"hidden\" name=\"nhoTime\" value=\"".$nho['nhoTime']."\" />
-			<input type=\"hidden\" name=\"nhoLocation\" value=\"".$nho['nhoLocation']."\" />
-			<table><tr><td>Employee Name</td><td>On Time?</td><td>Notes</td></tr>
+		<div class='container-fluid' style='padding-top:1em;'>
+				<h2>Attendance Report</h2>
+				<form method=\"post\" action=\"admin-post.php\">
+				<div class='row'>
+					<div class='col'>
+					<input type=\"hidden\" name=\"action\" value=\"pbr_nho_attendance_update\" />
+					<input type=\"hidden\" name=\"nhoDate\" value=\"".$nho['nhoDate']."\" />
+					<input type=\"hidden\" name=\"nhoTime\" value=\"".$nho['nhoTime']."\" />
+					<input type=\"hidden\" name=\"nhoLocation\" value=\"".$nho['nhoLocation']."\" />
+					<table id='myTable' class=\"table table-striped table-hover\" style='width:100%;'>
+        		<thead style='background-color:#0e2244; color: #ffffff; text-align: center;font-weight:bold;'>
+          		<tr><th>Employee Name</th><th>On Time?</th><th>Notes</th></tr>
+						</thead>
 			";
 			if($attendees){
 				foreach($attendees as $attendee){
@@ -418,22 +424,28 @@ class Restaurant {
 					$return.="
 					<tr>
 					<td>".stripslashes($attendee->employeeName)." <input type='hidden' name='attendeeID[]' value='".$attendee->attendeeID."' /><input type='hidden' name='employeeName[".$attendee->attendeeID."]' value='".$attendee->employeeName."' /></td>
-					<td><select name='att[".$attendee->attendeeID."][clock]'>
+					<td><select class='form-control' name='att[".$attendee->attendeeID."][clock]'>
 					";
 					foreach ($this->nhoSatus["Attendance"] as $key => $value) {
 						if($key==$json->clock){$selected='selected';}else{$selected='';}
 						$return.='<option value="'.$key.'" '.$selected.' >'.$value.'</option>';
 					}
 					$return.="</select></td>
-					<td><input type='text'
+					<td><input type='text' class='form-control'
 					name='att[".$attendee->attendeeID."][notes]' placeholder='Notes'
 					value='".$json->notes."'/></td>
 					</tr>";
 				}
 			}
 			$return.="
-			</table>
-			<input type='submit' value='Save and Send to HR' />
+				</table>
+			</div>
+		</div>
+		<div class='row'>
+			<div class='col'>
+				<button type=\"submit\" class=\"btn btn-primary\"/>Save and Send to HR</button>
+				</div>
+			</div>
 			</form>
 		</div>";
 		return $return;
@@ -493,7 +505,7 @@ class Restaurant {
 			$nhoTime=json_decode($nho['nhoTime'],true);
 			if(!$nho['nhoID'] || $nho['nhoID']==''){return "Invalid Location and date, please try again.";}else{$get['nhoID']=$nho['nhoID'];}
 		}else{
-			$nho['nhoDate']=date("Y-m-d");
+			$nho['nhoDate']=date("m/d/Y");
 			$nho['nhoHost']="";
 			$nho['nhoID']="";
 			$nho['nhoTime']=array("Start"=>'',"End"=>'');
@@ -502,77 +514,89 @@ class Restaurant {
 		}
 		$allUsers=$this->getUserNames();
 		$rests=$this->loadRestaurants();
-		if($atts['r']==0 || $atts['nhoDate']=="_new"){
+		if((!isset($atts['r']) || $atts['r']==0) || $atts['nhoDate']=="_new"){
 		$return= "
-		<link rel='stylesheet' id='wp-block-library-css'  href='https://c2.theproteinbar.com/wp-includes/css/dist/block-library/style.min.css?ver=5.2' type='text/css' media='all' />
-<link rel='stylesheet' id='jquery-ui-standard-css-css'  href='//ajax.googleapis.com/ajax/libs/jqueryui/1.11.2/themes/smoothness/jquery-ui.css?ver=5.2' type='text/css' media='all' />
-		<script type=\"text/javascript\">
-
-jQuery(document).ready(function() {
-    jQuery('#nhoDate').datepicker({
+		<script>
+		jQuery(document).ready(function() {
+    	jQuery('#nhoDate').datepicker({
+				minDate: new Date(),
+				showButtonPanel: true,";
+		if(isset($nho['nhoDate'])){
+			$return.= "
+				defaultDate: new Date(".date("Y, m, d",strtotime($nho['nhoDate']))."),";
+		}
+		$return.=	"
         dateFormat : 'mm/dd/yy'
     });
-		jQuery('#time_picker_start').timepicker({
+		jQuery('.timepicker').timepicker({
 			'timeFormat': 'h:mm p',
 			interval: 15,
-			    minTime: '5:00 am',
-			    maxTime: '9:00 pm',
-					dynamic: false,
-					dropdown: true,
-	 	    	scrollbar: true
-		 });
-		jQuery('#time_picker_end').timepicker({
-			'timeFormat': 'h:mm p',
-			interval: 15,
-			    minTime: '5:00 am',
-			    maxTime: '9:00 pm',
-					dynamic: false,
-					dropdown: true,
-	 	    	scrollbar: true
-		 });
+			minTime: '5:00 am',
+			maxTime: '9:00 pm',
+			dynamic: false,
+			dropdown: true,
+	 	  scrollbar: true
+		});
 });
 </script>
-		<div>
+		<div class='container-fluid;'>
 			<form method=\"post\" action=\"admin-post.php\">
-			<input type=\"hidden\" name=\"action\" value=\"pbr_save_nho\" />
-			<input type=\"hidden\" name=\"nhoID\" value='".$nho['nhoID']."'\" />
-					<label for='nhoDate'>NHO Date</label><br /><input type=\"text\" id=\"nhoDate\" name=\"nhoDate\" value=\"".date("Y-m-d",strtotime($nho['nhoDate']))."\"/><br />
+			<div class='row'>
+				<div class='col'>
+					<input type=\"hidden\" name=\"action\" value=\"pbr_save_nho\" />
+					<input type=\"hidden\" name=\"nhoID\" value='".$nho['nhoID']."' />
+					<label for='nhoDate'>NHO Date</label><br /><input class='form-control' type=\"text\" id=\"nhoDate\" name=\"nhoDate\" value=\"".date("Y-m-d",strtotime($nho['nhoDate']))."\"/>
+				</div>
+				<div class='col'>
 					";
-					$return.= "<label for='nhoHost'>NHO Host</label><br /><select name='nhoHost' id='nhoHost'><option value=''>----------</option>";
+					$return.= "
+						<label for='nhoHost'>NHO Host</label><br /><select class='form-control' name='nhoHost' id='nhoHost'><option value=''>----------</option>";
 					foreach($allUsers as $user){
 						$return.="<option value='".$user->ID."'";
 						if($nho['nhoHost']==$user->ID) {$return.=" selected='selected' ";}
 						$return.=">".$user->display_name."</option>";
 					}
-					$return.= "</select><br />
-					<label for='nhoLocation'>NHO Location</label><br /><select name='nhoLocation' id='nhoLocation'><option value=''>----------</option>";
+					$return.= "</select>
+					</div>
+					<div class='col'>
+						<label for='nhoLocation'>NHO Location</label><br /><select class='form-control' name='nhoLocation' id='nhoLocation'><option value=''>----------</option>";
 					foreach($rests as $r){
 						$return.="<option value='".$r->restaurantID."'";
 						if($nho['nhoLocation']==$r->restaurantID) {$return.=" selected='selected' ";}
 						$return.=">".$r->restaurantName."</option>";
 					}
-					$return.= "</select><br />
-					<label for='startTime'>Start Time</label><br />
-					<input id='time_picker_start' name='nhoTime[Start]' value='".$nhoTime['Start']."'/><br />
-					<label for='startTime'>End Time</label><br />
-					<input id='time_picker_end' name='nhoTime[End]' value='".$nhoTime['End']."'/><br />
-			<label for='maxParticipants'>Max Peeps</label><br /><input type=\"text\" id=\"maxParticipants\" name=\"maxParticipants\" value=\"".$nho['maxParticipants']."\"/><br />
-			<input type='submit' value='Save' />
+					if(!isset($nhoTime)){$nhoTime['Start']='';$nhoTime['End']='';}
+					$return.= "</select>
+					</div>
+				</div>
+				<div class='row'>
+					<div class='col'>
+						<label for='startTime'>Start Time</label><br />
+						<input class='timepicker form-control' id='time_picker_start' name='nhoTime[Start]' value='".$nhoTime['Start']."'/><br />
+					</div>
+					<div class='col'>
+						<label for='startTime'>End Time</label><br />
+						<input class='timepicker form-control' id='time_picker_end' name='nhoTime[End]' value='".$nhoTime['End']."'/><br />
+					</div>
+					<div class='col'>
+						<label for='maxParticipants'>Max Peeps</label><br /><input class='form-control' type=\"text\" id=\"maxParticipants\" name=\"maxParticipants\" value=\"".$nho['maxParticipants']."\"/><br />
+					</div>
+				</div>
+				<div class='row'>
+					<div class='col'>
+						<button type=\"submit\" class=\"btn btn-primary\"/>Submit</button>
+						<button type=\"button\" class='btn btn-warning' onclick=\"javascript:window.location='admin.php?page=pbr-nho';\">Cancel</button>
+					</div>
+				</div>
 			</form>
-		</div>
-		<script type='text/javascript' src='https://c2.theproteinbar.com/wp-includes/js/jquery/ui/datepicker.min.js?ver=1.11.4'></script>
-		<script type='text/javascript'>";
-		$return.= '
-jQuery(document).ready(function(jQuery){jQuery.datepicker.setDefaults({"closeText":"Close","currentText":"Today","monthNames":["January","February","March","April","May","June","July","August","September","October","November","December"],"monthNamesShort":["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"],"nextText":"Next","prevText":"Previous","dayNames":["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"],"dayNamesShort":["Sun","Mon","Tue","Wed","Thu","Fri","Sat"],"dayNamesMin":["S","M","T","W","T","F","S"],"dateFormat":"MM d, yy","firstDay":1,"isRTL":false});});
-</script>
-';
-	if($atts['nhoDate']!="_new"){
+		</div>";
+if($_GET['nhoDate']!="_new"){
 		$return.=$this->nho_attendance(array("nhoLocation"=>$nho['nhoLocation'],"nhoDate"=>$nho['nhoDate'],"nhoID"=>$nho['nhoID'],"nhoTime"=>$nhoTime['Start']." - ".$nhoTime['End']));
 	}
 }elseif($atts['r']==1){
 	$return=$this->nhoHistory($get);
 	if($file=$this->buildNHORosterFile($return)){
-		$return.="<p><a href='$file' target='_blank'>Printable PDF</a></p>";
+		$return.="<div><a href='$file' target='_blank'>Printable PDF</a></div>";
 	}
 }
 	return $return;
@@ -792,16 +816,16 @@ jQuery(document).ready(function(jQuery){jQuery.datepicker.setDefaults({"closeTex
 					<td colspan="10"><h3 style="color: #ffffff;text-align:center;">'.$nhoTime->Start.' - '.$nhoTime->End.'</h3></td>
 				</tr>
 				<tr style="background-color: #0e2244; color: #ffffff; text-align: center;">
-					<td><strong>Name</h5></td>
-					<td><strong>Location</h5></td>
-					<td><strong>Position</h5></td>
-					<td><strong>FOH/BOH</h5></td>
-					<td><strong>Uniform</h5></td>
-					<td><strong>FHR Onboarding</h5></td>
-					<td><strong>Food Handler</h5></td>
-					<td><strong>Schedule</h5></td>
-					<td><strong>Attendance</h5></td>
-					<td><strong>Notes</h5></td>
+					<td style="color: #ffffff;"><strong>Name</strong></td>
+					<td><strong>Location</strong></td>
+					<td><strong>Position</strong></td>
+					<td><strong>FOH/BOH</strong></td>
+					<td><strong>Uniform</strong></td>
+					<td><strong>FHR Onboarding</strong></td>
+					<td><strong>Food Handler</strong></td>
+					<td><strong>Schedule</strong></td>
+					<td><strong>Attendance</strong></td>
+					<td><strong>Notes</strong></td>
 				</tr>
 				';
 			foreach($event as $e){

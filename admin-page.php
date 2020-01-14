@@ -9,38 +9,40 @@ add_action( 'admin_post_pbr_save_restaurant_option', 'pbr_update_restaurant' );
 add_action( 'admin_post_pbr_save_nho', 'pbr_update_nho' );
 add_action('admin_post_pbr_nho_attendance_update','pbr_nho_attendance');
 function pbr_setup_menu(){
-  add_menu_page( 'PBK Functions', 'PBK Functions', 'manage_options', 'Manage-PBK', 'pbr_show_admin_functions');
+  add_menu_page( 'PBK Functions', 'PBK Functions', 'delete_posts', 'Manage-PBK', 'pbr_show_admin_functions',PBKF_URL . '/assets/images/PBK-Logo-ONLY-LG-2018_White_new.png');
   add_submenu_page( 'Manage-PBK', 'Edit a Restaurant', 'Edit a Restaurant', 'manage_options', 'pbr-edit-restaurant', 'pbr_edit_restaurant' );
   add_submenu_page( 'Manage-PBK', 'Add a Restaurant', 'Add a Restaurant', 'manage_options', 'pbr-add-restaurant', 'pbr_add_restaurant' );
-  add_submenu_page( 'Manage-PBK', 'Manage NHO Events', 'Manage NHO Events', 'manage_options', 'pbr-nho', 'pbr_nho_setup' );
-  add_submenu_page( 'Manage-PBK', 'NHO Archive', 'NHO Archive', 'manage_options', 'pbr-nho-archive', 'pbr_nho_history' );
-  add_submenu_page( 'Manage-PBK', 'Incident Archive', 'Incident Archive', 'manage_options', 'pbr-incident-history', 'pbr_search_incident' );
+  add_submenu_page( 'Manage-PBK', 'Manage NHO Events', 'Manage NHO Events', 'delete_posts', 'pbr-nho', 'pbr_nho_setup' );
+  add_submenu_page( 'Manage-PBK', 'NHO Archive', 'NHO Archive', 'upload_files', 'pbr-nho-archive', 'pbr_nho_history' );
+  add_submenu_page( 'Manage-PBK', 'Incident Archive', 'Incident Archive', 'upload_files', 'pbr-incident-history', 'pbr_search_incident' );
 }
-
-    function pbr_admin_init(){
-    }
-    function pbr_add_restaurant(){
-      echo "<div class='wrap'><h2>Add a Restaurant</h2>";
-   	  $restaurant = new Restaurant();
-   	  echo $restaurant->restaurantEditBox();
-      echo "</div>";
-    }
+function pbr_admin_init(){
+}
+function pbr_add_restaurant(){
+  echo "<div class='wrap'><h2>Add a Restaurant</h2>";
+  $restaurant = new Restaurant();
+  echo $restaurant->restaurantEditBox();
+  echo "</div>";
+}
     function pbr_show_admin_functions(){
+      global $submenu;
       echo "
       <div class='wrap'>
-      <h2>PBK Functions</h2>
+      <h2>".esc_html( get_admin_page_title() )."</h2>
         <div class='container-fluid' style='width:100%;'>
           <div class='row'>
             <div class='col'>
-              <ul class='nav flex-column'>
-                <li class='nav-item'><a class='nav-link' href='" . admin_url( 'admin.php?page=pbr-edit-restaurant') . "'>Edit a Restaurant</a></li>
-                <li class='nav-item'><a class='nav-link' href='" . admin_url( 'admin.php?page=pbr-add-restaurant') . "'>Add a Restaurant</a></li>
-                <li class='nav-item'><a class='nav-link' href='" . admin_url( 'admin.php?page=pbr-nho') . "'>Manage NHO Events</a></li>
-                <li class='nav-item'><a class='nav-link' href='" . admin_url( 'admin.php?page=pbr-nho-archive') . "'>NHO Archive</a></li>
-                <li class='nav-item'><a class='nav-link' href='" . admin_url( 'admin.php?page=pbr-incident-history') . "'>Incident Archive</a></li>
+              <ul class='nav flex-column'>";
+          foreach($submenu['Manage-PBK'] as $m){
+            if($m[2]!='Manage-PBK'){
+            echo  "
+                <li class='nav-item'><a class='nav-link' href='" . admin_url( 'admin.php?page='.$m[2]) . "'>".$m[0]."</a></li>";
+          }}
+            echo "
                 </ul>
               </div>
             </div>
+            <div class='col'></div>
           </div>
         </div>
       ";
@@ -193,9 +195,11 @@ function pbr_update_restaurant() {
    	//$restaurant->restaurantEditBox();
 }
 function pbr_nho_setup(){
-  echo "<div class=\"wrap\"><div id=\"icon-users\" class=\"icon32\"></div><h2>NHO Events <a href=\"?page=pbr-nho&amp;nhoDate=_new\" class=\"add-new-h2\">Add New</a>
+  echo "<div class=\"wrap\">
+          <div id=\"icon-users\" class=\"icon32\"></div>
+            <h2>NHO Events <a href=\"?page=pbr-nho&amp;nhoDate=_new\" class=\"add-new-h2\">Add New</a>
            </h2>
-           </div>";
+           ";
   $restaurant = new Restaurant();
   if(isset($_GET['nhoDate']) && $_GET['nhoDate']=="_new"){
     echo $restaurant->nho_sign_up_manage();
@@ -207,6 +211,7 @@ function pbr_nho_setup(){
     $myListTable->prepare_items();
     $myListTable->display();
   }
+  echo "</div>";
 }
 function pbr_update_nho() {
   $restaurant = new Restaurant();
