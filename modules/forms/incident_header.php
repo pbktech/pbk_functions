@@ -6,7 +6,7 @@ function pbk_form_incident_header($data=null){
     <div class=\"container\">
       <div class=\"row\">
         <div class=\"col\">
-          <img src='" . PBKF_URL . "/assets/images/PBK-Logo_Primary_Full-Color.png' /><br><h2>INCIDENT REPORT</h2>
+          <img src='" . PBKF_URL . "/assets/images/PBK-Logo_Primary_Full-Color_doc.png' /><br><h2>INCIDENT REPORT</h2>
         </div>
       </div>
     </div>

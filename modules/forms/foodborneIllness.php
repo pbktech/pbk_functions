@@ -63,7 +63,9 @@ $return="
   }
   $return.=    "
     </div>
-  </div>
+  </div>";
+  if(!isset($data)){
+$return.=  "
   <div class=\"row\">
     <div class=\"col\">
     <strong>Say to the guest:</strong>
@@ -71,7 +73,9 @@ $return="
         <p class=\"mb-0\">“Thank you; I have all the information I need at this point. I have not received any other complaints of this nature today. We will investigate your complaint today, and someone from Protein Bar & Kitchen will be in contact with you within the next 24 hours. Thank you very much for letting me know about this incident. Is there anything I can do for you right now?”</p>
       </blockquote>
     </div>
-  </div>
+  </div>";
+  }
+$return.=  "
 </div>";
   return $return;
 }

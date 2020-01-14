@@ -68,7 +68,17 @@ include('shortcodes/pbk_showChildPages.php');
 
 /*Admin Pages*/
 include('admin-page.php'); // the plugin options page HTML and save functions
-
+add_action('init','pbk_force_download');
+function pbk_force_download($file) {
+  if (file_exists($file)) {
+    header("Content-type: application/x-msdownload",true,200);
+    header("Content-Disposition: attachment; filename=".basename($file));
+    header("Pragma: no-cache");
+    header("Expires: 0");
+    echo 'data';
+    exit();
+  }
+}
 add_shortcode( 'toast', 'pbrf_showToastFunctions' );
 add_shortcode( 'show_deposit_calculator', 'pbrf_depositCalculator' );
 add_shortcode( 'show_finance_report_builder', 'pbrf_showReportBuilder' );

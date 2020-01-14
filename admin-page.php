@@ -78,15 +78,21 @@ function pbr_add_restaurant(){
         $content['html'].=pbk_form_lostStolenProperty(json_decode($r->reportInfo,true));
         break;
     }
-    echo "<div class='wrap'><div class='container'>" . $content['html'];
+    $return= "<div class='wrap'><div class='container'>" . $content['html'];
     if($link=$restaurant->buildHTMLPDF(json_encode($content))){
-      echo "<a href='".$link['Link']."' target='_blank'>Download PDF</a></div></div>";
+      $return.= "<div class='row'><div class='col'><a href='".$link['Link']."' target='_blank'>Download PDF</a></div></div>";
     }
+    $return.="</div></div>";
+    return $return;
   }
   function pbr_search_incident(){
   $restaurant = new Restaurant();
   if(isset($_GET['incident'])){
-    pbr_incident_pdf();
+    if($pdf=pbr_incident_pdf()){
+      echo $pdf;
+    }else {
+      echo "<div class='wrap'><div class='alert alert-danger'>PDF Not Generated</div></div>";
+    }
     exit;
   }
   echo "
