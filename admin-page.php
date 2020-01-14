@@ -145,7 +145,7 @@ function pbr_add_restaurant(){
         </thead>
 ";
       foreach($results as $r){
-        $download="<a href='" . admin_url( 'admin.php?page=pbr-incident-history&amp;incident=' . $r->id_pbc_incident_reports) . "' target='_blank'>Download</a>";
+        $download="<a href='" . admin_url( 'admin.php?page=pbr-incident-history&amp;incident=' . $r->id_pbc_incident_reports) . "' target='_blank'>View/Download</a>";
         echo "
         <tr>
           <td><div class='itemName' id='".$r->id_pbc_incident_reports."'>" . $restaurant->getRestaurantName($r->restaurantID) . "</div></td>
