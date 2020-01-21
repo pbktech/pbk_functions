@@ -43,6 +43,7 @@ class LevelUp{
 		return json_decode($result);
 	}
   function addCredit($c) {
+		print_r($this->getPersmission());
     $c['merchant_funded_credit']['duration_in_seconds']=31536000;
     $c['merchant_funded_credit']['global']="false";
     $json=json_encode($c);
