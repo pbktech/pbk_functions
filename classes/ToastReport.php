@@ -980,7 +980,7 @@ ORDER BY msr.orders.entered_by,date_reqd ";
 		$mail->SMTPAuth = true;
 		$mail->Username = $this->config->SMTP_USERNAME;
 		$mail->Password = $this->config->SMTP_PASSWORD;
-		$mail->setFrom('otrs@theproteinbar.com', 'PBK SYSTEM NOTIFY');
+		$mail->setFrom('otrs@theproteinbar.com', 'Protein Bar & Kitchen');
 		$addresses=explode(",",$to);
 		foreach($addresses as $address){
 		  $mail->addAddress($address);
