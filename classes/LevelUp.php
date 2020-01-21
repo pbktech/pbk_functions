@@ -52,7 +52,7 @@ class LevelUp{
 		curl_setopt($ch, CURLOPT_HTTPHEADER,Array(
       "Content-Type: application/json",
       "Accept: application/json",
-      "Authorization:token merchant="\".$this->merch_token."\""
+      'Authorization:token merchant="'.$this->merch_token.'"'
     ));
     curl_setopt($ch, CURLOPT_POST, true);
     curl_setopt($ch, CURLOPT_POSTFIELDS, $json);
