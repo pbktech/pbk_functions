@@ -10,7 +10,6 @@ foreach ($r->myRestaurants as $restaurantID => $restaurantName) {
   AND idpbc_minibar NOT IN (SELECT outpostID FROM pbc_minibar_deliveries WHERE restaurantID='".$restaurantID."' AND deliveryDate='".date("Y-m-d")."') GROUP BY company,idpbc_minibar");
   //Added for testing
   $results = (object) array("company"=>"Bain & Co Chicago","idpbc_minibar"=>1);
-  echo "<pre>" . print_r($results) . "</pre>";
   if($results){
     $ret.="<div class='container'><h3>".$restaurantName."</h3>
     <form method='post' action='".home_url( add_query_arg( array(), $wp->request ) )."' id='' >
@@ -18,7 +17,7 @@ foreach ($r->myRestaurants as $restaurantID => $restaurantName) {
       foreach($results as $result){
         $ret.="
         <div class=\"form-group\">
-          <label for='PBK".$restaurantID."-".$result->idpbc_minibar."'>".$result->company."</label><input type='text' class='form-control' name='phone[".$restaurantID."][".$result->idpbc_minibar."]' id='PBK".$restaurantID."-".$result->idpbc_minibar."' />
+          <label for='PBK".$restaurantID."-".$results->idpbc_minibar."'>".$results->company."</label><input type='text' class='form-control' name='phone[".$restaurantID."][".$results->idpbc_minibar."]' id='PBK".$restaurantID."-".$results->idpbc_minibar."' />
         </div>";
       }
     $ret.="
