@@ -15,7 +15,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
 		array(
       "publicGUID"=>$publicGUID,
       "restaurantID"=>$restaurantID,
-      "userID"=$cu->ID,
+      "userID"=>$cu->ID,
       "deliveryDate"=>date("Y-m-d"),
       "initiated"=>date("Y-m-d H:i:s"),
       "recipients"=>json_encode($emails)
