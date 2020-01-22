@@ -2,10 +2,37 @@
 global $wpdb;
 global $wp;
 if($_SERVER['REQUEST_METHOD'] == 'POST') {
-  echo "<pre>";
-  print_r($_POST);
-  echo "</pre>";
-	$toast = new Toast();
+  $toast = new Toast();
+  $report=new ToastReport();
+  foreach($_POST['phone'] as $p=>$restaurant){
+    $restaurantID=$restaurant;
+    foreach ($restaurant as $company => $phoneNumber) {
+      $emails=array("jon@theproteinbar.com");
+      $publicGUID=$toast->genGUID(microtime());
+      $phone=preg_replace("/[^0-9]/", "",$phoneNumber);
+      $cu = wp_get_current_user();
+      $wpdb->query( $wpdb->prepare(
+	"
+		INSERT INTO pbc_minibar_deliveries
+		( publicGUID, restaurantID, userID, deliveryDate, initiated, recipients )
+		VALUES ( %s, %s, %s, %s, %s, %s )
+	",
+        array(
+		$publicGUID,
+		$restaurantID,
+		$metavalue,
+    $cu->ID,
+    date("Y-m-d"),
+    date("Y-m-d H:i:s"),
+    json_encode($emails)
+	)
+) );
+    if($wpdb->last_error !== ''){
+      $thisYear->sendText("+1".$phone,home_url("/deliveryNotify.php?id=".$publicGUID));
+      echo "<div class='alert alert-success>Text with link sent</div>'";
+    }
+    }
+  }
 }
 $r=new Restaurant;
 foreach ($r->myRestaurants as $restaurantID => $restaurantName) {
