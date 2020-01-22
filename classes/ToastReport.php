@@ -83,6 +83,17 @@ class ToastReport{
 		}
 		return $return;
 	}
+	function getOutpostOrders() {
+		$stmt = $this->mysqli->prepare("SELECT * FROM pbc2.pbc_ToastScheduledShifts,pbc_ToastEmployeeInfo WHERE inDate Between ? AND ? AND pbc2.pbc_ToastScheduledShifts.employeeGUID=pbc_ToastEmployeeInfo.guid AND pbc2.pbc_ToastScheduledShifts.deletedDate LIKE '1969%'
+		ORDER BY pbc_ToastScheduledShifts.restaurantID");
+		$stmt->bind_param('ss',$start,$end);
+		$stmt->execute();
+		$result = $stmt->get_result();
+		while($row=$result->fetch_object()){
+			$return[]=array("Name"=>$row->employeeName,"Restaurant"=>$row->restaurantID,"Job"=>$row->jobCode,"Date"=>date("m/d/Y",strtotime($row->inDate)),"Start"=>date("g:i a",strtotime($row->inDate)),"End"=>date("g:i a",strtotime($row->outDate)));
+		}
+		return $return;
+	}
 	function getPlanInfo() {
 		$stmt = $this->mysqli->prepare("SELECT planNumber,laborPlan,(planNumber*laborPlan) as 'laborDollar' FROM pbc2.pbc_salesPlan where salesDate= ? AND restaurantID =?");
 		$stmt->bind_param('ss',$this->businessDate,$this->restaurantID);

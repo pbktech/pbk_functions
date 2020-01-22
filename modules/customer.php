@@ -47,7 +47,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
 			</script>
 		";
 		if(count($customers)==0){
-			$ret.="<div>Customer Not Found, please create one below:</div><div>
+			$ret.="<div class='alert alert-warning'>Customer Not Found, please create one below:</div><div>
 			<form method='POST' name='addCust0' action='".home_url( $wp->request )."' onsubmit='return validateFormPart(\"addCust0\")' >
 			<input type='text' class=\"form-control\" name='firstName' id='' placeholder='Customer First Name'/><br />
 			<input type='text' class=\"form-control\" name='lastName' id='' placeholder='Customer Last Name'/><br />
