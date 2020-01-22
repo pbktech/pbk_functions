@@ -55,6 +55,7 @@ class Restaurant {
 		if($this->isAboveStore==0){
 			$q.=" AND restaurantID IN (SELECT restaurantID FROM pbc2.pbc_pbr_managers WHERE managerID='".$cu->ID."')";
 		}
+		echo $q;
 		 $rests=$wpdb->get_results($q,'ARRAY_A');
 		 foreach ( $rests as $rest ){
 			 $this->myRestaurants[$rest[$field]]=$rest['restaurantName'];
