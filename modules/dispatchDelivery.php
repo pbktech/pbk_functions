@@ -20,8 +20,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
         array(
 		$publicGUID,
 		$restaurantID,
-		$metavalue,
-    $cu->ID,
+		$cu->ID,
     date("Y-m-d"),
     date("Y-m-d H:i:s"),
     json_encode($emails)
@@ -30,6 +29,8 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
     if($wpdb->last_error !== ''){
       $thisYear->sendText("+1".$phone,home_url("/deliveryNotify.php?id=".$publicGUID));
       echo "<div class='alert alert-success>Text with link sent</div>'";
+    }else {
+    echo "<div class='alert alert-danger>Tehre was an error. ". $wpdb->last_error ."</div>'";
     }
     }
   }
