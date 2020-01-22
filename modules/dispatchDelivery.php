@@ -4,6 +4,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
 	$toast = new Toast();
 }
 $r=new Restaurant;
+echo "<pre>" . print_r($r->getMyRestaurants()) . "</pre>";
 $restaurants=$r->getMyRestaurants();
 foreach ($restaurants as $restaurantID => $restaurantName) {
   $results=$wpdb->get_results("SELECT company,idpbc_minibar FROM pbc2.pbc_ToastOrderHeaders,pbc_minibar WHERE pbc_ToastOrderHeaders.diningOption=pbc_minibar.outpostIdentifier AND businessDate='".date("Y-m-d")."' AND pbc_ToastOrderHeaders.restaurantID='".$restaurantID."'
