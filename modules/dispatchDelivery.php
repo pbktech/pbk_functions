@@ -11,21 +11,17 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
       $publicGUID=$toast->genGUID(microtime());
       $phone=preg_replace("/[^0-9]/", "",$phoneNumber);
       $cu = wp_get_current_user();
-      $wpdb->query( $wpdb->prepare(
-	"
-		INSERT INTO pbc_minibar_deliveries
-		( publicGUID, restaurantID, userID, deliveryDate, initiated, recipients )
-		VALUES ( %s, %s, %s, %s, %s, %s )
-	",
-        array(
-		$publicGUID,
-		$restaurantID,
-		$cu->ID,
-    date("Y-m-d"),
-    date("Y-m-d H:i:s"),
-    json_encode($emails)
-	)
-) );
+      $wpdb->insert(	"pbc_minibar_deliveries",
+		array(
+      "publicGUID"=>$publicGUID,
+      "restaurantID"=>$restaurantID,
+      "userID"=$cu->ID,
+      "deliveryDate"=>date("Y-m-d"),
+      "initiated"=>date("Y-m-d H:i:s"),
+      "recipients"=>json_encode($emails)
+    ),
+		array( "%s", "%s", "%s", "%s", "%s", "%s" )
+  );
     if($wpdb->last_error !== ''){
       $thisYear->sendText("+1".$phone,home_url("/deliveryNotify.php?id=".$publicGUID));
       echo "<div class='alert alert-success>Text with link sent</div>'";
