@@ -1,5 +1,6 @@
 <?php
 global $wpdb;
+global $wp;
 if($_SERVER['REQUEST_METHOD'] == 'POST') {
 	$toast = new Toast();
 }
@@ -9,6 +10,7 @@ foreach ($r->myRestaurants as $restaurantID => $restaurantName) {
   AND idpbc_minibar NOT IN (SELECT outpostID FROM pbc_minibar_deliveries WHERE restaurantID='".$restaurantID."' AND deliveryDate='".date("Y-m-d")."') GROUP BY company,idpbc_minibar");
   //Added for testing
   $results = (object) array("company"=>"Bain & Co Chicago","idpbc_minibar"=>1);
+  echo "<pre>" . print_r($results) . "</pre>";
   if($results){
     $ret.="<div class='container'><h3>".$restaurantName."</h3>
     <form method='post' action='".home_url( add_query_arg( array(), $wp->request ) )."' id='' >
