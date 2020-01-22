@@ -4,7 +4,6 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
 	$toast = new Toast();
 }
 $r=new Restaurant;
-echo "<pre>" . print_r($r->myRestaurants) . "</pre>";
 foreach ($r->myRestaurants as $restaurantID => $restaurantName) {
   $results=$wpdb->get_results("SELECT company,idpbc_minibar FROM pbc2.pbc_ToastOrderHeaders,pbc_minibar WHERE pbc_ToastOrderHeaders.diningOption=pbc_minibar.outpostIdentifier AND businessDate='".date("Y-m-d")."' AND pbc_ToastOrderHeaders.restaurantID='".$restaurantID."'
   AND idpbc_minibar NOT IN (SELECT outpostID FROM pbc_minibar_deliveries WHERE restaurantID='".$restaurantID."' AND deliveryDate='".date("Y-m-d")."') GROUP BY company,idpbc_minibar");
