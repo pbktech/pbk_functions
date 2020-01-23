@@ -18,9 +18,10 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
       "userID"=>$cu->ID,
       "deliveryDate"=>date("Y-m-d"),
       "initiated"=>date("Y-m-d H:i:s"),
-      "recipients"=>json_encode($emails)
+      "recipients"=>json_encode($emails),
+      "outpostID"=>$company
     ),
-		array( "%s", "%s", "%s", "%s", "%s", "%s" )
+		array( "%s", "%s", "%s", "%s", "%s", "%s", "%s" )
   );
     if($wpdb->last_error !== ''){
       $thisYear->sendText("+1".$phone,home_url("/deliveryNotify.php?id=".$publicGUID));
