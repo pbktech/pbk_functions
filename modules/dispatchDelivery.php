@@ -12,23 +12,23 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
       $phone=preg_replace("/[^0-9]/", "",$phoneNumber);
       $cu = wp_get_current_user();
       $wpdb->insert(	"pbc_minibar_deliveries",
-		array(
-      "publicGUID"=>$publicGUID,
-      "restaurantID"=>$restaurantID,
-      "userID"=>$cu->ID,
-      "deliveryDate"=>date("Y-m-d"),
-      "initiated"=>date("Y-m-d H:i:s"),
-      "recipients"=>json_encode($emails),
-      "outpostID"=>$company
-    ),
-		array( "%s", "%s", "%s", "%s", "%s", "%s", "%s" )
-  );
-    if($wpdb->last_error !== ''){
-      $thisYear->sendText("+1".$phone,home_url("/deliveryNotify.php?id=".$publicGUID));
-      echo "<div class='alert alert-success>Text with link sent</div>'";
-    }else {
-    echo "<div class='alert alert-danger>Tehre was an error. ". $wpdb->last_error ."</div>'";
-    }
+		    array(
+          "publicGUID"=>$publicGUID,
+          "restaurantID"=>$restaurantID,
+          "userID"=>$cu->ID,
+          "deliveryDate"=>date("Y-m-d"),
+          "initiated"=>date("Y-m-d H:i:s"),
+          "recipients"=>json_encode($emails),
+          "outpostID"=>$company
+        ),
+		      array( "%s", "%s", "%s", "%s", "%s", "%s", "%s" )
+      );
+      if($wpdb->last_error == ''){
+        $thisYear->sendText("+1".$phone,"CMPLT DLVRY".home_url("/deliveryNotify.php?id=".$publicGUID));
+        echo "<div class='alert alert-success>Text with link sent</div>'";
+      }else {
+        echo "<div class='alert alert-danger>Tehre was an error. ". $wpdb->last_error ."</div>'";
+      }
     }
   }
 }
