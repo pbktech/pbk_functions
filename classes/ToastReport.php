@@ -460,7 +460,7 @@ AND ToastOrderID IN (SELECT GUID FROM pbc_ToastOrderHeaders WHERE restaurantID=?
 		return $row->Amount;
 	}
 	function sendText($n,$m) {
-		$client = new Client($this->account_sid, $this->auth_token);
+		$client = new Client($this->config->account_sid, $this->config->auth_token);
 		$client->messages->create(
 		$n,
 		array(
