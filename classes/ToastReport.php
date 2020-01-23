@@ -465,7 +465,7 @@ AND ToastOrderID IN (SELECT GUID FROM pbc_ToastOrderHeaders WHERE restaurantID=?
 		$n,
 		array(
 		'from' => $this->config->twilio_number,
-		 'body' => $m
+		 'body' => $m . "Reply STOP to unsubscribe. Msg&Data Rates May Apply."
 		));
 	}
 	function getCheckInfo($guid) {
