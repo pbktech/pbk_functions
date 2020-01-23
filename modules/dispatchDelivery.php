@@ -26,7 +26,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
           $emails[]=$c->customer->email;
         }
       }
-      $packingList['title']="Outpost Packing List for " . $wpdb->get_var( "SELECT company FROM pbc_minibar WHERE idpbc_minibar='".$company."'");
+      $packingList['title']="MiniBar Packing List for " . $wpdb->get_var( "SELECT company FROM pbc_minibar WHERE idpbc_minibar='".$company."'");
       $packingList["html"]="
       <div><h3>" . $packingList['title'] . "</h3>
         <ol>";
@@ -42,7 +42,6 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
       $publicGUID=$toast->genGUID(microtime());
       $phone=preg_replace("/[^0-9]/", "",$phoneNumber);
       $cu = wp_get_current_user();
-      /*
       $wpdb->insert(	"pbc_minibar_deliveries",
 		    array(
           "publicGUID"=>$publicGUID,
@@ -61,7 +60,6 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
       }else {
         $ret.= "<div class='alert alert-danger'>There was an error. ". $wpdb->last_error ."</div>";
       }
-      */
       if($pdf=$r->buildHTMLPDF(json_encode($packingList))){
         echo "<div><a href='" . $pdf['Link'] . "' target='_blank'>Download the Packing List</a></div>";
       }
