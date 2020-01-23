@@ -5,7 +5,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
   $toast = new Toast();
   $report=new ToastReport();
   foreach($_POST['phone'] as $p=>$restaurant){
-    $restaurantID=$restaurant;
+    $restaurantID=$p;
     foreach ($restaurant as $company => $phoneNumber) {
       $emails=array("jon@theproteinbar.com","jcohen@theproteinbar.com","kate@theproteinbar.com");
       $publicGUID=$toast->genGUID(microtime());
