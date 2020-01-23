@@ -913,6 +913,10 @@ AND pbc_users.id=nhoHost AND pbc_pbrestaurants.restaurantID=nhoLocation");
 		global $wpdb;
 		return $wpdb->get_var( "SELECT restaurantName FROM pbc_pbrestaurants WHERE restaurantID='".$type."'");
 	}
+	public function getRestaurantField($field) {
+		global $wpdb;
+		return $wpdb->get_var( "SELECT $field FROM pbc_pbrestaurants WHERE restaurantID='".$this->restaurantID."'");
+	}
 	public function buildLoggedInName($name="reporterName"){
 		global $wpdb;
 		global $wp;

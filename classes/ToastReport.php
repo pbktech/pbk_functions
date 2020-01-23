@@ -942,6 +942,17 @@ ORDER BY msr.orders.entered_by,date_reqd ";
 		while($row=$result->fetch_object()){$r[]=$row->checkNumber;}
 		return $r;
 	}
+	function getMiniBarOrders($outpost) {
+		$r=array();
+		$q="SELECT GUID FROM pbc2.pbc_ToastOrderHeaders WHERE pbc_ToastOrderHeaders.diningOption IN (SELECT outpostIdentifier FROM pbc_minibar WHERE idpbc_minibar=?)
+  AND businessDate=? AND pbc_ToastOrderHeaders.restaurantID=?";
+		$stmt = $this->mysqli->prepare($q);
+		$stmt->bind_param("sss",$outpost,$this->businessDate,$this->restaurantID);
+		$stmt->execute();
+		$result = $stmt->get_result();
+		while($row=$result->fetch_object()){$r[]=$row->GUID;}
+		return $r;
+	}
 	function sameDayLastYear($d) {
 		$d=date('Y-m-d', strtotime('-1 year', strtotime($d)));
 		if(date("L")==1 && (date("n")>2 || (date("n")==2 && date("d")==29))){$addDays=2;}else{$addDays=1;}
