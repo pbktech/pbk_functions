@@ -13,7 +13,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
 //      $emails=array("jon@theproteinbar.com","jcohen@theproteinbar.com","kate@theproteinbar.com");
       $report->setRestaurantID($p);
       $report->setBusinessDate(date("Y-m-d"));
-      $orders=$report->getMiniBarOrders($outpost);
+      $orders=$report->getMiniBarOrders($company);
       $toast = new Toast($r->getRestaurantField("GUID"));
       foreach ($orders as $order) {
         $json=$toast->getOrderInfo($order);
