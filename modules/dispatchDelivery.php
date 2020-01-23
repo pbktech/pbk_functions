@@ -18,7 +18,6 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
       foreach ($orders as $order) {
         $json=$toast->getOrderInfo($order);
         foreach($json->checks as $c){
-          echo $report->showRawArray($c);
           $emails[]=$c->customer->email;
         }
       }
@@ -39,9 +38,9 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
       );
       if($wpdb->last_error == ''){
         $report->sendText("+1".$phone,"PBK Delivery Status\n".home_url("/deliveryNotify.php?id=".$publicGUID . "\ntxt STOP to Unsubscribe"));
-        $ret.= "<div class='alert alert-success>Text with link sent</div>'";
+        $ret.= "<div class='alert alert-success'>Text with link sent</div>";
       }else {
-        $ret.= "<div class='alert alert-danger>Tehre was an error. ". $wpdb->last_error ."</div>'";
+        $ret.= "<div class='alert alert-danger'>There was an error. ". $wpdb->last_error ."</div>";
       }
     }
   }
