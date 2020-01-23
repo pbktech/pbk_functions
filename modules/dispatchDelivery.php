@@ -7,7 +7,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
   foreach($_POST['phone'] as $p=>$restaurant){
     $restaurantID=$restaurant;
     foreach ($restaurant as $company => $phoneNumber) {
-      $emails=array("jon@theproteinbar.com");
+      $emails=array("jon@theproteinbar.com","jcohen@theproteinbar.com","kate@theproteinbar.com");
       $publicGUID=$toast->genGUID(microtime());
       $phone=preg_replace("/[^0-9]/", "",$phoneNumber);
       $cu = wp_get_current_user();
