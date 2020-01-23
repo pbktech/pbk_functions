@@ -118,6 +118,14 @@ class ToastReport{
 		$row=$result->fetch_object();
 		return $row;
 	}
+	function getTodayPlanInfoSums() {
+		$stmt = $this->mysqli->prepare("SELECT SUM(planNumber) as 'planNumber', AVG(laborPlan) as 'laborPlan' FROM pbc2.pbc_salesPlan where salesDate BETWEEN  ? AND ? ");
+		$stmt->bind_param('ss',$this->startTime,$this->endTime);
+		$stmt->execute();
+		$result = $stmt->get_result();
+		$row=$result->fetch_object();
+		return $row;
+	}
 	function getFundraisingResults() {
 		$stmt = $this->mysqli->prepare("SELECT SUM(amount) as 'Amount' FROM pbc2.pbc_ToastCheckHeaders WHERE
 GUID IN (SELECT ToastCheckID FROM pbc2.pbc_ToastCheckItems WHERE displayName='FUNDRAISER')
