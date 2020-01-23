@@ -26,11 +26,12 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
           $emails[]=$c->customer->email;
         }
       }
+      $packingList['title']="Outpost Packing List for " . $wpdb->get_var( "SELECT company FROM pbc_minibars WHERE idpbc_minibar='".$company."'");
       $packingList["html"]="
-      <div>
+      <div><h3>" . $packingList['title'] . "</h3>
         <ul>";
       foreach($orderDetails as $orderID => $orderDetail){
-        $packingList["html"].="<li><h3># " . $orderID . " for " . $orderDetail['Name'] . "</h3><ul>";
+        $packingList["html"].="<li><h5># " . $orderID . " for " . $orderDetail['Name'] . "</h5><ul>";
         foreach($orderDetail['Items'] as $item){
           $packingList["html"].="<li>" . $item . "</li>";
         }
@@ -38,7 +39,6 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
       }
       $packingList["html"].="</ul></div>";
       $packingList['format']='A4-P';
-      $packingList['title']="Outpost Packing List for " . $publicGUID;
       $publicGUID=$toast->genGUID(microtime());
       $phone=preg_replace("/[^0-9]/", "",$phoneNumber);
       $cu = wp_get_current_user();
