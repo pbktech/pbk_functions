@@ -18,6 +18,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
       foreach ($orders as $order) {
         $json=$toast->getOrderInfo($order);
         foreach($json->checks as $c){
+          echo $report->showRawArray($c);
           $emails[]=$c->customer->email;
         }
       }
