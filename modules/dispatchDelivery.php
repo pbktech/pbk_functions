@@ -29,7 +29,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
       $packingList['title']="Outpost Packing List for " . $wpdb->get_var( "SELECT company FROM pbc_minibar WHERE idpbc_minibar='".$company."'");
       $packingList["html"]="
       <div><h3>" . $packingList['title'] . "</h3>
-        <ul>";
+        <ol>";
       foreach($orderDetails as $orderID => $orderDetail){
         $packingList["html"].="<li><h5># " . $orderID . " for " . $orderDetail['Name'] . "</h5><ul>";
         foreach($orderDetail['Items'] as $item){
@@ -37,7 +37,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
         }
         $packingList["html"].="</ul></li>";
       }
-      $packingList["html"].="</ul></div>";
+      $packingList["html"].="</ol></div>";
       $packingList['format']='A4-P';
       $publicGUID=$toast->genGUID(microtime());
       $phone=preg_replace("/[^0-9]/", "",$phoneNumber);
