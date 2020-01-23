@@ -26,7 +26,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
           $emails[]=$c->customer->email;
         }
       }
-      $packingList['title']="MiniBar Packing List for " . $wpdb->get_var( "SELECT company FROM pbc_minibar WHERE idpbc_minibar='".$company."'");
+      $packingList['title']="MiniBar Packing List for " . $wpdb->get_var( "SELECT company FROM pbc_minibar WHERE idpbc_minibar='".$company."'") . " " . date("m-d-Y");
       $packingList["html"]="
       <div><h3>" . $packingList['title'] . "</h3>
         <ol>";
@@ -61,7 +61,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
         $ret.= "<div class='alert alert-danger'>There was an error. ". $wpdb->last_error ."</div>";
       }
       if($pdf=$r->buildHTMLPDF(json_encode($packingList))){
-        echo "<div><a href='" . $pdf['Link'] . "' target='_blank'>Download the Packing List</a></div>";
+        echo "<div><button class=\"btn btn-primary\" onclick=\"window.open('" . $pdf['Link'] . "', '_blank');\">Download the Packing List</a></div>";
       }
     }
   }
