@@ -464,7 +464,7 @@ AND ToastOrderID IN (SELECT GUID FROM pbc_ToastOrderHeaders WHERE restaurantID=?
 		$client->messages->create(
 		$n,
 		array(
-		'from' => $this->twilio_number,
+		'from' => $this->config->twilio_number,
 		 'body' => $m
 		));
 	}
