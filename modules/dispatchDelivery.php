@@ -10,6 +10,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
     $r=new Restaurant($p);
     foreach ($restaurant as $company => $phoneNumber) {
       $emails=array();
+      $orderDetails=array();
 //      $emails=array("jon@theproteinbar.com","jcohen@theproteinbar.com","kate@theproteinbar.com");
       $report->setRestaurantID($p);
       $report->setBusinessDate(date("Y-m-d"));
@@ -18,12 +19,28 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
       foreach ($orders as $order) {
         $json=$toast->getOrderInfo($order);
         foreach($json->checks as $c){
+          $orderDetails[$c->displayNumber]["Name"]=$c->customer->firstName . " " . $c->customer->lastName;
+          foreach($c->selections as $s){
+            $orderDetails[$c->displayNumber]["Items"][]=$s->displayName;
+          }
           $emails[]=$c->customer->email;
         }
       }
+      $packingList="
+      <div>
+        <ul>";
+      foreach($orderDetails as $orderID => $orderDetail){
+        $packingList.="<li><h3># " . $orderID . " for " . $orderDetail['Name'] . "</h3><ul>";
+        foreach($orderDetail['Items'] as $item){
+          $packingList.="<li>" . $item . "</li>";
+        }
+        $packingList.="</ul></li>";
+      }
+      $packingList.="</ul></div>";
       $publicGUID=$toast->genGUID(microtime());
       $phone=preg_replace("/[^0-9]/", "",$phoneNumber);
       $cu = wp_get_current_user();
+      /*
       $wpdb->insert(	"pbc_minibar_deliveries",
 		    array(
           "publicGUID"=>$publicGUID,
@@ -41,6 +58,10 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
         $ret.= "<div class='alert alert-success'>Text with link sent</div>";
       }else {
         $ret.= "<div class='alert alert-danger'>There was an error. ". $wpdb->last_error ."</div>";
+      }
+      */
+      if($pdf=$report->buildPDF($packingList,"Outpost Packing List for " . $publicGUID)){
+        echo "<div><a href='" . $pdf . "' target='_blank'>Download the Packing List</a></div>";
       }
     }
   }
