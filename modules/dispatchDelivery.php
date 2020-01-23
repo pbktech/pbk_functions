@@ -26,17 +26,19 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
           $emails[]=$c->customer->email;
         }
       }
-      $packingList="
+      $packingList["html"]="
       <div>
         <ul>";
       foreach($orderDetails as $orderID => $orderDetail){
-        $packingList.="<li><h3># " . $orderID . " for " . $orderDetail['Name'] . "</h3><ul>";
+        $packingList["html"].="<li><h3># " . $orderID . " for " . $orderDetail['Name'] . "</h3><ul>";
         foreach($orderDetail['Items'] as $item){
-          $packingList.="<li>" . $item . "</li>";
+          $packingList["html"].="<li>" . $item . "</li>";
         }
-        $packingList.="</ul></li>";
+        $packingList["html"].="</ul></li>";
       }
-      $packingList.="</ul></div>";
+      $packingList["html"].="</ul></div>";
+      $packingList['format']='A4-P';
+      $packingList['title']="Outpost Packing List for " . $publicGUID;
       $publicGUID=$toast->genGUID(microtime());
       $phone=preg_replace("/[^0-9]/", "",$phoneNumber);
       $cu = wp_get_current_user();
@@ -60,8 +62,8 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
         $ret.= "<div class='alert alert-danger'>There was an error. ". $wpdb->last_error ."</div>";
       }
       */
-      if($pdf=$report->buildPDF($packingList,"Outpost Packing List for " . $publicGUID)){
-        echo "<div><a href='" . $pdf . "' target='_blank'>Download the Packing List</a></div>";
+      if($pdf=$r->buildHTMLPDF(json_encode($packingList))){
+        echo "<div><a href='" . $pdf['Link'] . "' target='_blank'>Download the Packing List</a></div>";
       }
     }
   }
