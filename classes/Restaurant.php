@@ -63,7 +63,7 @@ class Restaurant {
 	public function checkAboveStore(){
 		global $wp;
 		$cu = wp_get_current_user();
-		if(in_array("administrator", $cu->roles) || in_array("editor", $cu->roles)) {
+		if(in_array("administrator", $cu->roles) || in_array("editor", $cu->roles) || in_array("Author", $cu->roles)) {
 			$this->isAboveStore=1;
 		}
 	}
