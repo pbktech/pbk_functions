@@ -64,6 +64,14 @@ class ToastReport{
 		$row=$result->fetch_object();
 		return $row;
 	}
+	function getFiscalYearStart($date) {
+		$stmt = $this->mysqli->prepare("SELECT startDate FROM pbc2.pbc_FiscalYears where period =1 AND year=?");
+		$stmt->bind_param('s',$date);
+		$stmt->execute();
+		$result = $stmt->get_result();
+		$row=$result->fetch_object();
+		return $row->startDate;
+	}
 	function getQuarterStartDate($quarter,$year) {
 		$stmt = $this->mysqli->prepare("SELECT MIN(startDate) as 'qStartDate' FROM pbc2.pbc_FiscalYears where quarter =? AND year =?");
 		$stmt->bind_param('ss',$quarter,$year);
