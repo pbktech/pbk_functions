@@ -7,7 +7,6 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
   $report=new ToastReport();
   foreach($_POST['phone'] as $p=>$restaurant){
     $restaurantID=$p;
-    $r=new Restaurant($p);
     foreach ($restaurant as $company => $phoneNumber) {
       $emails=array();
       $orderDetails=array();
@@ -15,6 +14,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
       $report->setRestaurantID($p);
       $report->setBusinessDate(date("Y-m-d"));
       $orders=$report->getMiniBarOrders($company);
+      $r->restaurantID=$restaurantID;
       $toast = new Toast($r->getRestaurantField("GUID"));
       foreach ($orders as $order) {
         $json=$toast->getOrderInfo($order);
