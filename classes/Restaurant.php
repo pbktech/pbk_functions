@@ -66,6 +66,7 @@ class Restaurant {
 		if(in_array("administrator", $cu->roles) || in_array("editor", $cu->roles) || in_array("author", $cu->roles)) {
 			$this->isAboveStore=1;
 		}
+		echo "AS: " . $this->isAboveStore;
 	}
 	public function checkRestaurantAccess() {
 		if(strpos(strtolower($_SERVER['REQUEST_URI']), 'directory')==false) {
