@@ -958,7 +958,7 @@ ORDER BY msr.orders.entered_by,date_reqd ";
 		while($row=$result->fetch_object()){$r[]=$row->checkNumber;}
 		return $r;
 	}
-	function getMedianOrderTime($date) {
+	function getMedianOrderTime($date=array()) {
 		$r=array();
 		$q="
 		set @rowid=0;
@@ -977,7 +977,7 @@ from pbc2.kds_detail WHERE sent_time BETWEEN  ? AND '2020-01-30 10:30:00' AND st
 		$r=$result->fetch_object();
 		return $r->Median;
 	}
-	function getAverageOrderTime($date) {
+	function getAverageOrderTime($date=array()) {
 		$r=array();
 		$q="SELECT sec_to_time(AVG(duration)) as 'Average' FROM pbc2.kds_detail WHERE sent_time BETWEEN  ? AND ? AND station='' AND restaurntID=?";
 		$stmt = $this->mysqli->prepare($q);
