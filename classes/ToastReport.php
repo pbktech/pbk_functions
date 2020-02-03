@@ -988,7 +988,7 @@ from pbc2.kds_detail WHERE sent_time BETWEEN  ? AND ? AND station='' and restaur
 	function getLastImportTime() {
 		$q="SELECT MAX(timeStamp) as 'Average' FROM pbc2.pbc_ToastAPIImportStatus WHERE importDate=?";
 		$stmt = $this->mysqli->prepare($q);
-		$stmt->bind_param("s",$this->restaurantID);
+		$stmt->bind_param("s",$this->businessDate);
 		$stmt->execute();
 		$result = $stmt->get_result();
 		$r=$result->fetch_object();
