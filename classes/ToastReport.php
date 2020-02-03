@@ -959,7 +959,6 @@ ORDER BY msr.orders.entered_by,date_reqd ";
 		return $r;
 	}
 	function getMedianOrderTime($date=array()) {
-		$this->mysqli->begin_transaction(MYSQLI_TRANS_START_READ_ONLY);
 		$q="set @rowid=0;
 set @cnt=(select count(*) from pbc2.kds_detail WHERE sent_time BETWEEN '".date("Y-m-d H:i:s",strtotime($date['Start']))."' AND '".date("Y-m-d H:i:s",strtotime($date['End']))."' AND station='' and restaurantID='".$this->restaurantID."' ORDER BY sent_time);
 set @middle_no=ceil(@cnt/2);
@@ -972,10 +971,9 @@ from pbc2.kds_detail WHERE sent_time BETWEEN  '".date("Y-m-d H:i:s",strtotime($d
 //		echo $q;
 //		$stmt = $this->mysqli->prepare($q);
 //		$stmt->bind_param("ssssss",$date['Start'],$date['End'],$this->restaurantID,$date['Start'],$date['End'],$this->restaurantID);
-		$this->mysqli->query($q);
-		$this->mysqli->commit();
+		$result = $this->mysqli->query($q);
 //		$stmt->execute();
-		$result = $this->mysqli->get_result();
+//		$result = $this->mysqli->get_result();
 		$r=$result->fetch_object();
 		return $r->Median;
 	}
