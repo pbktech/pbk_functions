@@ -966,7 +966,7 @@ set @middle_no=ceil(@cnt/2);
 set @odd_even=null;
 select sec_to_time(AVG(duration)) as 'Median' from
 (select duration,@rowid:=@rowid+1 as rid, (CASE WHEN(mod(@cnt,2)=0) THEN @odd_even:=1 ELSE @odd_even:=0 END) as odd_even_status
-from pbc2.kds_detail WHERE sent_time BETWEEN  ? AND '2020-01-30 10:30:00' AND station='' and restaurantID=? ORDER BY sent_time)
+from pbc2.kds_detail WHERE sent_time BETWEEN  ? AND ? AND station='' and restaurantID=? ORDER BY sent_time)
  as tbl where tbl.rid=@middle_no or tbl.rid=(@middle_no+@odd_even);
 		";
 		$stmt = $this->mysqli->prepare($q);
