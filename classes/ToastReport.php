@@ -974,16 +974,18 @@ from pbc2.kds_detail WHERE sent_time BETWEEN  ? AND '2020-01-30 10:30:00' AND st
 		$stmt->bind_param("ssssss",$date['Start'],$date['End'],$this->restaurantID,$date['Start'],$date['End'],$this->restaurantID);
 		$stmt->execute();
 		$result = $stmt->get_result();
-		return $result->fetch_object();
+		$r=$result->fetch_object();
+		return $r->Median;
 	}
 	function getAverageOrderTime($date) {
 		$r=array();
-		$q="SELECT sec_to_time(AVG(duration)) as Average FROM pbc2.kds_detail WHERE sent_time BETWEEN  ? AND ? AND station='' AND restaurntID=?";
+		$q="SELECT sec_to_time(AVG(duration)) as 'Average' FROM pbc2.kds_detail WHERE sent_time BETWEEN  ? AND ? AND station='' AND restaurntID=?";
 		$stmt = $this->mysqli->prepare($q);
 		$stmt->bind_param("sss",$date['Start'],$date['End'],$this->restaurantID);
 		$stmt->execute();
 		$result = $stmt->get_result();
-		return $result->fetch_object();
+		$r=$result->fetch_object();
+		return $r->Average;
 	}
 	function getMiniBarOrders($outpost) {
 		$r=array();
