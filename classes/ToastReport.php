@@ -959,7 +959,6 @@ ORDER BY msr.orders.entered_by,date_reqd ";
 		return $r;
 	}
 	function getMedianOrderTime($date=array()) {
-		$r=array();
 		$q="
 		set @rowid=0;
 set @cnt=(select count(*) from pbc2.kds_detail WHERE sent_time BETWEEN  ? AND ? AND station='' and restaurantID=? ORDER BY sent_time);
@@ -978,8 +977,7 @@ from pbc2.kds_detail WHERE sent_time BETWEEN  ? AND '2020-01-30 10:30:00' AND st
 		return $r->Median;
 	}
 	function getAverageOrderTime($date=array()) {
-		$r=array();
-		$q="SELECT sec_to_time(AVG(duration)) as 'Average' FROM pbc2.kds_detail WHERE sent_time BETWEEN  ? AND ? AND station='' AND restaurntID=?";
+		$q="SELECT sec_to_time(AVG(duration)) as 'Average' FROM pbc2.kds_detail WHERE sent_time BETWEEN  ? AND ? AND station='' AND restaurantID=?";
 		$stmt = $this->mysqli->prepare($q);
 		$stmt->bind_param("sss",$date['Start'],$date['End'],$this->restaurantID);
 		$stmt->execute();
