@@ -972,6 +972,7 @@ from pbc2.kds_detail WHERE sent_time BETWEEN  '".date("Y-m-d H:i:s",strtotime($d
 //		$stmt = $this->mysqli->prepare($q);
 //		$stmt->bind_param("ssssss",$date['Start'],$date['End'],$this->restaurantID,$date['Start'],$date['End'],$this->restaurantID);
 		$result = $this->mysqli->query($q);
+		print_r($result);
 //		$stmt->execute();
 //		$result = $this->mysqli->get_result();
 		$r=$result->fetch_object();
