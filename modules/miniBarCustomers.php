@@ -87,7 +87,7 @@ jQuery(document).ready(function() {
   <form method='get' action='".get_permalink()."' >
     <div class='form-group'>
       <label for='restaurantPicker'>Please Select Your Restaurants</label>
-      <select style='width:100%;' class=\"custom-select multipleSelect\" id=\"restaurantPicker\" name=\"restaurants[]\" multiple=\"multiple\">
+      <select style='width:100%;' class=\"custom-select multipleSelect\" required id=\"restaurantPicker\" name=\"restaurants[]\" multiple=\"multiple\">
         ";
         $rests=$wpdb->get_results("SELECT restaurantName,restaurantID FROM pbc2.pbc_pbrestaurants WHERE restaurantID IN (SELECT restaurantID from pbc2.pbc_minibar)");
         foreach($rests as $rs){
@@ -100,9 +100,9 @@ jQuery(document).ready(function() {
     <label>Please choose a date range</label>
     <div class='form-group'>
       <label for='startDate'>Start Date</label>
-      <input type=\"text\" id=\"startDate\" name=\"startDate\" class='form-control datePicker' value=\"\"/><br />
+      <input type=\"text\" id=\"startDate\" name=\"startDate\" required class='form-control datePicker' value=\"\"/><br />
       <label for='endDate'>End Date</label>
-      <input type=\"text\" id=\"endDate\" name=\"endDate\" class='form-control datePicker' value=\"\"/>
+      <input type=\"text\" id=\"endDate\" name=\"endDate\" required class='form-control datePicker' value=\"\"/>
     </div>
     <div class='form-group'>
       <input type='submit' value='SEARCH' />
