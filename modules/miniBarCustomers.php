@@ -75,7 +75,6 @@ $ret.="
 jQuery(document).ready(function() {
   jQuery('.datePicker').datepicker({
     maxDate: new Date(),
-    minDate: new Date(2020,1,23),
     dateFormat : 'mm/dd/yy'
   });
   jQuery('#restaurantPicker').select2({
