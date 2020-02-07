@@ -14,7 +14,7 @@ if(isset($_GET['restaurants']) && isset($_GET['startDate']) && isset($_GET['endD
   fputcsv($file,$fileHeader);
   foreach($_GET['restaurants'] as $restaurant){
     $r->restaurantID=$restaurant;
-    $restaurantName=getRestaurantField("restaurantName");
+    $restaurantName=$r->getRestaurantField("restaurantName");
     $toast = new Toast($r->getRestaurantField("GUID"));
     $stmt = $report->mysqli->prepare("SELECT GUID,businessDate,company FROM pbc2.pbc_ToastOrderHeaders,pbc2.pbc_minibar
     WHERE pbc_ToastOrderHeaders.diningOption=pbc2.pbc_minibar.outpostIdentifier
