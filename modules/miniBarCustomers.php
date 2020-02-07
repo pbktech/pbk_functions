@@ -14,11 +14,12 @@ if(isset($_GET['restaurants']) && isset($_GET['startDate']) && isset($_GET['endD
   fputcsv($file,$fileHeader);
   foreach($_GET['restaurants'] as $restaurant){
     $r->restaurantID=$restaurant;
+    $restaurantName=getRestaurantField("restaurantName");
     $toast = new Toast($r->getRestaurantField("GUID"));
     $stmt = $report->mysqli->prepare("SELECT GUID,businessDate,company FROM pbc2.pbc_ToastOrderHeaders,pbc2.pbc_minibar
     WHERE pbc_ToastOrderHeaders.diningOption=pbc2.pbc_minibar.outpostIdentifier
     AND pbc_ToastOrderHeaders.restaurantID=? AND businessDate BETWEEN ? AND ?");
-    $stmt->bind_param('sss',$restaurantID,$startDate,$endDate);
+    $stmt->bind_param('sss',$restaurant,$startDate,$endDate);
     $stmt->execute();
     $result = $stmt->get_result();
     while($order=$result->fetch_object()){
@@ -26,6 +27,7 @@ if(isset($_GET['restaurants']) && isset($_GET['startDate']) && isset($_GET['endD
       foreach($json->checks as $c){
         foreach($c->selections as $s){
           $orderDetails[]=array(
+            $restaurantName,
             date("m/d/Y",strtotime($order->businessDate)),
           $order->company,
           $c->displayNumber,
