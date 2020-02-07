@@ -8,20 +8,73 @@ add_action('admin_menu', 'pbr_setup_menu');
 add_action( 'admin_post_pbr_save_restaurant_option', 'pbr_update_restaurant' );
 add_action( 'admin_post_pbr_save_nho', 'pbr_update_nho' );
 add_action('admin_post_pbr_nho_attendance_update','pbr_nho_attendance');
+add_action('admin_post_pbk_save_minibar','pbk_saveMinibar');
 function pbr_setup_menu(){
   add_menu_page( 'PBK Functions', 'PBK Functions', 'delete_posts', 'Manage-PBK', 'pbr_show_admin_functions',PBKF_URL . '/assets/images/PBK-Logo-ONLY-LG-2018_White_new.png');
-  add_submenu_page( 'Manage-PBK', 'Edit a Restaurant', 'Edit a Restaurant', 'manage_options', 'pbr-edit-restaurant', 'pbr_edit_restaurant' );
-  add_submenu_page( 'Manage-PBK', 'Add a Restaurant', 'Add a Restaurant', 'manage_options', 'pbr-add-restaurant', 'pbr_add_restaurant' );
+  add_submenu_page( 'Manage-PBK', 'Manage Restaurants', 'Manage Restaurants', 'manage_options', 'pbr-edit-restaurant', 'pbr_edit_restaurant' );
+//  add_submenu_page( 'Manage-PBK', 'Add a Restaurant', 'Add a Restaurant', 'manage_options', 'pbr-add-restaurant', 'pbr_add_restaurant' );
   add_submenu_page( 'Manage-PBK', 'Manage NHO Events', 'Manage NHO Events', 'delete_posts', 'pbr-nho', 'pbr_nho_setup' );
   add_submenu_page( 'Manage-PBK', 'NHO Archive', 'NHO Archive', 'upload_files', 'pbr-nho-archive', 'pbr_nho_history' );
   add_submenu_page( 'Manage-PBK', 'Incident Archive', 'Incident Archive', 'upload_files', 'pbr-incident-history', 'pbr_search_incident' );
+  add_submenu_page( 'Manage-PBK', 'Manage MiniBar', 'Manage MiniBar', 'manage_options', 'pbr-edit-minibar', 'pbr_edit_minibar' );
 }
 function pbr_admin_init(){
 }
+function pbr_edit_restaurant(){
+  if ( isset( $_GET['m'] ) ){
+    switchpbrMessages($_GET['m']);
+  }
+	if(!class_exists('WP_List_Table')){
+	   require_once( ABSPATH . 'wp-admin/includes/class-wp-list-table.php' );
+	}
+   echo "<div class=\"wrap\"><div id=\"icon-users\" class=\"icon32\"></div><h2>Manage Restaurants <a href=\"?page=pbr-edit-restaurant&amp;restaurant=_NEW\" class=\"add-new-h2\">Add New</a>
+            </h2>
+            ";
+	if(isset($_GET['restaurant']) && is_numeric($_GET['restaurant'])) {
+    $restaurant = new Restaurant($_GET['restaurant']);
+    echo "<h2>".$restaurant->rinfo->restaurantName."</h2>";
+   	echo $restaurant->restaurantEditBox();
+	}elseif(isset($_GET['restaurant']) && $_GET['restaurant']=="_NEW") {
+    echo "<h2>New Restaurant</h2>";
+    $restaurant = new Restaurant();
+    echo $restaurant->restaurantEditBox();
+  }else {
+    require_once( 'classes/testlisttable.php' );
+	  $myListTable = new My_Example_List_Table();
+		$myListTable->prepare_items();
+		$myListTable->display();
+	}
+  echo "</div>";
+}
+
 function pbr_add_restaurant(){
   echo "<div class='wrap'><h2>Add a Restaurant</h2>";
   $restaurant = new Restaurant();
   echo $restaurant->restaurantEditBox();
+  echo "</div>";
+}
+function pbr_edit_minibar(){
+  if(!class_exists('WP_List_Table')){
+	   require_once( ABSPATH . 'wp-admin/includes/class-wp-list-table.php' );
+	}
+  echo "<div class='wrap'><div id=\"icon-users\" class=\"icon32\"></div><h2>Manage MiniBar<a href=\"?page=pbr-edit-minibar&amp;id=_NEW\" class=\"add-new-h2\">Add New MiniBar Location</a>";
+  if(isset($_GET['id']) && is_numeric($_GET['id'])) {
+    if ( isset( $_GET['m'] ) ){
+      switchpbrMessages($_GET['m']);
+    }
+    $restaurant = new Restaurant();
+    if($mb=$restaurant->getMiniBarInformation($_GET['id'])){
+      echo "<h2>".$mb['company']."</h2>";
+      echo $restaurant->showMiniBarBuilder($mb);
+    }
+  }elseif(isset($_GET['id']) && $_GET['id']=="_NEW") {
+    echo "<h2>New MiniBar Location</h2>";
+    $restaurant = new Restaurant();
+    echo $restaurant->showMiniBarBuilder();
+  }else {
+    require_once( 'classes/mbList.php' );
+    my_mblist_list_page();
+	}
   echo "</div>";
 }
     function pbr_show_admin_functions(){
@@ -167,30 +220,9 @@ function pbr_add_restaurant(){
     </div>
   </div>";
 }
-function pbr_edit_restaurant(){
-	if(!class_exists('WP_List_Table')){
-	   require_once( ABSPATH . 'wp-admin/includes/class-wp-list-table.php' );
-	}
-   echo "<div class=\"wrap\"><div id=\"icon-users\" class=\"icon32\"></div><h2>Edit an Existing Restaurant <a href=\"?page=pbr-add-restaurant\" class=\"add-new-h2\">Add New</a>
-            </h2>
-            ";
-	if(isset($_GET['restaurant']) && is_numeric($_GET['restaurant'])) {
-    $restaurant = new Restaurant($_GET['restaurant']);
-   	echo $restaurant->restaurantEditBox();
-	}else {
-    require_once( 'classes/testlisttable.php' );
-	   $myListTable = new My_Example_List_Table();
-		$myListTable->prepare_items();
-		$myListTable->display();
-	}
-  echo "</div>";
-}
 function pbr_update_restaurant() {
-	print_r($_POST);
    	$restaurant = new Restaurant();
    	$restaurant->setRestaurantInfo($_POST);
-//   	print_r($restaurant->rinfo);
-//   	die();
    	if($restaurant->insertUpdateRestaurantInfo()) {
    		$m=1;
    	}else {
@@ -198,7 +230,6 @@ function pbr_update_restaurant() {
    	}
    	wp_redirect(  admin_url( 'admin.php?page=pbr-edit-restaurant&m='.$m ) );
    	exit;
-   	//$restaurant->restaurantEditBox();
 }
 function pbr_nho_setup(){
   echo "<div class=\"wrap\">
@@ -222,6 +253,10 @@ function pbr_nho_setup(){
 function pbr_update_nho() {
   $restaurant = new Restaurant();
   $restaurant->updateNHO($_POST);
+}
+function pbk_saveMinibar() {
+  $restaurant = new Restaurant();
+  $restaurant->pbkSaveMinibar($_POST);
 }
 function pbr_nho_attendance(){
   $restaurant = new Restaurant();

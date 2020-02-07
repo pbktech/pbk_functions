@@ -752,6 +752,66 @@ if($_GET['nhoDate']!="_new"){
 			return $wpdb->get_results("SELECT * FROM pbc2.pbc_NHOSchedule WHERE nhoDate>=CURDATE()", ARRAY_A);
 		}
 	}
+	function getMiniBarLocations(){
+		global $wpdb;
+		return $wpdb->get_results("SELECT idpbc_minibar,company,restaurantName FROM pbc2.pbc_minibar,pbc_pbrestaurants WHERE pbc_minibar.restaurantID=pbc_pbrestaurants.restaurantID", ARRAY_A);
+	}
+	function getMiniBarInformation($id){
+		global $wpdb;
+		return $wpdb->get_row("SELECT * FROM pbc2.pbc_minibar WHERE idpbc_minibar='".$id."'",ARRAY_A);
+	}
+	function showMiniBarBuilder($info=array("idpbc_minibar"=>"_NEW","company"=>"","restaurantID"=>"","outpostIdentifier"=>"","imageFile"=>"")){
+		return "
+		<div class='container-fluid;'>
+	<form method=\"post\" action=\"admin-post.php\">
+  	<input type=\"hidden\" name=\"action\" value=\"pbk_save_minibar\" />
+		<input type=\"hidden\" name=\"idpbc_minibar\" value=\"".$info['idpbc_minibar']."\" />
+  	<div class='row'>
+  		<div class='col'>
+				<label for='restaurantID'><strong>Restaurant</strong></label><br />
+  			" . $this->buildRestaurantSelector(0,'restaurantID',$info['restaurantID']) . "
+  		</div>
+  		<div class='col'>
+				<label for='company'><strong>Company Name</strong></label>
+  			<input type='text' class='form-control' name ='company' value='".$info['company']."' />
+  		</div>
+		</div>
+		<div class='row'>
+			<div class='col'>
+				<label for='imageFile'><strong>Image</strong></label>
+				<input type='text' class='form-control' name ='imageFile' value='".$info['imageFile']."' />
+			</div>
+  		<div class='col'>
+				<label for='outpostIdentifier'><strong>Toast Dining Option</strong></label>
+				<input type='text' class='form-control' name ='outpostIdentifier' value='".$info['outpostIdentifier']."' />
+  		</div>
+  	</div>
+		<div class='row' style='padding:15px;'>
+			<div class='col'>
+				<button type=\"submit\" class=\"btn btn-primary\"/>Submit</button>
+				<button type=\"button\" class='btn btn-warning' onclick=\"javascript:window.location='admin.php?page=pbr-edit-restaurant';\">Cancel</button>
+			</div>
+		</div>
+	</form>
+</div>
+		";
+	}
+	function pbkSaveMinibar($info){
+		global $wpdb;
+		if(isset($info["idpbc_minibar"]) && $info["idpbc_minibar"]=="_NEW"){
+			$wpdb->query(
+				$wpdb->prepare( "
+					INSERT INTO pbc_minibar (restaurantID,company,outpostIdentifier,imageFile)VALUES(%s,%s,%s,%s)",
+					$info['restaurantID'],$info['company'],$info['outpostIdentifier'],$info['imageFile']));
+				if(isset($wpdb->insert_id)){$info["idpbc_minibar"]=$wpdb->insert_id;}else{die("ID ERROR");}
+		}else {
+			$wpdb->query(
+				$wpdb->prepare( "
+					REPLACE INTO pbc_minibar (idpbc_minibar,restaurantID,company,outpostIdentifier,imageFile)VALUES(%s,%s,%s,%s,%s)",
+					$info['idpbc_minibar'],$info['restaurantID'],$info['company'],$info['outpostIdentifier'],$info['imageFile']));
+		}
+		wp_redirect(  admin_url( 'admin.php?page=pbr-edit-minibar&amp;id='.$info["idpbc_minibar"].'&amp;m=1' ));
+	}
 	function updateNHO($nho){
 		global $wpdb;
 		$nho['nhoDate']=date("Y-m-d",strtotime($nho['nhoDate']));
@@ -929,7 +989,7 @@ AND pbc_users.id=nhoHost AND pbc_pbrestaurants.restaurantID=nhoLocation");
 		}
 		return "<input class=\"form-control\" type='text' name='".$name."' value='".$value."' required />";
 	}
-	public function buildRestaurantSelector($single=0,$field='restaurantID'){
+	public function buildRestaurantSelector($single=0,$field='restaurantID',$data=null){
 		$this->getMyRestaurants($field);
 		if(count($this->myRestaurants)==0){
 			return "<div class='alert alert-danger'>No Restaurants Assigned</div>";
@@ -942,8 +1002,9 @@ AND pbc_users.id=nhoHost AND pbc_pbrestaurants.restaurantID=nhoLocation");
 						<option value=''>Choose One</option>
 					";
 				foreach($this->myRestaurants as $id=>$name){
+					if(isset($data) && $data!="" && $data==$id){$checked="selected";}else{$checked="";}
 					$return.="
-						<option value='$id'>$name</option>
+						<option value='$id' $checked>$name</option>
 						";
 				}
 				$return.="
