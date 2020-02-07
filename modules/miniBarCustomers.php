@@ -63,7 +63,11 @@ jQuery(document).ready( function () {
     </table>";
     if(file_exists($report->docSaveLocation.$fileName.date("Ymd").'.csv')) {
 			$ret.="<div>
-      <button type=\"button\" class='btn btn-warning' onclick=\"javascript:window.open='".$report->docSaveLocation.$fileName.date("Ymd").".csv'>Download the file</button> This download is only valid for 30 minutes.</div>";
+      <button type=\"button\"
+      class='btn btn-warning'
+      onclick=\"javascript:window.open='".$report->docSaveLocation.$fileName.date("Ymd").".csv'\">Download the file</button> 
+      This download is only valid for 30 minutes.
+      </div>";
 		}
     "
 $ret.=  </div>";
