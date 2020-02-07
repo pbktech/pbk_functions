@@ -8,7 +8,7 @@ if(isset($_GET['restaurants']) && isset($_GET['startDate']) && isset($_GET['endD
   $endDate=date("Y-m-d",strtotime($_GET['endDate']));
   $fileName="MiniBar_guest_export";
   $report=new ToastReport;
-  $fileHeader=array("Restaurant","MiniBar","Date","Order Number","Guest Name","Guest Email","Item");
+  $fileHeader=array("Restaurant","Date","MiniBar","Order Number","Guest Name","Guest Email","Item");
   if(file_exists($report->docSaveLocation.$fileName.date("Ymd").'.csv')) {unlink($report->docSaveLocation.$fileName.date("Ymd").'.csv');}
   $file = fopen($report->docSaveLocation.$fileName.date("Ymd").'.csv', 'w');
   fputcsv($file,$fileHeader);
