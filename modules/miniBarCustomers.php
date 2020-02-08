@@ -34,7 +34,14 @@ if(isset($_GET['restaurants']) && isset($_GET['startDate']) && isset($_GET['endD
           $c->customer->firstName . " " . $c->customer->lastName,
           $c->customer->email,
           $s->displayName);
-          fputcsv($file,$orderDetails);
+          fputcsv($file,array(
+            $restaurantName,
+            date("m/d/Y",strtotime($order->businessDate)),
+          $order->company,
+          $c->displayNumber,
+          $c->customer->firstName . " " . $c->customer->lastName,
+          $c->customer->email,
+          $s->displayName));
         }
       }
     }
