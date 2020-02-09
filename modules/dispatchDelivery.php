@@ -26,6 +26,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
           $emails[]=$c->customer->email;
         }
       }
+      $emails[]="jcohen@theproteinbar.com";
       $packingList['title']="MiniBar Packing List for " . $wpdb->get_var( "SELECT company FROM pbc_minibar WHERE idpbc_minibar='".$company."'") . " " . date("m-d-Y");
       $packingList["html"]="
       <div><h3>" . $packingList['title'] . "</h3>
