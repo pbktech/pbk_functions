@@ -28,6 +28,10 @@ function pbk_check_privledge(){
 }
 define( "PBKF_URL", WP_PLUGIN_URL . '/' . plugin_basename( dirname( __FILE__ ) ) );
 add_action('init','pbk_check_privledge');
+function pbk_load_wp_media_files() {
+  wp_enqueue_media();
+}
+add_action( 'admin_enqueue_scripts', 'pbk_load_wp_media_files' );
 /*Scripts and CSS*/
 function pbk_scripts(){
   wp_enqueue_style( 'select_style', 'https://cdn.jsdelivr.net/npm/select2@4.0.12/dist/css/select2.min.css');

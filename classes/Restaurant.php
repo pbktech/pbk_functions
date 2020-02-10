@@ -761,7 +761,75 @@ if($_GET['nhoDate']!="_new"){
 		return $wpdb->get_row("SELECT * FROM pbc2.pbc_minibar WHERE idpbc_minibar='".$id."'",ARRAY_A);
 	}
 	function showMiniBarBuilder($info=array("idpbc_minibar"=>"_NEW","company"=>"","restaurantID"=>"","outpostIdentifier"=>"","imageFile"=>"")){
+		if(isset($info['imageFile']) && $info['imageFile']!="" && file_exists($info['imageFile'])){
+			$imageAdd="
+			<div class='row'>
+				<div class='col'>
+					<strong>Current Image</strong><br><a href='".$info['imageFile']."' alt='' />
+				</div>
+			</div>
+			";
+		}else {
+			$imageAdd="";
+		}
 		return "
+		<script>
+		var gk_media_init = function(selector, button_selector)  {
+    var clicked_button = false;
+
+    jQuery(selector).each(function (i, input) {
+        var button = jQuery(input).next(button_selector);
+        button.click(function (event) {
+            event.preventDefault();
+            var selected_img;
+            clicked_button = jQuery(this);
+
+            // check for media manager instance
+            if(wp.media.frames.gk_frame) {
+                wp.media.frames.gk_frame.open();
+                return;
+            }
+            // configuration of the media manager new instance
+            wp.media.frames.gk_frame = wp.media({
+                title: 'Select image',
+                multiple: false,
+                library: {
+                    type: 'image'
+                },
+                button: {
+                    text: 'Use selected image'
+                }
+            });
+
+            // Function used for the image selection and media manager closing
+            var gk_media_set_image = function() {
+                var selection = wp.media.frames.gk_frame.state().get('selection');
+
+                // no selection
+                if (!selection) {
+                    return;
+                }
+
+                // iterate through selected elements
+                selection.each(function(attachment) {
+                    var url = attachment.attributes.url;
+                    clicked_button.prev(selector).val(url);
+                });
+            };
+
+            // closing event for media manger
+            wp.media.frames.gk_frame.on('close', gk_media_set_image);
+            // image selection event
+            wp.media.frames.gk_frame.on('select', gk_media_set_image);
+            // showing media manager
+            wp.media.frames.gk_frame.open();
+        });
+   });
+};
+jQuery(document).ready(function() {
+	gk_media_init('.media-input', '.media-button');
+});
+</script>
 		<div class='container-fluid;'>
 	<form method=\"post\" action=\"admin-post.php\">
   	<input type=\"hidden\" name=\"action\" value=\"pbk_save_minibar\" />
@@ -779,17 +847,18 @@ if($_GET['nhoDate']!="_new"){
 		<div class='row'>
 			<div class='col'>
 				<label for='imageFile'><strong>Image</strong></label>
-				<input type='text' class='form-control' name ='imageFile' value='".$info['imageFile']."' />
+				<input type='text' class='form-control media-input' name ='imageFile' value='".$info['imageFile']."' /> <button class='media-button'>Select image</button>
 			</div>
   		<div class='col'>
 				<label for='outpostIdentifier'><strong>Toast Dining Option</strong></label>
 				<input type='text' class='form-control' name ='outpostIdentifier' value='".$info['outpostIdentifier']."' />
   		</div>
   	</div>
+		".$imageAdd."
 		<div class='row' style='padding:15px;'>
 			<div class='col'>
 				<button type=\"submit\" class=\"btn btn-primary\"/>Submit</button>
-				<button type=\"button\" class='btn btn-warning' onclick=\"javascript:window.location='admin.php?page=pbr-edit-restaurant';\">Cancel</button>
+				<button type=\"button\" class='btn btn-warning' onclick=\"javascript:window.location='admin.php?page=pbr-edit-minibar';\">Cancel</button>
 			</div>
 		</div>
 	</form>
