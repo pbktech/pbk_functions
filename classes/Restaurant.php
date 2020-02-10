@@ -772,7 +772,7 @@ if($_GET['nhoDate']!="_new"){
 		}else {
 			$imageAdd="";
 		}
-		return $htis->pbk_addImageSelector()."
+		return $this->pbk_addImageSelector()."
 		<div class='container-fluid;'>
 	<form method=\"post\" action=\"admin-post.php\">
   	<input type=\"hidden\" name=\"action\" value=\"pbk_save_minibar\" />
