@@ -1003,11 +1003,12 @@ AND pbc_users.id=nhoHost AND pbc_pbrestaurants.restaurantID=nhoLocation");
 	}
 	public function buildRestaurantSelector($single=0,$field='restaurantID',$data=null){
 		$this->getMyRestaurants($field);
-		print_r($this->myRestaurants);
 		if(count($this->myRestaurants)==0){
 			return "<div class='alert alert-danger'>No Restaurants Assigned</div>";
 		}elseif (count($this->myRestaurants)==1) {
-			return "<input type='hidden' value='".$this->myRestaurants[1]."' name='$field' /><div>".$this->myRestaurants[0]."</div>";
+			foreach($this->getMyRestaurants as $id=>$name){
+				return "<input type='hidden' value='".$id."' name='$field' /><div>".$name."</div>";
+			}
 		}else {
 			if($single==0){
 				$return= "
