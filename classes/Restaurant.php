@@ -761,11 +761,11 @@ if($_GET['nhoDate']!="_new"){
 		return $wpdb->get_row("SELECT * FROM pbc2.pbc_minibar WHERE idpbc_minibar='".$id."'",ARRAY_A);
 	}
 	function showMiniBarBuilder($info=array("idpbc_minibar"=>"_NEW","company"=>"","restaurantID"=>"","outpostIdentifier"=>"","imageFile"=>"")){
-		if(isset($info['imageFile']) && $info['imageFile']!="" && file_exists($info['imageFile'])){
+		if(isset($info['imageFile']) && $info['imageFile']!=""){
 			$imageAdd="
 			<div class='row'>
 				<div class='col'>
-					<strong>Current Image</strong><br><a href='".$info['imageFile']."' alt='' />
+					<strong>Current Image</strong><br><img src='".$info['imageFile']."' alt='' />
 				</div>
 			</div>
 			";
