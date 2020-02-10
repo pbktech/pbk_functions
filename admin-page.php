@@ -7,6 +7,7 @@ require_once( ABSPATH . 'wp-admin/includes/screen.php' );
 add_action('admin_menu', 'pbr_setup_menu');
 add_action( 'admin_post_pbr_save_restaurant_option', 'pbr_update_restaurant' );
 add_action( 'admin_post_pbr_save_nho', 'pbr_update_nho' );
+add_action( 'admin_post_pbk-save-devices', 'pbr_edit_devices' );
 add_action('admin_post_pbr_nho_attendance_update','pbr_nho_attendance');
 add_action('admin_post_pbk_save_minibar','pbk_saveMinibar');
 function pbr_setup_menu(){
@@ -17,6 +18,7 @@ function pbr_setup_menu(){
   add_submenu_page( 'Manage-PBK', 'NHO Archive', 'NHO Archive', 'upload_files', 'pbr-nho-archive', 'pbr_nho_history' );
   add_submenu_page( 'Manage-PBK', 'Incident Archive', 'Incident Archive', 'upload_files', 'pbr-incident-history', 'pbr_search_incident' );
   add_submenu_page( 'Manage-PBK', 'Manage MiniBar', 'Manage MiniBar', 'manage_options', 'pbr-edit-minibar', 'pbr_edit_minibar' );
+  add_submenu_page( 'Manage-PBK', 'Manage Devices', 'Manage Devices', 'manage_options', 'pbr-edit-devices', 'pbr_edit_devices' );
 }
 function pbr_admin_init(){
 }
@@ -51,6 +53,22 @@ function pbr_add_restaurant(){
   echo "<div class='wrap'><h2>Add a Restaurant</h2>";
   $restaurant = new Restaurant();
   echo $restaurant->restaurantEditBox();
+  echo "</div>";
+}
+function pbr_edit_devices(){
+  if ( isset( $_GET['m'] ) ){
+    switchpbrMessages($_GET['m']);
+  }
+  $restaurant = new Restaurant();
+  if($_SERVER['REQUEST_METHOD'] == 'POST'){
+    $restaurant->pbkSaveDevice($_POST);
+  }
+  echo "<div class='wrap'><h2>Manage Devices</h2>";
+  if(isset($_GET['id'])){
+    echo $restaurant->pbk_device_editor($_GET['id']);
+  }else {
+    echo $restaurant->pbk_listDevices($_GET['id']);
+  }
   echo "</div>";
 }
 function pbr_edit_minibar(){

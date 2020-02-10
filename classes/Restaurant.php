@@ -15,6 +15,9 @@ class Restaurant {
 	public $restaurantID=null;
 	public $isAboveStore=0;
 	public $timeZones=array("America/Chicago"=>"Central","America/New_York"=>"Eastern","America/Denver"=>"Mountain");
+	public $ownershipType=array('Owned', 'Leased', 'Financed');
+	public $deviceType=array('Laptop', 'Desktop', 'Tablet', 'HotSpot');
+	public $deviceStatus=array('Active', 'B-Stock', 'Retired', 'Returned');
 	public $incidentTypes=array(
 		"foodborneIllness"=>array("Name"=>"Foodborne Illness/Foreign Object","sendTo"=>array("lcominsky@theproteinbar.com","vwillis@theproteinbar.com")),
 		"injury"=>array("Name"=>"Injury","sendTo"=>array("lcominsky@theproteinbar.com","hr@theproteinbar.com")),
@@ -957,6 +960,137 @@ AND pbc_users.id=nhoHost AND pbc_pbrestaurants.restaurantID=nhoLocation");
 		}
 		return $wpdb->get_results($q);
 	}
+	function pbkSaveDevice($p){
+		$p['dateAdded']=date("Y-m-d",strtotime($p['dateAdded']));
+		global $wpdb;
+		$wpdb->query(
+			$wpdb->prepare(
+				"REPLACE INTO pbc_devices
+				(idpbc_devices,deviceName,deviceBrand,deviceModel,deviceSerial,deviceType,ownershipType,deviceStatus,lengthTerm,dateAdded)
+				VALUES
+				(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)",
+				$p['idpbc_devices'],
+				$p['deviceName'],
+				$p['deviceBrand'],
+				$p['deviceModel'],
+				$p['deviceSerial'],
+				$p['deviceType'],
+				$p['ownershipType'],
+				$p['deviceStatus'],
+				$p['lengthTerm'],
+				$p['dateAdded']));
+				$insertID=$wpdb->insert_id;
+		$wpdb->query(
+			$wpdb->prepare("REPLACE INTO pbc_devices_assignments (deviceID,userID)VALUES(%s,%s)",$insertID,$p['userID']));
+			wp_redirect(  admin_url( 'admin.php?page=pbr-edit-devices&amp;id='.$insertID.'&amp;m=1' ));
+	}
+	function pbk_device_editor($data){
+		$allUsers=$this->getUserNames();
+		if($data=="_NEW"){
+
+			$d=array("deviceName"=>"","deviceBrand"=>"","deviceModel"=>"","deviceSerial"=>"","deviceType"=>"","ownershipType"=>"",
+		"deviceStatus"=>"","lengthTerm"=>"","dateAdded"=>date("m/d/Y"),"userID"=>"","idpbc_devices"=>"");
+	}else{
+		global $wpdb;
+		$d=$wpdb->get_row('SELECT * FROM pbc_devices,pbc_devices_assignments WHERE idpbc_devices="'.$data.'" AND idpbc_devices=deviceID', ARRAY_A);
+	}
+		$return="
+		<script>
+		jQuery( function() {
+			jQuery( \"#tabs\" ).tabs();
+		} );
+		</script>
+		<div class='container-fluid;'>
+					<form method=\"post\" action=\"admin-post.php\">
+		         	<input type=\"hidden\" name=\"action\" value=\"pbk-save-devices\" />
+							<div id='tabs'>
+							<div id=\"ids\">
+									<div class='form-group'>
+										<div class='row'>
+											<div class='col'>
+												<input type='hidden' name='idpbc_devices' value='".$d['idpbc_devices']."' />
+												<label for='deviceName'><strong>Device Name</strong></label><br>
+												<input type='text' name='deviceName' id='deviceName' value='".$d['deviceName']."' />
+											</div>
+											<div class='col'>
+											<label for='deviceBrand'><strong>Device Brand</strong></label><br>
+											<input type='text' name='deviceBrand' id='deviceBrand' value='".$d['deviceBrand']."' />
+											</div>
+											<div class='col'>
+											<label for='deviceModel'><strong>Device Model</strong></label><br>
+											<input type='text' name='deviceModel' id='deviceModel' value='".$d['deviceModel']."' />
+											</div>
+										</div>
+										<div class='row'>
+											<div class='col'>
+											<label for='deviceSerial'><strong>Serial #</strong></label><br>
+											<input type='text' name='deviceSerial' id='deviceSerial' value='".$d['deviceSerial']."' />
+											</div>
+											<div class='col'>
+												<label for='deviceType'><strong>Type</strong></label><br><select name='deviceType' id='deviceType'>
+												<option value=''>Choose One</option>
+												";
+												foreach($this->deviceType as $t){
+													if($t==$d['deviceType']){$selected='selected';}else{$selected='';}
+													$return.="<option value='".$t."'$selected>".$t."</option>";
+												}
+												$return.="</select>
+											</div>
+											<div class='col'>
+											<label for='deviceStatus'><strong>Status</strong></label><br><select name='deviceStatus' id='deviceStatus'>
+											<option value=''>Choose One</option>
+											";
+											foreach($this->deviceStatus as $t){
+												if($t==$d['deviceStatus']){$selected='selected';}else{$selected='';}
+												$return.="<option value='".$t."'$selected>".$t."</option>";
+											}
+											$return.="</select>
+											</div>
+										</div>
+										<div class='row'>
+											<div class='col'>
+											<label for='ownershipType'><strong>Ownership</strong></label><br><select name='ownershipType' id='ownershipType'>
+											<option value=''>Choose One</option>
+											";
+											foreach($this->ownershipType as $t){
+												if($t==$d['deviceStatus']){$selected='selected';}else{$selected='';}
+												$return.="<option value='".$t."'$selected>".$t."</option>";
+											}
+											$return.="</select>
+											</div>
+											<div class='col'>
+											<label for='lengthTerm'><strong>Term (in months)</strong></label><br>
+											<input type='text' name='lengthTerm' id='lengthTerm' value='".$d['lengthTerm']."' />
+											</div>
+											<div class='col'>
+											<label for='dateAdded'><strong>Date Added</strong></label><br>
+											<input type='text' name='dateAdded' id='dateAdded' value='".$d['dateAdded']."' />
+											</div>
+										</div>
+										<div class='row'>
+											<div class='col'>
+											<label for='userID'><strong>Assigned to</strong></label><br>
+											<select name='userID' class='form-control' id='userID'><option value=''>Choose One</option>";
+											foreach($allUsers as $user){
+												if($user->ID==$d['userID']){$selected='selected';}else{$selected='';}
+												$return.="<option value='".$user->ID."'$selected>".$user->display_name."</option>";
+											}
+											$return.= "</select>
+											</div>
+										</div>
+									</div>
+								</div>
+								<div class='row' style='padding:15px;'>
+									<div class='col'>
+										<button type=\"submit\" class=\"btn btn-primary\"/>Submit</button>
+										<button type=\"button\" class='btn btn-warning' onclick=\"javascript:window.location='admin.php?page=pbr-edit-devices';\">Cancel</button>
+									</div>
+								</div>
+							</form>
+						</div>
+";
+	return $return;
+	}
 	private function getManagerID($mgr) {
 		global $wpdb;
 		return $wpdb->get_var( "SELECT managerID FROM pbc_pbr_managers WHERE restaurantID='".$this->rinfo->restaurantID."' AND mgrType='$mgr'");
@@ -1000,6 +1134,9 @@ AND pbc_users.id=nhoHost AND pbc_pbrestaurants.restaurantID=nhoLocation");
 			$value=esc_html( $cu->user_firstname ) . " " . esc_html( $cu->user_lastname );
 		}
 		return "<input class=\"form-control\" type='text' name='".$name."' value='".$value."' required />";
+	}
+	public function buildUserPicker($data=null){
+
 	}
 	public function buildRestaurantSelector($single=0,$field='restaurantID',$data=null){
 		$this->getMyRestaurants($field);
