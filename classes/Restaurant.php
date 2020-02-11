@@ -966,7 +966,7 @@ AND pbc_users.id=nhoHost AND pbc_pbrestaurants.restaurantID=nhoLocation");
 		$results=$wpdb->get_results("SELECT * FROM pbc2.pbc_devices WHERE deviceStatus!='Retired' order by deviceStatus,dateAdded");
 		if($results){
 			$d['File']="PBK_Device_List_";
-			$d['Headers']=array("Name","Make","Model","Type","Ownership","Assigned User");
+			$d['Headers']=array("Name","Make & Model","Type","Ownership","Assigned User","Status");
 			foreach($results as $r){
 				$user=$wpdb->get_var("SELECT display_name FROM pbc_users WHERE ID IN (SELECT userID FROM pbc_devices_assignments WHERE deviceID='".$r->idpbc_devices."')");
 				if($user){
@@ -974,7 +974,14 @@ AND pbc_users.id=nhoHost AND pbc_pbrestaurants.restaurantID=nhoLocation");
 				}else {
 					$assigned="UNASSIGNED";
 				}
-				$d['Results'][]=array("<a href='" . admin_url( "admin.php?page=pbr-edit-devices&amp;id=".$r->idpbc_devices)."'>" . $r->deviceName . "</a>",$r->deviceBrand,$r->deviceModel,$r->deviceType,$r->ownershipType,$assigned);
+				$d['Results'][]=array(
+					"<a href='" . admin_url( "admin.php?page=pbr-edit-devices&amp;id=".$r->idpbc_devices)."'>" . $r->deviceName . "</a>",
+					$r->deviceBrand . " " . $r->deviceModel,
+					$r->deviceType,
+					$r->ownershipType,
+					$assigned,
+					$r->deviceStatus
+				);
 			}
 		}
 		return $d;
