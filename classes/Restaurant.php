@@ -430,7 +430,7 @@ class Restaurant {
 					<td><select class='form-control' name='att[".$attendee->attendeeID."][clock]'>
 					";
 					foreach ($this->nhoSatus["Attendance"] as $key => $value) {
-						if($key==$json->clock){$selected='selected';}else{$selected='';}
+						if($key==$json->clock){$selected=' selected';}else{$selected='';}
 						$return.='<option value="'.$key.'" '.$selected.' >'.$value.'</option>';
 					}
 					$return.="</select></td>
@@ -634,7 +634,7 @@ if($_GET['nhoDate']!="_new"){
 			<select class="custom-select custom-select-sm" name="nhoStatus['.$attendee['attendeeID'].'][restaurantID]" '.$disabled.'>
 			<option value="">Choose One</option>';
 			foreach ($this->myRestaurants as $key => $value) {
-				if($key==$attendee['restaurant']){$selected='selected';}else{$selected='';}
+				if($key==$attendee['restaurant']){$selected=' selected';}else{$selected='';}
 				$return.='<option value="'.$key.'" '.$selected.' >'.$value.'</option>';
 			}
 			$return.='</select>';
@@ -1001,7 +1001,7 @@ AND pbc_users.id=nhoHost AND pbc_pbrestaurants.restaurantID=nhoLocation");
 				$insertID=$wpdb->insert_id;
 		$wpdb->query(
 			$wpdb->prepare("REPLACE INTO pbc_devices_assignments (deviceID,userID)VALUES(%s,%s)",$insertID,$p['userID']));
-			wp_redirect(  admin_url( 'admin.php?page=pbr-edit-devices&amp;id='.$insertID.'&amp;m=1' ));
+			wp_redirect(  admin_url( 'admin.php?page=pbr-edit-devices&amp;m=3' ));
 	}
 	function pbk_device_editor($data){
 		$allUsers=$this->getUserNames();
@@ -1052,7 +1052,7 @@ AND pbc_users.id=nhoHost AND pbc_pbrestaurants.restaurantID=nhoLocation");
 												<option value=''>Choose One</option>
 												";
 												foreach($this->deviceType as $t){
-													if($t==$d['deviceType']){$selected='selected';}else{$selected='';}
+													if($t==$d['deviceType']){$selected=' selected';}else{$selected='';}
 													$return.="<option value='".$t."'$selected>".$t."</option>";
 												}
 												$return.="</select>
@@ -1062,7 +1062,7 @@ AND pbc_users.id=nhoHost AND pbc_pbrestaurants.restaurantID=nhoLocation");
 											<option value=''>Choose One</option>
 											";
 											foreach($this->deviceStatus as $t){
-												if($t==$d['deviceStatus']){$selected='selected';}else{$selected='';}
+												if($t==$d['deviceStatus']){$selected=' selected';}else{$selected='';}
 												$return.="<option value='".$t."'$selected>".$t."</option>";
 											}
 											$return.="</select>
@@ -1074,7 +1074,7 @@ AND pbc_users.id=nhoHost AND pbc_pbrestaurants.restaurantID=nhoLocation");
 											<option value=''>Choose One</option>
 											";
 											foreach($this->ownershipType as $t){
-												if($t==$d['deviceStatus']){$selected='selected';}else{$selected='';}
+												if($t==$d['ownershipType']){$selected=' selected';}else{$selected='';}
 												$return.="<option value='".$t."'$selected>".$t."</option>";
 											}
 											$return.="</select>
@@ -1093,7 +1093,7 @@ AND pbc_users.id=nhoHost AND pbc_pbrestaurants.restaurantID=nhoLocation");
 											<label for='userID'><strong>Assigned to</strong></label><br>
 											<select name='userID' class='form-control' id='userID'><option value=''>Choose One</option>";
 											foreach($allUsers as $user){
-												if($user->ID==$user){$selected='selected';}else{$selected='';}
+												if($user->ID==$user){$selected=' selected';}else{$selected='';}
 												$return.="<option value='".$user->ID."'$selected>".$user->display_name."</option>";
 											}
 											$return.= "</select>

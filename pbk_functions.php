@@ -102,8 +102,9 @@ function pbk_show_response($m){
 }
 function switchpbrMessages($m) {
 	switch($m) {
-		case 1: $ms= "Restaurant updated."; break;
+    case 1: $ms= "Restaurant updated."; break;
+    case 3: $ms= "Device updated."; break;
 		case 2: $ms= "There was an error. Restaurant not updated."; break;
 	}
-  echo  "<div id='message' class='alert alert-success'><p><strong>" . $ms . "</strong></p></div>";
+  echo  "<div class='alert alert-success'><p><strong>" . $ms . "</strong></p></div>";
 }
