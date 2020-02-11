@@ -987,7 +987,7 @@ AND pbc_users.id=nhoHost AND pbc_pbrestaurants.restaurantID=nhoLocation");
 		return $d;
 	}
 	function pbkSaveDevice($p){
-		if(!isset($p['deviceName']) || $p['deviceName']=""){wp_redirect(  admin_url( 'admin.php?page=pbr-edit-devices&amp;m=2' ));}
+		if(!isset($p['deviceName']) || $p['deviceName']==""){wp_redirect(  admin_url( 'admin.php?page=pbr-edit-devices&amp;m=2' ));}
 		$p['dateAdded']=date("Y-m-d",strtotime($p['dateAdded']));
 		global $wpdb;
 		$wpdb->query(
