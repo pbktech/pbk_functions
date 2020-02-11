@@ -56,18 +56,19 @@ function pbr_add_restaurant(){
   echo "</div>";
 }
 function pbr_edit_devices(){
-  if ( isset( $_GET['m'] ) ){
-    switchpbrMessages($_GET['m']);
-  }
   $restaurant = new Restaurant();
   if($_SERVER['REQUEST_METHOD'] == 'POST'){
     $restaurant->pbkSaveDevice($_POST);
   }
-  echo "<div class='wrap'><h2>Manage Devices</h2>";
+  echo "<div class='wrap'><div id=\"icon-users\" class=\"icon32\"></div><h2>Manage Devices<a href=\"?page=pbr-edit-devices&amp;id=_NEW\" class=\"add-new-h2\">Add New Device</a></h2>";
+  if ( isset( $_GET['m'] ) ){
+    switchpbrMessages($_GET['m']);
+  }
   if(isset($_GET['id'])){
     echo $restaurant->pbk_device_editor($_GET['id']);
   }else {
-    echo $restaurant->pbk_listDevices($_GET['id']);
+    $report= new ToastReport;
+    echo $report->showResultsTable($restaurant->pbk_listDevices());
   }
   echo "</div>";
 }
@@ -202,33 +203,21 @@ function pbr_edit_minibar(){
     <div id='queryResults'>
     ";
     if($results=$restaurant->get_incident_reports()){
-      echo "
-      <table id='myTable' class=\"table table-striped table-hover\" style='width:100%;'>
-        <thead style='background-color:#0e2244; color: #ffffff; text-align: center;font-weight:bold;'>
-          <tr>
-            <th>Restaurant</th>
-            <th>Incident Date</th>
-            <th>Reported By</th>
-            <th>Incident Type</th>
-            <th>Reported Date</th>
-            <th></th>
-          </tr>
-        </thead>
-";
+      $data['File']="Incident_List_";
+      $data['Headers']=array("Restaurant","Incident Date","Reported By","Incident Type","Reported Date","");
       foreach($results as $r){
         $download="<a href='" . admin_url( 'admin.php?page=pbr-incident-history&amp;incident=' . $r->id_pbc_incident_reports) . "' target='_blank'>View/Download</a>";
-        echo "
-        <tr>
-          <td><div class='itemName' id='".$r->id_pbc_incident_reports."'>" . $restaurant->getRestaurantName($r->restaurantID) . "</div></td>
-          <td>" . date("m/d/Y",strtotime($r->dateOfIncident)) . "</td>
-          <td>" . $r->reporterName . "</td>
-          <td>" . $restaurant->incidentTypes[$r->incidentType]["Name"] . "</td>
-          <td>" . date("m/d/Y",strtotime($r->reportAdded)) . "</td>
-          <td>" . $download . "</td>
-        </tr>
-        ";
+        $data['Results'][]=array(
+          $restaurant->getRestaurantName($r->restaurantID),
+          date("m/d/Y",strtotime($r->dateOfIncident)),
+          $r->reporterName,
+          $restaurant->incidentTypes[$r->incidentType]["Name"],
+          date("m/d/Y",strtotime($r->reportAdded)),
+          $download
+        );
       }
-      echo "</table>";
+      $report= new ToastReport;
+      echo $report->showResultsTable($data);
     }else {
       echo "<div class='alert alert-warning'>There were no reports found for " . $_GET['startDate'] . " - " . $_GET['endDate'] . "</div>";
     }

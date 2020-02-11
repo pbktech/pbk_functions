@@ -1075,6 +1075,41 @@ from pbc2.kds_detail WHERE sent_time BETWEEN  ? AND ? AND station='' and restaur
 				die();
 		}
 	}
+	function showResultsTable($data=array()){
+		if(isset($data['Results']) && count($data['Results'])!=0){
+			if(file_exists($this->docSaveLocation.$data['File'].date("Ymd").'.csv')) {unlink($this->docSaveLocation.$data['File'].date("Ymd").'.csv');}
+			$file = fopen($this->docSaveLocation.$data['File'].date("Ymd").'.csv', 'w');
+			fputcsv($file,$data['Headers']);
+			$return="
+		<script>
+		jQuery(document).ready( function () {
+				jQuery('#myTable').DataTable();
+		} );
+		</script>
+		<div id='queryResults'>
+	      <table id='myTable' class=\"table table-striped table-hover\" style='width:100%;'>
+		        <thead style='background-color:#0e2244; color: #ffffff; text-align: center;font-weight:bold;'>
+		          <tr><th>".implode("</th><th>",$data['Headers']) . "
+		          </th></tr>
+		        </thead>";
+			foreach($data['Results'] as $row=>$col){
+				fputcsv($file,$col);
+				$return.=	"<tr><td>" . implode("</td><td>",$col) . "</td></tr>";
+			}
+			$return.=	"
+			</table>
+			</div>";
+			if(file_exists($this->docSaveLocation.$data['File'].date("Ymd").'.csv')) {
+				$return.="<div>
+				<a class='btn btn-success' href='".$this->docDownloadLocation.$data['File'].date("Ymd").".csv' target='_blank')\">Download the file</a> This download is only valid for 30 minutes.
+				</div>";
+			}
+
+		}else {
+			$return = "<div class='alert alert-warning'>No Results Found</div>";
+		}
+		return $return;
+	}
 	function showRawArray($a) {
 		echo "<pre>";
 		print_r($a);

@@ -960,6 +960,25 @@ AND pbc_users.id=nhoHost AND pbc_pbrestaurants.restaurantID=nhoLocation");
 		}
 		return $wpdb->get_results($q);
 	}
+	function pbk_listDevices(){
+		$d=array();
+		global $wpdb;
+		$results=$wpdb->get_results("SELECT * FROM pbc2.pbc_devices WHERE deviceStatus!='Retired' order by deviceStatus,dateAdded");
+		if($results){
+			$d['File']="PBK_Device_List_";
+			$d['Headers']=array("Name","Make","Model","Type","Ownership","Assigned User");
+			foreach($results as $r){
+				$user=$wpdb->get_var("SELECT display_name FROM pbc_users WHERE ID IN (SELECT userID FROM pbc_devices_assignments WHERE deviceID='".$r->idpbc_devices."')");
+				if($user){
+					$assigned=$user;
+				}else {
+					$assigned="UNASSIGNED";
+				}
+				$d['Results'][]=array("<a href='" . admin_url( "admin.php?page=pbr-edit-devices&amp;id=".$r->idpbc_devices)."'>" . $r->deviceName . "</a>",$r->deviceBrand,$r->deviceModel,$r->deviceType,$r->ownershipType,$assigned);
+			}
+		}
+		return $d;
+	}
 	function pbkSaveDevice($p){
 		$p['dateAdded']=date("Y-m-d",strtotime($p['dateAdded']));
 		global $wpdb;
@@ -989,10 +1008,12 @@ AND pbc_users.id=nhoHost AND pbc_pbrestaurants.restaurantID=nhoLocation");
 		if($data=="_NEW"){
 
 			$d=array("deviceName"=>"","deviceBrand"=>"","deviceModel"=>"","deviceSerial"=>"","deviceType"=>"","ownershipType"=>"",
-		"deviceStatus"=>"","lengthTerm"=>"","dateAdded"=>date("m/d/Y"),"userID"=>"","idpbc_devices"=>"");
+		"deviceStatus"=>"","lengthTerm"=>"","dateAdded"=>date("m/d/Y"),"idpbc_devices"=>"");
+		$user="";
 	}else{
 		global $wpdb;
-		$d=$wpdb->get_row('SELECT * FROM pbc_devices,pbc_devices_assignments WHERE idpbc_devices="'.$data.'" AND idpbc_devices=deviceID', ARRAY_A);
+		$d=$wpdb->get_row('SELECT * FROM pbc_devices,pbc_devices_assignments WHERE idpbc_devices="'.$data.'"', ARRAY_A);
+		$user=$wpdb->get_var("SELECT display_name FROM pbc_users WHERE ID IN (SELECT userID FROM pbc_devices_assignments WHERE deviceID='".$data."')");
 	}
 		$return="
 		<script>
@@ -1064,7 +1085,7 @@ AND pbc_users.id=nhoHost AND pbc_pbrestaurants.restaurantID=nhoLocation");
 											</div>
 											<div class='col'>
 											<label for='dateAdded'><strong>Date Added</strong></label><br>
-											<input type='text' name='dateAdded' id='dateAdded' value='".$d['dateAdded']."' />
+											<input type='text' name='dateAdded' id='dateAdded' value='".date("m/d/Y",strtotime($d['dateAdded']))."' />
 											</div>
 										</div>
 										<div class='row'>
@@ -1072,7 +1093,7 @@ AND pbc_users.id=nhoHost AND pbc_pbrestaurants.restaurantID=nhoLocation");
 											<label for='userID'><strong>Assigned to</strong></label><br>
 											<select name='userID' class='form-control' id='userID'><option value=''>Choose One</option>";
 											foreach($allUsers as $user){
-												if($user->ID==$d['userID']){$selected='selected';}else{$selected='';}
+												if($user->ID==$user){$selected='selected';}else{$selected='';}
 												$return.="<option value='".$user->ID."'$selected>".$user->display_name."</option>";
 											}
 											$return.= "</select>
