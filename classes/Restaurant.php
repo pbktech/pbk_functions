@@ -1101,7 +1101,7 @@ AND pbc_users.id=nhoHost AND pbc_pbrestaurants.restaurantID=nhoLocation");
 											<label for='userID'><strong>Assigned to</strong></label><br>
 											<select name='userID' class='form-control' id='userID'><option value=''>Choose One</option>";
 											foreach($allUsers as $user){
-												if($user->ID==$user){$selected=' selected';}else{$selected='';}
+												if($user->ID==$userID){$selected=' selected';}else{$selected='';}
 												$return.="<option value='".$user->ID."'$selected>".$user->display_name."</option>";
 											}
 											$return.= "</select>
