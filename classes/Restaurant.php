@@ -1029,9 +1029,13 @@ AND pbc_users.id=nhoHost AND pbc_pbrestaurants.restaurantID=nhoLocation");
 		<script>
 		jQuery( function() {
 			jQuery( \"#tabs\" ).tabs();
-			jQuery('.multipleSelect').select2({
+			jQuery('#userID').select2({
       	theme: \"classic\"
-    	});
+    	});";
+			if(isset($userID)){$return.="
+				jQuery('#userID').val([".$userID."]);
+				jQuery(\"#userID\").trigger(\"change\");";}
+			$return.="
 		} );
 		</script>
 		<div class='container-fluid;'>
