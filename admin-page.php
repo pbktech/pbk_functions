@@ -61,12 +61,12 @@ function pbr_edit_devices(){
     $restaurant->pbkSaveDevice($_POST);
   }
   echo "<div class='wrap'><div id=\"icon-users\" class=\"icon32\"></div><h2>Manage Devices<a href=\"?page=pbr-edit-devices&amp;id=_NEW\" class=\"add-new-h2\">Add New Device</a></h2>";
-  if ( isset( $_GET['m'] ) ){
-    switchpbrMessages($_GET['m']);
-  }
   if(isset($_GET['id'])){
     echo $restaurant->pbk_device_editor($_GET['id']);
   }else {
+    if ( isset( $_GET['m'] ) ){
+      switchpbrMessages($_GET['m']);
+    }
     $report= new ToastReport;
     echo $report->showResultsTable($restaurant->pbk_listDevices());
   }

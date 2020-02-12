@@ -1019,16 +1019,19 @@ AND pbc_users.id=nhoHost AND pbc_pbrestaurants.restaurantID=nhoLocation");
 
 			$d=array("deviceName"=>"","deviceBrand"=>"","deviceModel"=>"","deviceSerial"=>"","deviceType"=>"","ownershipType"=>"",
 		"deviceStatus"=>"","lengthTerm"=>"","dateAdded"=>date("m/d/Y"),"idpbc_devices"=>"");
-		$user="";
+		$userID="";
 	}else{
 		global $wpdb;
 		$d=$wpdb->get_row('SELECT * FROM pbc_devices,pbc_devices_assignments WHERE idpbc_devices="'.$data.'"', ARRAY_A);
-		$user=$wpdb->get_var("SELECT display_name FROM pbc_users WHERE ID IN (SELECT userID FROM pbc_devices_assignments WHERE deviceID='".$data."')");
+		$userID=$wpdb->get_var("SELECT display_name FROM pbc_users WHERE ID IN (SELECT userID FROM pbc_devices_assignments WHERE deviceID='".$data."')");
 	}
 		$return="
 		<script>
 		jQuery( function() {
 			jQuery( \"#tabs\" ).tabs();
+			jQuery('.multipleSelect').select2({
+      	theme: \"classic\"
+    	});
 		} );
 		</script>
 		<div class='container-fluid;'>
@@ -1101,7 +1104,7 @@ AND pbc_users.id=nhoHost AND pbc_pbrestaurants.restaurantID=nhoLocation");
 										<div class='row'>
 											<div class='col'>
 											<label for='userID'><strong>Assigned to</strong></label><br>
-											<select name='userID' class='form-control' id='userID'><option value=''>Choose One</option>";
+											<select name='userID' class='form-control multipleSelect' id='userID'><option value=''>Choose One</option>";
 											foreach($allUsers as $user){
 												if($user->ID==$userID){$selected=' selected';}else{$selected='';}
 												$return.="<option value='".$user->ID."'$selected>".$user->display_name."</option>";
