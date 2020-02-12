@@ -965,6 +965,8 @@ AND pbc_users.id=nhoHost AND pbc_pbrestaurants.restaurantID=nhoLocation");
 		global $wpdb;
 		$results=$wpdb->get_results("SELECT * FROM pbc2.pbc_devices WHERE deviceStatus!='Retired' order by deviceStatus,dateAdded");
 		if($results){
+			$d['Options'][]="\"order\": [ 5, 'asc' ]";
+			$d['Options'][]="\"lengthMenu\": [ [25, 50, -1], [25, 50, \"All\"] ]";
 			$d['File']="PBK_Device_List_";
 			$d['Headers']=array("Name","Make & Model","Type","Ownership","Assigned User","Status");
 			foreach($results as $r){

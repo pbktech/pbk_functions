@@ -1077,13 +1077,14 @@ from pbc2.kds_detail WHERE sent_time BETWEEN  ? AND ? AND station='' and restaur
 	}
 	function showResultsTable($data=array()){
 		if(isset($data['Results']) && count($data['Results'])!=0){
+			if(isset($data['Options']) && is_array($data['Options'])){$options="{\n					".implode(",\n					",$data['Options'])."}\n				";}else{$options='';}
 			if(file_exists($this->docSaveLocation.$data['File'].date("Ymd").'.csv')) {unlink($this->docSaveLocation.$data['File'].date("Ymd").'.csv');}
 			$file = fopen($this->docSaveLocation.$data['File'].date("Ymd").'.csv', 'w');
 			fputcsv($file,$data['Headers']);
 			$return="
 		<script>
 		jQuery(document).ready( function () {
-				jQuery('#myTable').DataTable();
+				jQuery('#myTable').DataTable(".$options.");
 		} );
 		</script>
 		<div id='queryResults'>
@@ -1101,7 +1102,7 @@ from pbc2.kds_detail WHERE sent_time BETWEEN  ? AND ? AND station='' and restaur
 			</div>";
 			if(file_exists($this->docSaveLocation.$data['File'].date("Ymd").'.csv')) {
 				$return.="<div>
-				<a class='btn btn-success' href='".$this->docDownloadLocation.$data['File'].date("Ymd").".csv' target='_blank')\">Download the file</a> This download is only valid for 30 minutes.
+				<a class='btn btn-success' href='".$this->docDownloadLocation.$data['File'].date("Ymd").".csv' target='_blank'>Download the file</a> This download is only valid for 30 minutes.
 				</div>";
 			}
 
