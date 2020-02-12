@@ -1023,7 +1023,7 @@ AND pbc_users.id=nhoHost AND pbc_pbrestaurants.restaurantID=nhoLocation");
 	}else{
 		global $wpdb;
 		$d=$wpdb->get_row('SELECT * FROM pbc_devices,pbc_devices_assignments WHERE idpbc_devices="'.$data.'"', ARRAY_A);
-		$userID=$wpdb->get_var("SELECT display_name FROM pbc_users WHERE ID IN (SELECT userID FROM pbc_devices_assignments WHERE deviceID='".$data."')");
+		$userID=$wpdb->get_var("SELECT userID FROM pbc_devices_assignments WHERE deviceID='".$data."'");
 	}
 		$return="
 		<script>
