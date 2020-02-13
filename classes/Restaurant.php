@@ -966,6 +966,7 @@ AND pbc_users.id=nhoHost AND pbc_pbrestaurants.restaurantID=nhoLocation");
 	}
 	function pbk_listDevices(){
 		$this->deviceType=$this->getDeviceTypes();
+		foreach($this->deviceType as $type){$dt[$type->idpbc_devices_types]=$type->deviceType;}
 		$d=array();
 		global $wpdb;
 		$results=$wpdb->get_results("SELECT * FROM pbc2.pbc_devices WHERE deviceStatus!='Retired' order by deviceStatus,dateAdded");
@@ -984,7 +985,7 @@ AND pbc_users.id=nhoHost AND pbc_pbrestaurants.restaurantID=nhoLocation");
 				$d['Results'][]=array(
 					"<a href='" . admin_url( "admin.php?page=pbr-edit-devices&amp;id=".$r->idpbc_devices)."'>" . $r->deviceName . "</a>",
 					$r->deviceBrand . " " . $r->deviceModel,
-					$r->deviceType,
+					$dt[$r->deviceType],
 					$r->ownershipType,
 					$assigned,
 					$r->deviceStatus
