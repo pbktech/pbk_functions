@@ -965,6 +965,7 @@ AND pbc_users.id=nhoHost AND pbc_pbrestaurants.restaurantID=nhoLocation");
 		return $wpdb->get_results("SELECT * FROM pbc2.pbc_devices_types");
 	}
 	function pbk_listDevices(){
+		$this->deviceType=$this->getDeviceTypes();
 		$d=array();
 		global $wpdb;
 		$results=$wpdb->get_results("SELECT * FROM pbc2.pbc_devices WHERE deviceStatus!='Retired' order by deviceStatus,dateAdded");
