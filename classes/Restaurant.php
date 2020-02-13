@@ -16,7 +16,7 @@ class Restaurant {
 	public $isAboveStore=0;
 	public $timeZones=array("America/Chicago"=>"Central","America/New_York"=>"Eastern","America/Denver"=>"Mountain");
 	public $ownershipType=array('Owned', 'Leased', 'Financed');
-	public $deviceType=array('Laptop', 'Desktop', 'Tablet', 'HotSpot');
+	public $deviceType=array();
 	public $deviceStatus=array('Active', 'B-Stock', 'Retired', 'Returned');
 	public $incidentTypes=array(
 		"foodborneIllness"=>array("Name"=>"Foodborne Illness/Foreign Object","sendTo"=>array("lcominsky@theproteinbar.com","vwillis@theproteinbar.com")),
@@ -960,11 +960,16 @@ AND pbc_users.id=nhoHost AND pbc_pbrestaurants.restaurantID=nhoLocation");
 		}
 		return $wpdb->get_results($q);
 	}
+	function getDeviceTypes(){
+		global $wpdb;
+		return $wpdb->get_results("SELECT * FROM pbc2.pbc_devices_types");
+	}
 	function pbk_listDevices(){
 		$d=array();
 		global $wpdb;
 		$results=$wpdb->get_results("SELECT * FROM pbc2.pbc_devices WHERE deviceStatus!='Retired' order by deviceStatus,dateAdded");
 		if($results){
+			$this->deviceType=$this->getDeviceTypes();
 			$d['Options'][]="\"order\": [ 5, 'asc' ]";
 			$d['Options'][]="\"lengthMenu\": [ [25, 50, -1], [25, 50, \"All\"] ]";
 			$d['File']="PBK_Device_List_";
@@ -1069,8 +1074,8 @@ AND pbc_users.id=nhoHost AND pbc_pbrestaurants.restaurantID=nhoLocation");
 												<option value=''>Choose One</option>
 												";
 												foreach($this->deviceType as $t){
-													if($t==$d['deviceType']){$selected=' selected';}else{$selected='';}
-													$return.="<option value='".$t."'$selected>".$t."</option>";
+													if($t->idpbc_devices_types==$d['deviceType']){$selected=' selected';}else{$selected='';}
+													$return.="<option value='".$t->idpbc_devices_types."'$selected>".$t->deviceType."</option>";
 												}
 												$return.="</select>
 											</div>
