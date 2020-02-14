@@ -757,7 +757,22 @@ if($_GET['nhoDate']!="_new"){
 	}
 	function getMiniBarLocations(){
 		global $wpdb;
-		return $wpdb->get_results("SELECT idpbc_minibar,company,restaurantName FROM pbc2.pbc_minibar,pbc_pbrestaurants WHERE pbc_minibar.restaurantID=pbc_pbrestaurants.restaurantID", ARRAY_A);
+		$results= $wpdb->get_results("SELECT idpbc_minibar,company,restaurantName,imageFile FROM pbc2.pbc_minibar,pbc_pbrestaurants WHERE pbc_minibar.restaurantID=pbc_pbrestaurants.restaurantID");
+		if($results){
+			$d['Options'][]="\"lengthMenu\": [ [25, 50, -1], [25, 50, \"All\"] ]";
+			$d['File']="PBK_Device_List_";
+			$d['Headers']=array("MiniBar","Restaurant","Ordering Link");
+			foreach($results as $r){
+				$json=json_decode($r->imageFile);
+				$d['Results'][]=array(
+					"<a href='".admin_url( 'admin.php?page=pbr-edit-minibar&id='.$r->idpbc_minibar )."'>" . $r->company . "</a>",
+					$r->restaurantName,
+					"<a href='".$json->link."' target='_blank'>" . str_replace("https://minibar.theproteinbar.com/","",$json->link) . "</a>"
+				);
+			}
+			return $d;
+		}
+		return;
 	}
 	function getMiniBarInformation($id){
 		global $wpdb;
@@ -833,7 +848,7 @@ if($_GET['nhoDate']!="_new"){
 					REPLACE INTO pbc_minibar (idpbc_minibar,restaurantID,company,outpostIdentifier,imageFile)VALUES(%s,%s,%s,%s,%s)",
 					$info['idpbc_minibar'],$info['restaurantID'],$info['company'],$info['outpostIdentifier'],$imageFile));
 		}
-		wp_redirect(  admin_url( 'admin.php?page=pbr-edit-minibar&amp;id='.$info["idpbc_minibar"].'&amp;m=1' ));
+		wp_redirect(  admin_url( 'admin.php?page=pbr-edit-minibar&id='.$info["idpbc_minibar"].'&m=1' ));
 	}
 	function updateNHO($nho){
 		global $wpdb;

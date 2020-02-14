@@ -91,8 +91,9 @@ function pbr_edit_minibar(){
     $restaurant = new Restaurant();
     echo $restaurant->showMiniBarBuilder();
   }else {
-    require_once( 'classes/mbList.php' );
-    my_mblist_list_page();
+    $restaurant = new Restaurant();
+    $report= new ToastReport;
+    echo $report->showResultsTable($restaurant->getMiniBarLocations());
 	}
   echo "</div>";
 }
