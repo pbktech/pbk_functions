@@ -765,15 +765,14 @@ if($_GET['nhoDate']!="_new"){
 	}
 	function showMiniBarBuilder($info=array("idpbc_minibar"=>"_NEW","company"=>"","restaurantID"=>"","outpostIdentifier"=>"","imageFile"=>"")){
 		if(isset($info['imageFile']) && $info['imageFile']!=""){
+			$links=json_decode($info['imageFile'],true);
 			$imageAdd="
-			<div class='row'>
-				<div class='col'>
-					<strong>Current Image</strong><br><img src='".$info['imageFile']."' alt='' />
-				</div>
-			</div>
+					<strong>Current Image</strong><br><img src='".$links['image']."' alt='' />
 			";
 		}else {
 			$imageAdd="";
+			$links['image']="";
+			$links['link']="";
 		}
 		return $this->pbk_addImageSelector()."
 		<div class='container-fluid;'>
@@ -792,15 +791,23 @@ if($_GET['nhoDate']!="_new"){
 		</div>
 		<div class='row'>
 			<div class='col'>
-				<label for='imageFile'><strong>Image</strong></label>
-				<input type='text' class='form-control media-input' name ='imageFile' value='".$info['imageFile']."' /> <button class='media-button'>Select image</button>
+				<label for='imageFile'><strong>Order Link</strong></label>
+				<input type='text' class='form-control' name ='imageFile[link]' value='".$links['link']."' />
 			</div>
   		<div class='col'>
 				<label for='outpostIdentifier'><strong>Toast Dining Option</strong></label>
 				<input type='text' class='form-control' name ='outpostIdentifier' value='".$info['outpostIdentifier']."' />
   		</div>
   	</div>
-		".$imageAdd."
+		<div class='row'>
+			<div class='col'>
+				<label for='imageFile'><strong>Image</strong></label>
+				<input type='text' class='form-control media-input' name ='imageFile[image]' value='".$links['image']."' /> <button class='media-button'>Select image</button>
+			</div>
+			<div class='col'>
+			".$imageAdd."
+			</div>
+  	</div>
 		<div class='row' style='padding:15px;'>
 			<div class='col'>
 				<button type=\"submit\" class=\"btn btn-primary\"/>Submit</button>
@@ -813,17 +820,18 @@ if($_GET['nhoDate']!="_new"){
 	}
 	function pbkSaveMinibar($info){
 		global $wpdb;
+		$imageFile=json_encode($info['imageFile']);
 		if(isset($info["idpbc_minibar"]) && $info["idpbc_minibar"]=="_NEW"){
 			$wpdb->query(
 				$wpdb->prepare( "
 					INSERT INTO pbc_minibar (restaurantID,company,outpostIdentifier,imageFile)VALUES(%s,%s,%s,%s)",
-					$info['restaurantID'],$info['company'],$info['outpostIdentifier'],$info['imageFile']));
+					$info['restaurantID'],$info['company'],$info['outpostIdentifier'],$imageFile));
 				if(isset($wpdb->insert_id)){$info["idpbc_minibar"]=$wpdb->insert_id;}else{die("ID ERROR");}
 		}else {
 			$wpdb->query(
 				$wpdb->prepare( "
 					REPLACE INTO pbc_minibar (idpbc_minibar,restaurantID,company,outpostIdentifier,imageFile)VALUES(%s,%s,%s,%s,%s)",
-					$info['idpbc_minibar'],$info['restaurantID'],$info['company'],$info['outpostIdentifier'],$info['imageFile']));
+					$info['idpbc_minibar'],$info['restaurantID'],$info['company'],$info['outpostIdentifier'],$imageFile));
 		}
 		wp_redirect(  admin_url( 'admin.php?page=pbr-edit-minibar&amp;id='.$info["idpbc_minibar"].'&amp;m=1' ));
 	}
