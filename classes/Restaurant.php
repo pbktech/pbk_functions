@@ -1006,7 +1006,7 @@ AND pbc_users.id=nhoHost AND pbc_pbrestaurants.restaurantID=nhoLocation");
 					$assigned="UNASSIGNED";
 				}
 				$d['Results'][]=array(
-					"<a href='" . admin_url( "admin.php?page=pbr-edit-devices&amp;id=".$r->idpbc_devices)."'>" . $r->deviceName . "</a>",
+					"<a href='" . admin_url( "admin.php?page=pbr-edit-devices&id=".$r->idpbc_devices)."'>" . $r->deviceName . "</a>",
 					$r->deviceBrand . " " . $r->deviceModel,
 					$dt[$r->deviceType],
 					$r->ownershipType,
@@ -1018,7 +1018,7 @@ AND pbc_users.id=nhoHost AND pbc_pbrestaurants.restaurantID=nhoLocation");
 		return $d;
 	}
 	function pbkSaveDevice($p){
-		if(!isset($p['deviceName']) || $p['deviceName']==""){wp_redirect(  admin_url( 'admin.php?page=pbr-edit-devices&amp;m=2' ));}
+		if(!isset($p['deviceName']) || $p['deviceName']==""){wp_redirect(  admin_url( 'admin.php?page=pbr-edit-devices&m=2' ));}
 		$p['dateAdded']=date("Y-m-d",strtotime($p['dateAdded']));
 		global $wpdb;
 		$wpdb->query(
@@ -1040,7 +1040,7 @@ AND pbc_users.id=nhoHost AND pbc_pbrestaurants.restaurantID=nhoLocation");
 				$insertID=$wpdb->insert_id;
 		$wpdb->query(
 			$wpdb->prepare("REPLACE INTO pbc_devices_assignments (deviceID,userID)VALUES(%s,%s)",$insertID,$p['userID']));
-			wp_redirect(  admin_url( 'admin.php?page=pbr-edit-devices&amp;m=3' ));
+			wp_redirect(  admin_url( 'admin.php?page=pbr-edit-devices&m=3' ));
 	}
 	function pbk_device_editor($data){
 		$allUsers=$this->getUserNames();
