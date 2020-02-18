@@ -789,6 +789,27 @@ if($_GET['nhoDate']!="_new"){
 			$links['image']="";
 			$links['link']="";
 		}
+		if($info['idpbc_minibar']!="_NEW" && isset($imageAdd) && $imageAdd!=""){
+			$sendTest="
+			<a href='".admin_url( 'admin.php?page=pbr-edit-minibar&id='.$info['idpbc_minibar'] )."&testEmail=1' class=\"btn btn-secondary\">Send Test Email</a>
+			";
+		}
+		if(isset($_GET['testEmail']) && $_GET['testEmail']==1){
+			$current_user = wp_get_current_user();
+			$report=new ToastReport;
+			$content="<div>
+	    <a href='".$links['link']."' target='_blank'>
+	    <img src='".$links['image']."' alt='Your Protein Bar MiniBar order has been delivered!' />
+	    </a>
+	    </div>'";
+			$handle = @fopen($links['image'], 'r');
+			if($handle){
+				$report->reportEmail($current_user->user_email,$content,"IT'S ALL GOOD: Your lunch has arrived!");
+				echo "<div class='alert alert-success'>Email Sent.</div>";
+			}else {
+				echo "<div class='alert alert-danger'>Unable to send email.</div>";
+			}
+		}
 		return $this->pbk_addImageSelector()."
 		<div class='container-fluid;'>
 	<form method=\"post\" action=\"admin-post.php\">
@@ -831,6 +852,7 @@ if($_GET['nhoDate']!="_new"){
 		</div>
 	</form>
 </div>
+<div>$sendTest</div>
 		";
 	}
 	function pbkSaveMinibar($info){
