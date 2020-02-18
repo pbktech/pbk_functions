@@ -789,7 +789,7 @@ if($_GET['nhoDate']!="_new"){
 			$links['image']="";
 			$links['link']="";
 		}
-		if($info['idpbc_minibar']!="_NEW" && isset($imageAdd) && $imageAdd!=""){
+		if($info['idpbc_minibar']!="_NEW" && isset($links['image']) && $links['image']!=""){
 			$sendTest="
 			<a href='".admin_url( 'admin.php?page=pbr-edit-minibar&id='.$info['idpbc_minibar'] )."&testEmail=1' class=\"btn btn-secondary\">Send Test Email</a>
 			";
