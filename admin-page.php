@@ -28,13 +28,6 @@ function pbr_edit_restaurant(){
 	}
    echo "<div class=\"wrap\"><div id=\"icon-users\" class=\"icon32\"></div><h2>Manage Restaurants <a href=\"?page=pbr-edit-restaurant&amp;restaurant=_NEW\" class=\"add-new-h2\">Add New</a>
             </h2>
-            <script type=\"text/javascript\">
-              jQuery(document).ready(function(){
-                setTimeout(function(){
-                jQuery(\".alert\").hide(\"20000\")
-              }, 30000);
-              });
-            </script>
             ";
   if ( isset( $_GET['m'] ) ){
     switchpbrMessages($_GET['m']);
@@ -81,13 +74,6 @@ function pbr_edit_devices(){
 }
 function pbr_edit_minibar(){
   echo "<div class='wrap'><div id=\"icon-users\" class=\"icon32\"></div><h2>Manage MiniBar<a href=\"?page=pbr-edit-minibar&amp;id=_NEW\" class=\"add-new-h2\">Add New MiniBar Location</a>
-  <script type=\"text/javascript\">
-    jQuery(document).ready(function(){
-      setTimeout(function(){
-      jQuery(\".alert\").hide(\"20000\")
-    }, 30000);
-    });
-  </script>
   ";
   if(isset($_GET['id']) && is_numeric($_GET['id'])) {
     if ( isset( $_GET['m'] ) ){

@@ -805,9 +805,9 @@ if($_GET['nhoDate']!="_new"){
 			$handle = @fopen($links['image'], 'r');
 			if($handle){
 				$report->reportEmail($current_user->user_email,$content,"IT'S ALL GOOD: Your lunch has arrived!");
-				echo "<div class='alert alert-success'>Email Sent.</div>";
+				echo switchpbrMessages(4);
 			}else {
-				echo "<div class='alert alert-danger'>Unable to send email.</div>";
+				echo switchpbrMessages(5);
 			}
 		}
 		return $this->pbk_addImageSelector()."

@@ -102,9 +102,19 @@ function pbk_show_response($m){
 }
 function switchpbrMessages($m) {
 	switch($m) {
-    case 1: $ms= "Restaurant updated."; break;
-    case 3: $ms= "Device updated."; break;
-		case 2: $ms= "There was an error. Restaurant not updated."; break;
+    case 1: $ms= "Restaurant updated.";$alert="success"; break;
+    case 2: $ms= "There was an error. Restaurant not updated.";$alert="danger"; break;
+    case 3: $ms= "Device updated.";$alert="success"; break;
+    case 4: $ms= "Email Sent";$alert="success"; break;
+    case 5: $ms= "Unable to send email.";$alert="danger"; break;
 	}
-  echo  "<div class='alert alert-success'><p><strong>" . $ms . "</strong></p></div>";
+  echo  "
+  <script>
+    jQuery(document).ready(function(){
+      setTimeout(function(){
+      jQuery(\".alert\").hide(\"20000\")
+    }, 30000);
+    });
+  </script>
+<div class='alert alert-".$alert."'><strong>" . $ms . "</strong></div>";
 }
