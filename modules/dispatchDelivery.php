@@ -63,7 +63,8 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
       }
       if($pdf=$r->buildHTMLPDF(json_encode($packingList))){
         $current_user = wp_get_current_user();
-        $report->reportEmail($current_user->user_email,$packingList["html"],$packingList['title']);
+        $emailAddy=$current_user->user_email.",jon@theproteinbar.com,jcohen@theproteinbar.com";
+        $report->reportEmail($emailAddy,$packingList["html"],$packingList['title']);
         echo "<div><button class=\"btn btn-primary\" onclick=\"window.open('" . $pdf['Link'] . "', '_blank');\">Download the Packing List</a></div>";
       }
     }
