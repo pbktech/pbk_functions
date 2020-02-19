@@ -23,15 +23,22 @@ function pbr_setup_menu(){
 function pbr_admin_init(){
 }
 function pbr_edit_restaurant(){
-  if ( isset( $_GET['m'] ) ){
-    switchpbrMessages($_GET['m']);
-  }
 	if(!class_exists('WP_List_Table')){
 	   require_once( ABSPATH . 'wp-admin/includes/class-wp-list-table.php' );
 	}
    echo "<div class=\"wrap\"><div id=\"icon-users\" class=\"icon32\"></div><h2>Manage Restaurants <a href=\"?page=pbr-edit-restaurant&amp;restaurant=_NEW\" class=\"add-new-h2\">Add New</a>
             </h2>
+            <script type=\"text/javascript\">
+              jQuery(document).ready(function(){
+                setTimeout(function(){
+                jQuery(\".alert\").hide(\"20000\")
+              }, 30000);
+              });
+            </script>
             ";
+  if ( isset( $_GET['m'] ) ){
+    switchpbrMessages($_GET['m']);
+  }
 	if(isset($_GET['restaurant']) && is_numeric($_GET['restaurant'])) {
     $restaurant = new Restaurant($_GET['restaurant']);
     echo "<h2>".$restaurant->rinfo->restaurantName."</h2>";
