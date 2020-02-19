@@ -56,7 +56,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
 		      array( "%s", "%s", "%s", "%s", "%s", "%s", "%s" )
       );
       if($wpdb->last_error == ''){
-        $report->sendText("+1".$phone,"PBK Delivery Status\n".home_url("/deliveryNotify.php?id=".$publicGUID));
+        $report->sendText("+1".$phone,"CONFIRM\n".home_url("/deliveryNotify.php?id=".$publicGUID));
         $ret.= "<div class='alert alert-success'>Text with link sent</div>";
       }else {
         $ret.= "<div class='alert alert-danger'>There was an error. ". $wpdb->last_error ."</div>";
