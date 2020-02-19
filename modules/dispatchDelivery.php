@@ -62,6 +62,8 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
         $ret.= "<div class='alert alert-danger'>There was an error. ". $wpdb->last_error ."</div>";
       }
       if($pdf=$r->buildHTMLPDF(json_encode($packingList))){
+        $current_user = wp_get_current_user();
+        $report->reportEmail($current_user->user_email,$packingList["html"],$packingList['title']);
         echo "<div><button class=\"btn btn-primary\" onclick=\"window.open('" . $pdf['Link'] . "', '_blank');\">Download the Packing List</a></div>";
       }
     }
