@@ -958,7 +958,7 @@ ORDER BY msr.orders.entered_by,date_reqd ";
 	}
 	function getOpenOrders() {
 		$r=array();
-		$q="SELECT checkNumber FROM pbc2.pbc_ToastCheckHeaders WHERE closedDate LIKE '1969-12-31%' AND paymentStatus!='Closed' AND ToastOrderID IN (SELECT GUID FROM pbc2.pbc_ToastOrderHeaders WHERE businessDate = ? AND restaurantID=?)";
+		$q="SELECT checkNumber FROM pbc2.pbc_ToastCheckHeaders WHERE closedDate LIKE '1969-12-31%' AND paymentStatus!='Closed' AND ToastOrderID IN (SELECT GUID FROM pbc2.pbc_ToastOrderHeaders WHERE isVoided!=1 AND businessDate = ? AND restaurantID=?)";
 		$stmt = $this->mysqli->prepare($q);
 		$stmt->bind_param("ss",$this->businessDate,$this->restaurantID);
 		$stmt->execute();

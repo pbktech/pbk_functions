@@ -68,9 +68,11 @@ if(!isset($_REQUEST['rid'])) {
 	$toast ->setStartTime(date("Y-m-d G:i:s",strtotime($bot)));
 	$toast ->setEndTime(date("Y-m-d G:i:s",strtotime($latest)));
 	$orders=$toast->getTippedOrders();
-	$o=$orders[0];
-	$order=$toast->getPaymentInfo($orders[0]->ToastCheckID);
-	if(count($orders)!=0){
+	if(isset($orders[0])){
+		$o=$orders[0];
+		$order=$toast->getPaymentInfo($orders[0]->ToastCheckID);
+	}
+	if(is_array($orders) && count($orders)!=0){
 		$toast ->setStartTime(date("Y-m-d 00:00:00",strtotime($order->openedDate)));
 		$toast ->setEndTime(date("Y-m-d 23:59:59",strtotime($order->openedDate)));
 		$employees=$toast->getClockedInEmployees("Team Member");
