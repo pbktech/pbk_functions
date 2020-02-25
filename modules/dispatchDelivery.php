@@ -15,6 +15,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
       $report->setBusinessDate(date("Y-m-d"));
       $orders=$report->getMiniBarOrders($company);
       $r->restaurantID=$restaurantID;
+      $emailAddy=$r->getManagerEmail("AM");
       $toast = new Toast($r->getRestaurantField("GUID"));
       foreach ($orders as $order) {
         $json=$toast->getOrderInfo($order);
@@ -63,7 +64,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
       }
       if($pdf=$r->buildHTMLPDF(json_encode($packingList))){
         $current_user = wp_get_current_user();
-        $emailAddy=$current_user->user_email.",jon@theproteinbar.com,jcohen@theproteinbar.com,lcominsky@theproteinbar.com,".$r->getManagerEmail("AM");
+        $emailAddy.=",".$current_user->user_email.",jon@theproteinbar.com,jcohen@theproteinbar.com,lcominsky@theproteinbar.com";
         $report->reportEmail($emailAddy,$packingList["html"],$packingList['title']);
         echo "<div><button class=\"btn btn-primary\" onclick=\"window.open('" . $pdf['Link'] . "', '_blank');\">Download the Packing List</a></div>";
       }

@@ -19,6 +19,7 @@ if (isset($_REQUEST['rid']) && $_REQUEST['rid']==4) {
 	$bot="2019-01-07 00:00:00";
 }
 if($_SERVER['REQUEST_METHOD'] == 'POST' && $_POST['restaurant']=='') {
+	$tipShare=array();
 	$toast->setRestaurantID($_POST['rid']);
 	$workerPercent=1/count($_POST['worked']);
 	$driverPercent=1/count($_POST['driver']);
