@@ -405,6 +405,14 @@ AND ToastOrderID IN (SELECT GUID FROM pbc_ToastOrderHeaders WHERE restaurantID=?
 		$row=$result->fetch_array(MYSQLI_NUM);
 		return $row[0]-$this->getTotalGCSales();
 	}
+	function getNetSalesbyHourStore() {
+		$q="SELECT (SUM(checkAmount)-SUM(gcSold)) as 'Amount',COUNT(*) as 'Checks' FROM pbc2.pbc_sum_CheckSales WHERE guid IN (SELECT GUID FROM pbc2.pbc_ToastOrderHeaders WHERE openedDate between '".$this->startTime."' AND  '".$this->endTime."' AND restaurantID='".$this->restaurantID."')";
+//		echo $q."\n";
+		$stmt = $this->mysqli->prepare($q);
+		$stmt->execute();
+		$result = $stmt->get_result();
+		return $row=$result->fetch_object();
+	}
 	function k_to_f($temp) {
 	    if ( !is_numeric($temp) ) { return false; }
 	    return round((($temp - 273.15) * 1.8) + 32);
