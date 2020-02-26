@@ -18,6 +18,7 @@ class Restaurant {
 	public $ownershipType=array('Owned', 'Leased', 'Financed');
 	public $deviceType=array();
 	public $deviceStatus=array('Active', 'B-Stock', 'Retired', 'Returned');
+	private $bulbs=array(1=>"Nucleus Large", 2=>"Nucleus Small", 3=>"Overhead Lighting", 4=>"Refrigeration Lighting", 5=>"Other");
 	public $incidentTypes=array(
 		"foodborneIllness"=>array("Name"=>"Foodborne Illness/Foreign Object","sendTo"=>array("lcominsky@theproteinbar.com","vwillis@theproteinbar.com")),
 		"injury"=>array("Name"=>"Injury","sendTo"=>array("lcominsky@theproteinbar.com","hr@theproteinbar.com")),
@@ -1213,6 +1214,12 @@ AND pbc_users.id=nhoHost AND pbc_pbrestaurants.restaurantID=nhoLocation");
 		global $wpdb;
 		return $wpdb->get_var( "SELECT $field FROM pbc_pbrestaurants WHERE restaurantID='".$this->restaurantID."'");
 	}
+	public function getBulbs(){
+		return $this->bulbs;
+	}
+	public function setRestaurantID($id){
+		$this->restaurantID=$id;
+	}
 	public function buildLoggedInName($name="reporterName"){
 		global $wpdb;
 		global $wp;
@@ -1223,7 +1230,7 @@ AND pbc_users.id=nhoHost AND pbc_pbrestaurants.restaurantID=nhoLocation");
 		}else {
 			$value=esc_html( $cu->user_firstname ) . " " . esc_html( $cu->user_lastname );
 		}
-		return "<input class=\"form-control\" type='text' name='".$name."' value='".$value."' required />";
+		return "<input class=\"form-control\" type='text' id='".$name."' name='".$name."' value='".$value."' required />";
 	}
 	public function buildUserPicker($data=null){
 
@@ -1363,6 +1370,20 @@ AND pbc_users.id=nhoHost AND pbc_pbrestaurants.restaurantID=nhoLocation");
 			gk_media_init('.".$media."-input', '.".$media."-button');
 		});
 		</script>";
+	}
+	public function buildSelectBox($data=array()){
+		$return="
+		<select name='".$data['Field']."' class=\"custom-select multipleSelect\" required id='".$data['ID']."' ".$data['Multiple'].">
+			<option value=''>Choose One</option>
+			";
+			foreach($data['Options'] as $id=>$option){
+				$return.="
+			<option value='$id'>$option</option>
+				";
+			}
+		$return.="
+		</select>";
+		return $return;
 	}
 	public function buildDateSelector($field='startDate',$label="Starting Date"){
 		if(isset($_GET[$field])){$dateValue=$_GET[$field];}else{$dateValue="";}

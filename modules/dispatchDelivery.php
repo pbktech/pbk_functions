@@ -8,13 +8,14 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
   foreach($_POST['phone'] as $p=>$restaurant){
     $restaurantID=$p;
     foreach ($restaurant as $company => $phoneNumber) {
+      if(!isset($phoneNumber)){continue;}
       $emails=array();
       $orderDetails=array();
 //      $emails=array("jon@theproteinbar.com","jcohen@theproteinbar.com","kate@theproteinbar.com");
       $report->setRestaurantID($p);
       $report->setBusinessDate(date("Y-m-d"));
       $orders=$report->getMiniBarOrders($company);
-      $r->restaurantID=$restaurantID;
+      $r->setRestaurantID($p);
       $emailAddy=$r->getManagerEmail("AM");
       $toast = new Toast($r->getRestaurantField("GUID"));
       foreach ($orders as $order) {
