@@ -1340,12 +1340,12 @@ AND pbc_users.id=nhoHost AND pbc_pbrestaurants.restaurantID=nhoLocation");
 			$table['File']=rand(0,time());
 			unset($table['Results']);
 			if(isset($_GET['restaurantID']) && is_numeric($_GET['restaurantID'])){$status="pbc_pbk_orders.restaurantID='".$_GET['restaurantID']."' AND ";}else{$status="";}
-			$data=$wpdb->get_results( "SELECT idpbc_pbk_orders,restaurantName,orderDate FROM pbc_pbk_orders,pbc_pbrestaurants
-				WHERE  orderType = '".$_GET['type']."' AND $status orderDate BETWEEN '".date("Y-m-d",strtotime($_GET['startDate']))."' AND '".date("Y-m-d",strtotime($_GET['endDate']))."' AND orderStatus!='Pending' AND pbc_pbk_orders.restaurantID=pbc_pbrestaurants.restaurantID" );
+			$data=$wpdb->get_results( "SELECT idpbc_pbk_orders,restaurantName,orderDate,orderStatus FROM pbc_pbk_orders,pbc_pbrestaurants
+				WHERE  orderType = '".$_GET['type']."' AND $status orderDate BETWEEN '".date("Y-m-d 00:00:00",strtotime($_GET['startDate']))."' AND '".date("Y-m-d 23:59:59",strtotime($_GET['endDate']))."' AND orderStatus!='Pending' AND pbc_pbk_orders.restaurantID=pbc_pbrestaurants.restaurantID" );
 			if($data){
 				foreach($data as $d){
 					$link="<a href='".admin_url( 'admin.php?page=pbr-orders&type=LightBulb&id='.$d->idpbc_pbk_orders)."' target='_blank'>View</a>";
-					$table['Results'][]=array($d->restaurantName,date("m/d/Y",strtotime($d->orderDate)),"Pending",$link);
+					$table['Results'][]=array($d->restaurantName,date("m/d/Y",strtotime($d->orderDate)),$d->orderStatus,$link);
 				}
 				$return.=$r->showResultsTable($table);
 			}else{
