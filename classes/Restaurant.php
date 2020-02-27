@@ -1272,7 +1272,7 @@ AND pbc_users.id=nhoHost AND pbc_pbrestaurants.restaurantID=nhoLocation");
 		  ";
 		$content['format']='A4-P';
 		$content['title']=$d->restaurantName . " Light Bulb Order for " . date("m/d/y",strtotime($d->orderDate));
-		$content['html']=$return;
+		$content['html']=$this->docHeader().$return;
 		if($file=$this->buildHTMLPDF(json_encode($content))){
 			if($pdfOnly==1){return $file['Local'];}
 			$return.="<div class='container-fluid' id='queryResults'><div class='row'><div class='col'><a href='".$file['Link']."' target='_blank'>Printable PDF</a></div></div></div>";
@@ -1527,5 +1527,15 @@ AND pbc_users.id=nhoHost AND pbc_pbrestaurants.restaurantID=nhoLocation");
 		<input class=\"form-control\" type=\"text\" id=\"".$field."\" name=\"".$field."\" value=\"".$dateValue."\"/>
 		";
 	}
-
+	private function docHeader(){
+	return	"
+    <div class=\"container\">
+      <div class=\"row\">
+        <div class=\"col\">
+          <img src='" . PBKF_URL . "/assets/images/PBK-Logo_Primary_Full-Color_doc.png' /><br><h2>INCIDENT REPORT</h2>
+        </div>
+      </div>
+    </div>
+    ";
+	}
 }
