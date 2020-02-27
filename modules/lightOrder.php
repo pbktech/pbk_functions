@@ -38,7 +38,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
     $html="<div>There has been a new light bulb order placed for ".$r->getRestaurantField("restaurantName").".<br>
 
     <a href='".admin_url( 'admin.php?page=pbr-orders&type=LightBulb&id='.$wpdb->insert_id)."'>View</a> the full order.";
-    $report->reportEmail("laura@theproteinbar.com,jon@theproteinbar.com",$html,"Light Bulb Order",);
+    $report->reportEmail("laura@theproteinbar.com,jon@theproteinbar.com",$html,"Light Bulb Order");
     switchpbrMessages(6);
   }
 }
