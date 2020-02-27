@@ -107,6 +107,8 @@ function switchpbrMessages($m) {
     case 3: $ms= "Device updated.";$alert="success"; break;
     case 4: $ms= "Email Sent";$alert="success"; break;
     case 5: $ms= "Unable to send email.";$alert="danger"; break;
+    case 6: $ms= "Order Placed.";$alert="success"; break;
+    case 7: $ms= "Order Updated.";$alert="success"; break;
 	}
   echo  "
   <script>

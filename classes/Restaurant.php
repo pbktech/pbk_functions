@@ -17,6 +17,7 @@ class Restaurant {
 	public $timeZones=array("America/Chicago"=>"Central","America/New_York"=>"Eastern","America/Denver"=>"Mountain");
 	public $ownershipType=array('Owned', 'Leased', 'Financed');
 	public $deviceType=array();
+	public $orderTypes=array("LightBulb"=>"Light Bulbs");
 	public $deviceStatus=array('Active', 'B-Stock', 'Retired', 'Returned');
 	private $bulbs=array(1=>"Nucleus Large", 2=>"Nucleus Small", 3=>"Overhead Lighting", 4=>"Refrigeration Lighting", 5=>"Other");
 	public $incidentTypes=array(
@@ -735,13 +736,15 @@ if($_GET['nhoDate']!="_new"){
 	  $mpdf->SetAuthor("Protein Bar & Kitchen");
 		$mpdf->WriteHTML($stylesheet,\Mpdf\HTMLParserMode::HEADER_CSS);
 	  $mpdf->WriteHTML(utf8_encode($content->html),\Mpdf\HTMLParserMode::HTML_BODY);
+		$filename=str_replace(" ","_",str_replace("/","_",$content->title)).".pdf";
+		if(file_exists($report->docSaveLocation.$filename)){unlink($report->docSaveLocation.$filename);}
 		if($save==0){
 			$mpdf->Output();
 		}else {
-			$mpdf->Output($report->docSaveLocation.str_replace(" ","_",str_replace("/","_",$content->title)).".pdf", 'F');
+			$mpdf->Output($report->docSaveLocation.$filename, 'F');
 		}
-		if(file_exists($report->docSaveLocation.str_replace(" ","_",str_replace("/","_",$content->title)).".pdf")){
-			return array("Link"=>$report->docDownloadLocation.str_replace(" ","_",str_replace("/","_",$content->title)).".pdf","Local"=>$report->docSaveLocation.str_replace(" ","_",str_replace("/","_",$content->title)).".pdf");
+		if(file_exists($report->docSaveLocation.$filename)){
+			return array("Link"=>$report->docDownloadLocation.$filename,"Local"=>$report->docSaveLocation.$filename);
 		}else {
 			return false;
 		}
@@ -1220,6 +1223,10 @@ AND pbc_users.id=nhoHost AND pbc_pbrestaurants.restaurantID=nhoLocation");
 	public function setRestaurantID($id){
 		$this->restaurantID=$id;
 	}
+	private function setUserFullName($id){
+		$wpdb;
+		return $wpdb->get_var("SELECT displayName FROM pbc_users WHERE ID=$id");
+	}
 	public function buildLoggedInName($name="reporterName"){
 		global $wpdb;
 		global $wp;
@@ -1235,6 +1242,118 @@ AND pbc_users.id=nhoHost AND pbc_pbrestaurants.restaurantID=nhoLocation");
 	public function buildUserPicker($data=null){
 
 	}
+	public function showOrderInfo($id,$pdfOnly=0){
+		global $wpdb;
+		$d=$wpdb->get_row( "SELECT * FROM pbc_pbk_orders,pbc_pbrestaurants WHERE idpbc_pbk_orders = $id AND pbc_pbk_orders.restaurantID=pbc_pbrestaurants.restaurantID" );
+		$i=json_decode($d->orderData);
+		if(isset($i->files) && count($i->files)!=0){
+			foreach($i->files as $file){
+				$files[]="<a href='".home_url( "wp-content/uploads/".$file )."' target='_blank'>".$file."</file>";
+			}
+			$files=implode("<br>",$files);
+		}else {
+			$files="None Added";
+		}
+		$return= "
+		<div class='container-fluid' id='queryResults'>
+		    <div class='row'>
+		      <div class='col'><label for='reporterName'><strong>Name</strong></label><br><div class='alert alert-secondary'>".$i->reporterName."</div></div>
+		      <div class='col'><label for='restaurantID'><strong>Restaurant</label><br><div class='alert alert-secondary'>".$d->restaurantName."</div></div>
+		    </div>
+		    <div class='row'>
+		      <div class='col'><label for='bulbs'><strong>Bulb Type</strong></label><br><div class='alert alert-secondary'>".$i->bulbs."</div></div>
+		      <div class='col'><label for='quantity'><strong>Quantity</strong></label><br><div class='alert alert-secondary'>".$i->quantity."</div></div>
+		    </div>
+		    <div class='row'>
+		      <div class='col'><label for='other'><strong>Additional Comments</strong></label><textarea class=\"form-control\" rows=\"5\" id=\"other\" name='orderData[other]' disabled >".$i->other."</textarea></div>
+		      <div class='col' id='file_area'><label for='pictures'><strong>Images</strong></label><br><div class='alert alert-secondary'>$files</div></div>
+		    </div>
+		</div>
+		  ";
+		$content['format']='A4-P';
+		$content['title']=$d->restaurantName . " Light Bulb Order for " . date("m/d/y",strtotime($d->orderDate));
+		$content['html']=$return;
+		if($file=$this->buildHTMLPDF(json_encode($content))){
+			if($pdfOnly==1){return $file['Local'];}
+			$return.="<div class='container-fluid' id='queryResults'><div class='row'><div class='col'><a href='".$file['Link']."' target='_blank'>Printable PDF</a></div></div></div>";
+		}
+		if($d->orderStatus=="Pending"){
+			$returnB="
+			<h4>Update the Order Status</h4>
+			<form method=\"post\" action=\"admin-post.php\">
+				<input type=\"hidden\" name=\"action\" value=\"pbk-update-order\" />
+				<input type=\"hidden\" name=\"type\" value=\"".$_GET['type']."\" />
+				<input type=\"hidden\" name=\"id\" value=\"$id\" />
+				<div class='container-fluid' id='queryResults'>
+					<div class='row'>
+						<div class='col'>".$this->buildSelectBox(array("Options"=>array("Shipped"=>"Shipped","Pickup"=>"Pickup","Cancel"=>"Cancel"),"Field"=>"orderStatus","Multiple"=>"","ID"=>"orderStatus"))."</div>
+						<div class='col'><input type=\"submit\" class=\"btn btn-primary\" id='submit' value='Update'/></div>
+					</div>
+				</div>
+			</form>
+			" . $this->pbk_form_processing();
+		}else{
+			$returnB="
+				<div class='container-fluid' id='queryResults'>
+					<div class='row'>
+						<div class='col'><label for='bulbs'><strong>Bulb Type</strong></label><br><div class='alert alert-secondary'>".$d->orderStatus."</div></div>
+						<div class='col'></div>
+					</div>
+				</div>
+			";
+		}
+			return $return . $returnB;
+	}
+	public function showRestaurantOrders(){
+		global $wpdb;
+		$r=new ToastReport;
+		$return="";
+		$table['File']=rand(0,time());
+		$table['Headers']=array("Restaurant","Order Date","Order Status","");
+		$data=$wpdb->get_results( "SELECT idpbc_pbk_orders,restaurantName,orderDate FROM pbc_pbk_orders,pbc_pbrestaurants WHERE  orderType = '".$_GET['type']."' AND orderStatus='Pending' AND pbc_pbk_orders.restaurantID=pbc_pbrestaurants.restaurantID" );
+		if($data){
+			foreach($data as $d){
+				$link="<a href='".admin_url( 'admin.php?page=pbr-orders&type=LightBulb&id='.$d->idpbc_pbk_orders)."' >View</a>";
+				$table['Results'][]=array($d->restaurantName,date("m/d/Y",strtotime($d->orderDate)),"Pending",$link);
+			}
+			$return.=$r->showResultsTable($table);
+		}else{
+			$return.="<div class='row'><div class='col'><div class='alert alert-warning'>There are no Pending Orders Found.</div></div></div>";
+		}
+		$return.="<h4 style='padding-top:15px;'>Search for Completed Orders</h4>
+		<form method=\"get\" action=\"" . admin_url( 'admin.php?page=pbr-orders') . "\">
+			<input type=\"hidden\" name=\"page\" value=\"pbr-orders\" />
+			<input type=\"hidden\" name=\"type\" value=\"".$_GET['type']."\" />
+			<div class='row'>
+				<div class='col'>".$this->buildDateSelector('startDate',"Starting Date")."</div>
+				<div class='col'>".$this->buildDateSelector('endDate',"Ending Date")."</div>
+				<div class='col'><label for='restaurantID'>Restaurant <i>(Optional)</i></label><br>".$this->buildRestaurantSelector()."</div>
+			</div>
+			<div class='row'>
+				<div class='col'><input type=\"submit\" class=\"btn btn-primary\" id='submit' value='Search'/></div>
+				<div class='col'></div>
+				<div class='col'></div>
+			</div>
+		</form>
+		" . $this->pbk_form_processing();
+		if(isset($_GET['startDate']) && isset($_GET['endDate'])){
+			$table['File']=rand(0,time());
+			unset($table['Results']);
+			if(isset($_GET['restaurantID']) && is_numeric($_GET['restaurantID'])){$status="pbc_pbk_orders.restaurantID='".$_GET['restaurantID']."' AND ";}else{$status="";}
+			$data=$wpdb->get_results( "SELECT idpbc_pbk_orders,restaurantName,orderDate FROM pbc_pbk_orders,pbc_pbrestaurants
+				WHERE  orderType = '".$_GET['type']."' AND $status orderDate BETWEEN '".date("Y-m-d",strtotime($_GET['startDate']))."' AND '".date("Y-m-d",strtotime($_GET['endDate']))."' AND orderStatus!='Pending' AND pbc_pbk_orders.restaurantID=pbc_pbrestaurants.restaurantID" );
+			if($data){
+				foreach($data as $d){
+					$link="<a href='".admin_url( 'admin.php?page=pbr-orders&type=LightBulb&id='.$d->idpbc_pbk_orders)."' target='_blank'>View</a>";
+					$table['Results'][]=array($d->restaurantName,date("m/d/Y",strtotime($d->orderDate)),"Pending",$link);
+				}
+				$return.=$r->showResultsTable($table);
+			}else{
+				$return.="<div class='row'><div class='col'><div class='alert alert-warning'>There are no Completed Orders Found.</div></div></div>";
+			}
+		}
+		return $return;
+	}
 	public function buildRestaurantSelector($single=0,$field='restaurantID',$data=null){
 		$this->getMyRestaurants($field);
 		if(count($this->myRestaurants)==0){
@@ -1245,7 +1364,7 @@ AND pbc_users.id=nhoHost AND pbc_pbrestaurants.restaurantID=nhoLocation");
 		}else {
 			if($single==0){
 				$return= "
-					<select name='".$field."' class=\"custom-select multipleSelect\" required id='".$field."'>
+					<select name='".$field."' class=\"custom-select multipleSelect\" id='".$field."'>
 						<option value=''>Choose One</option>
 					";
 				foreach($this->myRestaurants as $id=>$name){
@@ -1372,8 +1491,9 @@ AND pbc_users.id=nhoHost AND pbc_pbrestaurants.restaurantID=nhoLocation");
 		</script>";
 	}
 	public function buildSelectBox($data=array()){
+		if(isset($data['Change'])){$change=' onchange="'.$data['Change'].'" ';}else{$change='';}
 		$return="
-		<select name='".$data['Field']."' class=\"custom-select multipleSelect\" required id='".$data['ID']."' ".$data['Multiple'].">
+		<select name='".$data['Field']."' class=\"custom-select multipleSelect\" required id='".$data['ID']."' ".$data['Multiple']."$change>
 			<option value=''>Choose One</option>
 			";
 			foreach($data['Options'] as $id=>$option){
@@ -1384,6 +1504,14 @@ AND pbc_users.id=nhoHost AND pbc_pbrestaurants.restaurantID=nhoLocation");
 		$return.="
 		</select>";
 		return $return;
+	}
+	function pbk_foh_attachment($file_handler,$post_id,$set_thu=false) {
+	  if ($_FILES[$file_handler]['error'] !== UPLOAD_ERR_OK) __return_false();
+	  require_once(ABSPATH . "wp-admin" . '/includes/image.php');
+	  require_once(ABSPATH . "wp-admin" . '/includes/file.php');
+	  require_once(ABSPATH . "wp-admin" . '/includes/media.php');
+	  $attach_id = media_handle_upload( $file_handler, $post_id );
+	  return $attach_id;
 	}
 	public function buildDateSelector($field='startDate',$label="Starting Date"){
 		if(isset($_GET[$field])){$dateValue=$_GET[$field];}else{$dateValue="";}

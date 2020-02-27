@@ -10,6 +10,7 @@ add_action( 'admin_post_pbr_save_nho', 'pbr_update_nho' );
 add_action( 'admin_post_pbk-save-devices', 'pbr_edit_devices' );
 add_action('admin_post_pbr_nho_attendance_update','pbr_nho_attendance');
 add_action('admin_post_pbk_save_minibar','pbk_saveMinibar');
+add_action('admin_post_pbk-update-order','pbr_orders');
 function pbr_setup_menu(){
   add_menu_page( 'PBK Functions', 'PBK Functions', 'delete_posts', 'Manage-PBK', 'pbr_show_admin_functions',PBKF_URL . '/assets/images/PBK-Logo-ONLY-LG-2018_White_new.png');
   add_submenu_page( 'Manage-PBK', 'Manage Restaurants', 'Manage Restaurants', 'manage_options', 'pbr-edit-restaurant', 'pbr_edit_restaurant' );
@@ -19,6 +20,7 @@ function pbr_setup_menu(){
   add_submenu_page( 'Manage-PBK', 'Incident Archive', 'Incident Archive', 'upload_files', 'pbr-incident-history', 'pbr_search_incident' );
   add_submenu_page( 'Manage-PBK', 'Manage MiniBar', 'Manage MiniBar', 'manage_options', 'pbr-edit-minibar', 'pbr_edit_minibar' );
   add_submenu_page( 'Manage-PBK', 'Manage Devices', 'Manage Devices', 'manage_options', 'pbr-edit-devices', 'pbr_edit_devices' );
+  add_submenu_page( 'Manage-PBK', 'Restaurant Orders', 'Restaurant Orders', 'upload_files', 'pbr-orders', 'pbr_orders' );
 }
 function pbr_admin_init(){
 }
@@ -53,6 +55,47 @@ function pbr_add_restaurant(){
   echo "<div class='wrap'><h2>Add a Restaurant</h2>";
   $restaurant = new Restaurant();
   echo $restaurant->restaurantEditBox();
+  echo "</div>";
+}
+function pbr_orders(){
+  echo "<div class='wrap'><h2>PBK Restaurant Supply Orders</h2>";
+  $restaurant = new Restaurant();
+  if($_SERVER['REQUEST_METHOD'] == 'POST'){
+    global $wpdb;
+    $wpdb->update(
+	'pbc_pbk_orders',
+	   array('orderStatus' => $_POST['orderStatus']),
+	   array('idpbc_pbk_orders' => $_POST['id']),
+	   array('%s'),
+	   array('%d')
+    );
+    $attach=$restaurant->showOrderInfo($_POST['id'],1);
+    $report=new ToastReport;
+    switch($_POST['orderStatus']){
+      case "Shipped":
+        $body="The attached order has been shipped to you restaurant.";
+        break;
+      case "Pickup":
+        $body="The attached order is ready to be picked up at the SSC.";
+        break;
+      case "Cancel":
+        $body="The attached order has been canceled.";
+        break;
+    }
+    $report->reportEmail("jon@theproteinbar.com,laura@theproteinbar.com",$body,"Order Updated",$attach);
+    wp_redirect(  admin_url( 'admin.php?page=pbr-orders&type='.$_POST['type'].'&m=7' ) );
+  }
+  if(isset($_GET['type']) && array_key_exists($_GET['type'],$restaurant->orderTypes)){
+    echo "<h3>".$restaurant->orderTypes[$_GET['type']]."</h3>";
+    if(isset($_GET['id'])){
+      echo  $restaurant->showOrderInfo($_GET['id']);
+    }else{
+      echo "<div class='container-fluid'>".$restaurant->showRestaurantOrders()."</div>";
+    }
+  }else{
+    echo "<h3>Please Select an Order Type:</h3>
+    <div class='container'><form  method='get' action='".admin_url( 'admin.php')."'><input type='hidden' name='page' value='pbr-orders' />" . $restaurant->buildSelectBox(array("Options"=>$restaurant->orderTypes,"Field"=>"type","Multiple"=>"","ID"=>"type","Change"=>"this.form.submit()")) . "</form></div>";
+  }
   echo "</div>";
 }
 function pbr_edit_devices(){

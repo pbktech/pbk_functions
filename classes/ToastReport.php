@@ -1083,7 +1083,7 @@ from pbc2.kds_detail WHERE sent_time BETWEEN  ? AND ? AND station='' and restaur
 				die();
 		}
 	}
-	function showResultsTable($data=array()){
+	function showResultsTable($data=array(),$tableName="myTable"){
 		if(isset($data['Results']) && count($data['Results'])!=0){
 			if(isset($data['Options']) && is_array($data['Options'])){$options="{\n					".implode(",\n					",$data['Options'])."}\n				";}else{$options='';}
 			if(file_exists($this->docSaveLocation.$data['File'].date("Ymd").'.csv')) {unlink($this->docSaveLocation.$data['File'].date("Ymd").'.csv');}
@@ -1092,7 +1092,7 @@ from pbc2.kds_detail WHERE sent_time BETWEEN  ? AND ? AND station='' and restaur
 			$return="
 		<script>
 		jQuery(document).ready( function () {
-				jQuery('#myTable').DataTable(".$options.");
+				jQuery('#".$tableName."').DataTable(".$options.");
 		} );
 		</script>
 		<div id='queryResults'>
