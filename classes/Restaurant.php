@@ -1265,7 +1265,7 @@ AND pbc_users.id=nhoHost AND pbc_pbrestaurants.restaurantID=nhoLocation");
 		      <div class='col'><label for='quantity'><strong>Quantity</strong></label><br><div class='alert alert-secondary'>".$i->quantity."</div></div>
 		    </div>
 		    <div class='row'>
-		      <div class='col'><label for='other'><strong>Additional Comments</strong></label><textarea class=\"form-control\" rows=\"5\" id=\"other\" name='orderData[other]' disabled >".$i->other."</textarea></div>
+		      <div class='col'><label for='other'><strong>Additional Comments</strong></label><div class='alert alert-secondary'>".$i->other."</div></div>
 		      <div class='col' id='file_area'><label for='pictures'><strong>Images</strong></label><br><div class='alert alert-secondary'>$files</div></div>
 		    </div>
 		</div>
