@@ -35,22 +35,14 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
   );
   if($wpdb->last_error==''){
     $report=New ToastReport;
-    $html="<div>There has been a new light bulb order placed for ".$r->getRestaurantField("restaurantName").".<br>
-
-    <a href='".admin_url( 'admin.php?page=pbr-orders&type=LightBulb&id='.$wpdb->insert_id)."'>View</a> the full order.";
+    $html="<div>There has been a new light bulb order placed for ".$r->getRestaurantField("restaurantName").".";
+    $current_user = wp_get_current_user();
     $attach=$r->showOrderInfo($wpdb->insert_id,1);
-    $report->reportEmail("laura@theproteinbar.com,jon@theproteinbar.com",$html,"Light Bulb Order",$attach);
+    $report->reportEmail($current_user->user_email.",laura@theproteinbar.com",$html,"Light Bulb Order",$attach);
     switchpbrMessages(6);
   }
 }
 $ret.=$r->pbk_form_processing()."
-<script>
-function addInput(divName,htmlToAdd){
-  var newdiv = document.createElement(\"div\");
-  newdiv.innerHTML = htmlToAdd;
-  document.getElementById(divName).appendChild(newdiv);
-}
-</script>
 <div class='container' id='queryResults'>
   <form method='post' action='".$page."' id='' enctype='multipart/form-data' >
     <div class='row'>
