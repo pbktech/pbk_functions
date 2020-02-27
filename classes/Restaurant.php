@@ -1261,7 +1261,7 @@ AND pbc_users.id=nhoHost AND pbc_pbrestaurants.restaurantID=nhoLocation");
 		      <div class='col'><label for='restaurantID'><strong>Restaurant</label><br><div class='alert alert-secondary'>".$d->restaurantName."</div></div>
 		    </div>
 		    <div class='row'>
-		      <div class='col'><label for='bulbs'><strong>Bulb Type</strong></label><br><div class='alert alert-secondary'>".$i->bulbs."</div></div>
+		      <div class='col'><label for='bulbs'><strong>Bulb Type</strong></label><br><div class='alert alert-secondary'>".$this->bulbs[$i->bulbs]."</div></div>
 		      <div class='col'><label for='quantity'><strong>Quantity</strong></label><br><div class='alert alert-secondary'>".$i->quantity."</div></div>
 		    </div>
 		    <div class='row'>
