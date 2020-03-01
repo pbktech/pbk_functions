@@ -1257,16 +1257,16 @@ AND pbc_users.id=nhoHost AND pbc_pbrestaurants.restaurantID=nhoLocation");
 		$return= "
 		<div class='container-fluid' id='queryResults'>
 		    <div class='row'>
-		      <div class='col'><label for='reporterName'><strong>Name</strong></label><br><div class='alert alert-secondary'>".$i->reporterName."</div></div>
-		      <div class='col'><label for='restaurantID'><strong>Restaurant</label><br><div class='alert alert-secondary'>".$d->restaurantName."</div></div>
+		      <div class='col'><label for='reporterName'><strong>Name</strong><br><div class='alert alert-secondary'>".$i->reporterName."</div></div>
+		      <div class='col'><label for='restaurantID'><strong>Restaurant</strong><br><div class='alert alert-secondary'>".$d->restaurantName."</div></div>
 		    </div>
 		    <div class='row'>
-		      <div class='col'><label for='bulbs'><strong>Bulb Type</strong></label><br><div class='alert alert-secondary'>".$this->bulbs[$i->bulbs]."</div></div>
-		      <div class='col'><label for='quantity'><strong>Quantity</strong></label><br><div class='alert alert-secondary'>".$i->quantity."</div></div>
+		      <div class='col'><label for='bulbs'><strong>Bulb Type</strong><br><div class='alert alert-secondary'>".$this->bulbs[$i->bulbs]."</div></div>
+		      <div class='col'><label for='quantity'><strong>Quantity</strong><br><div class='alert alert-secondary'>".$i->quantity."</div></div>
 		    </div>
 		    <div class='row'>
-		      <div class='col'><label for='other'><strong>Additional Comments</strong></label><div class='alert alert-secondary'>".$i->other."</div></div>
-		      <div class='col' id='file_area'><label for='pictures'><strong>Images</strong></label><br><div class='alert alert-secondary'>$files</div></div>
+		      <div class='col'><label for='other'><strong>Additional Comments</strong><div class='alert alert-secondary'>".$i->other."</div></div>
+		      <div class='col' id='file_area'><label for='pictures'><strong>Images</strong><br><div class='alert alert-secondary'>$files</div></div>
 		    </div>
 		</div>
 		  ";
@@ -1303,6 +1303,46 @@ AND pbc_users.id=nhoHost AND pbc_pbrestaurants.restaurantID=nhoLocation");
 			";
 		}
 			return $return . $returnB;
+	}
+	public function viewKeyRelease($id,$pdfOnly=0){
+		global $wpdb;
+		$rpt=New ToastReport;
+		$d=$wpdb->get_row( "SELECT * FROM pbc_pbk_orders,pbc_pbrestaurants WHERE idpbc_pbk_orders = $id AND pbc_pbk_orders.restaurantID=pbc_pbrestaurants.restaurantID" );
+		$i=json_decode($d->orderData);
+		require_once dirname(__FILE__) . "/signature-to-image.php";
+	  $nameSign=saveSignImage($i->nameSign,$rpt->docSaveLocation);
+	  $mgrSign=saveSignImage($i->mgrSign,$rpt->docSaveLocation);
+	  $content['format']='A4-P';
+	  $content['title']="Key Release for " . $d->restaurantName;
+	  $content['html']=$this->docHeader("Key Release Form")."
+		<div class=\"container-fluid\" >
+		  <div class=\"row\">
+		    <div class=\"col\">
+		      <p>I acknowledge that I have received a copy of the key for my restaurant. I understand that this key is Protein Bar & Kitchen property and that I am responsible for this key as long asI am employed with the company. I will not make copies of this key for any reason.</p>
+		      <p>At the timemy employment at Protein Bar & Kitchen ends, I will return the key to my manager on or before my last day of work. If I lose this key for any reason, I will immediately report the loss to my manager. I understand that I may be responsible for any and all replacement costs associated with the loss of my key as deemed necessary by Protein Bar & Kitchen.</p>
+		    </div>
+		  </div>
+		</div>
+		<div class=\"container-fluid\">
+		<div class=\"row\">
+		  <div class=\"col\"><strong>Restaurant</strong><br><div class=\"alert alert-secondary\">".$d->restaurantName."</div></div>
+		  <div class=\"col\"><strong>Key #</strong><br><div class=\"alert alert-secondary\">".$i->key."</div></div>
+		  <div class=\"col\"><strong>Date</strong><br><div class=\"alert alert-secondary\">".date("m/d/Y",strtotime($i->startDate))."</div></div>
+		</div>
+		<div class=\"row\">
+		  <div class=\"col\"><strong>Name</strong><br><div class=\"alert alert-secondary\">".$i->name."</div></div>
+		  <div class=\"col\"><strong>Signature</strong><br><div class=\"alert alert-secondary\"><img src=\"".$rpt->docDownloadLocation."/".$nameSign."\" alt=\"".$i->name."\" /></div></div>
+		</div>
+		<div class=\"row\">
+		  <div class=\"col\"><strong>Manager</strong><br><div class=\"alert alert-secondary\">".$i->mgrName."</div></div>
+		  <div class=\"col\"><strong>Signature</strong><br><div class=\"alert alert-secondary\"><img src=\"".$rpt->docDownloadLocation."/".$mgrSign."\" alt=\"".$i->name."\" /></div></div>
+		</div>
+		</div>";
+		if($file=$this->buildHTMLPDF(json_encode($content))){
+			if($pdfOnly==1){return $file['Local'];}
+			$return.="<div class='container-fluid' id='queryResults'><div class='row'><div class='col'><a href='".$file['Link']."' target='_blank'>Printable PDF</a></div></div></div>";
+		}
+
 	}
 	public function showRestaurantOrders(){
 		global $wpdb;

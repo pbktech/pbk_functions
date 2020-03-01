@@ -39,12 +39,15 @@ function pbk_scripts(){
   wp_enqueue_style( 'jquery-ui_style', '//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css');
   wp_enqueue_style( 'bootstrap_style', 'https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css');
   wp_enqueue_style( 'sort_tables_style', '//cdn.datatables.net/1.10.20/css/jquery.dataTables.min.css');
+  wp_enqueue_style( 'screen_signature_style', PBKF_URL . '/assets/css/signature.css');
   wp_enqueue_script( 'select_script', 'https://cdn.jsdelivr.net/npm/select2@4.0.12/dist/js/select2.min.js');
   wp_enqueue_script( 'timepicker_script', '//cdnjs.cloudflare.com/ajax/libs/timepicker/1.3.5/jquery.timepicker.min.js');
   wp_enqueue_script( 'jquery-ui_script', 'https://code.jquery.com/ui/1.12.1/jquery-ui.js');
   wp_enqueue_script( 'popper_script', 'https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js');
   wp_enqueue_script( 'bootstrap_script', 'https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js');
   wp_enqueue_script( 'sort_tables_script', '//cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js');
+  wp_enqueue_script( 'screen_signature_script', PBKF_URL . '/assets/js/app.js', array(), false, true);
+  wp_enqueue_script( 'screen_signature_script', PBKF_URL . '/assets/js/jquery.signaturepad.min.js', array(), false, true);
 }
 add_action( 'wp_enqueue_scripts', 'pbk_scripts' );
 
@@ -109,6 +112,7 @@ function switchpbrMessages($m) {
     case 5: $ms= "Unable to send email.";$alert="danger"; break;
     case 6: $ms= "Order Placed.";$alert="success"; break;
     case 7: $ms= "Order Updated.";$alert="success"; break;
+    case 8: $ms= "Key Release Submitted.";$alert="success"; break;
 	}
   echo  "
   <script>

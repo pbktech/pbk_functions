@@ -11,6 +11,9 @@ class Toast{
 	private $ToastClient;
 	private $ToastSecret;
 	private $url;
+	private $sbToastClient;
+	private $sbToastSecret;
+	private $sburl;
 	private $localDB;
 	var $auth=null;
 	public $mysqli=null;
