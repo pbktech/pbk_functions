@@ -16,8 +16,11 @@ class Restaurant {
 	public $isAboveStore=0;
 	public $timeZones=array("America/Chicago"=>"Central","America/New_York"=>"Eastern","America/Denver"=>"Mountain");
 	public $ownershipType=array('Owned', 'Leased', 'Financed');
+	public $violationLevel=array('Verbal', 'Written', 'Final Written', 'Termination');
+	public $violationType=array('Safety', 'PBK Look', 'Tardy', 'Accuracy','Cash Mishandling / Theft', 'Absent', 'Speed', 'Gross Misconduct', 'No Call / No Show', 'Connection', 'Leadership', 'Other');
+	public $violationSupport=array('Policy', 'The Blend', 'Recipes', 'The 4 Keys', 'Station Aids', 'Other');
 	public $deviceType=array();
-	public $orderTypes=array("LightBulb"=>"Light Bulbs");
+	public $orderTypes=array("LightBulb"=>"Light Bulbs","KeyRelease"=>"Key Release");
 	public $deviceStatus=array('Active', 'B-Stock', 'Retired', 'Returned');
 	private $bulbs=array(1=>"Nucleus Large", 2=>"Nucleus Small", 3=>"Overhead Lighting", 4=>"Refrigeration Lighting", 5=>"Other");
 	public $incidentTypes=array(
@@ -720,6 +723,7 @@ if($_GET['nhoDate']!="_new"){
 	function buildHTMLPDF($content,$save=1){
 		$content=json_decode($content);
 	  $report=new ToastReport();
+		if(isset($content->Save) && $content->Save!=''){$docSaveLocation=$content->Save;}else{$docSaveLocation=$report->docSaveLocation;}
 	  $mpdf = new \Mpdf\Mpdf([
 	  	'mode' => 'c',
 	    'format' => $content->format,
@@ -736,15 +740,19 @@ if($_GET['nhoDate']!="_new"){
 	  $mpdf->SetAuthor("Protein Bar & Kitchen");
 		$mpdf->WriteHTML($stylesheet,\Mpdf\HTMLParserMode::HEADER_CSS);
 	  $mpdf->WriteHTML(utf8_encode($content->html),\Mpdf\HTMLParserMode::HTML_BODY);
-		$filename=str_replace(" ","_",str_replace("/","_",$content->title)).".pdf";
-		if(file_exists($report->docSaveLocation.$filename)){unlink($report->docSaveLocation.$filename);}
+		if(isset($content->fileName)){
+			$filename=$content->fileName . ".pdf";
+		}else{
+			$filename=str_replace(" ","_",str_replace("/","_",$content->title)).".pdf";
+		}
+		if(file_exists($docSaveLocation.$filename)){unlink($docSaveLocation.$filename);}
 		if($save==0){
 			$mpdf->Output();
 		}else {
-			$mpdf->Output($report->docSaveLocation.$filename, 'F');
+			$mpdf->Output($docSaveLocation.$filename, 'F');
 		}
-		if(file_exists($report->docSaveLocation.$filename)){
-			return array("Link"=>$report->docDownloadLocation.$filename,"Local"=>$report->docSaveLocation.$filename);
+		if(file_exists($docSaveLocation.$filename)){
+			return array("Link"=>$report->docDownloadLocation.$filename,"Local"=>$docSaveLocation.$filename);
 		}else {
 			return false;
 		}
@@ -1304,18 +1312,105 @@ AND pbc_users.id=nhoHost AND pbc_pbrestaurants.restaurantID=nhoLocation");
 		}
 			return $return . $returnB;
 	}
+	public function getPBKOrderinfo($data){
+		global $wpdb;
+		$row= $wpdb->get_row("SELECT pbc_pbk_orders.guid as 'guid',pbc_pbk_orders.restaurantID as 'restaurantID',restaurantName,userID,orderData,orderUpdated,orderStatus,idpbc_pbk_orders FROM pbc_pbk_orders,pbc_pbrestaurants WHERE pbc_pbk_orders.guid = '$data' AND pbc_pbk_orders.restaurantID=pbc_pbrestaurants.restaurantID");
+		if($row){return $row;}
+		return false;
+	}
+	public function showIAP($d){
+		$i=json_decode($d->orderData);
+		$report=New ToastReport;
+		$docFolder=dirname(dirname($report->docSaveLocation)) ."/docs/". $d->guid;
+		$return='
+		<div class="container-fluid" id="queryResults" >
+		  <div class="row">
+		    <div class="col"><div class="alert alert-secondary"><label for=""><strong>Team Member Name</strong></label><br>'.$i->name.'</div></div>
+		    <div class="col"><div class="alert alert-secondary"><label for=""><strong>Team Member Position</strong></label><br>'.$i->position.'</div></div>
+		    <div class="col"><div class="alert alert-secondary"><label for=""><strong>Violation Date</strong></label><br>'.date("m/d/Y",strtotime($i->violationDate)).'</div></div>
+		  </div>
+		  <div class="row">
+		    <div class="col"><div class="alert alert-secondary"><label for=""><strong>Manager Name</strong></label><br>'.$i->reporterName.'</div></div>
+		    <div class="col"><div class="alert alert-secondary"><label for=""><strong>Restaurant</strong></label><br>'.$d->restaurantName.'</div></div>
+		    <div class="col"><div class="alert alert-secondary"><label for=""><strong>Coaching Date</strong></label><br>'.date("m/d/Y",strtotime($i->coachingDate)).'</div></div>
+		  </div>
+		  <div class="row">
+				<div class="col"><div class="alert alert-secondary"><label for=""><strong>Violation Level:</strong></label><br>'.$i->violationLevel.'</div></div>
+	    </div>
+		  <div class="row">
+				<div class="col"><div class="alert alert-secondary"><label for=""><strong>Violation Type:</strong></label><br>'.implode(", ",json_decode(json_encode($i->violationType), true)).'</div></div>
+	    </div>
+			';
+		if(isset($i->violationTypeOther) && $i->violationTypeOther!=""){
+			$return.=	'
+			<div class="row">
+				<div class="col"><div class="alert alert-secondary"><label for=""><strong>Other Explanation</strong></label><br>'.$i->violationTypeOther.'</div></div>
+	    </div>
+			';
+		}
+		$return.=	'
+		  <div class="row">
+		    <div class="col"><div class="alert alert-secondary"><label for=""><strong>Has the team member received a prior action plan within the past 12 months?</strong></label><br>'.$i->previousAction.'</div></div>
+		  </div>
+			';
+		if(isset($i->previousActionExplain) && $i->previousActionExplain!=""){
+			$return.=	'
+			<div class="row">
+				<div class="col"><div class="alert alert-secondary"><label for=""><strong>Previous Action Explanation</strong></label><br>'.$i->previousActionExplain.'</div></div>
+	    </div>
+			';
+		}
+		$return.=	'
+		  <div class="row">
+		    <div class="col"><div class="alert alert-secondary"><label for=""><strong>Violation Details:</strong></label><br>'.$i->violationDetails.'</div></div>
+		  </div>
+		  <div class="row">
+		    <div class="col"><div class="alert alert-secondary"><label for=""><strong>What Should be Happening / Plan for Improvement:</strong></label><br>'.$i->plan.'</div></div>
+		  </div>
+		  <div class="row">
+		    <div class="col"><div class="alert alert-secondary"><label for=""><strong>Supporting documentation:</strong></label><br>'.$i->violationSupport.'</div></div>
+		  </div>
+			';
+		if(isset($i->violationSuppotExplain) && $i->violationSuppotExplain!=""){
+			$return.=	'
+			<div class="row">
+				<div class="col"><div class="alert alert-secondary"><label for=""><strong>Policy Explanation</strong></label><br>'.$i->violationSuppotExplain.'</div></div>
+	    </div>
+			';
+		}
+		if(isset($i->signature->employee) && $i->signature->employee!=""){
+			$return.=	'
+			<div class="row">
+				<div class="col"><div class="alert alert-secondary"><label for=""><strong>TM Signature</strong></label><br><img src="data:image/png;base64,'.base64_encode(file_get_contents($docFolder.'/'.$i->signature->employee)).'" alt="'.$i->name.'" /></div></div>
+	    </div>
+			';
+		}
+		if(isset($i->signature->manager) && $i->signature->manager!=""){
+			$return.=	'
+			<div class="row">
+				<div class="col"><div class="alert alert-secondary"><label for=""><strong>Manager Signature</strong></label><br><img src="data:image/png;base64,'.base64_encode(file_get_contents($docFolder.'/'.$i->signature->manager)).'" alt="'.$i->reporterName.'" /></div></div>
+	    </div>
+			';
+		}
+		if(isset($i->signature->witness) && $i->signature->witness!=""){
+			$return.=	'
+			<div class="row">
+				<div class="col"><div class="alert alert-secondary"><label for=""><strong>Witness Signature ('.$i->signature->witnessName.')</strong></label><br><img src="data:image/png;base64,'.base64_encode(file_get_contents($docFolder.'/'.$i->signature->witness)).'" alt="'.$i->signature->witnessName.'" /></div></div>
+	    </div>
+			';
+		}
+		$return.=	'
+		</div>
+';
+	return $return;
+	}
 	public function viewKeyRelease($id,$pdfOnly=0){
 		global $wpdb;
 		$rpt=New ToastReport;
-		$d=$wpdb->get_row( "SELECT * FROM pbc_pbk_orders,pbc_pbrestaurants WHERE idpbc_pbk_orders = $id AND pbc_pbk_orders.restaurantID=pbc_pbrestaurants.restaurantID" );
+		$d=$wpdb->get_row( "SELECT * FROM pbc_pbk_orders,pbc_pbrestaurants WHERE pbc_pbk_orders.guid = '$id' AND pbc_pbk_orders.restaurantID=pbc_pbrestaurants.restaurantID" );
 		$i=json_decode($d->orderData);
-		require_once dirname(__FILE__) . "/signature-to-image.php";
-	  $nameSign=saveSignImage($i->nameSign,$rpt->docSaveLocation);
-	  $mgrSign=saveSignImage($i->mgrSign,$rpt->docSaveLocation);
-	  $content['format']='A4-P';
-	  $content['title']="Key Release for " . $d->restaurantName;
-	  $content['html']=$this->docHeader("Key Release Form")."
-		<div class=\"container-fluid\" >
+		$docFolder=dirname(dirname($rpt->docSaveLocation)) ."/docs/". $d->guid;
+		$html="<div class=\"container-fluid\" >
 		  <div class=\"row\">
 		    <div class=\"col\">
 		      <p>I acknowledge that I have received a copy of the key for my restaurant. I understand that this key is Protein Bar & Kitchen property and that I am responsible for this key as long asI am employed with the company. I will not make copies of this key for any reason.</p>
@@ -1331,18 +1426,36 @@ AND pbc_users.id=nhoHost AND pbc_pbrestaurants.restaurantID=nhoLocation");
 		</div>
 		<div class=\"row\">
 		  <div class=\"col\"><strong>Name</strong><br><div class=\"alert alert-secondary\">".$i->name."</div></div>
-		  <div class=\"col\"><strong>Signature</strong><br><div class=\"alert alert-secondary\"><img src=\"".$rpt->docDownloadLocation."/".$nameSign."\" alt=\"".$i->name."\" /></div></div>
+		  <div class=\"col\"><strong>Signature</strong><br><div class=\"alert alert-secondary\"><img src=\"data:image/png;base64,".base64_encode(file_get_contents($docFolder."/".$i->nameSign))."\" alt=\"".$i->name."\" /></div></div>
 		</div>
 		<div class=\"row\">
 		  <div class=\"col\"><strong>Manager</strong><br><div class=\"alert alert-secondary\">".$i->mgrName."</div></div>
-		  <div class=\"col\"><strong>Signature</strong><br><div class=\"alert alert-secondary\"><img src=\"".$rpt->docDownloadLocation."/".$mgrSign."\" alt=\"".$i->name."\" /></div></div>
+		  <div class=\"col\"><strong>Signature</strong><br><div class=\"alert alert-secondary\"><img src=\"data:image/png;base64,".base64_encode(file_get_contents($docFolder."/".$i->mgrSign))."\" alt=\"".$i->name."\" /></div></div>
 		</div>
 		</div>";
-		if($file=$this->buildHTMLPDF(json_encode($content))){
-			if($pdfOnly==1){return $file['Local'];}
-			$return.="<div class='container-fluid' id='queryResults'><div class='row'><div class='col'><a href='".$file['Link']."' target='_blank'>Printable PDF</a></div></div></div>";
+		if($pdfOnly==1){
+			$content['format']='A4-P';
+			$content['Save']=$docFolder . "/";
+		  $content['title']="Key Release for " . $d->restaurantName;
+		  $content['html']=$this->docHeader("Key Release Form").$html;
+			if($file=$this->buildHTMLPDF(json_encode($content))){
+				return $file;
+			}
 		}
-
+		$docName=str_replace(" ","_",str_replace("/","_", "Key Release for " . $d->restaurantName));
+		if(file_exists($docFolder . "/" . $docName . ".pdf")){
+			/*
+			$html.="
+			<div class=\"container-fluid\">
+				<div class=\"row\">
+				  <div class=\"col\"><strong>Printable PDF</strong><br><div class=\"alert alert-secondary\">".$i->mgrName."</div></div>
+				  <div class=\"col\"></div>
+				</div>
+			</div>
+			";
+			*/
+		}
+		return $html;
 	}
 	public function showRestaurantOrders(){
 		global $wpdb;
@@ -1563,11 +1676,11 @@ AND pbc_users.id=nhoHost AND pbc_pbrestaurants.restaurantID=nhoLocation");
 				});
 			});
 		</script>
-		<label for='$field'>$label</label>
+		<label for='$field' id='".$field."Label'>$label</label>
 		<input class=\"form-control\" type=\"text\" id=\"".$field."\" name=\"".$field."\" value=\"".$dateValue."\"/>
 		";
 	}
-	private function docHeader($header=""){
+	public function docHeader($header=""){
 	return	"
     <div class=\"container\">
       <div class=\"row\">

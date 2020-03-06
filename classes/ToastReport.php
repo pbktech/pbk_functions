@@ -1015,7 +1015,11 @@ from pbc2.kds_detail WHERE sent_time BETWEEN  ? AND ? AND station='' and restaur
 	}
 	function sameDayLastYear($d) {
 		$d=date('Y-m-d', strtotime('-1 year', strtotime($d)));
-		if(date("L")==1 && (date("n")>2 || (date("n")==2 && date("d")==29))){$addDays=2;}else{$addDays=1;}
+		if((date("L")==1 && (date("n")>2 || (date("n")==2 && date("d")==29)) ||
+		(date("L",strtotime($d))==0 && (date("n",strtotime($d))<2 )
+		)
+
+		){$addDays=2;}else{$addDays=1;}
 		return date('Y-m-d', strtotime('+' . $addDays . ' days', strtotime($d)));
 		/*
 		$today = new \DateTime($d);
@@ -1142,5 +1146,14 @@ from pbc2.kds_detail WHERE sent_time BETWEEN  ? AND ? AND station='' and restaur
 	}
 	function setEndTime($t) {
 		$this->endTime=date("Y-m-d H:i:s",strtotime($t));
+	}
+	function hexFileName($email){
+		$nhex = str_replace(array('-','{','}','@','.',' '), '', $email);
+		$nstr = '';
+		for($i = 0; $i < strlen($nhex); $i+=2) {
+			$nstr .= chr(hexdec($nhex[$i]));
+		}
+		$hash = sha1($nstr . microtime());
+		return $nhex . "-" . sprintf('%08s-%04s-%04x-%04x-%12s',substr($hash, 0, 8),substr($hash, 8, 4),(hexdec(substr($hash, 12, 4)) & 0x0fff) | 0x5000,(hexdec(substr($hash, 16, 4)) & 0x3fff) | 0x8000,substr($hash, 20, 12));
 	}
 }

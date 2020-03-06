@@ -25,8 +25,8 @@ class Toast{
 	var $restOptions=array();
 	var $dateOfBusiness=null;
 
-	function __construct($b=null) {
-		$this->setConfig();
+	function __construct($b=null,$sandbox=0) {
+		$this->setConfig($sandbox);
 		$this->auth=$this->getAuthorized();
 		$this->connectDB();
 		if(isset($b) ) {
@@ -36,12 +36,18 @@ class Toast{
 			date_default_timezone_set($this->getTimeZone());
 		}
 	}
-	public function setConfig(){
+	public function setConfig($sandbox=0){
 		$default = dirname(ABSPATH) . '/config.json';
 		$this->config=json_decode(file_get_contents($default));
-		$this->ToastClient=$this->config->ToastClient;
-		$this->ToastSecret=$this->config->ToastSecret;
-		$this->url=$this->config->ToastURL;
+		if($sandbox==0){
+			$this->ToastClient=$this->config->ToastClient;
+			$this->ToastSecret=$this->config->ToastSecret;
+			$this->url=$this->config->ToastURL;
+		}else {
+			$this->ToastClient=$this->config->sbToastClient;
+			$this->ToastSecret=$this->config->sbToastSecret;
+			$this->url=$this->config->sbToastURL;
+		}
 		$this->localDB=$this->config->dBase;
 	}
 	function getAuthorized() {

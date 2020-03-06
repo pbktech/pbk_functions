@@ -13,11 +13,28 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
     )
   );
   if($wpdb->last_error==''){
-    $report=New ToastReport;
+    $guid=$wpdb->get_var("SELECT guid FROM pbc_pbk_orders WHERE idpbc_pbk_orders = '".$wpdb->insert_id."'");
+  }else {
+    exit;
+  }
+  $report=New ToastReport;
+  $docFolder=dirname(dirname($report->docSaveLocation)) ."/docs/". $guid;
+  require_once dirname(dirname(__FILE__)) . "/classes/signature-to-image.php";
+  if (!file_exists($docFolder)) {mkdir($docFolder);}
+  $_POST['orderData']['nameSign']=saveSignImage($_POST['orderData']['nameSign'],$docFolder);
+  $_POST['orderData']['mgrSign']=saveSignImage($_POST['orderData']['mgrSign'],$docFolder);
+  $wpdb->update(
+	'pbc_pbk_orders',
+	array('orderData' =>json_encode($_POST['orderData'])),
+  array( 'idpbc_pbk_orders' => $wpdb->insert_id ),
+  array('%s'),
+  array('%d')
+);
+  if($wpdb->last_error==''){
     $html="<div>There has been a new key release issued for ".$r->getRestaurantField("restaurantName").".";
     $current_user = wp_get_current_user();
-    $attach=$r->viewKeyRelease($wpdb->insert_id,1);
-    $report->reportEmail($current_user->user_email.",laura@theproteinbar.com",$html,"New Key Release",$attach);
+    $attach=$r->viewKeyRelease($guid,1);
+    $report->reportEmail($current_user->user_email.",laura@theproteinbar.com",$html,"New Key Release",$attach['Local']);
     switchpbrMessages(8);
   }
 }

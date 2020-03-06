@@ -113,6 +113,8 @@ function switchpbrMessages($m) {
     case 6: $ms= "Order Placed.";$alert="success"; break;
     case 7: $ms= "Order Updated.";$alert="success"; break;
     case 8: $ms= "Key Release Submitted.";$alert="success"; break;
+    case 9: $ms= "There was an error. IAP not updated.";$alert="danger"; break;
+    case 10: $ms= "Individual Action Plan Saved.";$alert="success"; break;
 	}
   echo  "
   <script>
