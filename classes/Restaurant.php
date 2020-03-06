@@ -1344,37 +1344,37 @@ AND pbc_users.id=nhoHost AND pbc_pbrestaurants.restaurantID=nhoLocation");
 		if(isset($i->violationTypeOther) && $i->violationTypeOther!=""){
 			$return.=	'
 			<div class="row">
-				<div class="col"><div class="alert alert-secondary"><label for=""><strong>Other Explanation</strong></label><br>'.$i->violationTypeOther.'</div></div>
+				<div class="col"><div class="alert alert-secondary"><label for=""><strong>Other Explanation</strong></label><br>'.stripslashes($i->violationTypeOther).'</div></div>
 	    </div>
 			';
 		}
 		$return.=	'
 		  <div class="row">
-		    <div class="col"><div class="alert alert-secondary"><label for=""><strong>Has the team member received a prior action plan within the past 12 months?</strong></label><br>'.$i->previousAction.'</div></div>
+		    <div class="col"><div class="alert alert-secondary"><label for=""><strong>Has the team member received a prior action plan within the past 12 months?</strong></label><br>'.stripslashes($i->previousAction).'</div></div>
 		  </div>
 			';
 		if(isset($i->previousActionExplain) && $i->previousActionExplain!=""){
 			$return.=	'
 			<div class="row">
-				<div class="col"><div class="alert alert-secondary"><label for=""><strong>Previous Action Explanation</strong></label><br>'.$i->previousActionExplain.'</div></div>
+				<div class="col"><div class="alert alert-secondary"><label for=""><strong>Previous Action Explanation</strong></label><br>'.stripslashes($i->previousActionExplain).'</div></div>
 	    </div>
 			';
 		}
 		$return.=	'
 		  <div class="row">
-		    <div class="col"><div class="alert alert-secondary"><label for=""><strong>Violation Details:</strong></label><br>'.$i->violationDetails.'</div></div>
+		    <div class="col"><div class="alert alert-secondary"><label for=""><strong>Violation Details:</strong></label><br>'.stripslashes($i->violationDetails).'</div></div>
 		  </div>
 		  <div class="row">
-		    <div class="col"><div class="alert alert-secondary"><label for=""><strong>What Should be Happening / Plan for Improvement:</strong></label><br>'.$i->plan.'</div></div>
+		    <div class="col"><div class="alert alert-secondary"><label for=""><strong>What Should be Happening / Plan for Improvement:</strong></label><br>'.stripslashes($i->plan).'</div></div>
 		  </div>
 		  <div class="row">
-		    <div class="col"><div class="alert alert-secondary"><label for=""><strong>Supporting documentation:</strong></label><br>'.$i->violationSupport.'</div></div>
+		    <div class="col"><div class="alert alert-secondary"><label for=""><strong>Supporting documentation:</strong></label><br>'.stripslashes($i->violationSupport).'</div></div>
 		  </div>
 			';
 		if(isset($i->violationSuppotExplain) && $i->violationSuppotExplain!=""){
 			$return.=	'
 			<div class="row">
-				<div class="col"><div class="alert alert-secondary"><label for=""><strong>Policy Explanation</strong></label><br>'.$i->violationSuppotExplain.'</div></div>
+				<div class="col"><div class="alert alert-secondary"><label for=""><strong>Policy Explanation</strong></label><br>'.stripslashes($i->violationSuppotExplain).'</div></div>
 	    </div>
 			';
 		}

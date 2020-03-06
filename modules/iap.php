@@ -98,9 +98,9 @@ jQuery(document).ready(function() {
   });
   jQuery(\'.violationSupport\').change(function(){
     if(jQuery("#violationSupport_Policy").is(":checked") || jQuery("#violationSupport_Other").is(":checked")){
-      jQuery(\'#violationSupportExplain\').show();
+      jQuery(\'#violationSupportExplain_Label\').show();
     }else{
-      jQuery(\'#violationSupportExplain\').hide();
+      jQuery(\'#violationSupportExplain_Label\').hide();
     }
   });
   jQuery("#submit").click(function(event){
@@ -288,9 +288,9 @@ jQuery(document).ready(function() {
   </div>
 </div>
 <div class="container-fluid toHide" id="queryResults" style="padding-top:15px;" >
-  <div id="violationSupportExplain" class="row" style="display: none;">
+  <div id="violationSupportExplain_Label" class="row" style="display: none;">
     <div class="col">
-      <textarea name="orderData[violationSuppotExplain]" placeholder="Please Explain"  class="form-control" ></textarea>
+      <textarea id="violationSupportExplain" name="orderData[violationSuppotExplain]" placeholder="Please Explain"  class="form-control" ></textarea>
     </div>
   </div>
 </div>
