@@ -49,7 +49,7 @@ class Toast{
 		curl_setopt($ch, CURLOPT_HEADER, 0);
 		curl_setopt ($ch, CURLOPT_RETURNTRANSFER, 1);
 		curl_setopt ($ch, CURLOPT_HTTPHEADER,Array("Content-Type: application/x-www-form-urlencoded"));
-		curl_setopt($ch, CURLOPT_POSTFIELDS, "grant_type=client_credentials&client_id=".$this->ToastClient."&client_secret=".$this->ToastSecret."");
+		curl_setopt($ch, CURLOPT_POSTFIELDS, "grant_type=client_credentials&client_id=".urldecode($this->ToastClient)."&client_secret=".urldecode($this->ToastSecret)."");
 		curl_setopt($ch, CURLOPT_URL,$this->url. "/usermgmt/v1/oauth/token");
 		$result=curl_exec($ch);
 		return json_decode($result);
