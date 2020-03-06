@@ -1016,10 +1016,8 @@ from pbc2.kds_detail WHERE sent_time BETWEEN  ? AND ? AND station='' and restaur
 	function sameDayLastYear($d) {
 		$d=date('Y-m-d', strtotime('-1 year', strtotime($d)));
 		if((date("L")==1 && (date("n")>2 || (date("n")==2 && date("d")==29)) ||
-		(date("L",strtotime($d))==0 && (date("n",strtotime($d))<2 )
-		)
-
-		){$addDays=2;}else{$addDays=1;}
+		(date("L",strtotime($d))==0 && (date("n",strtotime($d))<2 ))
+	)){$addDays=2;}else{$addDays=1;}
 		return date('Y-m-d', strtotime('+' . $addDays . ' days', strtotime($d)));
 		/*
 		$today = new \DateTime($d);
