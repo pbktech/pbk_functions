@@ -1014,11 +1014,12 @@ from pbc2.kds_detail WHERE sent_time BETWEEN  ? AND ? AND station='' and restaur
 		return $r;
 	}
 	function sameDayLastYear($d) {
+		/*
 		$d=date('Y-m-d', strtotime('-1 year', strtotime($d)));
 		if(date("L")==1 && (date("n")>2 || (date("n")==2 && date("d")==29))){$addDays=2;}else{$addDays=1;}
 		if(date("L")==1 && date("n",strtotime($d))<=2 && date("L",strtotime($d))==0){$addDays=1;}
 		return date('Y-m-d', strtotime('+' . $addDays . ' days', strtotime($d)));
-		/*
+		*/
 		$today = new \DateTime($d);
 		$year  = (int) $today->format('Y');
 		$week  = (int) $today->format('W'); // Week of the year
@@ -1028,7 +1029,6 @@ from pbc2.kds_detail WHERE sent_time BETWEEN  ? AND ? AND station='' and restaur
 		$sameDayLastYear->setISODate($year - 1, $week, $day);
 		if($d=="2019-12-30"){return "2018-12-31";}
 		return $sameDayLastYear->format('Y-m-d');
-		*/
 	}
 	function buildPDF($htmlPages,$title){
 		require_once('vendor/tecnickcom/tcpdf/tcpdf.php');
