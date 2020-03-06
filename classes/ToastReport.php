@@ -1014,16 +1014,8 @@ from pbc2.kds_detail WHERE sent_time BETWEEN  ? AND ? AND station='' and restaur
 		return $r;
 	}
 	function sameDayLastYear($d) {
-		$date = new DateTime($d);  // make a new DateTime instance with the starting date
-
-$day = $date->format('l');           // get the name of the day we want
-
-$date->sub(new DateInterval('P1Y')); // go back a year
-$date->modify('next ' . $day);       // from this point, go to the next $day
-echo $date->format('Ymd'), "\n"
 		$d=date('Y-m-d', strtotime('-1 year', strtotime($d)));
 		if(date("L")==1 && (date("n")>2 || (date("n")==2 && date("d")==29))){$addDays=2;}else{$addDays=1;}
-		if(date("L",strtotime($d))==0 && (date("n",strtotime($d))<2 )){$addDays+=1;}
 		return date('Y-m-d', strtotime('+' . $addDays . ' days', strtotime($d)));
 		/*
 		$today = new \DateTime($d);
