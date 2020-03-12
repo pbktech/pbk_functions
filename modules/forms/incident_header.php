@@ -31,14 +31,14 @@ $return.="
       ";
       if(isset($data['startDate']) && $data['startDate']!=''){$value=date("m/d/Y",strtotime($data['startDate']));}else{$value="";}
     $return.= "
-      <input class=\"form-control\" type=\"text\" id=\"dateOfIncident\" name=\"startDate\" value=\"".$value."\"/>
+      <input class=\"form-control\" type=\"text\" id=\"dateOfIncident\" name=\"startDate\" value=\"".$value."\" required />
     </div>
     <div class=\"col\">
       <label for='time_picker'>Time of Incident:</label>
       ";
       if($new==1){$value="";}else{$value=date("g:i a",strtotime($data['timeOfIncident']));}
     $return.= "
-      <input type='text' id='time_picker' name='timeOfIncident' id='time_picker' class='form-control' value=\"".$value."\"/>
+      <input type='text' id='time_picker' name='timeOfIncident' id='time_picker' class='form-control' value=\"".$value."\" required />
     </div>
   </div>
   <div class=\"row\">
