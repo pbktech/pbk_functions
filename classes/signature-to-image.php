@@ -53,7 +53,7 @@ function randLetter(){
 }
 function sigJsonToImage ($json, $options = array()) {
   $defaultOptions = array(
-    'imageSize' => array(198, 55)
+    'imageSize' => array(500, 200)
     ,'bgColour' => array(0xff, 0xff, 0xff)
     ,'penWidth' => 2
     ,'penColour' => array(0x14, 0x53, 0x94)

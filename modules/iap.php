@@ -37,6 +37,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
   if($_POST['part']==2){
     $d=$r->getPBKOrderinfo($_POST['id']);
     $r->setRestaurantID($d->restaurantID);
+    $amEmail=$r->getManagerEmail("AM");
     $report=New ToastReport;
 		$docFolder=dirname(dirname($report->docSaveLocation)) ."/docs/". $d->guid;
     require_once dirname(dirname(__FILE__)) . "/classes/signature-to-image.php";
@@ -310,30 +311,30 @@ jQuery(document).ready(function() {
     $ret.="
     <script>
     jQuery(document).ready(function() {
-      jQuery(\'#refusal\').click(function(event){
-        if(jQuery(\'#refusal\').is(':checked')){
-          jQuery(\'#tmSignPad\').hide();
-          jQuery(\'#tmRefusal\').show();
+      jQuery('#refusal').click(function(event){
+        if(jQuery('#refusal').is(':checked')){
+          jQuery('#tmSignPad').hide();
+          jQuery('#tmRefusal').show();
         }else{
-          jQuery(\'#tmSignPad\').show();
-          jQuery(\'#tmRefusal\').hide();
+          jQuery('#tmSignPad').show();
+          jQuery('#tmRefusal').hide();
         }
       });
-      jQuery(\'#submit\').click(function(event){
+      jQuery('#submit').click(function(event){
         var error_free=true;
-        if(jQuery(\'#empSign\').val()=='' && !jQuery(\'#refusal\').is(':checked')){jQuery(\'#queryResults\').after('<div class=\'alert alert-danger\'>TM Signature Required</div>');error_free=false;}
-        if(jQuery(\'#mgrSign\').val()==''){jQuery(\'#queryResults\').after('<div class=\'alert alert-danger\'>Manager Signature Required</div>');error_free=false;}
-        if(jQuery(\'#violationLevel\').val()=='Termination'){
-          if(jQuery(\'#witSign\').val()==''){jQuery(\'#queryResults\').after('<div class=\'alert alert-danger\'>Witness Signature Required</div>');error_free=false;}
-          if(jQuery(\'#witName\').val()==''){jQuery(\'#queryResults\').after('<div class=\'alert alert-danger\'>Witness Name Required</div>');error_free=false;}
+        if(jQuery('#empSig').val()=='' && !jQuery('#refusal').is(':checked')){jQuery('#queryResults').after(\"<div class='alert alert-danger'>TM Signature or Refusal Required</div>\");error_free=false;}
+        if(jQuery('#mgrSign').val()==''){jQuery('#queryResults').after(\"<div class='alert alert-danger'>Manager Signature Required</div>\");error_free=false;}
+        if(jQuery('#violationLevel').val()=='Termination'){
+          if(jQuery('#witSign').val()==''){jQuery('#queryResults').after(\"<div class='alert alert-danger'>Witness Signature Required</div>\");error_free=false;}
+          if(jQuery('#witName').val()==''){jQuery('#queryResults').after(\"<div class='alert alert-danger'>Witness Name Required</div>\");error_free=false;}
         }
         if (!error_free){
             event.preventDefault();
         }else{
           window.scrollTo(0,0);
-          jQuery(\'#queryResults\').hide();
-          jQuery(\'#signatures\').hide();
-          jQuery(\'#processingGif\').show();
+          jQuery('#queryResults').hide();
+          jQuery('#signatures').hide();
+          jQuery('#processingGif').show();
         }
       });
     });
@@ -413,7 +414,7 @@ jQuery(document).ready(function() {
         jQuery(\'.sigPad\').signaturePad();
       });
     </script>
-    '."<div id='processingGif' style=\'display: none;text-align:center;\'><img src='" . PBKF_URL . "/assets/images/processing.gif' style='height:92px;width:92px;' /></div>";
+    '."<div id='processingGif' style='display: none;text-align:center;'><img src='" . PBKF_URL . "/assets/images/processing.gif' style='height:92px;width:92px;' /></div>";
   }
 }else {
   if(isset($_GET['id']) && !$data=$r->getPBKOrderinfo($_GET['id'])){

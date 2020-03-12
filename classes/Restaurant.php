@@ -1230,6 +1230,7 @@ AND pbc_users.id=nhoHost AND pbc_pbrestaurants.restaurantID=nhoLocation");
 	}
 	public function setRestaurantID($id){
 		$this->restaurantID=$id;
+		$this->loadRestaurant();
 	}
 	private function setUserFullName($id){
 		$wpdb;
@@ -1314,7 +1315,7 @@ AND pbc_users.id=nhoHost AND pbc_pbrestaurants.restaurantID=nhoLocation");
 	}
 	public function getPBKOrderinfo($data){
 		global $wpdb;
-		$row= $wpdb->get_row("SELECT pbc_pbk_orders.guid as 'guid',pbc_pbk_orders.restaurantID as 'restaurantID',restaurantName,userID,orderData,orderUpdated,orderStatus,idpbc_pbk_orders FROM pbc_pbk_orders,pbc_pbrestaurants WHERE pbc_pbk_orders.guid = '$data' AND pbc_pbk_orders.restaurantID=pbc_pbrestaurants.restaurantID");
+		$row= $wpdb->get_row("SELECT pbc_pbk_orders.guid as 'guid',pbc_pbk_orders.restaurantID as 'restaurantID',restaurantName,userID,orderData,orderUpdated,orderStatus,idpbc_pbk_orders FROM pbc_pbk_orders,pbc_pbrestaurants WHERE pbc_pbk_orders.guid = '" . $data . "' AND pbc_pbk_orders.restaurantID=pbc_pbrestaurants.restaurantID");
 		if($row){return $row;}
 		return false;
 	}
