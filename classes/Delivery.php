@@ -44,5 +44,9 @@ class Delivery {
 		$result=curl_exec($ch);
 		return json_decode($result);
 	}
-
+  function addDelivery($d=array()){
+    $stmt=$this->mysqli->prepare("REPLACE INTO pbc_DeliveryRequests(guid,deliveryService,restaurantID,trackingURL,dateOfBusiness)VALUES(?,?,?,?,?)");
+    $stmt->bind_param('sssss',$d['guid'],$d['deliveryService'],$d['restaurantID'],$d['trackingURL'],$d['dateOfBusiness']);
+    $stmt->execute();
+  }
 }
