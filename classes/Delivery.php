@@ -39,7 +39,7 @@ class Delivery {
 		curl_setopt($ch, CURLOPT_HEADER, 0);
 		curl_setopt ($ch, CURLOPT_RETURNTRANSFER, 1);
 		curl_setopt ($ch, CURLOPT_HTTPHEADER,Array("Content-Type: application/x-www-form-urlencoded","Authorization: Basic ".base64_encode($this->apiKey.":")));
-		curl_setopt($ch, CURLOPT_POSTFIELDS, implode("&",$request));
+		curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($request));
 		curl_setopt($ch, CURLOPT_URL,$this->requestURL. "v1/customers/" . $this->customerID ."/deliveries");
 		$result=curl_exec($ch);
 		return json_decode($result);
