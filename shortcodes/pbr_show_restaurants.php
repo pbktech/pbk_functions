@@ -30,6 +30,13 @@ function pbr_show_restaurants() {
 </tr>";
 		}
 	}
+	$r=new Restaurant;
 	$return.="</div></tbody></table>";
+	$content['format']='A4-P';
+	$content['title']="Restaurant Directory";
+	$content['html']=$r->docHeader("Restaurant Directory").$return;
+	if($file=$r->buildHTMLPDF(json_encode($content))){
+		$return.="<div class='container-fluid' id='queryResults'><div class='row'><div class='col'><a href='".$file['Link']."' target='_blank'>Printable PDF</a></div></div></div>";
+	}
 	return $return;
 }
