@@ -21,7 +21,7 @@ function pbr_show_restaurants() {
 		if($restaurant->isOpen==1) {
 			$r = new Restaurant($restaurant->restaurantID);
 	$return.="\n<tr>
-<td><a title=\"Restaurant Hours\" href=\"restaurant-hours/#".$restaurant->restaurantCode."\">".$restaurant->restaurantName."</a><br />" .date("m/d/Y",strtotime($restaurant->openingDate)) . "</td>
+<td><a title=\"Restaurant Hours\" href=\"restaurant-hours/#".$restaurant->restaurantCode."\">#".$restaurant->restaurantID." ".$restaurant->restaurantName."</a><br />" .date("m/d/Y",strtotime($restaurant->openingDate)) . "</td>
 <td><a href=\"mailto:".$restaurant->email."\" target=\"_blank\">".str_replace("theproteinbar.com","", $restaurant->email)."</a></td>
 <td><a href=\"tel:+1".str_replace(".", '', $restaurant->phone)."\">".$restaurant->phone."</a></td>
 <td><a href=\"https://maps.google.com/maps?q=Protein+Bar+".str_replace(" ", "+", $restaurant->address1). "+" . $restaurant->city."+".$restaurant->state."+".$restaurant->zip."\" target='_blank'>" . $restaurant->address1 . "<br />". $restaurant->city.", ".$restaurant->state." ".$restaurant->zip."</a></td>
