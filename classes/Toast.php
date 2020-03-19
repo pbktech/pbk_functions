@@ -394,7 +394,7 @@ class Toast{
 	function createImportRecord($json, $dob, $timeToComplete, $stmt) {
 		$dateOfBusiness=date("Y-m-d",strtotime($dob));
 		$encJSON=json_encode($json);
-		$stmt->bind_param('sss',$timeToComplete,$dateOfBusiness,$encJSON);
+		$stmt->bind_param('ssss',$timeToComplete,$dateOfBusiness,$encJSON,$this->restaurantID);
 		$stmt->execute();
 		if($stmt->error!='') {$this->notifyIT("createImportRecord \n\n".$stmt->error."\n\n","SQL Import Error");}
 	}
