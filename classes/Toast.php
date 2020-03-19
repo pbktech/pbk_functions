@@ -80,8 +80,8 @@ class Toast{
 		$result=curl_exec($ch);
 		return json_decode($result);
 	}
-	function getRestaurantOptionsJSON($do,$option) {
-		if(trim($do)=="" || !isset($do)) {return "BLANK";echo "NO do\n";}
+	function getRestaurantOptionsJSON($do=null,$option) {
+//		if(trim($do)=="" || !isset($do)) {return "BLANK";echo "NO do\n";}
 		if(array_key_exists($do,$this->restOptions)){return $this->restOptions[$do];}
 		$ch = curl_init();
 		curl_setopt($ch, CURLOPT_HEADER, 0);
@@ -479,6 +479,11 @@ class Toast{
 		$stmt->bind_param('sssssss', $d->guid,$ToastOrderID,$mod,$d->name,$d->discountAmount,$d->appliedPromoCode,$type);
 		$stmt->execute();
 		if($stmt->error!='') {$this->notifyIT("storeDiscountInfo \n\n".$stmt->error."\n\n".$d->guid."\n".$ToastOrderID."\n".$mod."\n".$d->name."\n".$d->discountAmount."\n".$d->appliedPromoCode."\n".$type,"SQL Import Error");}
+	}
+	function storeGuestInfo($d, $ToastOrderID,$delivery=array(),$stmt) {
+		$stmt->bind_param('sssssss', $d->guid,$ToastOrderID,$d->firstName,$d->lastName,$d->firstName,$d->firstName,$delivery);
+		$stmt->execute();
+		if($stmt->error!='') {$this->notifyIT("storeGuestInfo \n\n".$stmt->error."\n\n".$d->guid."\n".$ToastOrderID."\n".$mod."\n".$d->name."\n".$d->discountAmount."\n".$d->appliedPromoCode."\n".$type,"SQL Import Error");}
 	}
 	function storeOrderInfo($json, $stmt) {
 		$businessDate=date("Y-m-d",strtotime($json->businessDate));
