@@ -10,7 +10,7 @@
 */
 class Delivery {
   private $provider=null;
-  private $apiKey=null;
+  private $apiInfo=null;
   private $customerID=null;
   private $authCode=null;
   private $requestURL;
@@ -26,9 +26,9 @@ class Delivery {
 		$this->config=json_decode(file_get_contents($default));
 		$this->localDB=$this->config->dBase;
     $this->provider=$p;
-    $this->apiKey=$this->config->$p->API;
-    $this->customerID=$this->config->$p->Customer;
-    $this->customerID=$this->config->$p->URL;
+    $this->apiKey=$this->config->Delivery->$p->API;
+    $this->customerID=$this->config->Delivery->$p->Customer;
+    $this->requestURL=$this->config->Delivery->$p->URL;
 	}
   function connectDB() {
 		$this->mysqli = new mysqli($this->config->host, $this->config->username, $this->config->password, $this->config->dBase);
