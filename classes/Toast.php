@@ -482,7 +482,7 @@ class Toast{
 	}
 	function storeGuestInfo($d, $ToastOrderID,$delivery,$stmt) {
 		$delivery=json_encode($delivery);
-		$stmt->bind_param('sssssss', $d->guid,$ToastOrderID,$d->firstName,$d->lastName,$d->firstName,$d->firstName,$delivery);
+		$stmt->bind_param('sssssss', $d->guid,$ToastOrderID,$d->firstName,$d->lastName,$d->phone,$d->email,$delivery);
 		$stmt->execute();
 		if($stmt->error!='') {$this->notifyIT("storeGuestInfo \n\n".$stmt->error."\n\n".$d->guid."\n".$ToastOrderID."\n".$mod."\n".$d->name."\n".$d->discountAmount."\n".$d->appliedPromoCode."\n".$type,"SQL Import Error");}
 	}
