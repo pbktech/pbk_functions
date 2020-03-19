@@ -2,16 +2,16 @@
 function pbr_show_restaurants() {
 
 	$return="\n<div style='overflow:auto;background-color:#FFFFFF;'>
-	\n<table  class=\"table table-striped table-hover\" style=\"width: 100%;\">\n
+	\n<table  class=\"table table-striped table-hover\" style=\"width: 100%;\" autosize=\"1\">\n
 <thead  style='background-color:#0e2244; color: #ffffff; text-align: center;font-weight:bold;'>
-<tr>
+<th>
 	<td>RESTAURANT</td>
 	<td>EMAIL</td>
 	<td>PHONE</td>
 	<td>ADDRESS</td>
 	<td>GM/AGM</td>
 	<td>AM</td>
-</tr>
+</th>
 </thead>
 <tbody>\n
 ";
