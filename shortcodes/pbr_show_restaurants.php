@@ -40,9 +40,8 @@ function pbr_show_restaurants() {
 		<script type=\"text/javascript\">
 			jQuery(document).ready(function(){
 				setTimeout(function(){
-					jQuery(\"#downloadButton\").hide()
-				}, 1800000);
-					jQuery(\"#expiredLink\").show()
+					jQuery(\"#downloadButton\").hide();
+					jQuery(\"#expiredLink\").show();
 				}, 1800000);
 			});
 		</script>
