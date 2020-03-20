@@ -1002,6 +1002,19 @@ from pbc2.kds_detail WHERE sent_time BETWEEN  ? AND ? AND station='' and restaur
 		$r=$result->fetch_object();
 		return $r->Average;
 	}
+	function getOrderTip($guid) {
+		$q="SELECT tipAmount FROM pbc2.pbc_ToastOrderPayment WHERE ToastCheckID=?";
+		$stmt = $this->mysqli->prepare($q);
+		$stmt->bind_param("s",$guid);
+		$stmt->execute();
+		$result = $stmt->get_result();
+		$r=$result->fetch_object();
+		if($r->tipAmount==0){
+			return false;
+		}else{
+			return $r->tipAmount;
+		}
+	}
 	function getMiniBarOrders($outpost) {
 		$r=array();
 		$q="SELECT GUID FROM pbc2.pbc_ToastOrderHeaders WHERE pbc_ToastOrderHeaders.diningOption IN (SELECT outpostIdentifier FROM pbc_minibar WHERE idpbc_minibar=?)
