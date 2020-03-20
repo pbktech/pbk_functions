@@ -46,7 +46,7 @@ class Delivery {
 	}
   function addDelivery($d=array()){
     $stmt=$this->mysqli->prepare("REPLACE INTO pbc_DeliveryRequests(guid,deliveryService,restaurantID,trackingURL,dateOfBusiness,deliveryCost,deliveryID)VALUES(?,?,?,?,?,?,?)");
-    $stmt->bind_param('sssss',$d['guid'],$d['deliveryService'],$d['restaurantID'],$d['trackingURL'],$d['dateOfBusiness'],$d['deliveryCost'],$d['deliveryID']);
+    $stmt->bind_param('sssssss',$d['guid'],$d['deliveryService'],$d['restaurantID'],$d['trackingURL'],$d['dateOfBusiness'],$d['deliveryCost'],$d['deliveryID']);
     $stmt->execute();
   }
   function updatedPMTips($u=array()){
@@ -60,13 +60,44 @@ class Delivery {
 		$result=curl_exec($ch);
     $rslt=json_decode($result);
     if(isset($rslt->kind) && $rslt->kind=="error"){
-      include "ToastReport.php";
-      $tst=new ToastReport;
-      $tst->reportEmail("jon@theproteinbar.com",print_r($rslt,true),"Postmates Update Error");
+//      include "ToastReport.php";
+//      $tst=new ToastReport;
+      $this->reportEmail("jon@theproteinbar.com",print_r($rslt,true),"Postmates Update Error");
     }else{
       $stmt=$this->mysqli->prepare("UPDATE pbc_DeliveryRequests SET deliveryTip=? WHERE guid=?");
       $stmt->bind_param('ss',$tip,$u['guid']);
       $stmt->execute();
     }
   }
+  function reportEmail($to,$body,$subject,$attach=null) {
+		$mail = new PHPMailer;
+		$mail->isSMTP();
+		$mail->SMTPDebug = 0;
+		$mail->Host = $this->config->SMTP_HOST;
+		$mail->Port = 587;
+		$mail->SMTPSecure = 'tls';
+		$mail->SMTPAuth = true;
+		$mail->Username = $this->config->SMTP_USERNAME;
+		$mail->Password = $this->config->SMTP_PASSWORD;
+		$mail->setFrom('otrs@theproteinbar.com', 'Protein Bar & Kitchen');
+		$addresses=explode(",",$to);
+		foreach($addresses as $address){
+		  $mail->addAddress($address);
+		}
+		$mail->Subject = $subject;
+		$mail->msgHTML($body, __DIR__);
+		if (isset($attach) && is_array($attach)) {
+		  foreach($attach as $at){
+		    $mail->addAttachment($at);
+		  }
+		} else {
+		  if(isset($attach)) {
+		    $mail->addAttachment($attach);
+		  }
+		}
+		if (!$mail->send()) {
+		    echo "Mailer Error: " . $mail->ErrorInfo;
+				die();
+		}
+	}
 }
