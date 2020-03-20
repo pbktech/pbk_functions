@@ -50,7 +50,7 @@ function pbr_show_restaurants() {
 				<div class='col'><a href='".$file['Link']."' target='_blank' class='btn btn-primary'>Printable PDF</a></div>
 			</div>
 			<div class='row' id='expiredLink' style='display:none;'>
-				<div class='col'>Download link has expired. Please <a href=\"javascript:history.go(0)\">refresh</a> to regenderate.</div>
+				<div class='col'>Download link has expired. Please <a href=\"javascript:history.go(0)\">refresh</a> to regenerate.</div>
 			</div>
 		</div>";
 	}
