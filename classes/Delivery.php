@@ -56,12 +56,13 @@ class Delivery {
   }
   function updatedPMTips($u=array()){
     $tip=round($u['tip']*100);
+    echo $tip."\n";
     $ch = curl_init();
 		curl_setopt($ch, CURLOPT_HEADER, 0);
 		curl_setopt ($ch, CURLOPT_RETURNTRANSFER, 1);
 		curl_setopt ($ch, CURLOPT_HTTPHEADER,Array("Content-Type: application/x-www-form-urlencoded","Authorization: Basic ".base64_encode($this->apiKey.":")));
-		curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query(array("v1_customer_id"=>$this->customerID,"v1_delivery_id"=>$u['deliveryID'],"tip_by_customer"=>$tip)));
-		curl_setopt($ch, CURLOPT_URL,$this->requestURL. "v1/customers/" . $this->customerID ."/deliveries");
+		curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query(array("tip_by_customer"=>$tip)));
+		curl_setopt($ch, CURLOPT_URL,$this->requestURL. "v1/customers/" . $this->customerID ."/deliveries/v1_delivery_id/" . $u['deliveryID']);
 		$result=curl_exec($ch);
     $rslt=json_decode($result);
     if(isset($rslt->kind) && $rslt->kind=="error"){
