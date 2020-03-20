@@ -8,6 +8,11 @@
 *
 *
 */
+use PHPMailer\PHPMailer\PHPMailer;
+use Twilio\Rest\Client;
+use Twilio\Twiml\MessagingResponse;
+require dirname(__DIR__) . '/vendor/autoload.php';
+
 class Delivery {
   private $provider=null;
   private $apiInfo=null;
