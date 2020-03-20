@@ -56,7 +56,8 @@ class Delivery {
   }
   function updatedPMTips($u=array()){
     $tip=round($u['tip']*100);
-    echo $tip."\n";
+    echo $this->requestURL. "v1/customers/" . $this->customerID ."/deliveries/v1_delivery_id/" . $u['deliveryID']."\n";
+    die;
     $ch = curl_init();
 		curl_setopt($ch, CURLOPT_HEADER, 0);
 		curl_setopt ($ch, CURLOPT_RETURNTRANSFER, 1);
