@@ -36,7 +36,24 @@ function pbr_show_restaurants() {
 	$content['title']="Restaurant Directory";
 	$content['html']=$r->docHeader("Restaurant Directory").$return;
 	if($file=$r->buildHTMLPDF(json_encode($content))){
-		$return.="<div class='container-fluid' id='queryResults'><div class='row'><div class='col'><a href='".$file['Link']."' target='_blank' class='btn btn-primary'>Printable PDF</a></div></div></div>";
+		$return.="
+		<script type=\"text/javascript\">
+			jQuery(document).ready(function(){
+				setTimeout(function(){
+					jQuery(\"#downloadButton\").hide()
+				}, 1800000);
+					jQuery(\"#expiredLink\").show()
+				}, 1800000);
+			});
+		</script>
+		<div class='container-fluid' id=''>
+			<div class='row' id='downloadButton'>
+				<div class='col'><a href='".$file['Link']."' target='_blank' class='btn btn-primary'>Printable PDF</a></div>
+			</div>
+			<div class='row' id='expiredLink' style='display:none;'>
+				<div class='col'>Download link has expired. Please <a href=\"javascript:history.go(0)\">refresh</a> to regenderate.</div>
+			</div>
+		</div>";
 	}
 	return $return;
 }
