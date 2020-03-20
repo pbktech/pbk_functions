@@ -55,7 +55,7 @@ class Delivery {
     $stmt->execute();
   }
   function updatedPMTips($u=array()){
-    $tip=($u['tip']*100);
+    $tip=round($u['tip']*100);
     $ch = curl_init();
 		curl_setopt($ch, CURLOPT_HEADER, 0);
 		curl_setopt ($ch, CURLOPT_RETURNTRANSFER, 1);
