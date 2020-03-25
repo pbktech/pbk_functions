@@ -27,7 +27,7 @@ class Delivery {
 		$this->connectDB();
   }
   function setConfig($p){
-		$default = dirname(ABSPATH) . '/config.json';
+		$default = dirname(ABSPATH) . '/config_dev.json';
 		$this->config=json_decode(file_get_contents($default));
 		$this->localDB=$this->config->dBase;
     $this->provider=$p;
