@@ -27,7 +27,7 @@ class Delivery {
 		$this->connectDB();
   }
   function setConfig($p){
-		$default = dirname(ABSPATH) . '/config.json';
+		$default ='/var/www/html/config_dev.json';
 		$this->config=json_decode(file_get_contents($default));
 		$this->localDB=$this->config->dBase;
     $this->provider=$p;
@@ -54,6 +54,12 @@ class Delivery {
     $stmt->bind_param('sssssss',$d['guid'],$d['deliveryService'],$d['restaurantID'],$d['trackingURL'],$d['dateOfBusiness'],$d['deliveryCost'],$d['deliveryID']);
     $stmt->execute();
   }
+    function schedulePMTips($u=array()){
+    $stmt=$this->mysqli->prepare("INSERT INTO temp_pm_tips (guid,tip,deliveryID,addedDateTime)VALUES(?,?,?,?)");
+    $stmt->bind_param('ssss',$u['guid'],$u['tip'],$u['deliveryID'],$u['addedDateTime']);
+    $stmt->execute();
+  }
+
   function updatedPMTips($u=array()){
     $tip=round($u['tip']*100);
 //    echo $this->requestURL. "v1/customers/" . $this->customerID ."/deliveries/v1_delivery_id/" . $u['deliveryID']."\n";
@@ -69,7 +75,7 @@ class Delivery {
     if(isset($rslt->kind) && $rslt->kind=="error"){
 //      include "ToastReport.php";
 //      $tst=new ToastReport;
-      $this->reportEmail("jon@theproteinbar.com",print_r($rslt,true),"Postmates Update Error");
+      $this->reportEmail("jon@theproteinbar.com",print_r($rslt,true) . "\n\n" . print_r($u,true),"Postmates Update Error");
     }else{
       $stmt=$this->mysqli->prepare("UPDATE pbc_DeliveryRequests SET deliveryTip=? WHERE guid=?");
       $stmt->bind_param('ss',$tip,$u['guid']);
