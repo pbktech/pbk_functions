@@ -55,7 +55,7 @@ class Delivery {
     $stmt->execute();
   }
     function schedulePMTips($u=array()){
-    $stmt=$this->mysqli->prepare("INSERT INTO temp_pm_tips (guid,tip,deliveryID,addedDateTime)VALUES(?,?,?,?)");
+    $stmt=$this->mysqli->prepare("INSERT INTO pbc2.temp_pm_tips (guid,tip,deliveryID,addedDateTime)VALUES(?,?,?,?)");
     $stmt->bind_param('ssss',$u['guid'],$u['tip'],$u['deliveryID'],$u['addedDateTime']);
     $stmt->execute();
   }
