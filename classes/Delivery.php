@@ -27,7 +27,7 @@ class Delivery {
 		$this->connectDB();
   }
   function setConfig($p){
-		$default ='/var/www/html/config_dev.json';
+		$default ='/var/www/html/config.json';
 		$this->config=json_decode(file_get_contents($default));
 		$this->localDB=$this->config->dBase;
     $this->provider=$p;
@@ -77,7 +77,7 @@ class Delivery {
 //      $tst=new ToastReport;
       $this->reportEmail("jon@theproteinbar.com",print_r($rslt,true) . "\n\n" . print_r($u,true),"Postmates Update Error");
     }else{
-      $stmt=$this->mysqli->prepare("UPDATE pbc_DeliveryRequests SET deliveryTip=? WHERE guid=?");
+      $stmt=$this->mysqli->prepare("UPDATE pbc2.pbc_DeliveryRequests SET deliveryTip=? WHERE guid=?");
       $stmt->bind_param('ss',$tip,$u['guid']);
       $stmt->execute();
     }
