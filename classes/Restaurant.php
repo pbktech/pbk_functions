@@ -816,7 +816,7 @@ if($_GET['nhoDate']!="_new"){
 	    </div>'";
 			$handle = @fopen($links['image'], 'r');
 			if($handle){
-				$report->reportEmail($current_user->user_email,$content,"IT'S ALL GOOD: Your lunch has arrived!");
+				$report->reportEmail($current_user->user_email,$content,"IT'S ALL GOOD: Your meal has arrived!");
 				echo switchpbrMessages(4);
 			}else {
 				echo switchpbrMessages(5);
