@@ -823,6 +823,7 @@ if($_GET['nhoDate']!="_new"){
 			}
 		}
 		return $this->pbk_addImageSelector()."
+		<script>
 		jQuery(document).ready(function() {
 			jQuery('input.timepicker').timepicker({
 				'timeFormat': 'h:mm p',
@@ -834,6 +835,7 @@ if($_GET['nhoDate']!="_new"){
 				scrollbar: true
 			});
 		});
+		</script>
 		<div class='container-fluid;'>
 	<form method=\"post\" action=\"admin-post.php\">
   	<input type=\"hidden\" name=\"action\" value=\"pbk_save_minibar\" />
