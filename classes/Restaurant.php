@@ -823,12 +823,7 @@ if($_GET['nhoDate']!="_new"){
 			}
 		}
 		if(isset($links['day']) && count($links['day'])!=0){
-			$preselect="jQuery('#deliveryDay').select2('data',[";
-			foreach($links['day'] as $day){
-				$preselect.="{id:'".$day."', text:'".$day."'}";
-			}
-			$preselect.="]);
-			jQuery('#deliveryDay').trigger('change');";
+			$preselect="jQuery('#deliveryDay').val(['" . implode("','", $links['day']) . "']).trigger('change');";
 		}else{
 			$preselect="";
 		}
