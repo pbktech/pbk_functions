@@ -50,6 +50,7 @@ function pbk_scripts(){
   wp_enqueue_script( 'screen_signature_script', PBKF_URL . '/assets/js/jquery.signaturepad.min.js', array(), false, true);
 }
 add_action( 'wp_enqueue_scripts', 'pbk_scripts' );
+add_action( 'admin_enqueue_scripts', 'pbk_scripts' );
 
 /*Classes*/
 use PHPMailer\PHPMailer\PHPMailer;
