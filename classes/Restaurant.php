@@ -823,6 +823,17 @@ if($_GET['nhoDate']!="_new"){
 			}
 		}
 		return $this->pbk_addImageSelector()."
+		jQuery(document).ready(function() {
+			jQuery('input.timepicker').timepicker({
+				'timeFormat': 'h:mm p',
+				interval: 30,
+				minTime: '5:00 am',
+				maxTime: '9:00 pm',
+				dynamic: false,
+				dropdown: true,
+				scrollbar: true
+			});
+		});
 		<div class='container-fluid;'>
 	<form method=\"post\" action=\"admin-post.php\">
   	<input type=\"hidden\" name=\"action\" value=\"pbk_save_minibar\" />
@@ -851,6 +862,12 @@ if($_GET['nhoDate']!="_new"){
 			<div class='col'>
 				<label for='imageFile'><strong>Image</strong></label>
 				<input type='text' class='form-control media-input' name ='imageFile[image]' value='".$links['image']."' /> <button class='media-button'>Select image</button>
+				<br>
+				<label for='cutoff'>Cutoff Time</label><br />
+				<input class='timepicker form-control' id='cutoff' name='imageFile[cutoff]' value='".$links['cutoff']."'/><br />
+				<br>
+				<label for='delivery'>Delivery Time</label><br />
+				<input class='timepicker form-control' id='delivery' name='imageFile[delivery]' value='".$links['delivery']."'/><br />
 			</div>
 			<div class='col'>
 			".$imageAdd."
