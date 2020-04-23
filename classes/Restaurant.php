@@ -868,7 +868,7 @@ if($_GET['nhoDate']!="_new"){
 				<div class='row'>
 					<div class='col'>
 						<label for='delivery'>Delivery Day</label><br />
-						<select name='imageFile[day]' class=\"custom-select multipleSelect\" id='deliveryDay' multiple>
+						<select name='imageFile[day][]' class=\"custom-select multipleSelect\" id='deliveryDay' multiple>
 							<option value='Sunday'>Sunday</option>
 							<option value='Monday'>Monday</option>
 							<option value='Tuesday'>Tuesday</option>
