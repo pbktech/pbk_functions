@@ -844,24 +844,16 @@ if($_GET['nhoDate']!="_new"){
   		<div class='col'>
 				<label for='restaurantID'><strong>Restaurant</strong></label><br />
   			" . $this->buildRestaurantSelector(0,'restaurantID',$info['restaurantID']) . "
-  		</div>
-  		<div class='col'>
+				<br>
 				<label for='company'><strong>Company Name</strong></label>
   			<input type='text' class='form-control' name ='company' value='".$info['company']."' />
-  		</div>
-		</div>
-		<div class='row'>
-			<div class='col'>
+				<br>
 				<label for='imageFile'><strong>Order Link</strong></label>
 				<input type='text' class='form-control' name ='imageFile[link]' value='".$links['link']."' />
-			</div>
-  		<div class='col'>
+				<br>
 				<label for='outpostIdentifier'><strong>Toast Dining Option</strong></label>
 				<input type='text' class='form-control' name ='outpostIdentifier' value='".$info['outpostIdentifier']."' />
-  		</div>
-  	</div>
-		<div class='row'>
-			<div class='col'>
+				<br>
 				<label for='imageFile'><strong>Image</strong></label>
 				<input type='text' class='form-control media-input' name ='imageFile[image]' value='".$links['image']."' /> <button class='media-button'>Select image</button>
 				<br>
