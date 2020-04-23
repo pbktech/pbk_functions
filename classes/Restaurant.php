@@ -843,6 +843,7 @@ if($_GET['nhoDate']!="_new"){
 				dropdown: true,
 				scrollbar: true
 			});
+			jQuery(#deliveryDay).select2();
 			".$preselect."
 		});
 		</script>
