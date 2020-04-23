@@ -822,6 +822,15 @@ if($_GET['nhoDate']!="_new"){
 				echo switchpbrMessages(5);
 			}
 		}
+		if(isset($links['day']) && count($links['day'])!=0){
+			$preselect="jQuery(#deliveryDay).select2('data',[";
+			foreach($links['day'] as $day){
+				$preselect.="{id:'".$day."', text:'".$day."'}"
+			}
+			$preselect.="]);";
+		}else{
+			$preselect="";
+		}
 		return $this->pbk_addImageSelector()."
 		<script>
 		jQuery(document).ready(function() {
@@ -834,6 +843,7 @@ if($_GET['nhoDate']!="_new"){
 				dropdown: true,
 				scrollbar: true
 			});
+			".$preselect."
 		});
 		</script>
 		<div class='container-fluid;'>
@@ -854,14 +864,31 @@ if($_GET['nhoDate']!="_new"){
 				<label for='outpostIdentifier'><strong>Toast Dining Option</strong></label>
 				<input type='text' class='form-control' name ='outpostIdentifier' value='".$info['outpostIdentifier']."' />
 				<br>
+				<div class='row'>
+					<div class='col'>
+						<label for='delivery'>Delivery Day</label><br />
+						<select name='imageFile[day]' class=\"custom-select multipleSelect\" id='deliveryDay' multiple>
+							<option value=''>Choose</option>
+							<option value='Sunday'>Sunday</option>
+							<option value='Monday'>Monday</option>
+							<option value='Tuesday'>Tuesday</option>
+							<option value='Wednesday'>Wednesday</option>
+							<option value='Thursday'>Thursday</option>
+							<option value='Friday'>Friday</option>
+							<option value='Saturday'>Saturday</option>
+						</select>
+					</div>
+					<div class='col'>
+						<label for='cutoff'>Cutoff Time</label><br />
+						<input class='timepicker form-control' id='cutoff' name='imageFile[cutoff]' value='".$links['cutoff']."'/><br />
+					</div>
+					<div class='col'>
+						<label for='delivery'>Delivery Time</label><br />
+						<input class='timepicker form-control' id='delivery' name='imageFile[delivery]' value='".$links['delivery']."'/><br />
+					</div>
+				</div>
 				<label for='imageFile'><strong>Image</strong></label>
 				<input type='text' class='form-control media-input' name ='imageFile[image]' value='".$links['image']."' /> <button class='media-button'>Select image</button>
-				<br>
-				<label for='cutoff'>Cutoff Time</label><br />
-				<input class='timepicker form-control' id='cutoff' name='imageFile[cutoff]' value='".$links['cutoff']."'/><br />
-				<br>
-				<label for='delivery'>Delivery Time</label><br />
-				<input class='timepicker form-control' id='delivery' name='imageFile[delivery]' value='".$links['delivery']."'/><br />
 			</div>
 			<div class='col'>
 			".$imageAdd."
