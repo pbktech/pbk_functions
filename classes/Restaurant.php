@@ -827,7 +827,8 @@ if($_GET['nhoDate']!="_new"){
 			foreach($links['day'] as $day){
 				$preselect.="{id:'".$day."', text:'".$day."'}";
 			}
-			$preselect.="]).trigger('change');";
+			$preselect.="]);
+			jQuery('#deliveryDay').trigger('change');";
 		}else{
 			$preselect="";
 		}
