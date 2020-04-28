@@ -91,6 +91,6 @@ foreach ($r->myRestaurants as $restaurantID => $restaurantName) {
       </div>
     </form></div>";
   }else {
-    $ret.="<div class='alert alert-warning'>There were no orders for ".$restaurantName.".</div>";
+    $ret.="<h3>".$restaurantName."</h3><div class='alert alert-warning'>There are no orders.</div>";
   }
 }
