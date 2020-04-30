@@ -1123,8 +1123,24 @@ from pbc2.kds_detail WHERE sent_time BETWEEN  ? AND ? AND station='' and restaur
 			</table>
 			</div>";
 			if(file_exists($this->docSaveLocation.$data['File'].date("Ymd").'.csv')) {
-				$return.="<div>
-				<a class='btn btn-success' href='".$this->docDownloadLocation.$data['File'].date("Ymd").".csv' target='_blank'>Download the file</a> This download is only valid for 30 minutes.
+				$return.="
+				<script>
+				jQuery(document).ready( function () {
+					setTimeout(function(){
+          	jQuery(\"#downloadButton\").hide(\"360000\");
+						jQuery(\"#reloadButton\").show(\"360000\");
+        	});
+				} );
+				</script>
+				<div id='reloadButton' style='display:none;'>
+					<div class='alert alert-warning'>The download file has expired</div>
+				";
+				if(isset($data['AllowReload']) && $data['AllowReload']=='yes'){
+					$return.="<br><a class='btn btn-success' >Reload the page</a>					";
+				}
+				$return.="</div>
+				<div id='downloadButton'>
+					<a class='btn btn-success' href='".$this->docDownloadLocation.$data['File'].date("Ymd").".csv' target='_blank'>Download the file</a> This download is only valid for 30 minutes.
 				</div>";
 			}
 
