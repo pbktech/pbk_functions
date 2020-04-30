@@ -146,7 +146,7 @@ class Restaurant {
 	if(isset($aa_users) && count($aa_users)!=0){
 		$aausers=array();
 		foreach($aa_users as $u){$aausers[]=$u;}
-		$preselect="jQuery('#additionAccess').val(['" . implode("','", $aa_users) . "']).trigger('change');";
+		$preselect="jQuery('#additionAccess').val(['" . implode("','", $aausers) . "']).trigger('change');";
 	}else{
 		$preselect="";
 	}
