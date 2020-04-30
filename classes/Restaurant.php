@@ -142,13 +142,14 @@ class Restaurant {
 	"GUID"=>"Toast GUID","mnkyID"=>"Monkey ID","levelUpID"=>"LevelUp ID","openingDate"=>"Opening Date",""=>"");
 	$colTwo=array("address1"=>"Address","address2"=>"Suite","city"=>"City","state"=>"State","zip"=>"Zip","latLong"=>"Latitute & Longitude",
 	"phone"=>"Phone","email"=>"E-mail");
-	$aa_users = $wpdb->get_results("SELECT managerID FROM pbc2.pbc_pbr_managers where mgrType LIKE '%AA%' AND restaurantID='".$this->restaurantID."'",ARRAY_N);
+	$aa_users = $wpdb->get_results("SELECT managerID FROM pbc2.pbc_pbr_managers where mgrType LIKE '%AA%' AND restaurantID='".$this->restaurantID."'");
 	if(isset($aa_users) && count($aa_users)!=0){
+		$aausers=array();
+		foreach($aa_users as $u){$aausers[]=$u;}
 		$preselect="jQuery('#additionAccess').val(['" . implode("','", $aa_users) . "']).trigger('change');";
 	}else{
 		$preselect="";
 	}
-	echo "<pre>" . $preselect . "</pre>";
 		$return= "
 		<script>
 		jQuery( function() {
@@ -366,6 +367,13 @@ class Restaurant {
 			$wpdb->replace('pbc_pbr_managers',array( 'restaurantID'=> $this->rinfo->restaurantID, 'managerID'=> $this->rinfo->gm, 'mgrType' => 'GM'), array('%d','%s','%s'));
 			$wpdb->replace('pbc_pbr_managers',array( 'restaurantID'=> $this->rinfo->restaurantID, 'managerID'=> $this->rinfo->agm, 'mgrType' => 'AGM'), array('%d','%s','%s'));
 			$wpdb->replace('pbc_pbr_managers',array( 'restaurantID'=> $this->rinfo->restaurantID, 'managerID'=> $this->rinfo->str, 'mgrType' => 'STR'), array('%d','%s','%s'));
+			$wpdb->query("DELETE FROM pbc_pbr_managers WHERE mgrType LIKE '%AA%' AND restaurantID='". $this->rinfo->restaurantID ."'");
+
+			if(isset($_POST['additionAccess']) && count($_POST['additionAccess'])!=0){
+				foreach ($_POST['additionAccess'] as $u) {
+					$wpdb->insert('pbc_pbr_managers',array( 'restaurantID'=> $this->rinfo->restaurantID, 'managerID'=> $u, 'mgrType' => 'AA'.$u), array('%d','%s','%s'));
+				}
+			}
 
 			$wpdb->replace('pbc_pbr_hours',array( 'restaurantID'=> $this->rinfo->restaurantID, 'hoursInfo'=> $this->rinfo->Mondayopen, 'type' => 'Mondayopen'), array('%d','%s','%s'));
 			$wpdb->replace('pbc_pbr_hours',array( 'restaurantID'=> $this->rinfo->restaurantID, 'hoursInfo'=> $this->rinfo->Mondayclose, 'type' => 'Mondayclose'), array('%d','%s','%s'));
