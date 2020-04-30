@@ -272,7 +272,7 @@ class Restaurant {
 		<div class='col'>
 			<label for='additionAccess'><strong>Additional Access</strong></label>
 			<br />
-			<select name='additionAccess[]' class=\"custom-select multipleSelect\" id='additionAccess' multiple >";
+			<select name='additionAccess[]' class=\"custom-select multipleSelect\" style='width:100%;' id='additionAccess' multiple >";
 		foreach($allUsers as $user){
 			$return.="<option value='".$user->ID."'>".$user->display_name."</option>";
 		}
