@@ -1127,9 +1127,9 @@ from pbc2.kds_detail WHERE sent_time BETWEEN  ? AND ? AND station='' and restaur
 				<script>
 				jQuery(document).ready( function () {
 					setTimeout(function(){
-          	jQuery(\"#downloadButton\").hide(\"360000\");
-						jQuery(\"#reloadButton\").show(\"360000\");
-        	});
+						jQuery(\"#downloadButton\").hide();
+						jQuery(\"#reloadButton\").show();
+					}, 1800000);
 				} );
 				</script>
 				<div id='reloadButton' style='display:none;'>
