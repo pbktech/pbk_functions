@@ -141,6 +141,12 @@ class Restaurant {
 	"GUID"=>"Toast GUID","mnkyID"=>"Monkey ID","levelUpID"=>"LevelUp ID","openingDate"=>"Opening Date",""=>"");
 	$colTwo=array("address1"=>"Address","address2"=>"Suite","city"=>"City","state"=>"State","zip"=>"Zip","latLong"=>"Latitute & Longitude",
 	"phone"=>"Phone","email"=>"E-mail");
+	$aa_users = $wpdb->get_results("SELECT managerID FROM pbc2.pbc_pbr_managers where mgrType LIKE '%AA%' AND restaurantID='".$this->restaurantID."'");
+	if(isset($aa_users) && count($aa_users)!=0){
+		$preselect="jQuery('#additionAccess').val(['" . implode("','", $aa_users) . "']).trigger('change');";
+	}else{
+		$preselect="";
+	}
 		$return= "
 		<script>
 		jQuery( function() {
@@ -164,6 +170,8 @@ class Restaurant {
 				dropdown: true,
 				scrollbar: true
 			});
+			jQuery('#additionAccess').select2();
+			".$preselect."
 		});
 		</script>
 		<div class='container-fluid;'>
@@ -257,7 +265,14 @@ class Restaurant {
 			if(isset($this->rinfo->market) && $this->rinfo->market==$market) {$return.=" selected='selected' ";}
 			$return.=">".$market."</option>";
 		}
-		$return.= "</select></div><div class='col'></div></div>
+		$return.= "</select></div><div class='col'>><label for='market'><strong>Additional Access</strong></label><br />
+		<select name='additionAccess[]' class=\"custom-select multipleSelect\" id='additionAccess' multiple>";
+		foreach($allUsers as $user){
+			$return.="<option value='".$user->ID."'>".$user->display_name."</option>";
+		}
+			$return.= "
+		</select>
+		</div></div>
 		</div>
 	</div>
 	<div id='hours'>
