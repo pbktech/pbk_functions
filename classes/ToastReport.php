@@ -1099,6 +1099,7 @@ from pbc2.kds_detail WHERE sent_time BETWEEN  ? AND ? AND station='' and restaur
 	}
 	function showResultsTable($data=array(),$tableName="myTable"){
 		if(isset($data['Results']) && count($data['Results'])!=0){
+			if(isset($data['File'])){$data['File']=$this->genGUID($data['File']);}else{$data['File']=$this->genGUID(md5());}
 			if(isset($data['Options']) && is_array($data['Options'])){$options="{\n					".implode(",\n					",$data['Options'])."}\n				";}else{$options='';}
 			if(file_exists($this->docSaveLocation.$data['File'].date("Ymd").'.csv')) {unlink($this->docSaveLocation.$data['File'].date("Ymd").'.csv');}
 			$file = fopen($this->docSaveLocation.$data['File'].date("Ymd").'.csv', 'w');
@@ -1153,6 +1154,15 @@ from pbc2.kds_detail WHERE sent_time BETWEEN  ? AND ? AND station='' and restaur
 		echo "<pre>";
 		print_r($a);
 		echo "</pre>";
+	}
+	function genGUID($name) {
+		$nhex = str_replace(array('-','{','}'), '', $this->restaurantID);
+		$nstr = '';
+		 for($i = 0; $i < strlen($nhex); $i+=2) {
+				$nstr .= chr(hexdec($nhex[$i]));
+			}
+			$hash = sha1($nstr . $name);
+			return sprintf('%08s-%04s-%04x-%04x-%12s',substr($hash, 0, 8),substr($hash, 8, 4),(hexdec(substr($hash, 12, 4)) & 0x0fff) | 0x5000,(hexdec(substr($hash, 16, 4)) & 0x3fff) | 0x8000,substr($hash, 20, 12));
 	}
 	function setRestaurantID($id){
 		$this->restaurantID=$id;
