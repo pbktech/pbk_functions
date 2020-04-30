@@ -135,6 +135,7 @@ class Restaurant {
 	</div>";
 	}
 	public function restaurantEditBox(){
+		global $wpdb;
 		$r_info= (array) $this->rinfo;
 		$allUsers=$this->getUserNames();
 		$colOne=array("restaurantName"=>"Restaurant Name","restaurantID"=>"Restaurant ID","restaurantCode"=>"Restaurant Code","toastID"=>"Toast ID",
