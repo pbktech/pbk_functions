@@ -185,6 +185,7 @@ class Restaurant {
 						<li class=\"nav-item\"><a href='#ids'>Base Information</a></li>
 						<li class=\"nav-item\"><a href='#demographics'>Location</a></li>
 						<li class=\"nav-item\"><a href='#hours'>Hours</a></li>
+						<li class=\"nav-item\"><a href='#roster'>Roster</a></li>
 					</ul>
 					<div id=\"ids\">
 							<div class='form-group'>
@@ -324,6 +325,9 @@ class Restaurant {
 		}
       $return.= "
 			</div>
+			</div>
+			<div id='roster'>
+			".$this->restaurantRoster($this->rinfo->restaurantID)."
 			</div>
 			<div class='form-group'>
 				<div class='row' style='padding-left:15px;'>
@@ -1254,6 +1258,16 @@ AND pbc_users.id=nhoHost AND pbc_pbrestaurants.restaurantID=nhoLocation");
 						</div>
 ";
 	return $return;
+	}
+	private function restaurantRoster($r){
+		$d['Headers']=array("Name","Employee ID","E-Mail");
+		global $wpdb;
+		$rows=$wpdb->get_row("SELECT employeeName,externalEmployeeId,email FROM pbc2.pbc_ToastEmployeeInfo where restaurantID=$r AND externalEmployeeID !='' and deleted !=1 order by employeeName");
+		foreach ($rows as $row) {
+			$d['Results'][]=array($row->employeeName,$row->externalEmployeeId,$row->email);
+		}
+		$report= new ToastReport;
+    return $report->showResultsTable($d);
 	}
 	private function getManagerID($mgr) {
 		global $wpdb;
