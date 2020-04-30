@@ -1262,6 +1262,7 @@ AND pbc_users.id=nhoHost AND pbc_pbrestaurants.restaurantID=nhoLocation");
 	private function restaurantRoster($r){
 		$d['Headers']=array("Name","Employee ID","E-Mail");
 		global $wpdb;
+		echo "SELECT employeeName,externalEmployeeId,email FROM pbc2.pbc_ToastEmployeeInfo where restaurantID='".$r."' AND externalEmployeeID !='' and deleted !=1 order by employeeName";
 		$rows=$wpdb->get_row("SELECT employeeName,externalEmployeeId,email FROM pbc2.pbc_ToastEmployeeInfo where restaurantID='".$r."' AND externalEmployeeID !='' and deleted !=1 order by employeeName");
 		foreach ($rows as $row) {
 			$d['Results'][]=array($row->employeeName,$row->externalEmployeeId,$row->email);
