@@ -145,7 +145,7 @@ class Restaurant {
 	$aa_users = $wpdb->get_results("SELECT managerID FROM pbc2.pbc_pbr_managers where mgrType LIKE '%AA%' AND restaurantID='".$this->restaurantID."'");
 	if(isset($aa_users) && count($aa_users)!=0){
 		$aausers=array();
-		foreach($aa_users as $u){$aausers[]=$u;}
+		foreach($aa_users as $u){$aausers[]=$u->managerID;}
 		$preselect="jQuery('#additionAccess').val(['" . implode("','", $aausers) . "']).trigger('change');";
 	}else{
 		$preselect="";
