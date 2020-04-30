@@ -270,9 +270,9 @@ class Restaurant {
 		}
 		$return.= "</select></div>
 		<div class='col'>
-			<label for='market'><strong>Additional Access</strong></label>
+			<label for='additionAccess'><strong>Additional Access</strong></label>
 			<br />
-			<select name='additionAccess[]' class=\"form-control multipleSelect\" id='additionAccess' multiple >";
+			<select name='additionAccess[]' class=\"custom-select multipleSelect\" id='additionAccess' multiple >";
 		foreach($allUsers as $user){
 			$return.="<option value='".$user->ID."'>".$user->display_name."</option>";
 		}
