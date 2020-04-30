@@ -268,13 +268,16 @@ class Restaurant {
 			if(isset($this->rinfo->market) && $this->rinfo->market==$market) {$return.=" selected='selected' ";}
 			$return.=">".$market."</option>";
 		}
-		$return.= "</select></div><div class='col'><label for='market'><strong>Additional Access</strong></label><br />
-		<select name='additionAccess[]' class=\"form-control multipleSelect\" id='additionAccess' multiple>";
+		$return.= "</select></div>
+		<div class='col'>
+			<label for='market'><strong>Additional Access</strong></label>
+			<br />
+			<select name='additionAccess[]' class=\"form-control multipleSelect\" id='additionAccess' multiple >";
 		foreach($allUsers as $user){
 			$return.="<option value='".$user->ID."'>".$user->display_name."</option>";
 		}
 			$return.= "
-		</select>
+			</select>
 		</div></div>
 		</div>
 	</div>
