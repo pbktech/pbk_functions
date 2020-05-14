@@ -46,9 +46,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         require_once("/var/www/html/c2.theproteinbar.com/wp-content/plugins/pbr_finance/includes/ToastFunctions/classes/ToastReport.php");
         $rpt= new ToastReport();
         $rpt->reportEmail("jon@theproteinbar.com", "SQL Error \n".$wpdb->print_error()."\n\nPosted Data \n".print_r($_POST, true), "Nutrition_Guide Save Error");
-        $message="<div class='alert' id='message' style='text-align:center;'><p style='padding:3px;'>There was an error saving. This error has been reported.</p></div>";
+        $message="<div class='alert alert-danger' id='message' style='text-align:center;'><p style='padding:3px;'>There was an error saving. This error has been reported.</p></div>";
     } else {
-        $message="<div class='success' id='message' style='text-align:center;'><p style='padding:3px;'>The updates have been saved.</p></div>";
+        $message="<div class='alert alert-success' id='message' style='text-align:center;'><p style='padding:3px;'>The updates have been saved.</p></div>";
     }
     $ret.="<script src=\"https://code.jquery.com/jquery-1.10.1.min.js\"></script>
       ".$message."
