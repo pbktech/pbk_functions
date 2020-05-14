@@ -178,7 +178,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
           } else {
               $check="";
           }
-          $ret.="<input class='form-control' type='checkbox' name='allergens[]' value='".$allergen."' ".$check."> ".$allergen."<br>";
+          $ret.="<input class='form-check' type='checkbox' name='allergens[]' value='".$allergen."' ".$check."> ".$allergen."<br>";
       }
       $ret.=  "
       </div>
@@ -191,11 +191,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
           } else {
               $check="";
           }
-          $ret.="<input class='form-control' type='checkbox' name='preferences[]' value='".$preference."' ".$check."> ".$preference."<br>";
+          $ret.="<input class='form-check' type='checkbox' name='preferences[]' value='".$preference."' ".$check."> ".$preference."<br>";
       }
       $ret.=  "
       </div>
-      <div><input class='form-control' type='submit' value='Save' /></div>
+      <div><button type='submit' class='btn btn-primary'>Save</button></div>
     </form>
     </div>
     ";
