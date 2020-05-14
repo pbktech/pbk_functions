@@ -73,9 +73,16 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
     $listItems[$item->itemSection][$item->idpbc_public_nutritional]=$item->itemName;
   }
   $ret.="\n
+  <script>
+  jQuery( function() {
+    jQuery('#itemSelector').select2({
+      theme: \"classic\"
+    });
+  } );
+  </script>
 	<div>
 		<form method='get' action='".$page."'  name='itemSelector'>
-			<select name='item' onchange=\"this.form.submit()\">
+			<select name='item' onchange=\"this.form.submit()\" id='itemSelector' class='form-control multipleSelect'>
       <option value=''>Choose an Item</option>
       <option value='_NEW'>Add a New Item</option>";
 	foreach($listItems as $section=>$items){
