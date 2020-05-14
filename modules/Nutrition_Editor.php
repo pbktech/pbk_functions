@@ -75,14 +75,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
   $ret.="\n
   <script>
   jQuery( function() {
-    jQuery('#itemSelector').select2({
+    jQuery('.js-example-basic-single').select2({
       theme: \"classic\"
     });
   } );
   </script>
 	<div>
 		<form method='get' action='".$page."'  name='itemSelector'>
-			<select name='item' onchange=\"this.form.submit()\" id='itemSelector' class='form-control multipleSelect'>
+			<select name='item' onchange=\"this.form.submit()\" id='itemSelector' class='form-control js-example-basic-single'>
       <option value=''>Choose an Item</option>
       <option value='_NEW'>Add a New Item</option>";
     foreach ($listItems as $section=>$items) {
@@ -179,44 +179,44 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         <div class='col'>
           <div class='form-group'>
             <h4>Allergens</h4>";
-          $allergy=explode(", ", $itemInfo->allergens);
-          $idNum=0;
-          foreach ($allergens as $allergen) {
-              if (in_array($allergen, $allergy)) {
-                  $check="checked='checked'";
-              } else {
-                  $check="";
-              }
-              $ret.="
+      $allergy=explode(", ", $itemInfo->allergens);
+      $idNum=0;
+      foreach ($allergens as $allergen) {
+          if (in_array($allergen, $allergy)) {
+              $check="checked='checked'";
+          } else {
+              $check="";
+          }
+          $ret.="
               <div class='form-check'>
                 <input class='form-check-input' type='checkbox' name='allergens[]' value='".$allergen."' id='id".$idNum."' ".$check." />
                 <label class='form-check-label'for='id".$idNum."' >".$allergen."</label>
               </div>
                 ";
-              $idNum++;
-          }
-          $ret.=  "
+          $idNum++;
+      }
+      $ret.=  "
           </div>
         </div>
         <div class='col'>
           <div class='form-group'>
             <h4>Dietary Preferences</h4>";
-          $dietary=explode(", ", $itemInfo->preferences);
-          foreach ($preferences as $preference) {
-              if (in_array($preference, $dietary)) {
-                  $check="checked='checked'";
-              } else {
-                  $check="";
-              }
-              $ret.="
+      $dietary=explode(", ", $itemInfo->preferences);
+      foreach ($preferences as $preference) {
+          if (in_array($preference, $dietary)) {
+              $check="checked='checked'";
+          } else {
+              $check="";
+          }
+          $ret.="
               <div class='form-check'>
                 <input class='form-check-input' type='checkbox' name='allergens[]' value='".$preference."' id='id".$idNum."' ".$check." />
                 <label class='form-check-label'for='id".$idNum."' >".$preference."</label>
               </div>
                 ";
-              $idNum++;
-          }
-          $ret.=  "
+          $idNum++;
+      }
+      $ret.=  "
           </div>
           </div>
         </div>
