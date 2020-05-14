@@ -175,45 +175,51 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         <div class='col'><label for='SG'>Sugars</label><br><input class='form-control' type='text' name='itemInfo[SG]' value='".$itemInfo->SG."' id='SG' /></div>
         <div class='col'></div>
       </div>
-    </div>
-      <div class='form-group'>
-        <label for='allergens'>Allergens</label><br>";
-      $allergy=explode(", ", $itemInfo->allergens);
-      $idNum=0;
-      foreach ($allergens as $allergen) {
-          if (in_array($allergen, $allergy)) {
-              $check="checked='checked'";
-          } else {
-              $check="";
+      <div class='row'>
+        <div class='col'>
+          <div class='form-group'>
+            <h4>Allergens</h4>";
+          $allergy=explode(", ", $itemInfo->allergens);
+          $idNum=0;
+          foreach ($allergens as $allergen) {
+              if (in_array($allergen, $allergy)) {
+                  $check="checked='checked'";
+              } else {
+                  $check="";
+              }
+              $ret.="
+              <div class='form-check'>
+                <input class='form-check-input' type='checkbox' name='allergens[]' value='".$allergen."' id='id".$idNum."' ".$check." />
+                <label class='form-check-label'for='id".$idNum."' >".$allergen."</label>
+              </div>
+                ";
+              $idNum++;
           }
-          $ret.="
-          <div class='form-check'>
-            <input class='form-check-input' type='checkbox' name='allergens[]' value='".$allergen."' id='id".$idNum."' ".$check." />
-            <label class='form-check-label'for='id".$idNum."' >".$allergen."</label>
+          $ret.=  "
           </div>
-            ";
-          $idNum++;
-      }
-      $ret.=  "
-      </div>
-      <div class='form-group'>
-        <label for='preferences'>Dietary Preferences</label><br>";
-      $dietary=explode(", ", $itemInfo->preferences);
-      foreach ($preferences as $preference) {
-          if (in_array($preference, $dietary)) {
-              $check="checked='checked'";
-          } else {
-              $check="";
+        </div>
+        <div class='col'>
+          <div class='form-group'>
+            <h4>Dietary Preferences</h4>";
+          $dietary=explode(", ", $itemInfo->preferences);
+          foreach ($preferences as $preference) {
+              if (in_array($preference, $dietary)) {
+                  $check="checked='checked'";
+              } else {
+                  $check="";
+              }
+              $ret.="
+              <div class='form-check'>
+                <input class='form-check-input' type='checkbox' name='allergens[]' value='".$preference."' id='id".$idNum."' ".$check." />
+                <label class='form-check-label'for='id".$idNum."' >".$preference."</label>
+              </div>
+                ";
+              $idNum++;
           }
-          $ret.="
-          <div class='form-check'>
-            <input class='form-check-input' type='checkbox' name='allergens[]' value='".$preference."' id='id".$idNum."' ".$check." />
-            <label class='form-check-label'for='id".$idNum."' >".$preference."</label>
+          $ret.=  "
           </div>
-            ";
-          $idNum++;
-      }
-      $ret.=  "
+          </div>
+        </div>
       </div>
       <div><button type='submit' class='btn btn-primary'>Save</button></div>
     </form>
