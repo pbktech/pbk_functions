@@ -100,7 +100,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $ret.="</select></form></div>
   <div>
     <form method='get' action='".$page."'  name='showPublished'>
-      <input class='form-control' type='checkbox' name='archived' onchange=\"this.form.submit()\" value='yes' $checked/> View Archived Items?
+      <div class='form-group'>
+        <div class='form-check'>
+          <input class='form-check-input' type='checkbox' name='archived' onchange=\"this.form.submit()\" id='archived' value='yes' $checked/>
+          <label class='form-check-label' for='gridCheck'>
+            View Archived Items?
+          </label>
+        </div>
+      </div>
     </form>
   </div>
   ";
@@ -172,13 +179,20 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
       <div class='form-group'>
         <label for='allergens'>Allergens</label><br>";
       $allergy=explode(", ", $itemInfo->allergens);
+      $idNum=0;
       foreach ($allergens as $allergen) {
           if (in_array($allergen, $allergy)) {
               $check="checked='checked'";
           } else {
               $check="";
           }
-          $ret.="<input class='form-check' type='checkbox' name='allergens[]' value='".$allergen."' ".$check."> ".$allergen."<br>";
+          $ret.="
+          <div class='form-check'>
+            <input class='form-check-input' type='checkbox' name='allergens[]' value='".$allergen."' id='id".$idNum."' ".$check." />
+            <label class='form-check-label'for='id".$idNum."' >".$allergen."</div>
+          </div>
+            ";
+          $idNum++;
       }
       $ret.=  "
       </div>
@@ -191,7 +205,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
           } else {
               $check="";
           }
-          $ret.="<input class='form-check' type='checkbox' name='preferences[]' value='".$preference."' ".$check."> ".$preference."<br>";
+          $ret.="
+          <div class='form-check'>
+            <input class='form-check-input' type='checkbox' name='allergens[]' value='".$preference."' id='id".$idNum."' ".$check." /> 
+            <label class='form-check-label'for='id".$idNum."' >".$preference."</div>
+          </div>
+            ";
+          $idNum++;
       }
       $ret.=  "
       </div>
