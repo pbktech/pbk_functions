@@ -29,7 +29,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $_POST['published'],
             $itemInfo
         ));
-        $_POST['item']=$wpdb->insert_id;
+        $_REQUEST['item']=$wpdb->insert_id;
     } else {
         $wpdb->query($wpdb->prepare(
             "
@@ -48,7 +48,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $rpt->reportEmail("jon@theproteinbar.com", "SQL Error \n".$wpdb->print_error()."\n\nPosted Data \n".print_r($_POST, true), "Nutrition_Guide Save Error");
         $message="<div class='alert alert-danger' id='message' style='text-align:center;'><p style='padding:3px;'>There was an error saving. This error has been reported.</p></div>";
     } else {
-        $message="<div class='alert alert-success' id='message' style='text-align:center;'><p style='padding:3px;'>The updates have been saved.</p></div>";
+        $message="<div class='alert alert-success' id='message' style='text-align:center;'><p style='padding:3px;'>".$_POST['itemName']." has been saved.</p></div>";
     }
     $ret.="<script src=\"https://code.jquery.com/jquery-1.10.1.min.js\"></script>
       ".$message."
