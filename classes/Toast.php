@@ -51,6 +51,19 @@ class Toast{
 		$this->localDB=$this->config->dBase;
 	}
 	function getAuthorized() {
+		$json=json_encode(array("clientId"=>$this->ToastClient,"clientSecret"=>$this->ToastSecret,"userAccessType"=>"TOAST_MACHINE_CLIENT"));
+		$ch = curl_init();
+		curl_setopt($ch, CURLOPT_HEADER, 0);
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+		curl_setopt($ch, CURLOPT_HTTPHEADER,Array("Content-Type: application/json",'Accept: application/json'));
+    curl_setopt($ch, CURLOPT_POST, true);
+    curl_setopt($ch, CURLOPT_POSTFIELDS, $json);
+    curl_setopt($ch, CURLOPT_VERBOSE, false);
+    curl_setopt($ch, CURLOPT_URL,$this->url. "/authentication/v1/authentication/login");
+		$result=curl_exec($ch);
+		return json_decode($result);
+
+		/*
 		$ch = curl_init();
 		curl_setopt($ch, CURLOPT_HEADER, 0);
 		curl_setopt ($ch, CURLOPT_RETURNTRANSFER, 1);
@@ -59,6 +72,7 @@ class Toast{
 		curl_setopt($ch, CURLOPT_URL,$this->url. "/usermgmt/v1/oauth/token");
 		$result=curl_exec($ch);
 		return json_decode($result);
+		*/
 	}
 	function connectDB() {
 		$this->mysqli = new mysqli($this->config->host, $this->config->username, $this->config->password, $this->config->dBase);
