@@ -88,7 +88,7 @@ class Toast{
 	function getRestaurantAllOptions($option,$pageSize) {
 		$ch = curl_init();
 		curl_setopt($ch, CURLOPT_HEADER, 0);
-		curl_setopt ($ch, CURLOPT_HTTPHEADER,Array("Authorization: Bearer " . $this->auth->access_token,"Toast-Restaurant-External-ID: " . $this->guid));
+		curl_setopt ($ch, CURLOPT_HTTPHEADER,Array("Authorization: Bearer " . $this->auth->accessToken,"Toast-Restaurant-External-ID: " . $this->guid));
 		curl_setopt ($ch, CURLOPT_RETURNTRANSFER, 1);
 		curl_setopt($ch, CURLOPT_URL,$this->url. "/config/v2/".$option."?pageSize=".$pageSize."");
 		$result=curl_exec($ch);
@@ -99,7 +99,7 @@ class Toast{
 		if(array_key_exists($do,$this->restOptions)){return $this->restOptions[$do];}
 		$ch = curl_init();
 		curl_setopt($ch, CURLOPT_HEADER, 0);
-		curl_setopt ($ch, CURLOPT_HTTPHEADER,Array("Authorization: Bearer " . $this->auth->access_token,"Toast-Restaurant-External-ID: " . $this->guid));
+		curl_setopt ($ch, CURLOPT_HTTPHEADER,Array("Authorization: Bearer " . $this->auth->accessToken,"Toast-Restaurant-External-ID: " . $this->guid));
 		curl_setopt ($ch, CURLOPT_RETURNTRANSFER, 1);
 		curl_setopt($ch, CURLOPT_URL,$this->url. "/config/v2/".$option."/".$do);
 		$result=curl_exec($ch);
@@ -111,7 +111,7 @@ class Toast{
 		if(array_key_exists($do,$this->restOptions)){return $this->restOptions[$do];}
 		$ch = curl_init();
 		curl_setopt($ch, CURLOPT_HEADER, 0);
-		curl_setopt ($ch, CURLOPT_HTTPHEADER,Array("Authorization: Bearer " . $this->auth->access_token,"Toast-Restaurant-External-ID: " . $this->guid));
+		curl_setopt ($ch, CURLOPT_HTTPHEADER,Array("Authorization: Bearer " . $this->auth->accessToken,"Toast-Restaurant-External-ID: " . $this->guid));
 		curl_setopt ($ch, CURLOPT_RETURNTRANSFER, 1);
 		curl_setopt($ch, CURLOPT_URL,$this->url. "/config/v2/".$option."/".$do);
 		$result=curl_exec($ch);
@@ -138,27 +138,27 @@ class Toast{
 	function getOrders($date) {
 		$ch = curl_init();
 		curl_setopt($ch, CURLOPT_HEADER, 0);
-		curl_setopt ($ch, CURLOPT_HTTPHEADER,Array("Authorization: Bearer " . $this->auth->access_token,"Toast-Restaurant-External-ID: " . $this->guid));
+		curl_setopt ($ch, CURLOPT_HTTPHEADER,Array("Authorization: Bearer " . $this->auth->accessToken,"Toast-Restaurant-External-ID: " . $this->guid));
 		curl_setopt ($ch, CURLOPT_RETURNTRANSFER, 1);
 		curl_setopt($ch, CURLOPT_URL,$this->url. "/orders/v2/orders?businessDate=" . $date);
 		$result=curl_exec($ch);
-		if($result->status!=200 && $result->status!="") {$this->notifyIT(json_decode($result)."\n\n Authorization: Bearer " . $this->auth->access_token."Toast-Restaurant-External-ID: " . $this->guid."\n\n".$this->url. "/orders/v2/orders?businessDate=" . $date,"JSON Error - getOrders");}
+		if($result->status!=200 && $result->status!="") {$this->notifyIT(json_decode($result)."\n\n Authorization: Bearer " . $this->auth->accessToken."Toast-Restaurant-External-ID: " . $this->guid."\n\n".$this->url. "/orders/v2/orders?businessDate=" . $date,"JSON Error - getOrders");}
 		return json_decode($result);
 	}
 	function getMenuItems($menu) {
 		$ch = curl_init();
 		curl_setopt($ch, CURLOPT_HEADER, 0);
-		curl_setopt ($ch, CURLOPT_HTTPHEADER,Array("Authorization: Bearer " . $this->auth->access_token,"Toast-Restaurant-External-ID: " . $this->guid));
+		curl_setopt ($ch, CURLOPT_HTTPHEADER,Array("Authorization: Bearer " . $this->auth->accessToken,"Toast-Restaurant-External-ID: " . $this->guid));
 		curl_setopt ($ch, CURLOPT_RETURNTRANSFER, 1);
 		curl_setopt($ch, CURLOPT_URL,$this->url. "/config/v2/menus/" . $menu);
 		$result=curl_exec($ch);
-		if($result->status!=200 && $result->status!="") {$this->notifyIT(json_decode($result)."\n\n Authorization: Bearer " . $this->auth->access_token."Toast-Restaurant-External-ID: " . $this->guid."\n\n".$this->url. "/orders/v2/orders?businessDate=" . $date,"JSON Error - getOrders");}
+		if($result->status!=200 && $result->status!="") {$this->notifyIT(json_decode($result)."\n\n Authorization: Bearer " . $this->auth->accessToken."Toast-Restaurant-External-ID: " . $this->guid."\n\n".$this->url. "/orders/v2/orders?businessDate=" . $date,"JSON Error - getOrders");}
 		return json_decode($result);
 	}
 	function getOrdersByDate($date) {
 		$ch = curl_init();
 		curl_setopt($ch, CURLOPT_HEADER, 0);
-		curl_setopt ($ch, CURLOPT_HTTPHEADER,Array("Authorization: Bearer " . $this->auth->access_token,"Toast-Restaurant-External-ID: " . $this->guid));
+		curl_setopt ($ch, CURLOPT_HTTPHEADER,Array("Authorization: Bearer " . $this->auth->accessToken,"Toast-Restaurant-External-ID: " . $this->guid));
 		curl_setopt ($ch, CURLOPT_RETURNTRANSFER, 1);
 		curl_setopt($ch, CURLOPT_URL,$this->url. "/orders/v2/orders?businessDate=" . $date);
 		$result=curl_exec($ch);
@@ -169,11 +169,11 @@ class Toast{
 		$endDate=date("Y-m-d",strtotime($date))."T".$e.".000".$tz;
 		$ch = curl_init();
 		curl_setopt($ch, CURLOPT_HEADER, 0);
-		curl_setopt ($ch, CURLOPT_HTTPHEADER,Array("Authorization: Bearer " . $this->auth->access_token,"Toast-Restaurant-External-ID: " . $this->guid));
+		curl_setopt ($ch, CURLOPT_HTTPHEADER,Array("Authorization: Bearer " . $this->auth->accessToken,"Toast-Restaurant-External-ID: " . $this->guid));
 		curl_setopt ($ch, CURLOPT_RETURNTRANSFER, 1);
 		curl_setopt($ch, CURLOPT_URL,$this->url. "/orders/v2/orders?startDate=" . $startDate."&endDate=". $endDate);
 		$result=curl_exec($ch);
-		if(isset($result->status) && $result->status!=200 && $result->status!="") {$this->notifyIT(json_decode($result)."\n\n Authorization: Bearer " . $this->auth->access_token."Toast-Restaurant-External-ID: " . $this->guid."\n\n".$this->url. "/orders/v2/orders?startDate=" . $startDate."&endDate=". $endDate,"JSON Error - getOrdersByTime");}
+		if(isset($result->status) && $result->status!=200 && $result->status!="") {$this->notifyIT(json_decode($result)."\n\n Authorization: Bearer " . $this->auth->accessToken."Toast-Restaurant-External-ID: " . $this->guid."\n\n".$this->url. "/orders/v2/orders?startDate=" . $startDate."&endDate=". $endDate,"JSON Error - getOrdersByTime");}
 		return json_decode($result);
 	}
 	function getOrdersByDateRange($sDate,$eDate,$s,$e,$tz) {
@@ -181,7 +181,7 @@ class Toast{
 		$endDate=date("Y-m-d",strtotime($eDate))."T".$e.".000".$tz;
 		$ch = curl_init();
 		curl_setopt($ch, CURLOPT_HEADER, 0);
-		curl_setopt ($ch, CURLOPT_HTTPHEADER,Array("Authorization: Bearer " . $this->auth->access_token,"Toast-Restaurant-External-ID: " . $this->guid));
+		curl_setopt ($ch, CURLOPT_HTTPHEADER,Array("Authorization: Bearer " . $this->auth->accessToken,"Toast-Restaurant-External-ID: " . $this->guid));
 		curl_setopt ($ch, CURLOPT_RETURNTRANSFER, 1);
 		curl_setopt($ch, CURLOPT_URL,$this->url. "/orders/v2/orders?startDate=" . $startDate."&endDate=". $endDate);
 		$result=curl_exec($ch);
@@ -192,7 +192,7 @@ class Toast{
 		$endDate=date("Y-m-d",strtotime($date))."T".$e.".000".$tz;
 		$ch = curl_init();
 		curl_setopt($ch, CURLOPT_HEADER, 0);
-		curl_setopt ($ch, CURLOPT_HTTPHEADER,Array("Authorization: Bearer " . $this->auth->access_token,"Toast-Restaurant-External-ID: " . $this->guid));
+		curl_setopt ($ch, CURLOPT_HTTPHEADER,Array("Authorization: Bearer " . $this->auth->accessToken,"Toast-Restaurant-External-ID: " . $this->guid));
 		curl_setopt ($ch, CURLOPT_RETURNTRANSFER, 1);
 		curl_setopt($ch, CURLOPT_URL,$this->url. "/labor/v1/timeEntries?startDate=" . $startDate."&endDate=". $endDate);
 		$result=curl_exec($ch);
@@ -203,7 +203,7 @@ class Toast{
 		$endDate=date("Y-m-d",strtotime($date))."T".$e.".000".$tz;
 		$ch = curl_init();
 		curl_setopt($ch, CURLOPT_HEADER, 0);
-		curl_setopt ($ch, CURLOPT_HTTPHEADER,Array("Authorization: Bearer " . $this->auth->access_token,"Toast-Restaurant-External-ID: " . $this->guid));
+		curl_setopt ($ch, CURLOPT_HTTPHEADER,Array("Authorization: Bearer " . $this->auth->accessToken,"Toast-Restaurant-External-ID: " . $this->guid));
 		curl_setopt ($ch, CURLOPT_RETURNTRANSFER, 1);
 		curl_setopt($ch, CURLOPT_URL,$this->url. "/labor/v1/shifts?startDate=" . $startDate."&endDate=". $endDate);
 		$result=curl_exec($ch);
@@ -212,7 +212,7 @@ class Toast{
 	function getOrderInfo($order) {
 		$ch = curl_init();
 		curl_setopt($ch, CURLOPT_HEADER, 0);
-		curl_setopt ($ch, CURLOPT_HTTPHEADER,Array("Authorization: Bearer " . $this->auth->access_token,"Toast-Restaurant-External-ID: " . $this->guid));
+		curl_setopt ($ch, CURLOPT_HTTPHEADER,Array("Authorization: Bearer " . $this->auth->accessToken,"Toast-Restaurant-External-ID: " . $this->guid));
 		curl_setopt ($ch, CURLOPT_RETURNTRANSFER, 1);
 		curl_setopt($ch, CURLOPT_URL,$this->url. "/orders/v2/orders/" . $order);
 		$result=curl_exec($ch);
@@ -221,7 +221,7 @@ class Toast{
 	function getUserInfo($user) {
 		$ch = curl_init();
 		curl_setopt($ch, CURLOPT_HEADER, 0);
-		curl_setopt ($ch, CURLOPT_HTTPHEADER,Array("Authorization: Bearer " . $this->auth->access_token,"Toast-Restaurant-External-ID: " . $this->guid));
+		curl_setopt ($ch, CURLOPT_HTTPHEADER,Array("Authorization: Bearer " . $this->auth->accessToken,"Toast-Restaurant-External-ID: " . $this->guid));
 		curl_setopt ($ch, CURLOPT_RETURNTRANSFER, 1);
 		curl_setopt($ch, CURLOPT_URL,$this->url. "/labor/v1/employees/" . $user);
 		$result=curl_exec($ch);
@@ -230,7 +230,7 @@ class Toast{
 	function getPaymentInfo($p) {
 		$ch = curl_init();
 		curl_setopt($ch, CURLOPT_HEADER, 0);
-		curl_setopt ($ch, CURLOPT_HTTPHEADER,Array("Authorization: Bearer " . $this->auth->access_token,"Toast-Restaurant-External-ID: " . $this->guid));
+		curl_setopt ($ch, CURLOPT_HTTPHEADER,Array("Authorization: Bearer " . $this->auth->accessToken,"Toast-Restaurant-External-ID: " . $this->guid));
 		curl_setopt ($ch, CURLOPT_RETURNTRANSFER, 1);
 		curl_setopt($ch, CURLOPT_URL,$this->url. "/orders/v2/payments/" . $p);
 		$result=curl_exec($ch);
@@ -239,7 +239,7 @@ class Toast{
 	function getAllEmployees() {
 		$ch = curl_init();
 		curl_setopt($ch, CURLOPT_HEADER, 0);
-		curl_setopt ($ch, CURLOPT_HTTPHEADER,Array("Authorization: Bearer " . $this->auth->access_token,"Toast-Restaurant-External-ID: " . $this->guid));
+		curl_setopt ($ch, CURLOPT_HTTPHEADER,Array("Authorization: Bearer " . $this->auth->accessToken,"Toast-Restaurant-External-ID: " . $this->guid));
 		curl_setopt ($ch, CURLOPT_RETURNTRANSFER, 1);
 		curl_setopt($ch, CURLOPT_URL,$this->url. "/labor/v1/employees");
 		$result=curl_exec($ch);
@@ -248,7 +248,7 @@ class Toast{
 	function getJobInfo($j) {
 		$ch = curl_init();
 		curl_setopt($ch, CURLOPT_HEADER, 0);
-		curl_setopt ($ch, CURLOPT_HTTPHEADER,Array("Authorization: Bearer " . $this->auth->access_token,"Toast-Restaurant-External-ID: " . $this->guid));
+		curl_setopt ($ch, CURLOPT_HTTPHEADER,Array("Authorization: Bearer " . $this->auth->accessToken,"Toast-Restaurant-External-ID: " . $this->guid));
 		curl_setopt ($ch, CURLOPT_RETURNTRANSFER, 1);
 		curl_setopt($ch, CURLOPT_URL,$this->url. "/labor/v1/jobs/".$j);
 		$result=curl_exec($ch);
@@ -257,7 +257,7 @@ class Toast{
 	function getCashInfo($j) {
 		$ch = curl_init();
 		curl_setopt($ch, CURLOPT_HEADER, 0);
-		curl_setopt ($ch, CURLOPT_HTTPHEADER,Array("Authorization: Bearer " . $this->auth->access_token,"Toast-Restaurant-External-ID: " . $this->guid));
+		curl_setopt ($ch, CURLOPT_HTTPHEADER,Array("Authorization: Bearer " . $this->auth->accessToken,"Toast-Restaurant-External-ID: " . $this->guid));
 		curl_setopt ($ch, CURLOPT_RETURNTRANSFER, 1);
 		curl_setopt($ch, CURLOPT_URL,$this->url. "/cashmgmt/v1/entries?businessDate=".$j);
 		$result=curl_exec($ch);
@@ -266,7 +266,7 @@ class Toast{
 	function getCustCredits($c) {
 		$ch = curl_init();
 		curl_setopt($ch, CURLOPT_HEADER, 0);
-		curl_setopt ($ch, CURLOPT_HTTPHEADER,Array("Authorization: Bearer " . $this->auth->access_token,"Toast-Restaurant-External-ID: " . $this->guid));
+		curl_setopt ($ch, CURLOPT_HTTPHEADER,Array("Authorization: Bearer " . $this->auth->accessToken,"Toast-Restaurant-External-ID: " . $this->guid));
 		curl_setopt ($ch, CURLOPT_RETURNTRANSFER, 1);
 		curl_setopt($ch, CURLOPT_URL,$this->url. "/crm/v1/customers/" . $c . "/creditSummary");
 		$result=curl_exec($ch);
@@ -275,7 +275,7 @@ class Toast{
 	function getCustomer($c) {
 		$ch = curl_init();
 		curl_setopt($ch, CURLOPT_HEADER, 0);
-		curl_setopt ($ch, CURLOPT_HTTPHEADER,Array("Authorization: Bearer " . $this->auth->access_token,"Toast-Restaurant-External-ID: " . $this->guid));
+		curl_setopt ($ch, CURLOPT_HTTPHEADER,Array("Authorization: Bearer " . $this->auth->accessToken,"Toast-Restaurant-External-ID: " . $this->guid));
 		curl_setopt ($ch, CURLOPT_RETURNTRANSFER, 1);
 		curl_setopt($ch, CURLOPT_URL,$this->url. "/crm/v1/customers/" . $c . "");
 		$result=curl_exec($ch);
@@ -284,7 +284,7 @@ class Toast{
 	function getCustomerTransactions($c) {
 		$ch = curl_init();
 		curl_setopt($ch, CURLOPT_HEADER, 0);
-		curl_setopt ($ch, CURLOPT_HTTPHEADER,Array("Authorization: Bearer " . $this->auth->access_token,"Toast-Restaurant-External-ID: " . $this->guid));
+		curl_setopt ($ch, CURLOPT_HTTPHEADER,Array("Authorization: Bearer " . $this->auth->accessToken,"Toast-Restaurant-External-ID: " . $this->guid));
 		curl_setopt ($ch, CURLOPT_RETURNTRANSFER, 1);
 		curl_setopt($ch, CURLOPT_URL,$this->url. "/crm/v1/customers/" . $c . "/creditTransactions");
 		$result=curl_exec($ch);
@@ -295,7 +295,7 @@ class Toast{
 		$ch = curl_init();
 		curl_setopt($ch, CURLOPT_HEADER, 0);
 		curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
-		curl_setopt ($ch, CURLOPT_HTTPHEADER,Array("Authorization: Bearer " . $this->auth->access_token,
+		curl_setopt ($ch, CURLOPT_HTTPHEADER,Array("Authorization: Bearer " . $this->auth->accessToken,
 		"Toast-Restaurant-External-ID: " . $this->guid,
 		'Content-Type: application/json',
     'Content-Length: ' . strlen($ph)));
@@ -312,7 +312,7 @@ class Toast{
 		$ch = curl_init();
 		curl_setopt($ch, CURLOPT_HEADER, 0);
 		curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
-		curl_setopt ($ch, CURLOPT_HTTPHEADER,Array("Authorization: Bearer " . $this->auth->access_token,
+		curl_setopt ($ch, CURLOPT_HTTPHEADER,Array("Authorization: Bearer " . $this->auth->accessToken,
 		"Toast-Restaurant-External-ID: " . $this->guid,
 		'Content-Type: application/json',
     'Content-Length: ' . strlen($ph)));
@@ -331,7 +331,7 @@ class Toast{
 		$ch = curl_init();
 		curl_setopt($ch, CURLOPT_HEADER, 0);
 		curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
-		curl_setopt ($ch, CURLOPT_HTTPHEADER,Array("Authorization: Bearer " . $this->auth->access_token,
+		curl_setopt ($ch, CURLOPT_HTTPHEADER,Array("Authorization: Bearer " . $this->auth->accessToken,
 		"Toast-Restaurant-External-ID: " . $this->guid,
 		'Content-Type: application/json',
     'Content-Length: ' . strlen($ph)));
