@@ -61,7 +61,7 @@ class Toast{
     curl_setopt($ch, CURLOPT_VERBOSE, false);
     curl_setopt($ch, CURLOPT_URL,$this->url. "/authentication/v1/authentication/login");
 		$result=curl_exec($ch);
-		print_r(json_decode($result));
+		print_r(json_decode($result->token));
 		die();
 		return json_decode($result);
 
