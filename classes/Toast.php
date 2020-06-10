@@ -52,16 +52,17 @@ class Toast{
 	}
 	function getAuthorized() {
 		$json=json_encode(array("clientId"=>$this->ToastClient,"clientSecret"=>$this->ToastSecret,"userAccessType"=>"TOAST_MACHINE_CLIENT"));
+		print_r(json_decode($json));
 		$ch = curl_init();
 		curl_setopt($ch, CURLOPT_HEADER, 0);
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
 		curl_setopt($ch, CURLOPT_HTTPHEADER,Array("Content-Type: application/json",'Accept: application/json'));
     curl_setopt($ch, CURLOPT_POST, true);
     curl_setopt($ch, CURLOPT_POSTFIELDS, $json);
-    curl_setopt($ch, CURLOPT_VERBOSE, false);
+    curl_setopt($ch, CURLOPT_VERBOSE, true);
     curl_setopt($ch, CURLOPT_URL,$this->url. "/authentication/v1/authentication/login");
 		$result=curl_exec($ch);
-		print_r($result);
+		print_r(json_decode($result));
 		die();
 		return json_decode($result);
 
