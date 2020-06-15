@@ -73,6 +73,7 @@ if(!isset($_REQUEST['rid'])) {
 		$order=$toast->getPaymentInfo($orders[0]->ToastCheckID);
 	}
 	if(is_array($orders) && count($orders)!=0){
+		$fmt = new NumberFormatter( 'en_US', NumberFormatter::CURRENCY );
 		$toast ->setStartTime(date("Y-m-d 00:00:00",strtotime($order->openedDate)));
 		$toast ->setEndTime(date("Y-m-d 23:59:59",strtotime($order->openedDate)));
 		$employees=$toast->getClockedInEmployees("Team Member");
@@ -82,7 +83,7 @@ if(!isset($_REQUEST['rid'])) {
 		if(isset($order->tabName) && $order->tabName!="") {$ret.=": ".$order->tabName;}
 		$ret.="</h4>";
 		$ret.="<div>Opened: ".date("m/d/Y g:i a",strtotime($order->openedDate))." || Paid: ".date("m/d/Y g:i a",strtotime($order->paidDate))." || Closed: ".date("m/d/Y g:i a",strtotime($order->closedDate))."</div>";
-		$ret.="<div><strong>Payment Method: ".$order->paymentType." || Tip Amount: ".money_format("%.2n", $order->tipAmount)." || Order Total: ".money_format("%.2n", $order->totalAmount)."</strong></div>
+		$ret.="<div><strong>Payment Method: ".$order->paymentType." || Tip Amount: ".$fmt->formatCurrency($order->tipAmount,"USD")." || Order Total: ".money_format("%.2n", $order->totalAmount)."</strong></div>
 		<script>
 			function disableOtherChecks(){
 		";
