@@ -83,7 +83,7 @@ if(!isset($_REQUEST['rid'])) {
 		if(isset($order->tabName) && $order->tabName!="") {$ret.=": ".$order->tabName;}
 		$ret.="</h4>";
 		$ret.="<div>Opened: ".date("m/d/Y g:i a",strtotime($order->openedDate))." || Paid: ".date("m/d/Y g:i a",strtotime($order->paidDate))." || Closed: ".date("m/d/Y g:i a",strtotime($order->closedDate))."</div>";
-		$ret.="<div><strong>Payment Method: ".$order->paymentType." || Tip Amount: ".$fmt->formatCurrency($order->tipAmount,"USD")." || Order Total: ".money_format("%.2n", $order->totalAmount)."</strong></div>
+		$ret.="<div><strong>Payment Method: ".$order->paymentType." || Tip Amount: ".$fmt->formatCurrency($order->tipAmount,"USD")." || Order Total: ".$fmt->formatCurrency($order->totalAmount,"USD")."</strong></div>
 		<script>
 			function disableOtherChecks(){
 		";
