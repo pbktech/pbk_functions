@@ -1,6 +1,7 @@
 <?php
 global $wp;
 global $wpdb;
+$fmt = new NumberFormatter( 'en_US', NumberFormatter::CURRENCY );
 $page = home_url( add_query_arg( array(), $wp->request ) );
 if($_SERVER['REQUEST_METHOD'] == 'POST') {
 	$toast = new ToastReport($_REQUEST['rid']);
@@ -93,7 +94,7 @@ if(isset($_REQUEST['order']) && $_REQUEST['order']!='') {
 	if(isset($order->tabName) && $order->tabName!="") {$ret.=": ".$order->tabName;}
 	$ret.="</h4>";
 	$ret.="<div>Opened: ".date("m/d/Y g:i a",strtotime($order->openedDate))." || Paid: ".date("m/d/Y g:i a",strtotime($payment->paidDate))." || Closed: ".date("m/d/Y g:i a",strtotime($order->closedDate))."</div>";
-	$ret.="<div><strong>Payment Method: ".$payment->paymentType." || Tip Amount: ".money_format("%.2n", $payment->tipAmount)." || Order Total: ".money_format("%.2n", $payment->totalAmount)."</strong></div>";
+	$ret.="<div><strong>Payment Method: ".$payment->paymentType." || Tip Amount: ".$fmt->formatCurrency($payment->tipAmount,"USD")." || Order Total: ".$fmt->formatCurrency($payment->totalAmount,"USD")."</strong></div>";
 	$ret.="<div><form method='POST' action='".$page."' onsubmit=\"return validateTipAmounts()\" >
 	<table>
 		<tr>

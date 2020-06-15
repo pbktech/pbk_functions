@@ -1,4 +1,5 @@
 <?php
+$fmt = new NumberFormatter( 'en_US', NumberFormatter::CURRENCY );
 // $retArray=[Restaurant][Date][Hour][Labor_Cost]
 
 		$ret.="
@@ -79,7 +80,7 @@ if(isset($_REQUEST['endDate']) && isset($_REQUEST['startDate'])) {
 	foreach($retArray as $retA =>$r){
 		foreach($r as $date =>$hour){
 			foreach($hour as $h => $cost){
-				$ret.="\n<tr><td>".$retA."</td><td>".$date."</td><td>".$h."</td><td>".money_format('%(#10n',$cost['total'])."</td><td>".money_format('%(#10n',$cost['sales'])."</td><td>".money_format('%(#10n',$cost['labor'])."</td><td>".$cost['peeps']."</td></tr>";
+				$ret.="\n<tr><td>".$retA."</td><td>".$date."</td><td>".$h."</td><td>".$fmt->formatCurrency($cost['total'],"USD")."</td><td>".$fmt->formatCurrency($cost['sales'],"USD")."</td><td>".$fmt->formatCurrency($cost['labor'],"USD")."</td><td>".$cost['peeps']."</td></tr>";
 				fputcsv($file, array($retA,$date,$h,$cost['total'],$cost['sales'],$cost['labor'],$cost['peeps']));
 			}
 		}

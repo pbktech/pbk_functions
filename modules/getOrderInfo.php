@@ -2,6 +2,7 @@
 global $ret;
 global $wp;
 global $wpdb;
+$fmt = new NumberFormatter( 'en_US', NumberFormatter::CURRENCY );
 $current_user = wp_get_current_user();
 $userLevel=get_currentuserinfo();
 if($userLevel->user_level<=7) {
@@ -22,7 +23,7 @@ if(isset($_GET['cguid']) && isset($_GET['sguid'])) {
 	$ret.="<h3>Customer Credit Transaction History</h3><div>
 			<p><strong>".ucfirst($c->firstName)." ".ucfirst($c->lastName)."</strong></p>";
 	foreach($transactions as $t){
-		$ret.="<p>". date("m/d/Y",strtotime($t->transactionDate)) . " " .$t->transactionType . " " . money_format('%(#4n', $t->amount) . " <i>Expires: " . date("m/d/Y",strtotime($t->expirationDate)) ."</i> ".$t->note . "</p>";
+		$ret.="<p>". date("m/d/Y",strtotime($t->transactionDate)) . " " .$t->transactionType . " " . $fmt->formatCurrency($t->amount,"USD") . " <i>Expires: " . date("m/d/Y",strtotime($t->expirationDate)) ."</i> ".$t->note . "</p>";
 	}
 	$ret.="</div>
 	";

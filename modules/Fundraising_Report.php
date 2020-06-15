@@ -1,6 +1,7 @@
 <?php
 global $wp;
 global $wpdb;
+$fmt = new NumberFormatter( 'en_US', NumberFormatter::CURRENCY );
 $page = home_url( add_query_arg( array(), $wp->request ) );
 $toast = new ToastReport();
 $rests=$toast->getAvailableRestaurants();
@@ -8,7 +9,7 @@ if(isset($_GET['startDate']) && isset($_GET['rid'])) {
 	$toast->setStartTime($_REQUEST['startDate']);
   $toast->setRestaurantID($_REQUEST['rid']);
 	$result=$toast->getFundraisingResults();
-	$ret.="<div><h4>Total Sales: ".money_format('%.2n', $result->Amount)."</h4></div>";
+	$ret.="<div><h4>Total Sales: ".$fmt->formatCurrency($result->Amount,"USD")."</h4></div>";
 }
 $ret.="
 <script type=\"text/javascript\">

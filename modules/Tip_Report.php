@@ -1,6 +1,7 @@
 <?php
 global $wp;
 global $wpdb;
+$fmt = new NumberFormatter( 'en_US', NumberFormatter::CURRENCY );
 $page = home_url( add_query_arg( array(), $wp->request ) );
 $toast = new ToastReport();
 $rests=$toast->getAvailableRestaurants();
@@ -40,7 +41,7 @@ if(isset($_GET['startDate']) && isset($_GET['endDate'])) {
 					$ret.="<div style='color:#e51818;'><strong>Tips have not been assigned for this check, yet.</strong></div>";
 				}
       	$ret.="<div>Opened: ".date("m/d/Y g:i a",strtotime($order->openedDate))." || Paid: ".date("m/d/Y g:i a",strtotime($payment->paidDate))." || Closed: ".date("m/d/Y g:i a",strtotime($order->closedDate))."</div>";
-      	$ret.="<div><strong>Payment Method: ".$payment->paymentType." || Tip Amount: ".money_format("%.2n", $payment->tipAmount)." || Order Total: ".money_format("%.2n", $payment->totalAmount)."</strong></div>";
+      	$ret.="<div><strong>Payment Method: ".$payment->paymentType." || Tip Amount: ".$fmt->formatCurrency($payment->tipAmount,"USD")." || Order Total: ".$fmt->formatCurrency($payment->totalAmount,"USD")."</strong></div>";
       	$ret.="<div><form method='POST' action='".$page."' onsubmit=\"return validateTipAmounts()\" >
       	<table>
         	<tr>
@@ -49,14 +50,14 @@ if(isset($_GET['startDate']) && isset($_GET['endDate'])) {
       	</tr>
       	<tr>
         	<td>3rd Party/No One</td>
-        	<td>".money_format("%.2n", $tips['a0']->tipAmount)."</td>
+        	<td>".$fmt->formatCurrency($tips['a0']->tipAmount,"USD")."</td>
       	</tr>
       	";
       	foreach($employees as $e){
     			$ret.="
     			<tr>
     				<td><span style='text-transform:capitalize;'>".$e->employeeName."</span></td>
-    				<td>".money_format('%.2n',$tips[$e->GUID]->tipAmount)."</td>
+    				<td>".$fmt->formatCurrency($tips[$e->GUID]->tipAmount,"USD")."</td>
     			</tr>";
     		}
     		$ret.="</table><br />";
@@ -75,7 +76,7 @@ if(isset($_GET['startDate']) && isset($_GET['endDate'])) {
 				$ret.="
 				<tr>
 					<td><span style='text-transform:capitalize;'>".$employeeName."</span></td>
-					<td>".money_format('%.2n',$assignedTip)."</td>
+					<td>".$fmt->formatCurrency($assignedTip,"USD")."</td>
 				</tr>";
 			}
 			$ret.="</table><br />";
