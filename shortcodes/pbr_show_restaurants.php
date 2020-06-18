@@ -1,6 +1,6 @@
 <?php
 function pbr_show_restaurants() {
-
+	add_action( 'wp_enqueue_scripts', 'pbk_scripts' );
 	$return="\n<div style='overflow:auto;background-color:#FFFFFF;'>
 	\n<table  class=\"table table-striped table-hover\" style=\"width: 100%;\" autosize=\"1\">\n
 <thead  style='background-color:#0e2244; color: #ffffff; text-align: center;font-weight:bold;'>

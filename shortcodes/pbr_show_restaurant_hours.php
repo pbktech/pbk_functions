@@ -1,6 +1,7 @@
 <?php
 function pbr_show_restaurant_hours() {
 //	echo 'date_default_timezone_set: ' . date_default_timezone_get() . '<br />';
+add_action( 'wp_enqueue_scripts', 'pbk_scripts' );
 	$return="\n<div style=\"overflow:auto;\">
 	<table  class=\"table table-striped table-hover\" style=\"width: 100%;\">\n
 	<thead  style='background-color:#0e2244; color: #ffffff; text-align: center;font-weight:bold;'>\n<tr>\n<th style=\"text-align: center;\">Restaurant\n</th>";

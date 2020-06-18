@@ -1,5 +1,6 @@
 <?php
 function pbrf_showReportBuilder( $atts ) {
+  add_action( 'wp_enqueue_scripts', 'pbk_scripts' );
   $ret=null;
   $a = shortcode_atts( array(
         'report' => '',

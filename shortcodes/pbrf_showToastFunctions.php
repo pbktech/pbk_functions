@@ -1,5 +1,6 @@
 <?php
 function pbrf_showToastFunctions( $atts ) {
+	add_action( 'wp_enqueue_scripts', 'pbk_scripts' );
 	$a = shortcode_atts( array(
         'function' => '',
     ), $atts );

@@ -25,6 +25,7 @@ function pbr_setup_menu(){
 function pbr_admin_init(){
 }
 function pbr_edit_restaurant(){
+  add_action( 'wp_enqueue_scripts', 'pbk_scripts' );
 	if(!class_exists('WP_List_Table')){
 	   require_once( ABSPATH . 'wp-admin/includes/class-wp-list-table.php' );
 	}
@@ -52,6 +53,7 @@ function pbr_edit_restaurant(){
 }
 
 function pbr_add_restaurant(){
+  add_action( 'wp_enqueue_scripts', 'pbk_scripts' );
   echo "<div class='wrap'><h2>Add a Restaurant</h2>";
   $restaurant = new Restaurant();
   echo $restaurant->restaurantEditBox();
@@ -100,6 +102,7 @@ function pbr_orders(){
   echo "</div>";
 }
 function pbr_edit_devices(){
+  add_action( 'wp_enqueue_scripts', 'pbk_scripts' );
   $restaurant = new Restaurant();
   if($_SERVER['REQUEST_METHOD'] == 'POST'){
     $restaurant->pbkSaveDevice($_POST);
@@ -117,6 +120,7 @@ function pbr_edit_devices(){
   echo "</div>";
 }
 function pbr_edit_minibar(){
+  add_action( 'wp_enqueue_scripts', 'pbk_scripts' );
   echo "<div class='wrap'><div id=\"icon-users\" class=\"icon32\"></div><h2>Manage MiniBar<a href=\"?page=pbr-edit-minibar&amp;id=_NEW\" class=\"add-new-h2\">Add New MiniBar Location</a>
   ";
   if(isset($_GET['id']) && is_numeric($_GET['id'])) {
@@ -163,6 +167,7 @@ function pbr_edit_minibar(){
       ";
     }
   function pbr_incident_pdf(){
+    add_action( 'wp_enqueue_scripts', 'pbk_scripts' );
     global $wpdb;
     $r=$wpdb->get_row("SELECT * FROM pbc_incident_reports WHERE id_pbc_incident_reports='".$_GET['incident']."'");
     if(!$r){
@@ -271,6 +276,7 @@ function pbr_edit_minibar(){
   </div>";
 }
 function pbr_update_restaurant() {
+  add_action( 'wp_enqueue_scripts', 'pbk_scripts' );
    	$restaurant = new Restaurant();
    	$restaurant->setRestaurantInfo($_POST);
    	if($restaurant->insertUpdateRestaurantInfo()) {
@@ -282,6 +288,7 @@ function pbr_update_restaurant() {
    	exit;
 }
 function pbr_nho_setup(){
+  add_action( 'wp_enqueue_scripts', 'pbk_scripts' );
   echo "<div class=\"wrap\">
           <div id=\"icon-users\" class=\"icon32\"></div>
             <h2>NHO Events <a href=\"?page=pbr-nho&amp;nhoDate=_new\" class=\"add-new-h2\">Add New</a>
