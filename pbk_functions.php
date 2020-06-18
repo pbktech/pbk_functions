@@ -37,7 +37,7 @@ function pbk_scripts(){
   wp_enqueue_style( 'select_style', 'https://cdn.jsdelivr.net/npm/select2@4.0.12/dist/css/select2.min.css');
   wp_enqueue_style( 'timepicker_style', '//cdnjs.cloudflare.com/ajax/libs/timepicker/1.3.5/jquery.timepicker.min.css');
   wp_enqueue_style( 'jquery-ui_style', '//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css');
-  wp_enqueue_style( 'bootstrap_style', 'https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css');
+//  wp_enqueue_style( 'bootstrap_style', 'https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css');
   wp_enqueue_style( 'sort_tables_style', '//cdn.datatables.net/1.10.20/css/jquery.dataTables.min.css');
   wp_enqueue_style( 'screen_signature_style', PBKF_URL . '/assets/css/signature.css');
   wp_enqueue_script( 'select_script', 'https://cdn.jsdelivr.net/npm/select2@4.0.12/dist/js/select2.min.js');
@@ -49,7 +49,7 @@ function pbk_scripts(){
   wp_enqueue_script( 'screen_signature_script', PBKF_URL . '/assets/js/app.js', array(), false, true);
   wp_enqueue_script( 'screen_signature_script', PBKF_URL . '/assets/js/jquery.signaturepad.min.js', array(), false, true);
 }
-add_action( 'wp_enqueue_scripts', 'pbk_scripts' );
+ add_action( 'wp_enqueue_scripts', 'pbk_scripts' );
 
 /*Classes*/
 use PHPMailer\PHPMailer\PHPMailer;
