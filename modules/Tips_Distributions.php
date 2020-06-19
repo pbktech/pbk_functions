@@ -101,7 +101,7 @@ if(!isset($_REQUEST['rid'])) {
 		<table>
 			<tr>
 				<td>3rd Party/No One</td>
-				<td><label for='d-a0'>Driver?</label> <input type='checkbox' name='driver[]' onclick='disableOtherChecks()' value='a0' id='d-a0'/></td>
+				<td><label for='d-a0'>Driver?</label> <input type='checkbox' name='driver[]' value='a0' id='d-a0'/></td>
 				<td></td>
 			</tr>";
 		foreach($employees as $e){
