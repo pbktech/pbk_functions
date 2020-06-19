@@ -83,8 +83,23 @@ if(!isset($_REQUEST['rid'])) {
 		<h4>Check #".$order->checkNumber;
 		if(isset($order->tabName) && $order->tabName!="") {$ret.=": ".$order->tabName;}
 		$ret.="</h4>";
-		$ret.="<div>Opened: ".date("m/d/Y g:i a",strtotime($order->openedDate))." || Paid: ".date("m/d/Y g:i a",strtotime($order->paidDate))." || Closed: ".date("m/d/Y g:i a",strtotime($order->closedDate))."</div>";
-		$ret.="<div><strong>Payment Method: ".$order->paymentType." || Tip Amount: ".$fmt->formatCurrency($order->tipAmount,"USD")." || Order Total: ".$fmt->formatCurrency($order->totalAmount,"USD")."</strong></div>
+		$ret.="
+		<div class='container'>
+			<div class='row'>
+				<div class='col'>Opened: ".date("m/d/Y g:i a",strtotime($order->openedDate))."</div>
+				<div class='col'>||</div>
+				<div class='col'>Paid: ".date("m/d/Y g:i a",strtotime($order->paidDate))."</div>
+				<div class='col'>||</div>
+				<div class='col'>Closed: ".date("m/d/Y g:i a",strtotime($order->closedDate))."</div>
+			</div>
+			<div class='row'>
+				<div class='col'><strong>Payment Method: ".$order->paymentType."</strong></div>
+				<div class='col'>||</div>
+				<div class='col'><strong>Tip Amount: ".$fmt->formatCurrency($order->tipAmount,"USD")."</strong></div>
+				<div class='col'>||</div>
+				<div class='col'><strong>Order Total: ".$fmt->formatCurrency($order->totalAmount,"USD")."</strong></div>
+			</div>
+		</div>
 		<script>
 		 jQuery(document).ready(function(){
 			 	jQuery('#d-a0').click(function(){
@@ -120,7 +135,7 @@ if(!isset($_REQUEST['rid'])) {
 	} else {
 		$ret.="
 		<div class=\"alert alert-secondary\" role=\"alert\">
-		There are not any orders that need their tips assigned to employees.
+		There are not any orders that require tip assignments.
 		</div>";
 	}
 }
