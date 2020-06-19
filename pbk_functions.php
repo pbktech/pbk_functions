@@ -75,7 +75,7 @@ include('shortcodes/pbrf_showReportBuilder.php');
 include('shortcodes/pbr_show_restaurants.php');
 include('shortcodes/pbr_show_restaurant_hours.php');
 include('shortcodes/pbk_showChildPages.php');
-include('shortcodes/pbk_CheckTips.php');
+include('shortcodes/pbk_checkTips.php');
 
 /*Admin Pages*/
 include('admin-page.php'); // the plugin options page HTML and save functions
