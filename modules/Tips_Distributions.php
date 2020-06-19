@@ -93,6 +93,7 @@ if(!isset($_REQUEST['rid'])) {
 						jQuery(\".toDisable\").css(\"background-color\",\"#e3e1df\");
 					}else if(jQuery(this).prop(\"checked\") == false){
 						jQuery(\"input.group1\").removeAttr(\"disabled\");
+						jQuery(\".toDisable\").css(\"background-color\",\"#FFFFFF\");
 					}
 			});
 		});
