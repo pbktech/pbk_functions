@@ -75,6 +75,7 @@ include('shortcodes/pbrf_showReportBuilder.php');
 include('shortcodes/pbr_show_restaurants.php');
 include('shortcodes/pbr_show_restaurant_hours.php');
 include('shortcodes/pbk_showChildPages.php');
+include('shortcodes/pbk_CheckTips.php');
 
 /*Admin Pages*/
 include('admin-page.php'); // the plugin options page HTML and save functions
@@ -90,6 +91,7 @@ function pbk_force_download($file) {
   }
 }
 add_shortcode( 'toast', 'pbrf_showToastFunctions' );
+add_shortcode( 'tips', 'pbk_CheckTips' );
 add_shortcode( 'show_deposit_calculator', 'pbrf_depositCalculator' );
 add_shortcode( 'show_finance_report_builder', 'pbrf_showReportBuilder' );
 add_shortcode( 'show_restaurants', 'pbr_show_restaurants' );
@@ -128,42 +130,5 @@ function switchpbrMessages($m) {
     });
   </script>
 <div class='alert alert-".$alert."'><strong>" . $ms . "</strong></div>";
-}
-function pbk_CheckTips() {
-  $toast = new ToastReport();
-  $rests=$toast->getAvailableRestaurants();
-  $cu = wp_get_current_user();
-  if(in_array("administrator", $cu->roles) || in_array("editor", $cu->roles) || in_array("author", $cu->roles)) {
-  	
-  }else {
-    $_REQUEST['rid']=$rests[0]->restaurantID;
-    $bot="2019-01-07 00:00:00";
-    $latest=date("Y-m-d",time() - 60 * 60 * 24)." 23:59:59";
-    $toast = new ToastReport($_REQUEST['rid']);
-  	$toast ->setStartTime(date("Y-m-d G:i:s",strtotime($bot)));
-  	$toast ->setEndTime(date("Y-m-d G:i:s",strtotime($latest)));
-  	$orders=$toast->getTippedOrders();
-    if(is_array($orders) && count($orders)!=0){
-      echo "
-      <script>
-        jQuery( document ).ready(function() {
-          jQuery('#tipsRequired').trigger('focus')
-        });
-      </script>
-      <div class=\"modal fade\" id=\"tipsRequired\" tabindex=\"-1\" role=\"dialog\" aria-labelledby=\"tipsRequired\" aria-hidden=\"true\">
-        <div class=\"modal-dialog\" role=\"document\">
-          <div class=\"modal-content\">
-            <div class=\"modal-body\">
-              There are ".count($orders)." requiring tip assignment. <br><br>Please <a href='". home_url("/operations/tips/tip-distribution/")."'>assign</a> the tips.
-            </div>
-            <div class=\"modal-footer\">
-              <button type=\"button\" class=\"btn btn-secondary\" data-dismiss=\"modal\">Close</button>
-            </div>
-          </div>
-        </div>
-      </div>
-      ";
-    }
-  }
 }
 add_action('wp_login', 'pbk_CheckTips');
