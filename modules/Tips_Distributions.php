@@ -85,18 +85,16 @@ if(!isset($_REQUEST['rid'])) {
 		$ret.="<div>Opened: ".date("m/d/Y g:i a",strtotime($order->openedDate))." || Paid: ".date("m/d/Y g:i a",strtotime($order->paidDate))." || Closed: ".date("m/d/Y g:i a",strtotime($order->closedDate))."</div>";
 		$ret.="<div><strong>Payment Method: ".$order->paymentType." || Tip Amount: ".$fmt->formatCurrency($order->tipAmount,"USD")." || Order Total: ".$fmt->formatCurrency($order->totalAmount,"USD")."</strong></div>
 		<script>
-		jQuery(function() {
-		  enable_cb();
-		  jQuery(\"#d-a0\").click(enable_cb);
+		 jQuery(document).ready(function(){
+			 	jquery('#d-a0').click(function(){
+					if(jQuery(this).prop(\"checked\") == true){
+						jQuery(\"input.group1\"). prop(\"checked\", false);
+						jQuery(\"input.group1\").attr(\"disabled\", true);
+					}else if(jQuery(this).prop(\"checked\") == false){
+						jQuery(\"input.group1\").removeAttr(\"disabled\");
+					}
+			});
 		});
-		function enable_cb() {
-		  if (jQuery(\"#d-a0\").prop(\"checked\")==true) {
-				jQuery(\"input.group1\"). prop(\"checked\", false);
-				jQuery(\"input.group1\").attr(\"disabled\", true);
-		  } else {
-				jQuery(\"input.group1\").removeAttr(\"disabled\");
-		  }
-		}
 		</script>
 		<div><form method='POST' action='".$page."' >
 		<table>
