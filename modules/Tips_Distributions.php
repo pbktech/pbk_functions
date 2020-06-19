@@ -90,10 +90,10 @@ if(!isset($_REQUEST['rid'])) {
 					if(jQuery(this).prop(\"checked\") == true){
 						jQuery(\"input.group1\"). prop(\"checked\", false);
 						jQuery(\"input.group1\").attr(\"disabled\", true);
-						jQuery(\".toDisable\").css(\"background-color\",\"#e3e1df\");
+						jQuery(\".toDisable\").hide();
 					}else if(jQuery(this).prop(\"checked\") == false){
 						jQuery(\"input.group1\").removeAttr(\"disabled\");
-						jQuery(\".toDisable\").css(\"background-color\",\"#FFFFFF\");
+						jQuery(\".toDisable\").show();
 					}
 			});
 		});
