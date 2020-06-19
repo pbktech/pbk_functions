@@ -16,7 +16,8 @@ if($toast->isAboveStore==0) {
 if (isset($_REQUEST['rid']) && $_REQUEST['rid']==4) {
 	$bot="2018-11-26 00:00:00";
 }else {
-	$bot="2019-01-07 00:00:00";
+		$bot="2020-05-01 00:00:00";
+	//	$bot="2019-01-07 00:00:00";
 }
 if($_SERVER['REQUEST_METHOD'] == 'POST' && $_POST['restaurant']=='') {
 	$tipShare=array();
