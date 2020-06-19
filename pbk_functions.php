@@ -134,7 +134,7 @@ function pbk_CheckTips() {
   $rests=$toast->getAvailableRestaurants();
   $cu = wp_get_current_user();
   if(in_array("administrator", $cu->roles) || in_array("editor", $cu->roles) || in_array("author", $cu->roles)) {
-  	continue;
+  	
   }else {
     $_REQUEST['rid']=$rests[0]->restaurantID;
     $bot="2019-01-07 00:00:00";
