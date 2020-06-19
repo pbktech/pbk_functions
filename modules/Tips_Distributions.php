@@ -91,9 +91,10 @@ if(!isset($_REQUEST['rid'])) {
 		});
 		function enable_cb() {
 		  if (this.checked) {
-		    jQuery(\"input.group1\").removeAttr(\"disabled\");
+				jQuery(\"input.group1\"). prop(\"checked\", false);
+				jQuery(\"input.group1\").attr(\"disabled\", true);
 		  } else {
-		    jQuery(\"input.group1\").attr(\"disabled\", true);
+				jQuery(\"input.group1\").removeAttr(\"disabled\");
 		  }
 		}
 		</script>
