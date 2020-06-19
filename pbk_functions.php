@@ -150,7 +150,7 @@ function pbk_CheckTips() {
           jQuery('#tipsRequired').trigger('focus')
         });
       </script>
-      <div class=\"modal fade\" id=\"tipsRequired\" tabindex="\-1\" role=\"dialog\" aria-labelledby=\"tipsRequired\" aria-hidden=\"true\">
+      <div class=\"modal fade\" id=\"tipsRequired\" tabindex=\"-1\" role=\"dialog\" aria-labelledby=\"tipsRequired\" aria-hidden=\"true\">
         <div class=\"modal-dialog\" role=\"document\">
           <div class=\"modal-content\">
             <div class=\"modal-body\">
