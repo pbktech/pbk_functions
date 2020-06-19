@@ -24,14 +24,14 @@ function pbk_CheckTips() {
             ".$tip['R']."
           </div>
           <div class='col'>
-            <span style='color:#B1050C;'>".$tip['T']."</span>
+            <strong class='text-danger'>".$tip['T']."</strong>
           </div>
         </div>
         ";
       }
       $message.="</div>";
     }else {
-      $message="There are <span style='color:#B1050C;'>".$tips[0]['T']."</span> orders requiring tip assignments. Please assign tips.";
+      $message="There are <strong class='text-danger'>".$tips[0]['T']."</strong> orders requiring tip assignments. Please assign tips.";
     }
     return  pbk_show_modal($message,"<button type=\"button\" class=\"btn btn-success\" onclick=\"window.location.href='". home_url("/operations/tips/tip-distribution/")."'\">Tip Distribution</button>");
   }
