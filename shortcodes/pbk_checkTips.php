@@ -33,9 +33,6 @@ function pbk_CheckTips() {
     }else {
       $message="There are <span style='color:#B1050C;'>".$tips[0]['T']."</span> orders requiring tip assignments. Please assign tips.";
     }
-    pbk_show_modal($message,"<button type=\"button\" class=\"btn btn-success\" onclick=\"window.location.href='". home_url("/operations/tips/tip-distribution/")."'\">Tip Distribution</button>");
-  }
-  if(in_array("administrator", $cu->roles)){
-  return  pbk_show_modal("Test Modal","<button type=\"button\" class=\"btn btn-success\" onclick=\"window.location.href='". home_url("/operations/tips/tip-distribution/")."'\">Tip Distribution</button>");
+    return  pbk_show_modal($message,"<button type=\"button\" class=\"btn btn-success\" onclick=\"window.location.href='". home_url("/operations/tips/tip-distribution/")."'\">Tip Distribution</button>");
   }
 }
