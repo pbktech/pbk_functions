@@ -90,28 +90,28 @@ if(!isset($_REQUEST['rid'])) {
 					if(jQuery(this).prop(\"checked\") == true){
 						jQuery(\"input.group1\"). prop(\"checked\", false);
 						jQuery(\"input.group1\").attr(\"disabled\", true);
+						jQuery(\".toDisable\").addClass( \"alert alert-light\" );
 					}else if(jQuery(this).prop(\"checked\") == false){
 						jQuery(\"input.group1\").removeAttr(\"disabled\");
 					}
 			});
 		});
 		</script>
-		<div><form method='POST' action='".$page."' >
-		<table>
-			<tr>
-				<td>3rd Party/No One</td>
-				<td><label for='d-a0'>Driver?</label> <input type='checkbox' name='driver[]' value='a0' id='d-a0'/></td>
-				<td></td>
-			</tr>";
+		<div class='container'>
+		<form method='POST' action='".$page."' >
+			<div class='row'>
+				<div class='col'>3rd Party/No One</div>
+				<div class='col'><label for='d-a0'>Driver?</label> <input type='checkbox' name='driver[]' value='a0' id='d-a0'/></div>
+			</div>";
 		foreach($employees as $e){
 			$ret.="
-			<tr>
-				<td><span style='text-transform:capitalize;'>".$e->employeeName."</span></td>
-				<td><label for='d-".$e->GUID."'>Driver?</label> <input class='group1' type='checkbox' name='driver[]' value='".$e->GUID."' id='d-".$e->GUID."'/> </td>
-				<td><label for='w-".$e->GUID."'>Worked On?</label> <input class='group1' type='checkbox' name='worked[]' value='".$e->GUID."' id='w-".$e->GUID."'/><td>
-			</tr>";
+			<div class='row toDisable'>
+				<div class='col'><span style='text-transform:capitalize;'>".$e->employeeName."</span></div>
+				<div class='col'><label for='d-".$e->GUID."'>Driver?</label> <input class='group1' type='checkbox' name='driver[]' value='".$e->GUID."' id='d-".$e->GUID."'/> </div>
+				<div class='col'><label for='w-".$e->GUID."'>Worked On?</label> <input class='group1' type='checkbox' name='worked[]' value='".$e->GUID."' id='w-".$e->GUID."'/></div>
+			</div>";
 		}
-		$ret.="</table><br />
+		$ret.="<br />
 		<input type='hidden' name='chkID' value='".$o->ToastCheckID."' />
 		<input type='hidden' name='rid' value='".$_REQUEST['rid']."' />
 		<input type='submit' value='Save Check #".$order->checkNumber."' /></form></div></div>";
