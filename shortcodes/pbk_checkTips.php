@@ -21,7 +21,7 @@ function pbk_CheckTips() {
         });
       </script>
       <div class=\"modal hide fade\" id=\"tipsRequired\" tabindex=\"-1\" role=\"dialog\" aria-labelledby=\"tipsRequired\" aria-hidden=\"true\">
-        <div class=\"modal-dialog\" role=\"document\">
+        <div class=\"modal-dialog modal-dialog-centered\" role=\"document\">
           <div class=\"modal-content\">
             <div class=\"modal-body\">
               <div class='alert alert-danger'>
@@ -29,6 +29,7 @@ function pbk_CheckTips() {
               </div>
             </div>
             <div class=\"modal-footer\">
+              <button type=\"button\" class=\"btn btn-success\" onclick=\"window.location.href='". home_url("/operations/tips/tip-distribution/")."'\">Tip Distribution</button>
               <button type=\"button\" class=\"btn btn-secondary\" data-dismiss=\"modal\">Close</button>
             </div>
           </div>
