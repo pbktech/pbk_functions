@@ -85,26 +85,17 @@ if(!isset($_REQUEST['rid'])) {
 		$ret.="<div>Opened: ".date("m/d/Y g:i a",strtotime($order->openedDate))." || Paid: ".date("m/d/Y g:i a",strtotime($order->paidDate))." || Closed: ".date("m/d/Y g:i a",strtotime($order->closedDate))."</div>";
 		$ret.="<div><strong>Payment Method: ".$order->paymentType." || Tip Amount: ".$fmt->formatCurrency($order->tipAmount,"USD")." || Order Total: ".$fmt->formatCurrency($order->totalAmount,"USD")."</strong></div>
 		<script>
-			function disableOtherChecks(){
-		";
-		foreach($employees as $e){
-			$ret.="
-			if (document.getElementById(\"d-".$e->GUID."\").disabled == true) {
-				document.getElementById(\"d-".$e->GUID."\").disabled = false;
-			}else if (document.getElementById(\"d-".$e->GUID."\").disabled == false) {
-				document.getElementById(\"d-".$e->GUID."\").checked = false;
-				document.getElementById(\"d-".$e->GUID."\").disabled = true;
-			}
-			if (document.getElementById(\"w-".$e->GUID."\").disabled == true) {
-				document.getElementById(\"w-".$e->GUID."\").disabled = false;
-			}else if (document.getElementById(\"w-".$e->GUID."\").disabled == false) {
-				document.getElementById(\"w-".$e->GUID."\").checked = false;
-				document.getElementById(\"w-".$e->GUID."\").disabled = true;
-			}
-			";
+		jQuery(function() {
+		  enable_cb();
+		  jQuery(\"#d-a0\").click(enable_cb);
+		});
+		function enable_cb() {
+		  if (this.checked) {
+		    jQuery(\"input.group1\").removeAttr(\"disabled\");
+		  } else {
+		    jQuery(\"input.group1\").attr(\"disabled\", true);
+		  }
 		}
-		$ret.="
-			}
 		</script>
 		<div><form method='POST' action='".$page."' >
 		<table>
@@ -117,8 +108,8 @@ if(!isset($_REQUEST['rid'])) {
 			$ret.="
 			<tr>
 				<td><span style='text-transform:capitalize;'>".$e->employeeName."</span></td>
-				<td><label for='d-".$e->GUID."'>Driver?</label> <input type='checkbox' name='driver[]' value='".$e->GUID."' id='d-".$e->GUID."'/> </td>
-				<td><label for='w-".$e->GUID."'>Worked On?</label> <input type='checkbox' name='worked[]' value='".$e->GUID."' id='w-".$e->GUID."'/><td>
+				<td><label for='d-".$e->GUID."'>Driver?</label> <input class='group1' type='checkbox' name='driver[]' value='".$e->GUID."' id='d-".$e->GUID."'/> </td>
+				<td><label for='w-".$e->GUID."'>Worked On?</label> <input class='group1' type='checkbox' name='worked[]' value='".$e->GUID."' id='w-".$e->GUID."'/><td>
 			</tr>";
 		}
 		$ret.="</table><br />
