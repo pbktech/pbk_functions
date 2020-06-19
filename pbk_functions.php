@@ -131,4 +131,3 @@ function switchpbrMessages($m) {
   </script>
 <div class='alert alert-".$alert."'><strong>" . $ms . "</strong></div>";
 }
-add_action('wp_login', 'pbk_CheckTips');
