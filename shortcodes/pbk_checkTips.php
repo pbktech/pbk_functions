@@ -16,15 +16,17 @@ function pbk_CheckTips() {
     if(is_array($orders) && count($orders)!=0){
       return "
       <script>
-        jQuery( document ).ready(function() {
-          jQuery('#tipsRequired').trigger('focus')
+        jQuery(window).on('load',function(){
+          jQuery('#tipsRequired').modal('show');
         });
       </script>
-      <div class=\"modal fade\" id=\"tipsRequired\" tabindex=\"-1\" role=\"dialog\" aria-labelledby=\"tipsRequired\" aria-hidden=\"true\">
+      <div class=\"modal hide fade\" id=\"tipsRequired\" tabindex=\"-1\" role=\"dialog\" aria-labelledby=\"tipsRequired\" aria-hidden=\"true\">
         <div class=\"modal-dialog\" role=\"document\">
           <div class=\"modal-content\">
             <div class=\"modal-body\">
-              There are ".count($orders)." requiring tip assignment. <br><br>Please <a href='". home_url("/operations/tips/tip-distribution/")."'>assign</a> the tips.
+              <div class='alert alert-danger'>
+              There are ".count($orders)." orders requiring tip assignment. <br><br>Please <a href='". home_url("/operations/tips/tip-distribution/")."'>assign</a> the tips.
+              </div>
             </div>
             <div class=\"modal-footer\">
               <button type=\"button\" class=\"btn btn-secondary\" data-dismiss=\"modal\">Close</button>
