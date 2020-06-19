@@ -90,7 +90,7 @@ if(!isset($_REQUEST['rid'])) {
 					if(jQuery(this).prop(\"checked\") == true){
 						jQuery(\"input.group1\"). prop(\"checked\", false);
 						jQuery(\"input.group1\").attr(\"disabled\", true);
-						jQuery(\".toDisable\").addClass( \"alert alert-light\" );
+						jQuery(\".toDisable\").css(\"background-color\",\"#e3e1df\");
 					}else if(jQuery(this).prop(\"checked\") == false){
 						jQuery(\"input.group1\").removeAttr(\"disabled\");
 					}
@@ -114,8 +114,11 @@ if(!isset($_REQUEST['rid'])) {
 		$ret.="<br />
 		<input type='hidden' name='chkID' value='".$o->ToastCheckID."' />
 		<input type='hidden' name='rid' value='".$_REQUEST['rid']."' />
-		<input type='submit' value='Save Check #".$order->checkNumber."' /></form></div></div>";
+		<input type='submit' value='Save Check #".$order->checkNumber."' /></form></div>";
 	} else {
-		$ret.="There are not any orders that need their tips assigned to employees.";
+		$ret.="
+		<div class=\"alert alert-secondary\" role=\"alert\">
+		There are not any orders that need their tips assigned to employees.
+		</div>";
 	}
 }
