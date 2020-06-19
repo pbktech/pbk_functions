@@ -35,7 +35,7 @@ function pbk_CheckTips() {
     }
     pbk_show_modal($message,"<button type=\"button\" class=\"btn btn-success\" onclick=\"window.location.href='". home_url("/operations/tips/tip-distribution/")."'\">Tip Distribution</button>");
   }
-  if($cu->ID==1){
+  if(in_array("administrator", $cu->roles)){
     pbk_show_modal("Test Modal","<button type=\"button\" class=\"btn btn-success\" onclick=\"window.location.href='". home_url("/operations/tips/tip-distribution/")."'\">Tip Distribution</button>");
   }
 }
