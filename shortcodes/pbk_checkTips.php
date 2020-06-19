@@ -1,41 +1,41 @@
 <?php
 function pbk_CheckTips() {
-  $toast = new ToastReport();
-  $rests=$toast->getAvailableRestaurants();
+  global $wpdb;
+  global $wp;
   $cu = wp_get_current_user();
-  if(in_array("administrator", $cu->roles) || in_array("editor", $cu->roles) || in_array("author", $cu->roles)) {
-
-  }else {
-    $_REQUEST['rid']=$rests[0]->restaurantID;
-    $bot="2019-01-07 00:00:00";
-    $latest=date("Y-m-d",time() - 60 * 60 * 24)." 23:59:59";
-    $toast = new ToastReport($_REQUEST['rid']);
-  	$toast ->setStartTime(date("Y-m-d G:i:s",strtotime($bot)));
-  	$toast ->setEndTime(date("Y-m-d G:i:s",strtotime($latest)));
-  	$orders=$toast->getTippedOrders();
-    if(is_array($orders) && count($orders)!=0){
-      return "
-      <script>
-        jQuery(window).on('load',function(){
-          jQuery('#tipsRequired').modal('show');
-        });
-      </script>
-      <div class=\"modal hide fade\" id=\"tipsRequired\" tabindex=\"-1\" role=\"dialog\" aria-labelledby=\"tipsRequired\" aria-hidden=\"true\">
-        <div class=\"modal-dialog modal-dialog-centered\" role=\"document\">
-          <div class=\"modal-content\">
-            <div class=\"modal-body\">
-              <div class='alert alert-danger'>
-              There are ".count($orders)." orders requiring tip assignment. <br><br>Please <a href='". home_url("/operations/tips/tip-distribution/")."'>assign</a> the tips.
-              </div>
-            </div>
-            <div class=\"modal-footer\">
-              <button type=\"button\" class=\"btn btn-success\" onclick=\"window.location.href='". home_url("/operations/tips/tip-distribution/")."'\">Tip Distribution</button>
-              <button type=\"button\" class=\"btn btn-secondary\" data-dismiss=\"modal\">Close</button>
-            </div>
+  $results=$wpdb->get_results( "SELECT restaurantName,count(*) as 'Total' FROM pbc2.pbc_ToastOrderPayment,pbc2.pbc_pbrestaurants WHERE pbc2.pbc_ToastOrderPayment.restaurantID=pbc2.pbc_pbrestaurants.restaurantID AND businessDate > '2019-01-07 00:00:00' AND pbc2.pbc_ToastOrderPayment.restaurantID IN (SELECT restaurantID FROM pbc2.pbc_pbr_managers WHERE managerID='".$cu->ID."') AND pbc_ToastOrderPayment.ToastCheckID NOT IN (SELECT orderGUID FROM pbc2.pbc_TipDistribution) and tipAmount!=0 GROUP BY restaurantName");
+  if($results){
+    foreach($results as $r){
+      $tips[]=array("T"=>$r->Total,"R"=>$r->restaurantName);
+    }
+    if(in_array("administrator", $cu->roles) || in_array("editor", $cu->roles) || in_array("author", $cu->roles)) {
+      $message="
+      <div class='container'>
+        <div class='row'>
+          <div class='col'>
+            The following restaurants have orders that require tip assignments.
           </div>
         </div>
-      </div>
-      ";
+            ";
+      foreach($tips as $tip){
+        $message.="
+        <div class='row'>
+          <div class='col'>
+            ".$tip['R']."
+          </div>
+          <div class='col'>
+            <span style='color:#B1050C;'>".$tip['T']."</span>
+          </div>
+        </div>
+        ";
+      }
+      $message.="</div>";
+    }else {
+      $message="There are <span style='color:#B1050C;'>".$tips[0]['T']."</span> orders requiring tip assignments. Please assign tips.";
     }
+    pbk_show_modal($message,"<button type=\"button\" class=\"btn btn-success\" onclick=\"window.location.href='". home_url("/operations/tips/tip-distribution/")."'\">Tip Distribution</button>");
+  }
+  if($cu->ID==1){
+    pbk_show_modal("Test Modal","<button type=\"button\" class=\"btn btn-success\" onclick=\"window.location.href='". home_url("/operations/tips/tip-distribution/")."'\">Tip Distribution</button>");
   }
 }
