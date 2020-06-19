@@ -86,7 +86,7 @@ if(!isset($_REQUEST['rid'])) {
 		$ret.="<div><strong>Payment Method: ".$order->paymentType." || Tip Amount: ".$fmt->formatCurrency($order->tipAmount,"USD")." || Order Total: ".$fmt->formatCurrency($order->totalAmount,"USD")."</strong></div>
 		<script>
 		 jQuery(document).ready(function(){
-			 	jquery('#d-a0').click(function(){
+			 	jQuery('#d-a0').click(function(){
 					if(jQuery(this).prop(\"checked\") == true){
 						jQuery(\"input.group1\"). prop(\"checked\", false);
 						jQuery(\"input.group1\").attr(\"disabled\", true);
