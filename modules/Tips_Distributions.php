@@ -78,7 +78,7 @@ if(!isset($_REQUEST['rid'])) {
 		$toast ->setStartTime(date("Y-m-d 00:00:00",strtotime($order->openedDate)));
 		$toast ->setEndTime(date("Y-m-d 23:59:59",strtotime($order->openedDate)));
 		$employees=$toast->getClockedInEmployees("Team Member");
-		$ret.="<div><strong>There are ".count($orders)." order(s) that require tip assignments.</strong></div>";
+//		$ret.="<div><strong>There are ".count($orders)." order(s) that require tip assignments.</strong></div>";
 		$ret.="<div>
 		<h4>Check #".$order->checkNumber;
 		if(isset($order->tabName) && $order->tabName!="") {$ret.=": ".$order->tabName;}
