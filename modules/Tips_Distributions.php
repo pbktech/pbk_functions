@@ -96,6 +96,7 @@ if(!isset($_REQUEST['rid'])) {
 				<div class='col'><strong>Order Total: ".$fmt->formatCurrency($order->totalAmount,"USD")."</strong></div>
 			</div>
 		</div>
+		<hr />
 		<script>
 		 jQuery(document).ready(function(){
 			 	jQuery('#d-a0').click(function(){
