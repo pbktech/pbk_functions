@@ -87,16 +87,12 @@ if(!isset($_REQUEST['rid'])) {
 		<div class='container'>
 			<div class='row'>
 				<div class='col'>Opened: ".date("m/d/Y g:i a",strtotime($order->openedDate))."</div>
-				<div class='col'>||</div>
 				<div class='col'>Paid: ".date("m/d/Y g:i a",strtotime($order->paidDate))."</div>
-				<div class='col'>||</div>
 				<div class='col'>Closed: ".date("m/d/Y g:i a",strtotime($order->closedDate))."</div>
 			</div>
 			<div class='row'>
 				<div class='col'><strong>Payment Method: ".$order->paymentType."</strong></div>
-				<div class='col'>||</div>
 				<div class='col'><strong>Tip Amount: ".$fmt->formatCurrency($order->tipAmount,"USD")."</strong></div>
-				<div class='col'>||</div>
 				<div class='col'><strong>Order Total: ".$fmt->formatCurrency($order->totalAmount,"USD")."</strong></div>
 			</div>
 		</div>
