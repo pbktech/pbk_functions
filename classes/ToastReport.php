@@ -1099,7 +1099,13 @@ from pbc2.kds_detail WHERE sent_time BETWEEN  ? AND ? AND station='' and restaur
 		  }
 		} else {
 		  if(isset($attach)) {
-		    $mail->addAttachment($attach);
+				if(is_array($attach)){
+					foreach($attach as $a){
+		    		$mail->addAttachment($a);
+					}
+				}else {
+					$mail->addAttachment($attach);
+				}
 		  }
 		}
 		if (!$mail->send()) {
