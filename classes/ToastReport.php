@@ -404,6 +404,7 @@ AND pbc_ToastOrderHeaders.restaurantID = pbc_pbrestaurants.restaurantID ";
 echo $q."\n";
 		$stmt = $this->mysqli->prepare($q);
 		$stmt->execute();
+		if($stmt->error!='') {echo $stmt->error;}
 		$result = $stmt->get_result();
 		$row=$result->fetch_object();
 		return $row->Total;
