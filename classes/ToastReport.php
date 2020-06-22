@@ -401,6 +401,7 @@ AND ToastOrderID IN (SELECT GUID FROM pbc_ToastOrderHeaders WHERE restaurantID=?
 		$q="SELECT * FROM pbc2.pbc_ToastOrderHeaders,pbc2.pbc_ToastCheckHeaders,pbc_pbrestaurants WHERE
 pbc_ToastCheckHeaders.GUID ='$guid' AND pbc_ToastOrderHeaders.GUID=pbc_ToastCheckHeaders.ToastOrderID
 AND pbc_ToastOrderHeaders.restaurantID = pbc_pbrestaurants.restaurantID ";
+echo $q."\n";
 		$stmt = $this->mysqli->prepare($q);
 		$stmt->execute();
 		$result = $stmt->get_result();
