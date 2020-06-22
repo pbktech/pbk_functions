@@ -401,13 +401,12 @@ AND ToastOrderID IN (SELECT GUID FROM pbc_ToastOrderHeaders WHERE restaurantID=?
 		$q="SELECT * FROM pbc2.pbc_ToastOrderHeaders,pbc2.pbc_ToastCheckHeaders,pbc_pbrestaurants WHERE
 pbc_ToastCheckHeaders.GUID ='$guid' AND pbc_ToastOrderHeaders.GUID=pbc_ToastCheckHeaders.ToastOrderID
 AND pbc_ToastOrderHeaders.restaurantID = pbc_pbrestaurants.restaurantID ";
-echo $q."\n";
 		$stmt = $this->mysqli->prepare($q);
 		$stmt->execute();
 		if($stmt->error!='') {echo $stmt->error;}
 		$result = $stmt->get_result();
 		$row=$result->fetch_object();
-		return $row->Total;
+		return $row;
 	}
 	function getHeaderInformationFromOrder($guid) {
 		$q="SELECT * FROM pbc2.pbc_ToastOrderHeaders,pbc2.pbc_ToastCheckHeaders,pbc_pbrestaurants WHERE
