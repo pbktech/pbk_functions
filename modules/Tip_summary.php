@@ -26,6 +26,11 @@ if($results){
     $data['Options'][$r->externalEmployeeID]=$r->employeeName;
   }
   $ret=$toast->pbk_form_processing() . "
+  <script>
+  function confirm_proceed() {
+    return confirm('This report takes a long time to process, please be patient.');
+  }
+  </script>
 <div class='container' id='queryResults'>
   <form method='get' action='".home_url( add_query_arg( array(), $wp->request ) )."'>
       <div class='row'>
@@ -33,7 +38,7 @@ if($results){
         ".$toast->buildSelectBox($data)."
       </div>
       <div class='row'>
-        <input type='submit' id='submit' class=\"btn btn-primary\" value='Search' />
+        <input type='submit' id='submit' class=\"btn btn-primary\" onclick=\"return confirm_proceed()\" value='Search' />
       </div>
   </form>";
   if(isset($_GET['id'])){
@@ -47,6 +52,8 @@ AND pbc_ToastOrderPayment.restaurantID = pbc_pbrestaurants.restaurantID AND pbc_
     $results=$wpdb->get_results($q);
     if($results){
       $fmt = new NumberFormatter( 'en_US', NumberFormatter::CURRENCY );
+      $data['Options'][]="\"order\": [ 5, 'asc' ]";
+			$data['Options'][]="\"lengthMenu\": [ [25, 50, -1], [25, 50, \"All\"] ]";
       $data['Headers']=array("Employee Name","Employee ID","Restaurant","Date","Check","Tip","Assigned","Payroll");
       foreach ($results as $r) {
         $info=json_decode($r->userID);
