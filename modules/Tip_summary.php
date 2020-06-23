@@ -50,6 +50,11 @@ AND pbc_ToastOrderPayment.restaurantID = pbc_pbrestaurants.restaurantID AND pbc_
       $data['Headers']=array("Employee Name","Employee ID","Restaurant","Date","Check","Tip","Assigned","Payroll");
       foreach ($results as $r) {
         $info=json_decode($r->userID);
+        if(isset($info->SentToPayroll)){
+          $payroll=date("m/d/Y",strtotime($info->SentToPayroll->Date)) . " by " . $info->SentToPayroll->User;
+        }else{
+          $payroll="";
+        }
         $data['Results'][]=array(
           $r->employeeName,
           $r->externalEmployeeId,
@@ -58,7 +63,7 @@ AND pbc_ToastOrderPayment.restaurantID = pbc_pbrestaurants.restaurantID AND pbc_
           $r->checkNumber,
           $fmt->formatCurrency($r->Tip,"USD"),
           date("m/d/Y",strtotime($info->Initial->Date)) . " by " . $info->Initial->User,
-          date("m/d/Y",strtotime($info->SentToPayroll->Date)) . " by " . $info->SentToPayroll->User);
+          $payroll);
       }
       $ret.=$toast->showResultsTable($data);
     }else{
