@@ -168,3 +168,23 @@ function acme_login_logo_image( $login_header_text ) {
     $login_header_text = '<img src="' . $logo_url . '" alt="' . get_bloginfo( 'title' ) . '" />';
     return $login_header_text;
 }
+function acme_login_logo_image_styles() { ?>
+    <style type="text/css">
+        #login h1 a,
+        .login h1 a {
+                background-size: auto;
+                background-image: none;
+                background-position: center center;
+                text-indent: 0;
+                width: auto;
+                height: auto;
+                max-width: 320px;
+        }
+
+        #login h1 a img,
+        .login h1 a img {
+        max-width: 100%;
+        }
+    </style>
+<?php }
+add_action( 'login_enqueue_scripts', 'acme_login_logo_image_styles' );
