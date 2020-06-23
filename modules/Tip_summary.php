@@ -16,6 +16,7 @@ if($toast->isAboveStore==0) {
 }
 $q="SELECT externalEmployeeID, employeeName FROM pbc_TipDistribution,pbc_ToastEmployeeInfo
 WHERE pbc_TipDistribution.employeeGUID = pbc_ToastEmployeeInfo.guid ".$store." GROUP BY externalEmployeeID, employeeName ORDER BY employeeName ";
+echo $q
 $results=$wpdb->get_results($q);
 if($results){
   $data['Field']="id[]";
