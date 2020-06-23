@@ -15,8 +15,8 @@ if($toast->isAboveStore==0) {
   $store=" AND (".implode(' OR ',$orStmt).")";
 }
 $q="SELECT externalEmployeeID, employeeName FROM pbc_TipDistribution,pbc_ToastEmployeeInfo
-WHERE pbc_TipDistribution.employeeGUID = pbc_ToastEmployeeInfo.guid ".$store." GROUP BY externalEmployeeID, employeeName ORDER BY employeeName ";
-echo $q;
+WHERE pbc_TipDistribution.employeeGUID = pbc_ToastEmployeeInfo.guid
+".$store." GROUP BY externalEmployeeID, employeeName ORDER BY employeeName";
 $results=$wpdb->get_results($q);
 if($results){
   $data['Field']="id[]";
@@ -33,7 +33,7 @@ if($results){
         ".$toast->buildSelectBox($data)."
       </div>
       <div class='row'>
-        <input type='submit' value='Search"' />
+        <input type='submit' value='Search' />
       </div>
     </div>
   </form>
