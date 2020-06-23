@@ -47,10 +47,11 @@ if($results){
     }
     $q="SELECT employeeName,externalEmployeeId,restaurantName,userID,sentToPayroll,pbc_TipDistribution.tipAmount as 'Tip', businessDate, checkNumber FROM pbc2.pbc_ToastOrderPayment,pbc_ToastCheckHeaders,pbc_pbrestaurants,pbc_TipDistribution,pbc_ToastEmployeeInfo
 where pbc_ToastOrderPayment.restaurantID is not null AND pbc_TipDistribution.orderGUID = pbc2.pbc_ToastOrderPayment.ToastCheckID
-AND pbc_ToastEmployeeInfo.guid = pbc_TipDistribution.employeeGUID AND (".implode(' OR ',$ids).")
+AND pbc_ToastEmployeeInfo.guid = pbc_TipDistribution.employeeGUID AND (".implode(' OR ',$ids).") AND pbc_TipDistribution.tipAmount!=0
 AND pbc_ToastOrderPayment.restaurantID = pbc_pbrestaurants.restaurantID AND pbc_ToastOrderPayment.ToastCheckID = pbc_ToastCheckHeaders.GUID ORDER BY employeeName,businessDate";
     $results=$wpdb->get_results($q);
     if($results){
+      if($r->Tip==0){continue;}
       $fmt = new NumberFormatter( 'en_US', NumberFormatter::CURRENCY );
       $D['Options'][]="\"order\": [ 5, 'asc' ]";
 			$D['Options'][]="\"lengthMenu\": [ [25, 50, -1], [25, 50, \"All\"] ]";
