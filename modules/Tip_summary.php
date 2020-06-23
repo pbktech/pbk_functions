@@ -33,7 +33,7 @@ if($results){
         ".$toast->buildSelectBox($data)."
       </div>
       <div class='row'>
-        <input type='submit' value='Search' />
+        <input type='submit' class=\"btn btn-primary\" value='Search' />
       </div>
   </form>";
   if(isset($_GET['id'])){
