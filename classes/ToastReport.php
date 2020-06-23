@@ -1242,7 +1242,7 @@ from pbc2.kds_detail WHERE sent_time BETWEEN  ? AND ? AND station='' and restaur
 	    	jQuery('.js-example-basic-single').select2();
 			});
 		</script>
-		<select name='".$data['Field']."' class=\"custom-select multipleSelect js-example-basic-single\" required id='".$data['ID']."' ".$data['Multiple']."$change>
+		<select name='".$data['Field']."' class=\"custom-select js-example-basic-single\" required id='".$data['ID']."' ".$data['Multiple']."$change>
 			<option value=''>Choose One</option>
 			";
 			foreach($data['Options'] as $id=>$option){
