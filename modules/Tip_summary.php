@@ -39,3 +39,6 @@ if($results){
 </div>
   ";
 }
+if(isset($_GET['id'])){
+  $toast->showRawArray($_GET['id']);
+}
