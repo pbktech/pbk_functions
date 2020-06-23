@@ -1219,4 +1219,39 @@ from pbc2.kds_detail WHERE sent_time BETWEEN  ? AND ? AND station='' and restaur
 		$hash = sha1($nstr . microtime());
 		return $nhex . "-" . sprintf('%08s-%04s-%04x-%04x-%12s',substr($hash, 0, 8),substr($hash, 8, 4),(hexdec(substr($hash, 12, 4)) & 0x0fff) | 0x5000,(hexdec(substr($hash, 16, 4)) & 0x3fff) | 0x8000,substr($hash, 20, 12));
 	}
+	public function pbk_form_processing($toHide=".container"){
+		return "
+		<script>
+			jQuery(document).ready(function() {
+				jQuery(\"#submit\").click(function(){
+					window.scrollTo(0,0);
+					jQuery(\"".$toHide."\").hide();
+					jQuery(\"#queryResults\").hide();
+					jQuery(\"#processingGif\").show();
+				});
+			});
+		</script>
+		<div id='processingGif' style=\"display: none;text-align:center;\"><img src='" . PBKF_URL . "/assets/images/processing.gif' style='height:92px;width:92px;' /></div>
+		";
+	}
+	public function buildSelectBox($data=array()){
+		if(isset($data['Change'])){$change=' onchange="'.$data['Change'].'" ';}else{$change='';}
+		$return="
+		<script>
+			jQuery(document).ready(function() {
+	    	jQuery('.js-example-basic-single').select2();
+			});
+		</script>
+		<select name='".$data['Field']."' class=\"custom-select multipleSelect js-example-basic-single\" required id='".$data['ID']."' ".$data['Multiple']."$change>
+			<option value=''>Choose One</option>
+			";
+			foreach($data['Options'] as $id=>$option){
+				$return.="
+			<option value='$id'>$option</option>
+				";
+			}
+		$return.="
+		</select>";
+		return $return;
+	}
 }
