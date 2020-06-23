@@ -1126,7 +1126,7 @@ from pbc2.kds_detail WHERE sent_time BETWEEN  ? AND ? AND station='' and restaur
 	}
 	function showResultsTable($data=array(),$tableName="myTable"){
 		if(isset($data['Results']) && count($data['Results'])!=0){
-			if(isset($data['File'])){$data['File']=$this->genGUID($data['File']);}else{$data['File']=$this->genGUID(md5());}
+			if(isset($data['File'])){$data['File']=$this->genGUID($data['File']);}else{$data['File']=$this->genGUID(md5(time()));}
 			if(isset($data['Options']) && is_array($data['Options'])){$options="{\n					".implode(",\n					",$data['Options'])."}\n				";}else{$options='';}
 			if(file_exists($this->docSaveLocation.$data['File'].date("Ymd").'.csv')) {unlink($this->docSaveLocation.$data['File'].date("Ymd").'.csv');}
 			$file = fopen($this->docSaveLocation.$data['File'].date("Ymd").'.csv', 'w');
