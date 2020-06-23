@@ -161,3 +161,10 @@ function switchpbrMessages($m) {
   </script>
 <div class='alert alert-".$alert."'><strong>" . $ms . "</strong></div>";
 }
+add_filter( 'login_headertext', 'acme_login_logo_image' );
+function acme_login_logo_image( $login_header_text ) {
+    $logo_url          = 'https://c2.theproteinbar.com/wp-content/uploads/2018/04/PBK-Logo_Secondary_Full-Color-pbc2.png';
+    $login_header_text = ''; // clears default output.
+    $login_header_text = '<img src="' . $logo_url . '" alt="' . get_bloginfo( 'title' ) . '" />';
+    return $login_header_text;
+}
