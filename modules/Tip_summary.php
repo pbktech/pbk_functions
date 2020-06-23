@@ -51,6 +51,7 @@ AND pbc_ToastEmployeeInfo.guid = pbc_TipDistribution.employeeGUID AND (".implode
 AND pbc_ToastOrderPayment.restaurantID = pbc_pbrestaurants.restaurantID AND pbc_ToastOrderPayment.ToastCheckID = pbc_ToastCheckHeaders.GUID ORDER BY employeeName,businessDate";
     $results=$wpdb->get_results($q);
     if($results){
+      if($r->Tip==0){continue;}
       $fmt = new NumberFormatter( 'en_US', NumberFormatter::CURRENCY );
       $D['Options'][]="\"order\": [ 5, 'asc' ]";
 			$D['Options'][]="\"lengthMenu\": [ [25, 50, -1], [25, 50, \"All\"] ]";
