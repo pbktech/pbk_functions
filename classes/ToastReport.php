@@ -1219,13 +1219,12 @@ from pbc2.kds_detail WHERE sent_time BETWEEN  ? AND ? AND station='' and restaur
 		$hash = sha1($nstr . microtime());
 		return $nhex . "-" . sprintf('%08s-%04s-%04x-%04x-%12s',substr($hash, 0, 8),substr($hash, 8, 4),(hexdec(substr($hash, 12, 4)) & 0x0fff) | 0x5000,(hexdec(substr($hash, 16, 4)) & 0x3fff) | 0x8000,substr($hash, 20, 12));
 	}
-	public function pbk_form_processing($toHide=".container"){
+	public function pbk_form_processing(){
 		return "
 		<script>
 			jQuery(document).ready(function() {
 				jQuery(\"#submit\").click(function(){
 					window.scrollTo(0,0);
-					jQuery(\"".$toHide."\").hide();
 					jQuery(\"#queryResults\").hide();
 					jQuery(\"#processingGif\").show();
 				});

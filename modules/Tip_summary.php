@@ -26,7 +26,7 @@ if($results){
     $data['Options'][$r->externalEmployeeID]=$r->employeeName;
   }
   $ret=$toast->pbk_form_processing() . "
-<div class='container'>
+<div class='container' id='queryResults'>
   <form method='get' action='".home_url( add_query_arg( array(), $wp->request ) )."'>
       <div class='row'>
       <label for='id'>Please Choose Employees to Search</label>
@@ -35,10 +35,40 @@ if($results){
       <div class='row'>
         <input type='submit' value='Search' />
       </div>
-  </form>
+  </form>";
+  if(isset($_GET['id'])){
+    foreach($_GET['id'] as $id){
+      $ids[]="externalEmployeeID=".$id;
+    }
+    $q="SELECT employeeName,externalEmployeeId,restaurantName,userID,pbc_TipDistribution.tipAmount as 'Tip', businessDate, checkNumber FROM pbc2.pbc_ToastOrderPayment,pbc_ToastCheckHeaders,pbc_pbrestaurants,pbc_TipDistribution,pbc_ToastEmployeeInfo
+where pbc_ToastOrderPayment.restaurantID is not null AND pbc_TipDistribution.orderGUID = pbc2.pbc_ToastOrderPayment.ToastCheckID
+AND pbc_ToastEmployeeInfo.guid = pbc_TipDistribution.employeeGUID AND (".implode(' OR ',$ids).")
+AND pbc_ToastOrderPayment.restaurantID = pbc_pbrestaurants.restaurantID AND pbc_ToastOrderPayment.ToastCheckID = pbc_ToastCheckHeaders.GUID ORDER BY employeeName";
+    $results=$wpdb->get_results($q);
+    if($results){
+      $fmt = new NumberFormatter( 'en_US', NumberFormatter::CURRENCY );
+      $data['Headers']=array("Employee Name","Employee ID","Restaurant","Date","Check","Tip","Assigned","Payroll");
+      foreach ($results as $r) {
+        $info=json_decode($r->userID);
+        $data['Results'][]=array(
+          $r->employeeName,
+          $r->externalEmployeeId,
+          $r->restaurantName,
+          date("m/d/Y",strtotime($r->businessDate)),
+          $r->checkNumber,
+          $fmt->formatCurrency($r->Tip,"USD"),
+          date("m/d/Y",strtotime($info->Initial->Date)) . " by " . $info->Initial->User,
+          date("m/d/Y",strtotime($info->SentToPayroll->Date)) . " by " . $info->SentToPayroll->User);
+      }
+      $ret.=$toast->showResultsTable($data);
+    }else{
+      $ret.="
+      		<div class=\"alert alert-secondary\" role=\"alert\">
+      		There were no records found.
+      		</div>";
+    }
+  }
+  $ret.="
 </div>
   ";
-}
-if(isset($_GET['id'])){
-  $toast->showRawArray($_GET['id']);
 }
