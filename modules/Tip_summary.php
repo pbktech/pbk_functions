@@ -52,9 +52,9 @@ AND pbc_ToastOrderPayment.restaurantID = pbc_pbrestaurants.restaurantID AND pbc_
     $results=$wpdb->get_results($q);
     if($results){
       $fmt = new NumberFormatter( 'en_US', NumberFormatter::CURRENCY );
-      $data['Options'][]="\"order\": [ 5, 'asc' ]";
-			$data['Options'][]="\"lengthMenu\": [ [25, 50, -1], [25, 50, \"All\"] ]";
-      $data['Headers']=array("Employee Name","Employee ID","Restaurant","Date","Check","Tip","Assigned","Payroll");
+      $D['Options'][]="\"order\": [ 5, 'asc' ]";
+			$D['Options'][]="\"lengthMenu\": [ [25, 50, -1], [25, 50, \"All\"] ]";
+      $D['Headers']=array("Employee Name","Employee ID","Restaurant","Date","Check","Tip","Assigned","Payroll");
       foreach ($results as $r) {
         $info=json_decode($r->userID);
         if(isset($info->SentToPayroll)){
@@ -66,7 +66,7 @@ AND pbc_ToastOrderPayment.restaurantID = pbc_pbrestaurants.restaurantID AND pbc_
             $payroll="PENDING";
           }
         }
-        $data['Results'][]=array(
+        $D['Results'][]=array(
           $r->employeeName,
           $r->externalEmployeeId,
           $r->restaurantName,
@@ -76,7 +76,7 @@ AND pbc_ToastOrderPayment.restaurantID = pbc_pbrestaurants.restaurantID AND pbc_
           date("m/d/Y",strtotime($info->Initial->Date)) . " by " . $info->Initial->User,
           $payroll);
       }
-      $ret.=$toast->showResultsTable($data);
+      $ret.=$toast->showResultsTable($D);
     }else{
       $ret.="
       		<div class=\"alert alert-secondary\" role=\"alert\">
