@@ -45,7 +45,7 @@ if($results){
     foreach($_GET['id'] as $id){
       $ids[]="externalEmployeeID=".$id;
     }
-    $q="SELECT employeeName,externalEmployeeId,restaurantName,userID,pbc_TipDistribution.tipAmount as 'Tip', businessDate, checkNumber FROM pbc2.pbc_ToastOrderPayment,pbc_ToastCheckHeaders,pbc_pbrestaurants,pbc_TipDistribution,pbc_ToastEmployeeInfo
+    $q="SELECT employeeName,externalEmployeeId,restaurantName,userID,sentToPayroll,pbc_TipDistribution.tipAmount as 'Tip', businessDate, checkNumber FROM pbc2.pbc_ToastOrderPayment,pbc_ToastCheckHeaders,pbc_pbrestaurants,pbc_TipDistribution,pbc_ToastEmployeeInfo
 where pbc_ToastOrderPayment.restaurantID is not null AND pbc_TipDistribution.orderGUID = pbc2.pbc_ToastOrderPayment.ToastCheckID
 AND pbc_ToastEmployeeInfo.guid = pbc_TipDistribution.employeeGUID AND (".implode(' OR ',$ids).")
 AND pbc_ToastOrderPayment.restaurantID = pbc_pbrestaurants.restaurantID AND pbc_ToastOrderPayment.ToastCheckID = pbc_ToastCheckHeaders.GUID ORDER BY employeeName,businessDate";
@@ -60,7 +60,11 @@ AND pbc_ToastOrderPayment.restaurantID = pbc_pbrestaurants.restaurantID AND pbc_
         if(isset($info->SentToPayroll)){
           $payroll=date("m/d/Y",strtotime($info->SentToPayroll->Date)) . " by " . $info->SentToPayroll->User;
         }else{
-          $payroll="";
+          if($r->sentToPayroll==1){
+            $payroll="SENT";
+          }else{
+            $payroll="PENDING";
+          }
         }
         $data['Results'][]=array(
           $r->employeeName,
