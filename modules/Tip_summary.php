@@ -28,14 +28,13 @@ if($results){
   $ret=$toast->pbk_form_processing() . "
 <div class='container'>
   <form method='get' action='".home_url( add_query_arg( array(), $wp->request ) )."'>
-    <div class='form-control'>
       <div class='row'>
+      <label for='id'>Please Choose Employees to Search</label>
         ".$toast->buildSelectBox($data)."
       </div>
       <div class='row'>
         <input type='submit' value='Search' />
       </div>
-    </div>
   </form>
 </div>
   ";
