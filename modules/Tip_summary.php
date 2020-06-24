@@ -58,11 +58,7 @@ if($results){
         if(isset($info->SentToPayroll)){
           $payroll=date("m/d/Y",strtotime($info->SentToPayroll->Date)) . " by " . $info->SentToPayroll->User;
         }else{
-          if($r->sentToPayroll==1){
-            $payroll="SENT";
-          }else{
-            $payroll="PENDING";
-          }
+          $payroll="";
         }
         $D['Results'][]=array(
           $r->employeeName,
@@ -70,7 +66,7 @@ if($results){
           $r->restaurantName,
           date("m/d/Y",strtotime($r->businessDate)),
           $r->checkNumber,
-          $fmt->formatCurrency($r->Tip,"USD"),
+          $fmt->formatCurrency($r->tip,"USD"),
           date("m/d/Y",strtotime($info->Initial->Date)) . " by " . $info->Initial->User,
           $payroll);
       }
