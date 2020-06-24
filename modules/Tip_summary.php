@@ -31,7 +31,7 @@ if($results){
     return confirm('This report takes a long time to process, please be patient.');
   }
   </script>
-<div class='container' id='queryResults'>
+<div class='container-fluid' id='queryResults'>
   <form method='get' action='".home_url( add_query_arg( array(), $wp->request ) )."'>
       <div class='row'>
       <label for='id'>Please Choose Employees to Search</label>
