@@ -53,7 +53,7 @@ if($results){
 			$D['Options'][]="\"lengthMenu\": [ [25, 50, -1], [25, 50, \"All\"] ]";
       $D['Headers']=array("Employee Name","Employee ID","Restaurant","Date","Check","Tip","Assigned","Payroll");
       foreach ($results as $r) {
-        if($r->Tip==0){continue;}
+        if($r->tip==0){continue;}
         $info=json_decode($r->userID);
         if(isset($info->SentToPayroll)){
           $payroll=date("m/d/Y",strtotime($info->SentToPayroll->Date)) . " by " . $info->SentToPayroll->User;
