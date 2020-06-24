@@ -38,17 +38,14 @@ if($results){
         ".$toast->buildSelectBox($data)."
       </div>
       <div class='row'>
-        <input type='submit' id='submit' class=\"btn btn-primary\" onclick=\"return confirm_proceed()\" value='Search' />
+        <input type='submit' id='submit' class=\"btn btn-primary\" value='Search' />
       </div>
   </form>";
   if(isset($_GET['id'])){
     foreach($_GET['id'] as $id){
       $ids[]="externalEmployeeID=".$id;
     }
-    $q="SELECT employeeName,externalEmployeeId,restaurantName,userID,sentToPayroll,pbc_TipDistribution.tipAmount as 'Tip', businessDate, checkNumber FROM pbc2.pbc_ToastOrderPayment,pbc_ToastCheckHeaders,pbc_pbrestaurants,pbc_TipDistribution,pbc_ToastEmployeeInfo
-where pbc_ToastOrderPayment.restaurantID is not null AND pbc_TipDistribution.orderGUID = pbc2.pbc_ToastOrderPayment.ToastCheckID
-AND pbc_ToastEmployeeInfo.guid = pbc_TipDistribution.employeeGUID AND (".implode(' OR ',$ids).") AND pbc_TipDistribution.tipAmount!=0
-AND pbc_ToastOrderPayment.restaurantID = pbc_pbrestaurants.restaurantID AND pbc_ToastOrderPayment.ToastCheckID = pbc_ToastCheckHeaders.GUID ORDER BY employeeName,businessDate";
+    $q="SELECT * FROM pbc_sum_AssignedTips,pbc_ToastEmployeeInfo WHERE employeeGUID = guid AND (".implode(' OR ',$ids).") ORDER BY employeeName,businessDate";
     $results=$wpdb->get_results($q);
     if($results){
       $fmt = new NumberFormatter( 'en_US', NumberFormatter::CURRENCY );
