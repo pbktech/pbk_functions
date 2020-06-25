@@ -7,6 +7,15 @@ $latest=date("Y-m-d",time() - 60 * 60 * 24)." 23:59:59";
 $toast = new ToastReport();
 $rests=$toast->getAvailableRestaurants();
 $cu = wp_get_current_user();
+if(isset($_GET['i'])){
+	$checkRestaurant=$wpdb->get_var("SELECT restaurantID FROM pbc_ToastOrderPayment WHERE ToastCheckID='".$_GET['i']."'");
+	if (in_array($checkRestaurant,$rests)) {
+		$_REQUEST['rid']=$checkRestaurant;
+	}else {
+		echo "<div class='alert alert-danger'>You do not have access to this location.</div>";
+		exit;
+	}
+}
 if(in_array("administrator", $cu->roles) || in_array("editor", $cu->roles)) {
 	$toast->isAboveStore=1;
 }
@@ -68,12 +77,17 @@ if(!isset($_REQUEST['rid'])) {
 	$toast = new ToastReport($_REQUEST['rid']);
 	$toast ->setStartTime(date("Y-m-d G:i:s",strtotime($bot)));
 	$toast ->setEndTime(date("Y-m-d G:i:s",strtotime($latest)));
-	$orders=$toast->getTippedOrders();
-	if(isset($orders[0])){
-		$o=$orders[0];
-		$order=$toast->getPaymentInfo($orders[0]->ToastCheckID);
+	if(!isset($checkRestaurant)){
+		$orders=$toast->getTippedOrders();
+		if(isset($orders[0])){
+			$o=$orders[0];
+			$order=$toast->getPaymentInfo($orders[0]->ToastCheckID);
+		}
+	}else {
+		$order=$toast->getPaymentInfo($_GET['i']);
+		$o=$wpdb->get_row("SELECT * FROM pbc2.pbc_ToastOrderPayment where ToastCheckID='".$_GET['i']."'");
 	}
-	if(is_array($orders) && count($orders)!=0){
+	if(isset($order)){
 		$fmt = new NumberFormatter( 'en_US', NumberFormatter::CURRENCY );
 		$toast ->setStartTime(date("Y-m-d 00:00:00",strtotime($order->openedDate)));
 		$toast ->setEndTime(date("Y-m-d 23:59:59",strtotime($order->openedDate)));
