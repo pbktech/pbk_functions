@@ -48,12 +48,13 @@ if($results){
       		event.preventDefault();
       }else{
         window.scrollTo(0,0);
-        jQuery(\"#incidentForm\").hide();
+        jQuery(\"#queryResults\").hide();
         jQuery(\"#processingGif\").show();
       }
     });
   });
   </script>
+  <div id='processingGif' style=\"display: none;text-align:center;\"><img src='" . PBKF_URL . "/assets/images/processing.gif' style='height:92px;width:92px;' /></div>
 <div class='container-fluid' id='queryResults'>
   <form method='get' action='".home_url( add_query_arg( array(), $wp->request ) )."'>
       <div class='row'>
