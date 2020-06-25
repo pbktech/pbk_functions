@@ -533,7 +533,6 @@ pbc2.pbc_ToastCheckHeaders.ToastOrderID=pbc2.pbc_ToastOrderHeaders.GUID";
 	function getClockedInEmployees($jc=null) {
 		if(isset($jc)) {$add="AND jobCode LIKE '".$jc."%'";}else {$add="";}
 		$q="SELECT GUID,employeeName FROM pbc2.pbc_ToastEmployeeInfo WHERE GUID IN (SELECT employeeGUID FROM pbc2.pbc_ToastTimeEntries WHERE inDate BETWEEN '".$this->startTime."' AND '".$this->endTime."' AND restaurantID='".$this->restaurantID."' ".$add.")";
-		echo $q;
 		$stmt = $this->mysqli->prepare($q);
 		$stmt->execute();
 		$result = $stmt->get_result();
