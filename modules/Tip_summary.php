@@ -42,7 +42,7 @@ if($results){
         }
       }
       if(jQuery(\"#payroll\").is(':checked') || jQuery(\"#assigned\").is(':checked') || jQuery(\"#order\").is(':checked')
-      && (jQuery(\"#startDate\").val()!='' || jQuery(\"#endDate\").val()!='')){
+      && (jQuery(\"#startDate\").val()=='' || jQuery(\"#endDate\").val()=='')){
         jQuery(\"#chooseDates\").after('<span class=\"text-danger\">&nbsp;<strong>Required</strong></span>');error_free=false;
       }
       if (!error_free){
