@@ -34,7 +34,7 @@ if($results){
 <div class='container-fluid' id='queryResults'>
   <form method='get' action='".home_url( add_query_arg( array(), $wp->request ) )."'>
       <div class='row'>
-      <label for='id'>Please Choose Employees to Search</label>
+      <label for='id'>Please Choose Employees to Search <i>(You can type to search and choose multiple employees)</i></label>
         ".$toast->buildSelectBox($data)."
       </div>
       <div class='row'>
