@@ -19,7 +19,7 @@ $results=$wpdb->get_results($q);
 if($results){
 	$fmt = new NumberFormatter( 'en_US', NumberFormatter::CURRENCY );
 	$D['Options'][]="\"order\": [ 1, 'asc' ]";
-	$D['Options'][]="\"lengthMenu\": [ [5, 10, -1], [5, 10, \"All\"] ]";
+	$D['Options'][]="\"lengthMenu\": [ [10, 20, -1], [10, 20, \"All\"] ]";
 	$D['Headers']=array("Restaurant","Date","Check","Tip Amount");
 	foreach ($results as $r) {
 		$D['Results'][]=array(
