@@ -126,7 +126,7 @@ if($results){
     $results=$wpdb->get_results($q);
     if($results){
       $fmt = new NumberFormatter( 'en_US', NumberFormatter::CURRENCY );
-      $D['Options'][]="\"order\": [ 5, 'asc' ]";
+      $D['Options'][]="\"order\": [ 1, 'asc' ]";
 			$D['Options'][]="\"lengthMenu\": [ [25, 50, -1], [25, 50, \"All\"] ]";
       $D['Headers']=array("Employee Name","Employee ID","Restaurant","Date","Check","Tip","Assigned","Payroll");
       foreach ($results as $r) {

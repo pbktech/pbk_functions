@@ -18,8 +18,8 @@ $q="SELECT restaurantName,businessDate ,checkNumber,tipAmount FROM pbc2.pbc_Toas
 $results=$wpdb->get_results($q);
 if($results){
 	$fmt = new NumberFormatter( 'en_US', NumberFormatter::CURRENCY );
-	$D['Options'][]="\"order\": [ 5, 'asc' ]";
-	$D['Options'][]="\"lengthMenu\": [ [25, 50, -1], [25, 50, \"All\"] ]";
+	$D['Options'][]="\"order\": [ 1, 'asc' ]";
+	$D['Options'][]="\"lengthMenu\": [ [5, 10, -1], [5, 10, \"All\"] ]";
 	$D['Headers']=array("Restaurant","Date","Check","Tip Amount");
 	foreach ($results as $r) {
 		$D['Results'][]=array(
