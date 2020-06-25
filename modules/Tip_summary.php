@@ -25,11 +25,34 @@ if($results){
   foreach($results as $r){
     $data['Options'][$r->externalEmployeeID]=$r->employeeName;
   }
-  $ret=$toast->pbk_form_processing() . "
+  $ret="
   <script>
-  function confirm_proceed() {
-    return confirm('This report takes a long time to process, please be patient.');
-  }
+  jQuery(document).ready(function() {
+    jQuery(\"#submit\").click(function(event){
+      var error_free=true;
+      if(jQuery(\"#startDate\").val()!='' || jQuery(\"#endDate\").val()!=''){
+        if(jQuery(\"#startDate\").val()!='' && jQuery(\"#endDate\").val()==''){
+          jQuery(\"#endDate\").after('<span class=\"alert alert-danger\">Required</span>');error_free=false;
+        }
+        if(jQuery(\"#startDate\").val()=='' && jQuery(\"#endDate\").val()!=''){
+          jQuery(\"#startDate\").after('<span class=\"alert alert-danger\">Required</span>');error_free=false;
+        }
+        if(!jQuery(\"#payroll\").is(':checked') && !jQuery(\"#assigned\").is(':checked') && !jQuery(\"#order\").is(':checked')){
+          jQuery(\"#dateTypes\").after('<span class=\"alert alert-danger\">Required</span>');error_free=false;
+        }
+      }
+      if(jQuery(\"#payroll\").is(':checked') || jQuery(\"#assigned\").is(':checked') || jQuery(\"#order\").is(':checked')){
+        jQuery(\"#chooseDates\").after('<span class=\"alert alert-danger\">Required</span>');error_free=false;
+      }
+      if (!error_free){
+      		event.preventDefault();
+      }else{
+        window.scrollTo(0,0);
+        jQuery(\"#incidentForm\").hide();
+        jQuery(\"#processingGif\").show();
+      }
+    });
+  });
   </script>
 <div class='container-fluid' id='queryResults'>
   <form method='get' action='".home_url( add_query_arg( array(), $wp->request ) )."'>
@@ -41,7 +64,7 @@ if($results){
       </div>
       <div class='row'>
         <div class='col'>
-          <label>Choose your dates:</label>
+          <label id='chooseDates'>Choose your dates:</label>
         </div>
       </div>
       <div class='row'>
@@ -54,15 +77,20 @@ if($results){
       </div>
       <div class='row'>
         <div class='col'>
-          <label>Choose which date to search:</label>
+          <label id='dateTypes'>Choose which date to search:</label>
         </div>
       </div>
       <div class='row'>
         <div class='col'>
           <div class=\"form-check form-check-inline\">
             <input class=\"form-check-input\" type=\"radio\" name=\"dateType\" id=\"payroll\" value=\"payroll\"> <label for='payroll' class=\"form-check-label\">Sent to Payroll</label>
+          </div>
+          <div class=\"form-check form-check-inline\">
             <input class=\"form-check-input\" type=\"radio\" name=\"dateType\" id=\"assigned\" value=\"assigned\"> <label for='assigned' class=\"form-check-label\">Assigned</label>
+          </div>
+          <div class=\"form-check form-check-inline\">
             <input class=\"form-check-input\" type=\"radio\" name=\"dateType\" id=\"order\" value=\"order\"> <label for='order' class=\"form-check-label\">Order Date</label>
+          </div>
           </div>
         </div>
       </div>
