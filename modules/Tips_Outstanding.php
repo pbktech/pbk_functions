@@ -10,7 +10,6 @@ foreach($rests as $r){
 	$orStmt[]="pbc_ToastOrderPayment.restaurantID=".$r->restaurantID;
 }
 $store=" AND (".implode(' OR ',$orStmt).")";
-echo $store;
 $bot="2020-05-01 00:00:00";
 $q="SELECT restaurantName,businessDate ,checkNumber,tipAmount FROM pbc2.pbc_ToastOrderPayment,pbc2.pbc_pbrestaurants,pbc_ToastCheckHeaders
     WHERE pbc2.pbc_ToastOrderPayment.restaurantID=pbc2.pbc_pbrestaurants.restaurantID AND businessDate > '2020-05-01 00:00:00' AND
@@ -25,7 +24,7 @@ if($results){
 	foreach ($results as $r) {
 		$D['Results'][]=array(
 			$r->restaurantName,
-			date("m/d/Y",strtotime($r->dateOfBusiness)),
+			date("m/d/Y",strtotime($r->businessDate)),
 			$r->checkNumber,
 			$fmt->formatCurrency($r->tipAmount,"USD")
 		);
