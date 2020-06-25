@@ -1,3 +1,8 @@
+<script>
+jQuery(function () {
+  jQuery('[data-toggle="tooltip"]').tooltip()
+})
+</script>
 <?php
 $time = microtime();
 global $wp;
@@ -11,7 +16,7 @@ foreach($rests as $r){
 }
 $store=" AND (".implode(' OR ',$orStmt).")";
 $bot="2020-05-01 00:00:00";
-$q="SELECT restaurantName,businessDate ,checkNumber,tipAmount FROM pbc2.pbc_ToastOrderPayment,pbc2.pbc_pbrestaurants,pbc_ToastCheckHeaders
+$q="SELECT restaurantName,businessDate ,checkNumber,tipAmount,pbc_pbrestaurants.restaurantID as 'restaurantID', as pbc_ToastOrderPayment.ToastCheckID 'ToastCheckID' FROM pbc2.pbc_ToastOrderPayment,pbc2.pbc_pbrestaurants,pbc_ToastCheckHeaders
     WHERE pbc2.pbc_ToastOrderPayment.restaurantID=pbc2.pbc_pbrestaurants.restaurantID AND businessDate > '2020-05-01 00:00:00' AND
     pbc_ToastOrderPayment.ToastCheckID NOT IN (SELECT orderGUID FROM pbc2.pbc_TipDistribution) AND pbc_ToastOrderPayment.ToastCheckID = pbc_ToastCheckHeaders.GUID and
     tipAmount!=0 $store ORDER BY pbc_pbrestaurants.restaurantID,restaurantName";
@@ -25,7 +30,7 @@ if($results){
 		$D['Results'][]=array(
 			$r->restaurantName,
 			date("m/d/Y",strtotime($r->businessDate)),
-			$r->checkNumber,
+			"<a href='".home_url( 'operations/tips/tip-distribution/?i='.$r->ToastCheckID )."' target='_blank' title='Assign this order' data-toggle=\"tooltip\" data-placement=\"bottom\">".$r->checkNumber."</a>",
 			$fmt->formatCurrency($r->tipAmount,"USD")
 		);
 	}
