@@ -131,14 +131,18 @@ if(!isset($_REQUEST['rid'])) {
 				<div class='col'>3rd Party/No One</div>
 				<div class='col'><label for='d-a0'>Driver?</label> <input type='checkbox' name='driver[]' value='a0' id='d-a0'/></div>
 			</div>";
-		foreach($employees as $e){
-			$ret.="
-			<div class='row toDisable'>
-				<div class='col'><span style='text-transform:capitalize;'>".$e->employeeName."</span></div>
-				<div class='col'><label for='d-".$e->GUID."'>Driver?</label> <input class='group1' type='checkbox' name='driver[]' value='".$e->GUID."' id='d-".$e->GUID."'/> </div>
-				<div class='col'><label for='w-".$e->GUID."'>Worked On?</label> <input class='group1' type='checkbox' name='worked[]' value='".$e->GUID."' id='w-".$e->GUID."'/></div>
-			</div>";
-		}
+			if(isset($employees)){
+				foreach($employees as $e){
+					$ret.="
+					<div class='row toDisable'>
+						<div class='col'><span style='text-transform:capitalize;'>".$e->employeeName."</span></div>
+						<div class='col'><label for='d-".$e->GUID."'>Driver?</label> <input class='group1' type='checkbox' name='driver[]' value='".$e->GUID."' id='d-".$e->GUID."'/> </div>
+						<div class='col'><label for='w-".$e->GUID."'>Worked On?</label> <input class='group1' type='checkbox' name='worked[]' value='".$e->GUID."' id='w-".$e->GUID."'/></div>
+					</div>";
+				}
+			}else {
+				$ret.="<div class='alert alert-warning'>There are no elligable employees clocked in on ".date("m/d/Y",strtotime($order->openedDate))." </div>";
+			}
 		$ret.="<br />
 		<input type='hidden' name='chkID' value='".$o->ToastCheckID."' />
 		<input type='hidden' name='rid' value='".$_REQUEST['rid']."' />

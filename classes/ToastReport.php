@@ -536,6 +536,7 @@ pbc2.pbc_ToastCheckHeaders.ToastOrderID=pbc2.pbc_ToastOrderHeaders.GUID";
 		$stmt = $this->mysqli->prepare($q);
 		$stmt->execute();
 		$result = $stmt->get_result();
+		if($result->num_rows==0){return;}
 		while($row=$result->fetch_object()){$r[]=$row;}
 		return $r;
 	}
