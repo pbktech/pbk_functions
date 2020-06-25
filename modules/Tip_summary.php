@@ -32,17 +32,18 @@ if($results){
       var error_free=true;
       if(jQuery(\"#startDate\").val()!='' || jQuery(\"#endDate\").val()!=''){
         if(jQuery(\"#startDate\").val()!='' && jQuery(\"#endDate\").val()==''){
-          jQuery(\"#endDate\").after('<span class=\"alert alert-danger\">Required</span>');error_free=false;
+          jQuery(\"#endDateLabel\").after('<span class=\"text-danger\">Required</span>');error_free=false;
         }
         if(jQuery(\"#startDate\").val()=='' && jQuery(\"#endDate\").val()!=''){
-          jQuery(\"#startDate\").after('<span class=\"alert alert-danger\">Required</span>');error_free=false;
+          jQuery(\"#startDateLabel\").after('<span class=\"text-danger\">Required</span>');error_free=false;
         }
         if(!jQuery(\"#payroll\").is(':checked') && !jQuery(\"#assigned\").is(':checked') && !jQuery(\"#order\").is(':checked')){
-          jQuery(\"#dateTypes\").after('<span class=\"alert alert-danger\">Required</span>');error_free=false;
+          jQuery(\"#dateTypes\").after('<span class=\"text-danger\">Required</span>');error_free=false;
         }
       }
-      if(jQuery(\"#payroll\").is(':checked') || jQuery(\"#assigned\").is(':checked') || jQuery(\"#order\").is(':checked')){
-        jQuery(\"#chooseDates\").after('<span class=\"alert alert-danger\">Required</span>');error_free=false;
+      if(jQuery(\"#payroll\").is(':checked') || jQuery(\"#assigned\").is(':checked') || jQuery(\"#order\").is(':checked')
+      && (jQuery(\"#startDate\").val()!='' || jQuery(\"#endDate\").val()!='')){
+        jQuery(\"#chooseDates\").after('<span class=\"text-danger\">Required</span>');error_free=false;
       }
       if (!error_free){
       		event.preventDefault();
