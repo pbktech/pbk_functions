@@ -7,16 +7,6 @@ $latest=date("Y-m-d",time() - 60 * 60 * 24)." 23:59:59";
 $toast = new ToastReport();
 $rests=$toast->getAvailableRestaurants();
 $cu = wp_get_current_user();
-if(isset($_GET['i'])){
-	$checkRestaurant=$wpdb->get_var("SELECT restaurantID FROM pbc_ToastOrderPayment WHERE ToastCheckID='".$_GET['i']."'");
-	if (in_array($checkRestaurant,$rests) || in_array("administrator", $cu->roles) || in_array("editor", $cu->roles)) {
-		$_REQUEST['rid']=$checkRestaurant;
-		echo $checkRestaurant;
-	}else {
-		echo "<div class='alert alert-danger'>You do not have access to this location.</div>";
-		exit;
-	}
-}
 if(in_array("administrator", $cu->roles) || in_array("editor", $cu->roles)) {
 	$toast->isAboveStore=1;
 }
@@ -62,6 +52,15 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' && $_POST['restaurant']=='') {
 		echo "<script>window.location.replace(\"".$page."/?rid=".$_POST['rid']."\");</script>";
 	}else {
 		echo "<script>window.location.replace(\"".$page."\");</script>";
+	}
+}
+if(isset($_GET['i'])){
+	$checkRestaurant=$wpdb->get_var("SELECT restaurantID FROM pbc_ToastOrderPayment WHERE ToastCheckID='".$_GET['i']."'");
+	if (in_array($checkRestaurant,$rests) || in_array("administrator", $cu->roles) || in_array("editor", $cu->roles)) {
+		$_REQUEST['rid']=$checkRestaurant;
+	}else {
+		echo "<div class='alert alert-danger'>You do not have access to this location.</div>";
+		exit;
 	}
 }
 if(!isset($_REQUEST['rid'])) {
