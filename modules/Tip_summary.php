@@ -34,18 +34,66 @@ if($results){
 <div class='container-fluid' id='queryResults'>
   <form method='get' action='".home_url( add_query_arg( array(), $wp->request ) )."'>
       <div class='row'>
-      <label for='id'>Please Choose Employees to Search <i>(You can type to search and choose multiple employees)</i></label>
-        ".$toast->buildSelectBox($data)."
+        <div class='col'>
+          <label for='id'>Please Choose Employees to Search <i>(You can type to search and choose multiple employees)</i></label>
+            ".$toast->buildSelectBox($data)."
+        </div>
       </div>
       <div class='row'>
-        <input type='submit' id='submit' class=\"btn btn-primary\" value='Search' />
+        <div class='col'>
+          <label>Choose your dates:</label>
+        </div>
+      </div>
+      <div class='row'>
+        <div class='col'>
+            ".$toast->buildDateSelector('startDate',"Starting Date")."
+        </div>
+        <div class='col'>
+            ".$toast->buildDateSelector('endDate',"Ending Date")."
+        </div>
+      </div>
+      <div class='row'>
+        <div class='col'>
+          <label>Choose which date to search:</label>
+        </div>
+      </div>
+      <div class='row'>
+        <div class='col'>
+          <div class=\"form-check form-check-inline\">
+            <input class=\"form-check-input\" type=\"radio\" name=\"dateType\" id=\"payroll\" value=\"payroll\"> <label for='payroll' class=\"form-check-label\">Sent to Payroll</label>
+            <input class=\"form-check-input\" type=\"radio\" name=\"dateType\" id=\"assigned\" value=\"assigned\"> <label for='assigned' class=\"form-check-label\">Assigned</label>
+            <input class=\"form-check-input\" type=\"radio\" name=\"dateType\" id=\"order\" value=\"order\"> <label for='order' class=\"form-check-label\">Order Date</label>
+          </div>
+        </div>
+      </div>
+      <div class='row'>
+        <div class='col'>
+          <input type='submit' id='submit' class=\"btn btn-primary\" value='Search' />
+        </div>
       </div>
   </form>";
   if(isset($_GET['id'])){
     foreach($_GET['id'] as $id){
       $ids[]="externalEmployeeID=".$id;
     }
-    $q="SELECT * FROM pbc_sum_AssignedTips,pbc_ToastEmployeeInfo WHERE employeeGUID = guid AND (".implode(' OR ',$ids).") ORDER BY employeeName,businessDate";
+    if(isset($_GET['dateType']) && $_GET['dateType']!=''){
+      switch($_GET['dateType']){
+        case "payroll":
+          $dateRestrict=" AND CAST(json_unquote(JSON_EXTRACT(userID ,'$.SentToPayroll.Date')) as DATETIME) BETWEEN '".date('Y-m-d',strtotime($_GET['startDate']))." 00:00:00' AND '".date('Y-m-d',strtotime($_GET['endDate']))." 23:59:59' ";
+          break;
+        case "assigned":
+          $dateRestrict=" AND CAST(json_unquote(JSON_EXTRACT(userID ,'$.Initial.Date')) as DATETIME) BETWEEN '".date('Y-m-d',strtotime($_GET['startDate']))." 00:00:00' AND '".date('Y-m-d',strtotime($_GET['endDate']))." 23:59:59' ";
+          break;
+        case "order":
+          $dateRestrict=" AND businessDate BETWEEN '".date('Y-m-d',strtotime($_GET['startDate']))." 00:00:00' AND '".date('Y-m-d',strtotime($_GET['endDate']))." 23:59:59' ";
+          break;
+        default:
+          $dateRestrict="";
+      }
+    }else{
+      $dateRestrict="";
+    }
+    $q="SELECT * FROM pbc_sum_AssignedTips,pbc_ToastEmployeeInfo WHERE employeeGUID = guid AND (".implode(' OR ',$ids).") $dateRestrict ORDER BY employeeName,businessDate";
     $results=$wpdb->get_results($q);
     if($results){
       $fmt = new NumberFormatter( 'en_US', NumberFormatter::CURRENCY );

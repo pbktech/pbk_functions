@@ -1253,4 +1253,18 @@ from pbc2.kds_detail WHERE sent_time BETWEEN  ? AND ? AND station='' and restaur
 		</select>";
 		return $return;
 	}
+	public function buildDateSelector($field='startDate',$label="Starting Date"){
+		if(isset($_GET[$field])){$dateValue=$_GET[$field];}else{$dateValue="";}
+		return "
+		<script>
+			jQuery(document).ready(function() {
+				jQuery('#".$field."').datepicker({
+			      dateFormat : 'mm/dd/yy'
+				});
+			});
+		</script>
+		<label for='$field' id='".$field."Label'>$label</label>
+		<input class=\"form-control\" type=\"text\" id=\"".$field."\" name=\"".$field."\" value=\"".$dateValue."\"/>
+		";
+	}
 }
