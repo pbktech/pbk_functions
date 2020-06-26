@@ -3,9 +3,8 @@ global $ret;
 global $wp;
 global $wpdb;
 $fmt = new NumberFormatter( 'en_US', NumberFormatter::CURRENCY );
-$current_user = wp_get_current_user();
-$userLevel=get_currentuserinfo();
-if($userLevel->user_level<=7) {
+$cu = wp_get_current_user();
+if(in_array("administrator", $cu->roles) || in_array("editor", $cu->roles)) {
 	$sql="SELECT GUID,restaurantName FROM pbc_pbrestaurants WHERE isOpen=1";
 }else {
 	$sql="SELECT GUID,restaurantName FROM pbc_pbrestaurants WHERE isOpen=1 AND pbc_pbrestaurants.GUID IN
