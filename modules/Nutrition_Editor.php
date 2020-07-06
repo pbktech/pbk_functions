@@ -16,7 +16,7 @@ $preferences=array("Vegetarian","Vegan","Keto","Paleo");
 $page = home_url(add_query_arg(array(), $wp->request));
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $itemInfo=$_POST['itemInfo'];
-    if(isset($_POST['allergens'])){$itemInfo['allergens']=implode(", ", $_POST['allergens']);}else {$itemInfo['allergens']="");}
+    if(isset($_POST['allergens'])){$itemInfo['allergens']=implode(", ", $_POST['allergens']);}else {$itemInfo['allergens']="";}
     if(isset($_POST['preferences'])){$itemInfo['preferences']=implode(", ", $_POST['preferences']);}else {$itemInfo['preferences']="";}
     $itemInfo=json_encode($itemInfo);
     if ($_REQUEST['item']=='_NEW') {
