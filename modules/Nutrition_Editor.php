@@ -127,7 +127,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <div class='row'>
       <div class='col'><label for='itemName'>Item Name</label><br><input class='form-control' required type='text' name='itemName' value='".stripslashes($item->itemName)."' id='itemName' /></div>
       <div class='col'><label for='published'>Published?</label><br>
-      <select class='form-control js-example-basic-single' name='published' id='published' >
+      <select class='form-control' name='published' id='published' >
         <option value='1' ";
       if ($item->published==1) {
           $ret.="selected='selected'";
@@ -141,7 +141,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
       </select>
       </div>
       <div class='col'><label for='itemSection'>Category</label><br>
-      <select class='form-control js-example-basic-single' name='itemSection' id='itemSection' >
+      <select class='form-control' name='itemSection' id='itemSection' >
         <option value=''>Choose One</option>";
       foreach ($groups as $id=>$name) {
           if ($item->itemSection==$id) {
