@@ -16,8 +16,8 @@ $preferences=array("Vegetarian","Vegan","Keto","Paleo");
 $page = home_url(add_query_arg(array(), $wp->request));
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $itemInfo=$_POST['itemInfo'];
-    if(isset($_POST['allergens'])){$itemInfo['allergens']=implode(", ", $_POST['allergens']);}else {$itemInfo['allergens']=array();}
-    if(isset($_POST['preferences'])){$itemInfo['preferences']=implode(", ", $_POST['preferences']);}else {$itemInfo['preferences']=array();}
+    if(isset($_POST['allergens'])){$itemInfo['allergens']=implode(", ", $_POST['allergens']);}else {$itemInfo['allergens']="");}
+    if(isset($_POST['preferences'])){$itemInfo['preferences']=implode(", ", $_POST['preferences']);}else {$itemInfo['preferences']="";}
     $itemInfo=json_encode($itemInfo);
     if ($_REQUEST['item']=='_NEW') {
         $wpdb->query($wpdb->prepare(
@@ -201,7 +201,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         <div class='col'>
           <div class='form-group'>
             <h4>Dietary Preferences</h4>";
-      $dietary=explode(", ", $itemInfo->preferences);
+      if(isset($itemInfo->preferences)){$dietary=explode(", ", $itemInfo->preferences)}else{$dietary=array();};
       foreach ($preferences as $preference) {
           if (in_array($preference, $dietary)) {
               $check="checked='checked'";
