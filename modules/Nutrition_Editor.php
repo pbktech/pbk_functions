@@ -179,7 +179,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         <div class='col'>
           <div class='form-group'>
             <h4>Allergens</h4>";
-            if(isset($itemInfo->allergens)){$allergy=explode(", ", $itemInfo->allergens)}else{$allergy=array();}
+            if(isset($itemInfo->allergens)){$allergy=explode(", ", $itemInfo->allergens);}else{$allergy=array();}
       $idNum=0;
       foreach ($allergens as $allergen) {
           if (in_array($allergen, $allergy)) {
@@ -201,7 +201,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         <div class='col'>
           <div class='form-group'>
             <h4>Dietary Preferences</h4>";
-      if(isset($itemInfo->preferences)){$dietary=explode(", ", $itemInfo->preferences)}else{$dietary=array();}
+      if(isset($itemInfo->preferences)){$dietary=explode(", ", $itemInfo->preferences);}else{$dietary=array();}
       foreach ($preferences as $preference) {
           if (in_array($preference, $dietary)) {
               $check="checked='checked'";
