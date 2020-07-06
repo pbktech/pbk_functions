@@ -210,7 +210,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
           }
           $ret.="
               <div class='form-check'>
-                <input class='form-check-input' type='checkbox' name='allergens[]' value='".$preference."' id='id".$idNum."' ".$check." />
+                <input class='form-check-input' type='checkbox' name='preferences[]' value='".$preference."' id='id".$idNum."' ".$check." />
                 <label class='form-check-label'for='id".$idNum."' >".$preference."</label>
               </div>
                 ";
