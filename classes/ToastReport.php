@@ -557,7 +557,7 @@ pbc2.pbc_ToastCheckHeaders.ToastOrderID=pbc2.pbc_ToastOrderHeaders.GUID";
 		return $r[0];
 	}
 	function getTipsForPayroll() {
-		$q="SELECT SUM(tipAmount) as Total,employeeGUID,orderGUID FROM pbc2.pbc_TipDistribution where sentToPayroll='0' GROUP BY employeeGUID,orderGUID";
+		$q="SELECT SUM(tipAmount) as Total,employeeGUID,orderGUID FROM pbc2.pbc_TipDistribution where sentToPayroll='0' AND tipAmount !=0 AND employeeGUID!='a0' GROUP BY employeeGUID,orderGUID";
 		$stmt = $this->mysqli->prepare($q);
 		$stmt->execute();
 		$result = $stmt->get_result();
