@@ -2,6 +2,7 @@
 if ( file_exists( ABSPATH . 'wp-config.php') ) {
 require_once( ABSPATH . 'wp-config.php' );
 }
+global $wp;
 $cu = wp_get_current_user();
 add_action('admin_enqueue_scripts', 'pbk_scripts');
 require_once( ABSPATH . 'wp-admin/includes/screen.php' );
