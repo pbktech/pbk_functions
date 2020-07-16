@@ -141,7 +141,7 @@ function pbr_edit_devices(){
 }
 function pbr_edit_minibar(){
 
-  echo "<div class='wrap'><div id=\"icon-users\" class=\"icon32\"></div><h2>Manage MiniBar<a href=\"?page=pbr-edit-minibar&amp;id=_NEW\" class=\"add-new-h2\">Add New MiniBar Location</a>
+  echo "<div class='wrap'><div id=\"icon-users\" class=\"icon32\"></div><h2>Manage MiniBar</h2><a href=\"?page=pbr-edit-minibar&amp;id=_NEW\" class=\"add-new-h2\">Add New MiniBar Location</a>
   ";
   if(isset($_GET['id']) && is_numeric($_GET['id'])) {
     if ( isset( $_GET['m'] ) ){
