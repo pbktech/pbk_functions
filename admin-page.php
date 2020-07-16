@@ -2,6 +2,7 @@
 if ( file_exists( ABSPATH . 'wp-config.php') ) {
 require_once( ABSPATH . 'wp-config.php' );
 }
+$cu = wp_get_current_user();
 add_action('admin_enqueue_scripts', 'pbk_scripts');
 require_once( ABSPATH . 'wp-admin/includes/screen.php' );
 add_action('admin_menu', 'pbr_setup_menu');
@@ -22,10 +23,25 @@ function pbr_setup_menu(){
   add_submenu_page( 'Manage-PBK', 'Manage Devices', 'Manage Devices', 'manage_options', 'pbr-edit-devices', 'pbr_edit_devices' );
   add_submenu_page( 'Manage-PBK', 'Restaurant Orders', 'Restaurant Orders', 'upload_files', 'pbr-orders', 'pbr_orders' );
 }
+function wpb_custom_toolbar_link($wp_admin_bar) {
+    $args = array(
+        'id' => 'pbkfunctions',
+        'title' => 'PBK Functions',
+        'href' => admin_url( '?page=Manage-PBK' ),
+        'meta' => array(
+            'class' => '',
+            'title' => 'Edit PBK Settings'
+            )
+    );
+    $wp_admin_bar->add_node($args);
+}
+if(in_array("administrator", $cu->roles) || in_array("editor", $cu->roles)) {
+  add_action('admin_bar_menu', 'wpb_custom_toolbar_link', 999);
+}
 function pbr_admin_init(){
 }
 function pbr_edit_restaurant(){
-  
+
 	if(!class_exists('WP_List_Table')){
 	   require_once( ABSPATH . 'wp-admin/includes/class-wp-list-table.php' );
 	}
