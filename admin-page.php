@@ -31,7 +31,7 @@ function wpb_custom_toolbar_link($wp_admin_bar) {
     $args = array(
         'id' => 'pbkfunctions',
         'title' => 'PBK Functions',
-        'href' => admin_url( '?page=Manage-PBK' ),
+        'href' => admin_url( 'admin.php?page=Manage-PBK' ),
         'meta' => array(
             'class' => '',
             'title' => 'Edit PBK Settings'
