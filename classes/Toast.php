@@ -95,14 +95,18 @@ class Toast{
 		$result=curl_exec($ch);
 		return json_decode($result);
 	}
-	function getRestaurantOptionsJSON($do=null,$option) {
+	function getRestaurantOptionsJSON($do=null,$option,$pageSize=null) {
 //		if(trim($do)=="" || !isset($do)) {return "BLANK";echo "NO do\n";}
 		if(array_key_exists($do,$this->restOptions)){return $this->restOptions[$do];}
+		$url=$this->url. "/config/v2/".$option."/".$do;
+		if(isset($pageSize)){
+			$url.="?pageSize=".$pageSize."";
+		}
 		$ch = curl_init();
 		curl_setopt($ch, CURLOPT_HEADER, 0);
 		curl_setopt ($ch, CURLOPT_HTTPHEADER,Array("Authorization: Bearer " . $this->auth->accessToken,"Toast-Restaurant-External-ID: " . $this->guid));
 		curl_setopt ($ch, CURLOPT_RETURNTRANSFER, 1);
-		curl_setopt($ch, CURLOPT_URL,$this->url. "/config/v2/".$option."/".$do);
+		curl_setopt($ch, CURLOPT_URL,$url);
 		$result=curl_exec($ch);
 		$options= json_decode($result);
 		return $options;
@@ -154,6 +158,16 @@ class Toast{
 		curl_setopt($ch, CURLOPT_URL,$this->url. "/config/v2/menus/" . $menu);
 		$result=curl_exec($ch);
 		if($result->status!=200 && $result->status!="") {$this->notifyIT(json_decode($result)."\n\n Authorization: Bearer " . $this->auth->accessToken."Toast-Restaurant-External-ID: " . $this->guid."\n\n".$this->url. "/orders/v2/orders?businessDate=" . $date,"JSON Error - getOrders");}
+		return json_decode($result);
+	}
+	function getMenus() {
+		$ch = curl_init();
+		curl_setopt($ch, CURLOPT_HEADER, 0);
+		curl_setopt ($ch, CURLOPT_HTTPHEADER,Array("Authorization: Bearer " . $this->auth->accessToken,"Toast-Restaurant-External-ID: " . $this->guid));
+		curl_setopt ($ch, CURLOPT_RETURNTRANSFER, 1);
+		curl_setopt($ch, CURLOPT_URL,$this->url. "/config/v2/menus?pageSize=100");
+		$result=curl_exec($ch);
+//		if($result->status!=200 && $result->status!="") {$this->notifyIT(json_decode($result)."\n\n Authorization: Bearer " . $this->auth->accessToken."Toast-Restaurant-External-ID: " . $this->guid."\n\n".$this->url. "/orders/v2/orders?businessDate=" . $date,"JSON Error - getOrders");}
 		return json_decode($result);
 	}
 	function getOrdersByDate($date) {
