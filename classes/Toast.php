@@ -63,17 +63,6 @@ class Toast{
 		$result=curl_exec($ch);
 		$token=json_decode($result);
 		return $token->token;
-
-		/*
-		$ch = curl_init();
-		curl_setopt($ch, CURLOPT_HEADER, 0);
-		curl_setopt ($ch, CURLOPT_RETURNTRANSFER, 1);
-		curl_setopt ($ch, CURLOPT_HTTPHEADER,Array("Content-Type: application/x-www-form-urlencoded"));
-		curl_setopt($ch, CURLOPT_POSTFIELDS, "grant_type=client_credentials&client_id=".$this->ToastClient."&client_secret=".$this->ToastSecret."");
-		curl_setopt($ch, CURLOPT_URL,$this->url. "/usermgmt/v1/oauth/token");
-		$result=curl_exec($ch);
-		return json_decode($result);
-		*/
 	}
 	function connectDB() {
 		$this->mysqli = new mysqli($this->config->host, $this->config->username, $this->config->password, $this->config->dBase);
@@ -319,6 +308,23 @@ class Toast{
 		curl_setopt($ch, CURLOPT_VERBOSE, false);
 		curl_setopt ($ch, CURLOPT_RETURNTRANSFER, 1);
 		curl_setopt($ch, CURLOPT_URL,$this->url. "/crm/v1/customers/".$c . "/creditTransactions");
+		$result=curl_exec($ch);
+		return json_decode($result);
+	}
+	function postOrder($c,$ph) {
+		$ph=json_encode($ph);
+		$ch = curl_init();
+		curl_setopt($ch, CURLOPT_HEADER, 0);
+		curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
+		curl_setopt ($ch, CURLOPT_HTTPHEADER,Array("Authorization: Bearer " . $this->auth->accessToken,
+		"Toast-Restaurant-External-ID: " . $this->guid,
+		'Content-Type: application/json',
+    'Content-Length: ' . strlen($ph)));
+    curl_setopt($ch, CURLOPT_POST, true);
+		curl_setopt($ch, CURLOPT_POSTFIELDS, $ph);
+		curl_setopt($ch, CURLOPT_VERBOSE, false);
+		curl_setopt ($ch, CURLOPT_RETURNTRANSFER, 1);
+		curl_setopt($ch, CURLOPT_URL,$this->url. "/orders/v2/".$c );
 		$result=curl_exec($ch);
 		return json_decode($result);
 	}
