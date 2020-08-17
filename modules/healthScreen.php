@@ -45,6 +45,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
   $emp=$wpdb->get_row("SELECT * FROM pbc_ToastEmployeeInfo WHERE guid='" . $_POST['reporterName'] . "'");
   $_POST['orderData']['name']=$emp->employeeName;
   $_POST['restaurantID']=$emp->restaurantID;
+  $r->setRestaurantID($_POST['restaurantID']);
   $wpdb->query(
   $wpdb->prepare(
     "INSERT INTO pbc_pbk_orders (orderType,restaurantID,userID,orderData,orderDate,orderStatus)VALUES(%s,%d,%d,%s,%s,%s)",
@@ -60,12 +61,11 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
       )
     );
     $d=$r->getPBKOrderinfo($guid);
-    print_r($d);
     $report=New ToastReport;
     $docFolder=dirname(dirname($report->docSaveLocation)) ."/docs/". $d->guid;
     if (!file_exists($docFolder)) {mkdir($docFolder);}
     $content['format']='A4-P';
-    $content['Save']=$docFolder;
+    $content['Save']=$docFolder."/";
     $content['title']="DAILY HEALTH SCREEN for " . $emp->employeeName . " at " . $d->restaurantName;
     $content['fileName']=$report->hexFileName($content['title']);
     $content['html']=$r->docHeader("DAILY HEALTH SCREEN");
@@ -78,6 +78,10 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
     $content['html'].=$questions[2][$_POST['orderData']['language']] . " : " . $_POST['orderData']['question'][2] . "<br><br>";
     $content['html'].=$questions[3][$_POST['orderData']['language']] . " : " . $_POST['orderData']['question'][3];
     if($file=$r->buildHTMLPDF(json_encode($content))){
+      $emails[]=$r->getManagerEmail("GM");
+      $emails[]=$r->getManagerEmail("AM");
+      $emails[]=$r->getManagerEmail("STR");
+      $report->reportEmail("jon@theproteinbar.com",$content['html'],"New IAP Submitted",$file['Local']);
       $ret.= "
       <script>
         jQuery(document).ready(function(){
