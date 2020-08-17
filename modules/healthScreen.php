@@ -81,7 +81,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
       $emails[]=$r->getManagerEmail("GM");
       $emails[]=$r->getManagerEmail("AM");
       $emails[]=$r->getManagerEmail("STR");
-      $report->reportEmail("jon@theproteinbar.com",$content['html'],"New IAP Submitted",$file['Local']);
+      $report->reportEmail("jon@theproteinbar.com",$content['html'],$content['title'],$file['Local']);
       $ret.= "
       <script>
         jQuery(document).ready(function(){
