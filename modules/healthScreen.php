@@ -35,10 +35,10 @@ $labels["Temp1"]["English"]="Temp 1";
 $labels["Temp1"]["Spanish"]="Temp 1";
 $labels["Temp2"]["English"]="Temp 2";
 $labels["Temp2"]["Spanish"]="Temp 2";
-$labels["Yes"]["English"]="INITIAL HERE FOR YES";
-$labels["Yes"]["Spanish"]="INICIAL AQUÍ POR SÍ";
-$labels["No"]["English"]="INITIAL HERE FOR NO";
-$labels["No"]["Spanish"]="INICIAL AQUÍ POR NO";
+$labels["Yes"]["English"]="YES";
+$labels["Yes"]["Spanish"]="SÍ";
+$labels["No"]["English"]="NO";
+$labels["No"]["Spanish"]="NO";
 
 if($_SERVER['REQUEST_METHOD'] == 'POST') {
   $_POST['orderData']["Questions"]=$questions;
@@ -115,7 +115,7 @@ jQuery(document).ready(function() {
   <form method='post' action='".$page."' id='' enctype='multipart/form-data' >
     <div class='row' style='background-color:#f9b58f;color:#FFFFFF;'>
       <div class='col'><label for='reporterName'>".$labels["Name"][$lang]."</label>
-      <select name='reporterName' id='reporterName'  class='js-example-basic-single'><option value=''>Choose an Employee</option>";
+      <select name='reporterName' id='reporterName'  class='js-example-basic-single custom-select' required><option value=''>Choose an Employee</option>";
 foreach($employees as $restaurant=>$emps){
   $ret.="<optgroup label='".$restaurant."'>";
   foreach ($emps as $id=>$item) {
@@ -131,25 +131,20 @@ $ret.="</select></div>
       <div class='col'><label for='Temp1'>".$labels["Temp1"][$lang]."</label><br><input type='text' name='orderData[Temp1]' id='Temp1'/></div>
       <div class='col'><label for='Temp2'>".$labels["Temp2"][$lang]."</label><br><input type='text' name='orderData[Temp2]' id='Temp2'/></div>
     </div>
-    <div class='row' style='background-color:#f9b58f;color:#FFFFFF;'>
-      <div class='col'></div>
-      <div class='col'>".$labels["Yes"][$lang]."</div>
-      <div class='col'>".$labels["No"][$lang]."</div>
+    <div class='row' style='background-color:#e7e6e6;color:#000000;'>
+      <div class='col'><strong>" . $questions[1][$lang] . "</strong></div>
+      <div class='col'><div class=\"custom-control custom-radio\"><input type=\"radio\" id=\"customRadio1y\" name='orderData[question][1]' value='Yes' class=\"custom-control-input\"><label class=\"custom-control-label\" for='customRadio1y'>".$labels["Yes"][$lang]."</label></div></div>
+      <div class='col'><div class=\"custom-control custom-radio\"><input type=\"radio\" id=\"customRadio1n\" name='orderData[question][1]' value='No' class=\"custom-control-input\"><label class=\"custom-control-label\" for='customRadio1n'>".$labels["No"][$lang]."</label></div></div>
     </div>
     <div class='row' style='background-color:#e7e6e6;color:#000000;'>
-      <div class='col'><label for='customRadio1'>" . $questions[1][$lang] . "</label></div>
-      <div class='col'><div class=\"custom-control custom-radio\"><input type=\"radio\" id=\"customRadio1\" name='orderData[question][1]' value='Yes' class=\"custom-control-input\"></div></div>
-      <div class='col'><div class=\"custom-control custom-radio\"><input type=\"radio\" id=\"customRadio1\" name='orderData[question][1]' value='No' class=\"custom-control-input\"></div></div>
+      <div class='col'><strong>" . $questions[2][$lang] . "</strong></div>
+      <div class='col'><div class=\"custom-control custom-radio\"><input type=\"radio\" id=\"customRadio2y\" name='orderData[question][2]' value='Yes' class=\"custom-control-input\"><label class=\"custom-control-label\" for='customRadio2y'>".$labels["Yes"][$lang]."</label></div></div>
+      <div class='col'><div class=\"custom-control custom-radio\"><input type=\"radio\" id=\"customRadio2n\" name='orderData[question][2]' value='No' class=\"custom-control-input\"><label class=\"custom-control-label\" for='customRadio2n'>".$labels["No"][$lang]."</label></div></div>
     </div>
     <div class='row' style='background-color:#e7e6e6;color:#000000;'>
-      <div class='col'><label for='customRadio2'>" . $questions[2][$lang] . "</label></div>
-      <div class='col'><div class=\"custom-control custom-radio\"><input type=\"radio\" id=\"customRadio2\" name='orderData[question][2]' value='Yes' class=\"custom-control-input\"></div></div>
-      <div class='col'><div class=\"custom-control custom-radio\"><input type=\"radio\" id=\"customRadio2\" name='orderData[question][2]' value='No' class=\"custom-control-input\"></div></div>
-    </div>
-    <div class='row' style='background-color:#e7e6e6;color:#000000;'>
-      <div class='col'><label for='customRadio3'>" . $questions[3][$lang] . "</label></div>
-      <div class='col'><div class=\"custom-control custom-radio\"><input type=\"radio\" id=\"customRadio3\" name='orderData[question][3]' value='Yes' class=\"custom-control-input\"></div></div>
-      <div class='col'><div class=\"custom-control custom-radio\"><input type=\"radio\" id=\"customRadio3\" name='orderData[question][3]' value='No' class=\"custom-control-input\"></div></div>
+      <div class='col'><strong>" . $questions[3][$lang] . "</strong></div>
+      <div class='col'><div class=\"custom-control custom-radio\"><input type=\"radio\" id=\"customRadio3y\" name='orderData[question][3]' value='Yes' class=\"custom-control-input\"><label class=\"custom-control-label\" for='customRadio3y'>".$labels["Yes"][$lang]."</label></div></div>
+      <div class='col'><div class=\"custom-control custom-radio\"><input type=\"radio\" id=\"customRadio3n\" name='orderData[question][3]' value='No' class=\"custom-control-input\"><label class=\"custom-control-label\" for='customRadio3n'>".$labels["No"][$lang]."</label></div></div>
     </div>
     <div class='row'>
       <div class='col'><input type=\"submit\" class='btn btn-primary' id=\"submit\" value=\"Submit\"/></div>
