@@ -109,6 +109,9 @@ $ret.="
 <script>
 jQuery(document).ready(function() {
     jQuery('.js-example-basic-single').select2();
+    jQuery('#date').datepicker({
+        dateFormat : 'mm/dd/yy'
+    });
 });
 </script>
 <div class='container' id='queryResults'>
@@ -126,9 +129,9 @@ foreach($employees as $restaurant=>$emps){
 $ret.="</select><input type='hidden' name='orderData[language]' value='".$lang."' /></div>
     </div>
     <div class='row' style='background-color:#f9b58f;color:#FFFFFF;'>
-      <div class='col'>".$r->buildDateSelector('date',$labels["Date"][$lang])."</div>
-      <div class='col'><label for='Temp1'>".$labels["Temp1"][$lang]."</label><br><input type='text' name='orderData[Temp1]' id='Temp1' required/></div>
-      <div class='col'><label for='Temp2'>".$labels["Temp2"][$lang]."</label><br><input type='text' name='orderData[Temp2]' id='Temp2' required/></div>
+      <div class='col'><label for='date' id='dateLabel'>".$labels["Date"][$lang]."</label><input class=\"form-control\" type=\"text\" id='date' name='date' value='' required/></div>
+      <div class='col'><label for='Temp1'>".$labels["Temp1"][$lang]."</label><br><input class=\"form-control\" type='text' name='orderData[Temp1]' id='Temp1' required/></div>
+      <div class='col'><label for='Temp2'>".$labels["Temp2"][$lang]."</label><br><input class=\"form-control\" type='text' name='orderData[Temp2]' id='Temp2' required/></div>
     </div>
     <div class='row' style='background-color:#e7e6e6;color:#000000;'>
       <div class='col'><strong>" . $questions[1][$lang] . "</strong></div>
