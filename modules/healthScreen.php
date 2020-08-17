@@ -127,13 +127,11 @@ $ret.="</select></div>
       <div class='col'><input type='hidden' name='orderData[language]' value='".$lang."' /></div>
     </div>
     <div class='row' style='background-color:#f9b58f;color:#FFFFFF;'>
-      <div class='col'>
-        <div class='row' style='background-color:#f9b58f;color:#FFFFFF;'>
-          <div class='col'>".$r->buildDateSelector('date',$labels["Date"][$lang])."</div>
-          <div class='col'><label for='Temp1'>".$labels["Temp1"][$lang]."<input type='text' name='orderData[Temp1]' id='Temp1'/></label></div>
-          <div class='col'><label for='Temp2'>".$labels["Temp2"][$lang]."<input type='text' name='orderData[Temp2]' id='Temp2'/></label></div>
-        </div>
-      </div>
+      <div class='col'>".$r->buildDateSelector('date',$labels["Date"][$lang])."</div>
+      <div class='col'><label for='Temp1'>".$labels["Temp1"][$lang]."<input type='text' name='orderData[Temp1]' id='Temp1'/></label></div>
+      <div class='col'><label for='Temp2'>".$labels["Temp2"][$lang]."<input type='text' name='orderData[Temp2]' id='Temp2'/></label></div>
+    </div>
+    <div class='row' style='background-color:#f9b58f;color:#FFFFFF;'>
       <div class='col'>".$labels["Yes"][$lang]."</div>
       <div class='col'>".$labels["No"][$lang]."</div>
     </div>
