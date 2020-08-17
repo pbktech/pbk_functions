@@ -43,7 +43,6 @@ $labels["No"]["Spanish"]="NO";
 if($_SERVER['REQUEST_METHOD'] == 'POST') {
   $_POST['orderData']["Questions"]=$questions;
   $emp=$wpdb->get_row("SELECT * FROM pbc_ToastEmployeeInfo WHERE guid='" . $_POST['reporterName'] . "'");
-  print_r($emp);
   $_POST['orderData']['name']=$emp->employeeName;
   $_POST['restaurantID']=$emp->restaurantID;
   $wpdb->query(
@@ -61,6 +60,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
       )
     );
     $d=$r->getPBKOrderinfo($wpdb->insert_id);
+    print_r($d);
     $report=New ToastReport;
     $docFolder=dirname(dirname($report->docSaveLocation)) ."/docs/". $d->guid;
     if (!file_exists($docFolder)) {mkdir($docFolder);}
@@ -71,7 +71,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
     $content['html']=$r->docHeader("DAILY HEALTH SCREEN");
     $content['html'].=$labels["Name"][$_POST['orderData']['language']] . " : " . $emp->employeeName . "<br><br>";
     $content['html'].="Restaurant" . " : " . $d->restaurantName . "<br><br>";
-    $content['html'].=$labels["Date"][$_POST['orderData']['language']] . " : " . date("m/d/Y H:i:s", strtotime($_POST['date'])) . "<br><br>";
+    $content['html'].=$labels["Date"][$_POST['orderData']['language']] . " : " . date("m/d/Y H:i:s") . "<br><br>";
     $content['html'].=$labels["Temp1"][$_POST['orderData']['language']] . " : " . $_POST['orderData']['Temp1'] . "<br><br>";
     $content['html'].=$labels["Temp2"][$_POST['orderData']['language']] . " : " . $_POST['orderData']['Temp2'] . "<br><br>";
     $content['html'].=$questions[1][$_POST['orderData']['language']] . " : " . $_POST['orderData']['question'][1] . "<br><br>";
@@ -111,9 +111,6 @@ $ret.="
 <script>
 jQuery(document).ready(function() {
     jQuery('.js-example-basic-single').select2();
-    jQuery('#date').datepicker({
-        dateFormat : 'mm/dd/yy'
-    });
 });
 </script>
 <div class='container' id='queryResults'>
@@ -129,9 +126,6 @@ foreach($employees as $restaurant=>$emps){
 }
 
 $ret.="</select><input type='hidden' name='orderData[language]' value='".$lang."' /></div>
-    </div>
-    <div class='row' style='background-color:#f9b58f;color:#FFFFFF;'>
-      <div class='col'><label for='date' id='dateLabel'>".$labels["Date"][$lang]."</label><input class=\"form-control\" type=\"text\" id='date' name='date' value='' required/></div>
       <div class='col'><label for='Temp1'>".$labels["Temp1"][$lang]."</label><br><input class=\"form-control\" type='text' name='orderData[Temp1]' id='Temp1' required/></div>
       <div class='col'><label for='Temp2'>".$labels["Temp2"][$lang]."</label><br><input class=\"form-control\" type='text' name='orderData[Temp2]' id='Temp2' required/></div>
     </div>
