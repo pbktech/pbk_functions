@@ -42,8 +42,9 @@ $labels["No"]["Spanish"]="NO";
 
 if($_SERVER['REQUEST_METHOD'] == 'POST') {
   $_POST['orderData']["Questions"]=$questions;
-  $emp=$wpdb->get_row("SELECT * FROM pbc_ToastEmployeeInfo WHERE guid='" . $_POST['orderData']['reporterName'] . "'");
+  $emp=$wpdb->get_row("SELECT * FROM pbc_ToastEmployeeInfo WHERE guid='" . $_POST['reporterName'] . "'");
   $_POST['orderData']['name']=$emp->employeeName;
+  $_POST['restaurantID']=$emp->restaurantID;
   $wpdb->query(
   $wpdb->prepare(
     "INSERT INTO pbc_pbk_orders (orderType,restaurantID,userID,orderData,orderDate,orderStatus)VALUES(%s,%d,%d,%s,%s,%s)",
@@ -118,7 +119,7 @@ jQuery(document).ready(function() {
   <form method='post' action='".$page."' id='' class=\"needs-validation\" novalidate >
     <div class='row' style='background-color:#f9b58f;color:#FFFFFF;'>
       <div class='col'><label for='reporterName'>".$labels["Name"][$lang]."</label>
-      <select name='reporterName' id='reporterName'  class='js-example-basic-single custom-select' required><option value=''>Choose an Employee</option>";
+      <select name='reporterName' id='reporterName'  class='js-example-basic-single custom-select' required>";
 foreach($employees as $restaurant=>$emps){
   $ret.="<optgroup label='".$restaurant."'>";
   foreach ($emps as $id=>$item) {
