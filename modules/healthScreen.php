@@ -128,27 +128,28 @@ $ret.="</select></div>
     </div>
     <div class='row' style='background-color:#f9b58f;color:#FFFFFF;'>
       <div class='col'>".$r->buildDateSelector('date',$labels["Date"][$lang])."</div>
-      <div class='col'><label for='Temp1'>".$labels["Temp1"][$lang]."<input type='text' name='orderData[Temp1]' id='Temp1'/></label></div>
-      <div class='col'><label for='Temp2'>".$labels["Temp2"][$lang]."<input type='text' name='orderData[Temp2]' id='Temp2'/></label></div>
+      <div class='col'><label for='Temp1'>".$labels["Temp1"][$lang]."></input><br><input type='text' name='orderData[Temp1]' id='Temp1'/></div>
+      <div class='col'><label for='Temp2'>".$labels["Temp2"][$lang]."></input><br><input type='text' name='orderData[Temp2]' id='Temp2'/></div>
     </div>
     <div class='row' style='background-color:#f9b58f;color:#FFFFFF;'>
+      <div class='col'></div>
       <div class='col'>".$labels["Yes"][$lang]."</div>
       <div class='col'>".$labels["No"][$lang]."</div>
     </div>
     <div class='row' style='background-color:#e7e6e6;color:#000000;'>
-      <div class='col'>" . $questions[1][$lang] . "</div>
+      <div class='col'><label for='customRadio1'>" . $questions[1][$lang] . "</input></div>
       <div class='col'><div class=\"custom-control custom-radio\"><input type=\"radio\" id=\"customRadio1\" name='orderData[question][1]' value='Yes' class=\"custom-control-input\"></div></div>
       <div class='col'><div class=\"custom-control custom-radio\"><input type=\"radio\" id=\"customRadio1\" name='orderData[question][1]' value='No' class=\"custom-control-input\"></div></div>
     </div>
     <div class='row' style='background-color:#e7e6e6;color:#000000;'>
-      <div class='col'>" . $questions[2][$lang] . "</div>
-      <div class='col'><div class=\"custom-control custom-radio\"><input type=\"radio\" id=\"customRadio1\" name='orderData[question][2]' value='Yes' class=\"custom-control-input\"></div></div>
-      <div class='col'><div class=\"custom-control custom-radio\"><input type=\"radio\" id=\"customRadio1\" name='orderData[question][2]' value='No' class=\"custom-control-input\"></div></div>
+      <div class='col'><label for='customRadio2'>" . $questions[2][$lang] . "</input></div>
+      <div class='col'><div class=\"custom-control custom-radio\"><input type=\"radio\" id=\"customRadio2\" name='orderData[question][2]' value='Yes' class=\"custom-control-input\"></div></div>
+      <div class='col'><div class=\"custom-control custom-radio\"><input type=\"radio\" id=\"customRadio2\" name='orderData[question][2]' value='No' class=\"custom-control-input\"></div></div>
     </div>
     <div class='row' style='background-color:#e7e6e6;color:#000000;'>
-      <div class='col'>" . $questions[3][$lang] . "</div>
-      <div class='col'><div class=\"custom-control custom-radio\"><input type=\"radio\" id=\"customRadio1\" name='orderData[question][3]' value='Yes' class=\"custom-control-input\"></div></div>
-      <div class='col'><div class=\"custom-control custom-radio\"><input type=\"radio\" id=\"customRadio1\" name='orderData[question][3]' value='No' class=\"custom-control-input\"></div></div>
+      <div class='col'><label for='customRadio3'>" . $questions[3][$lang] . "</input></div>
+      <div class='col'><div class=\"custom-control custom-radio\"><input type=\"radio\" id=\"customRadio3\" name='orderData[question][3]' value='Yes' class=\"custom-control-input\"></div></div>
+      <div class='col'><div class=\"custom-control custom-radio\"><input type=\"radio\" id=\"customRadio3\" name='orderData[question][3]' value='No' class=\"custom-control-input\"></div></div>
     </div>
     <div class='row'>
       <div class='col'><input type=\"submit\" class='btn btn-primary' id=\"submit\" value=\"Submit\"/></div>
