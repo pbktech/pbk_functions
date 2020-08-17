@@ -64,17 +64,17 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
     $docFolder=dirname(dirname($report->docSaveLocation)) ."/docs/". $d->guid;
     if (!file_exists($docFolder)) {mkdir($docFolder);}
     $content['format']='A4-P';
-    $content['Save']=$docFolder . "/";
+    $content['Save']=$docFolder;
     $content['title']="DAILY HEALTH SCREEN for " . $emp->employeeName . " at " . $d->restaurantName;
     $content['fileName']=$report->hexFileName($content['title']);
     $content['html']=$r->docHeader("DAILY HEALTH SCREEN");
-    $content['html'].=$labels["Name"][$_POST['orderData']['language']] . " : " . $emp->employeeName . "<br>";
-    $content['html'].="Restaurant" . " : " . $d->restaurantName . "<br>";
-    $content['html'].=$labels["Date"][$_POST['orderData']['language']] . " : " . date("m/d/Y H:i:s", strtotime($_POST['orderData']['date'])) . "<br>";
-    $content['html'].=$labels["Temp1"][$_POST['orderData']['language']] . " : " . $_POST['orderData']['Temp1'] . "<br>";
-    $content['html'].=$labels["Temp2"][$_POST['orderData']['language']] . " : " . $_POST['orderData']['Temp2'] . "<br>";
-    $content['html'].=$questions[1][$_POST['orderData']['language']] . " : " . $_POST['orderData']['question'][1] . "<br>";
-    $content['html'].=$questions[2][$_POST['orderData']['language']] . " : " . $_POST['orderData']['question'][2] . "<br>";
+    $content['html'].=$labels["Name"][$_POST['orderData']['language']] . " : " . $emp->employeeName . "<br><br>";
+    $content['html'].="Restaurant" . " : " . $d->restaurantName . "<br><br>";
+    $content['html'].=$labels["Date"][$_POST['orderData']['language']] . " : " . date("m/d/Y H:i:s", strtotime($_POST['orderData']['date'])) . "<br><br>";
+    $content['html'].=$labels["Temp1"][$_POST['orderData']['language']] . " : " . $_POST['orderData']['Temp1'] . "<br><br>";
+    $content['html'].=$labels["Temp2"][$_POST['orderData']['language']] . " : " . $_POST['orderData']['Temp2'] . "<br><br>";
+    $content['html'].=$questions[1][$_POST['orderData']['language']] . " : " . $_POST['orderData']['question'][1] . "<br><br>";
+    $content['html'].=$questions[2][$_POST['orderData']['language']] . " : " . $_POST['orderData']['question'][2] . "<br><br>";
     $content['html'].=$questions[3][$_POST['orderData']['language']] . " : " . $_POST['orderData']['question'][3];
     if($file=$r->buildHTMLPDF(json_encode($content))){
       $ret.= "
@@ -119,7 +119,7 @@ jQuery(document).ready(function() {
   <form method='post' action='".$page."' id='' class=\"needs-validation\" novalidate >
     <div class='row' style='background-color:#f9b58f;color:#FFFFFF;'>
       <div class='col'><label for='reporterName'>".$labels["Name"][$lang]."</label>
-      <select name='reporterName' id='reporterName'  class='js-example-basic-single custom-select' required>";
+      <select name='reporterName' id='reporterName'  class='js-example-basic-single custom-select' required><option>".$labels["Name"][$lang]."</option>";
 foreach($employees as $restaurant=>$emps){
   $ret.="<optgroup label='".$restaurant."'>";
   foreach ($emps as $id=>$item) {
