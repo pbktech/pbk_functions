@@ -135,18 +135,23 @@ $ret.="</select><input type='hidden' name='orderData[language]' value='".$lang."
     </div>
     <div class='row' style='background-color:#e7e6e6;color:#000000;'>
       <div class='col'><strong>" . $questions[1][$lang] . "</strong></div>
-      <div class='col'><div class=\"custom-control custom-radio\"><input type=\"radio\" id=\"customRadio1y\" name='orderData[question][1]' value='Yes' class=\"custom-control-input\" required><label class=\"custom-control-label\" for='customRadio1y'>".$labels["Yes"][$lang]."</label></div>
-      <div class=\"custom-control custom-radio\"><input type=\"radio\" id=\"customRadio1n\" name='orderData[question][1]' value='No' class=\"custom-control-input\" required><label class=\"custom-control-label\" for='customRadio1n'>".$labels["No"][$lang]."</label></div></div>
+      <div class='col'>
+        <div class=\"form-check form-check-inline\"><input type=\"radio\" id=\"customRadio1y\" name='orderData[question][1]' value='Yes' class=\"form-check-input\" required><label class=\"form-check-label\" for='customRadio1y'>".$labels["Yes"][$lang]."</label></div>
+        <div class=\"form-check form-check-inline\"><input type=\"radio\" id=\"customRadio1n\" name='orderData[question][1]' value='No' class=\"form-check-input\" required><label class=\"form-check-label\" for='customRadio1n'>".$labels["No"][$lang]."</label></div>
+      </div>
     </div>
     <div class='row' style='background-color:#e7e6e6;color:#000000;'>
       <div class='col'><strong>" . $questions[2][$lang] . "</strong></div>
-      <div class='col'><div class=\"custom-control custom-radio\"><input type=\"radio\" id=\"customRadio2y\" name='orderData[question][2]' value='Yes' class=\"custom-control-input\" required><label class=\"custom-control-label\" for='customRadio2y'>".$labels["Yes"][$lang]."</label></div></div>
-      <div class='col'><div class=\"custom-control custom-radio\"><input type=\"radio\" id=\"customRadio2n\" name='orderData[question][2]' value='No' class=\"custom-control-input\" required><label class=\"custom-control-label\" for='customRadio2n'>".$labels["No"][$lang]."</label></div></div>
+      <div class='col'>
+        <div class=\"form-check form-check-inline\"><input type=\"radio\" id=\"customRadio2y\" name='orderData[question][2]' value='Yes' class=\"form-check-input\" required><label class=\"form-check-label\" for='customRadio2y'>".$labels["Yes"][$lang]."</label></div>
+        <div class=\"form-check form-check-inline\"><input type=\"radio\" id=\"customRadio2n\" name='orderData[question][2]' value='No' class=\"form-check-input\" required><label class=\"form-check-label\" for='customRadio2n'>".$labels["No"][$lang]."</label></div>
+      </div>
     </div>
     <div class='row' style='background-color:#e7e6e6;color:#000000;'>
       <div class='col'><strong>" . $questions[3][$lang] . "</strong></div>
-      <div class='col'><div class=\"custom-control custom-radio\"><input type=\"radio\" id=\"customRadio3y\" name='orderData[question][3]' value='Yes' class=\"custom-control-input\" required><label class=\"custom-control-label\" for='customRadio3y'>".$labels["Yes"][$lang]."</label></div></div>
-      <div class='col'><div class=\"custom-control custom-radio\"><input type=\"radio\" id=\"customRadio3n\" name='orderData[question][3]' value='No' class=\"custom-control-input\" required><label class=\"custom-control-label\" for='customRadio3n'>".$labels["No"][$lang]."</label></div></div>
+        <div class='col'><div class=\"form-check form-check-inline\"><input type=\"radio\" id=\"customRadio3y\" name='orderData[question][3]' value='Yes' class=\"form-check-input\" required><label class=\"form-check-label\" for='customRadio3y'>".$labels["Yes"][$lang]."</label></div>
+        <div class=\"form-check form-check-inline\"><input type=\"radio\" id=\"customRadio3n\" name='orderData[question][3]' value='No' class=\"form-check-input\" required><label class=\"form-check-label\" for='customRadio3n'>".$labels["No"][$lang]."</label></div>
+      </div>
     </div>
     <div class='row'>
       <div class='col'><input type=\"submit\" class='btn btn-primary' id=\"submit\" value=\"Submit\"/></div>
