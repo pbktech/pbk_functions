@@ -112,7 +112,7 @@ jQuery(document).ready(function() {
 });
 </script>
 <div class='container' id='queryResults'>
-  <form method='post' action='".$page."' id='' enctype='multipart/form-data' >
+  <form method='post' action='".$page."' id='' class=\"needs-validation\" novalidate >
     <div class='row' style='background-color:#f9b58f;color:#FFFFFF;'>
       <div class='col'><label for='reporterName'>".$labels["Name"][$lang]."</label>
       <select name='reporterName' id='reporterName'  class='js-example-basic-single custom-select' required><option value=''>Choose an Employee</option>";
