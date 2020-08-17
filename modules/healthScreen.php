@@ -59,7 +59,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
             $_POST['orderData']['name'],$guid
       )
     );
-    $d=$r->getPBKOrderinfo($wpdb->insert_id);
+    $d=$r->getPBKOrderinfo($guid);
     print_r($d);
     $report=New ToastReport;
     $docFolder=dirname(dirname($report->docSaveLocation)) ."/docs/". $d->guid;
