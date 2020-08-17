@@ -135,8 +135,8 @@ $ret.="</select><input type='hidden' name='orderData[language]' value='".$lang."
     </div>
     <div class='row' style='background-color:#e7e6e6;color:#000000;'>
       <div class='col'><strong>" . $questions[1][$lang] . "</strong></div>
-      <div class='col'><div class=\"custom-control custom-radio\"><input type=\"radio\" id=\"customRadio1y\" name='orderData[question][1]' value='Yes' class=\"custom-control-input\" required><label class=\"custom-control-label\" for='customRadio1y'>".$labels["Yes"][$lang]."</label></div></div>
-      <div class='col'><div class=\"custom-control custom-radio\"><input type=\"radio\" id=\"customRadio1n\" name='orderData[question][1]' value='No' class=\"custom-control-input\" required><label class=\"custom-control-label\" for='customRadio1n'>".$labels["No"][$lang]."</label></div></div>
+      <div class='col'><div class=\"custom-control custom-radio\"><input type=\"radio\" id=\"customRadio1y\" name='orderData[question][1]' value='Yes' class=\"custom-control-input\" required><label class=\"custom-control-label\" for='customRadio1y'>".$labels["Yes"][$lang]."</label></div>
+      <div class=\"custom-control custom-radio\"><input type=\"radio\" id=\"customRadio1n\" name='orderData[question][1]' value='No' class=\"custom-control-input\" required><label class=\"custom-control-label\" for='customRadio1n'>".$labels["No"][$lang]."</label></div></div>
     </div>
     <div class='row' style='background-color:#e7e6e6;color:#000000;'>
       <div class='col'><strong>" . $questions[2][$lang] . "</strong></div>
