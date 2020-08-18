@@ -120,8 +120,8 @@ jQuery(document).ready(function() {
 <div class='container' id='queryResults'>
   <form method='post' action='".$page."' id='' class=\"needs-validation\" novalidate >
     <div class='row' style='background-color:#f9b58f;color:#FFFFFF;'>
-      <div class='col'><label for='reporterName'>".$labels["Name"][$lang]."</label>
-      <select name='reporterName' id='reporterName'  class='js-example-basic-single custom-select' required><option>".$labels["Name"][$lang]."</option>";
+      <div class='col'><label for='reporterName'></label>
+      <select name='reporterName' id='reporterName'  class='custom-select' required><option value=''>".$labels["Name"][$lang]."</option>";
 foreach($employees as $restaurant=>$emps){
   $ret.="<optgroup label='".$restaurant."'>";
   foreach ($emps as $id=>$item) {
@@ -130,8 +130,8 @@ foreach($employees as $restaurant=>$emps){
 }
 
 $ret.="</select><input type='hidden' name='orderData[language]' value='".$lang."' /></div>
-      <div class='col'><label for='Temp1'>".$labels["Temp1"][$lang]."</label><br><input class=\"form-control\" type='text' name='orderData[Temp1]' id='Temp1' required/></div>
-      <div class='col'><label for='Temp2'>".$labels["Temp2"][$lang]."</label><br><input class=\"form-control\" type='text' name='orderData[Temp2]' id='Temp2' required/></div>
+      <div class='col'><label for='Temp1'>".$labels["Temp1"][$lang]."</label><br><input class=\"form-control\" type='range' min='95' max='110' step='0.1' name='orderData[Temp1]' id='Temp1' required/></div>
+      <div class='col'><label for='Temp2'>".$labels["Temp2"][$lang]."</label><br><input class=\"form-control\" type='range' min='95' max='110' step='0.1' name='orderData[Temp2]' id='Temp2' required/></div>
     </div>
     <div class='row' style='background-color:#e7e6e6;color:#000000;'>
       <div class='col'><strong>" . $questions[1][$lang] . "</strong></div>
