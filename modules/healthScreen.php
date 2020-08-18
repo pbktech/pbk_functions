@@ -114,7 +114,7 @@ if($results){
 $ret.="
 <script>
 jQuery(document).ready(function() {
-    jQuery('.custom-select').select2();
+/*    jQuery('.custom-select').select2(); */
 });
 </script>
 <div class='container' id='queryResults'>
