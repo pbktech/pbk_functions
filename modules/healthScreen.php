@@ -67,6 +67,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
     $content['format']='A4-P';
     $content['Save']=$docFolder."/";
     $content['title']="DAILY HEALTH SCREEN for " . $emp->employeeName . " at " . $d->restaurantName;
+    $content['watermark']="Generated " . date("m/d/Y H:i:s") . " at " . get_the_user_ip();
     $content['fileName']=$report->hexFileName($content['title']);
     $content['html']=$r->docHeader("DAILY HEALTH SCREEN");
     $content['html'].=$labels["Name"][$_POST['orderData']['language']] . " : " . $emp->employeeName . "<br><br>";
