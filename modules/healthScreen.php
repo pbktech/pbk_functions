@@ -70,19 +70,30 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
     $content['watermark']="Generated " . date("m/d/Y H:i:s") . " at " . get_the_user_ip();
     $content['fileName']=$report->hexFileName($content['title']);
     $content['html']=$r->docHeader("DAILY HEALTH SCREEN");
-    $content['html'].=$labels["Name"][$_POST['orderData']['language']] . " : " . $emp->employeeName . "<br><br>";
-    $content['html'].="Restaurant" . " : " . $d->restaurantName . "<br><br>";
-    $content['html'].=$labels["Date"][$_POST['orderData']['language']] . " : " . date("m/d/Y H:i:s") . "<br><br>";
-    $content['html'].=$labels["Temp1"][$_POST['orderData']['language']] . " : " . $_POST['orderData']['Temp1'] . "<br><br>";
-    $content['html'].=$labels["Temp2"][$_POST['orderData']['language']] . " : " . $_POST['orderData']['Temp2'] . "<br><br>";
-    $content['html'].=$questions[1][$_POST['orderData']['language']] . " : " . $_POST['orderData']['question'][1] . "<br><br>";
-    $content['html'].=$questions[2][$_POST['orderData']['language']] . " : " . $_POST['orderData']['question'][2] . "<br><br>";
-    $content['html'].=$questions[3][$_POST['orderData']['language']] . " : " . $_POST['orderData']['question'][3];
+    $content['html'].=$labels["Name"][$_POST['orderData']['language']] . " : <strong>" . $emp->employeeName . "</strong><br><br>";
+    $content['html'].="Restaurant" . " : <strong>" . $d->restaurantName . "</strong><br><br>";
+    $content['html'].=$labels["Date"][$_POST['orderData']['language']] . " : <strong>" . date("m/d/Y H:i:s") . "</strong><br><br>";
+    $content['html'].=$labels["Temp1"][$_POST['orderData']['language']] . " : <strong>" . $_POST['orderData']['Temp1'] . "</strong><br><br>";
+    $content['html'].=$labels["Temp2"][$_POST['orderData']['language']] . " : <strong>" . $_POST['orderData']['Temp2'] . "</strong><br><br>";
+    $content['html'].=$questions[1][$_POST['orderData']['language']] . " : <strong>" . $_POST['orderData']['question'][1] . "</strong><br><br>";
+    $content['html'].=$questions[2][$_POST['orderData']['language']] . " : <strong>" . $_POST['orderData']['question'][2] . "</strong><br><br>";
+    $content['html'].=$questions[3][$_POST['orderData']['language']] . " : <strong>" . $_POST['orderData']['question'][3] . "</strong><br><br>";
+    if(
+      (
+        ($_POST['orderData']['Temp1'] || $_POST['orderData']['Temp2'] ) > 99.5
+      ) ||
+      (
+        ($_POST['orderData']['question'][1] || $_POST['orderData']['question'][1] || $_POST['orderData']['question'][1]) == "Yes"
+      )
+    ){$emails[]="mcrawford@theproteinbar.com";}
     if($file=$r->buildHTMLPDF(json_encode($content))){
+      /*
       $emails[]=$r->getManagerEmail("GM");
       $emails[]=$r->getManagerEmail("AM");
       $emails[]=$r->getManagerEmail("STR");
-      $report->reportEmail("jon@theproteinbar.com",$content['html'],$content['title'],$file['Local']);
+      */
+      $emails[]="jon@theproteinbar.com";
+      $report->reportEmail(implode(",",$emails),$content['html'],$content['title'],$file['Local']);
       $ret.= "
       <script>
         jQuery(document).ready(function(){
