@@ -115,8 +115,21 @@ $ret.="
 <script>
 jQuery(document).ready(function() {
     jQuery('.custom-select').select2();
+    jQuery(\"#submit\").click(function(event){
+      var error_free=true;
+      if(jQuery(\"#reporterName\").val()==\"\"){jQuery(\"#reporterNameLabel\").addClass( \"is-invalid\" );error_free=false;}
+      if (!error_free){
+          event.preventDefault();
+      }else{
+        window.scrollTo(0,0);
+        jQuery(\"#queryResults\").hide();
+        jQuery(\".toHide\").hide();
+        jQuery(\"#processingGif\").show();
+      }
+    });
 });
 </script>
+<div id='processingGif' style='display: none;text-align:center;'><img src='" . PBKF_URL . "/assets/images/processing.gif' style='height:92px;width:92px;' /></div>
 <div class='container' id='queryResults'>
   <form method='post' action='".$page."' id='' class=\"needs-validation\" novalidate >
     <div class='row' style='background-color:#f9b58f;color:#FFFFFF;'>
