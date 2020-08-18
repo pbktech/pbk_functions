@@ -93,7 +93,6 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
       $emails[]=$r->getManagerEmail("STR");
       */
       $emails[]="jon@theproteinbar.com";
-      print_r($emails);
       $report->reportEmail(implode(",",$emails),$content['html'],$content['title'],$file['Local']);
       $ret.= "
       <script>
