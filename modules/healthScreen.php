@@ -120,7 +120,7 @@ jQuery(document).ready(function() {
 <div class='container' id='queryResults'>
   <form method='post' action='".$page."' id='' class=\"needs-validation\" novalidate >
     <div class='row' style='background-color:#f9b58f;color:#FFFFFF;'>
-      <div class='col'> <div class=\"form-group\"><label for='reporterName'></label>
+      <div class='col'> <div class=\"form-group\"><label for='reporterName'></label><br>
       <select name='reporterName' id='reporterName'  class='custom-select' required><option value=''>".$labels["Name"][$lang]."</option>";
 foreach($employees as $restaurant=>$emps){
   $ret.="<optgroup label='".$restaurant."'>";
