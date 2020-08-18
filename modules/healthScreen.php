@@ -114,7 +114,7 @@ if($results){
 $ret.="
 <script>
 jQuery(document).ready(function() {
-    jQuery('.js-example-basic-single').select2();
+    jQuery('.custom-select').select2();
 });
 </script>
 <div class='container' id='queryResults'>
@@ -130,8 +130,8 @@ foreach($employees as $restaurant=>$emps){
 }
 
 $ret.="</select><input type='hidden' name='orderData[language]' value='".$lang."' /></div>
-      <div class='col'><label for='Temp1'>".$labels["Temp1"][$lang]."</label><br><input class=\"form-control\" type='range' min='95' max='110' step='0.1' name='orderData[Temp1]' id='Temp1' required/></div>
-      <div class='col'><label for='Temp2'>".$labels["Temp2"][$lang]."</label><br><input class=\"form-control\" type='range' min='95' max='110' step='0.1' name='orderData[Temp2]' id='Temp2' required/></div>
+      <div class='col'><label for='Temp1'>".$labels["Temp1"][$lang]."</label><br><input class=\"form-control\" type='text' min='95' max='110' name='orderData[Temp1]' id='Temp1' required/></div>
+      <div class='col'><label for='Temp2'>".$labels["Temp2"][$lang]."</label><br><input class=\"form-control\" type='text' min='95' max='110' name='orderData[Temp2]' id='Temp2' required/></div>
     </div>
     <div class='row' style='background-color:#e7e6e6;color:#000000;'>
       <div class='col'><strong>" . $questions[1][$lang] . "</strong></div>
