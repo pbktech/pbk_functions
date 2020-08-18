@@ -115,25 +115,12 @@ $ret.="
 <script>
 jQuery(document).ready(function() {
     jQuery('.custom-select').select2();
-    jQuery(\"#submit\").click(function(event){
-      var error_free=true;
-      if(jQuery(\"#reporterName\").val()==\"\"){jQuery(\"#reporterNameLabel\").addClass( \"is-invalid\" );error_free=false;}
-      if (!error_free){
-          event.preventDefault();
-      }else{
-        window.scrollTo(0,0);
-        jQuery(\"#queryResults\").hide();
-        jQuery(\".toHide\").hide();
-        jQuery(\"#processingGif\").show();
-      }
-    });
 });
 </script>
-<div id='processingGif' style='display: none;text-align:center;'><img src='" . PBKF_URL . "/assets/images/processing.gif' style='height:92px;width:92px;' /></div>
 <div class='container' id='queryResults'>
   <form method='post' action='".$page."' id='' class=\"needs-validation\" novalidate >
     <div class='row' style='background-color:#f9b58f;color:#FFFFFF;'>
-      <div class='col'><label for='reporterName'></label>
+      <div class='col'> <div class=\"form-group\">
       <select name='reporterName' id='reporterName'  class='custom-select' required><option value=''>".$labels["Name"][$lang]."</option>";
 foreach($employees as $restaurant=>$emps){
   $ret.="<optgroup label='".$restaurant."'>";
@@ -142,7 +129,7 @@ foreach($employees as $restaurant=>$emps){
   }
 }
 
-$ret.="</select><input type='hidden' name='orderData[language]' value='".$lang."' /></div>
+$ret.="</select></div><input type='hidden' name='orderData[language]' value='".$lang."' /></div>
       <div class='col'><label for='Temp1'>".$labels["Temp1"][$lang]."</label><br><input class=\"form-control\" type='text' min='95' max='110' name='orderData[Temp1]' id='Temp1' required/></div>
       <div class='col'><label for='Temp2'>".$labels["Temp2"][$lang]."</label><br><input class=\"form-control\" type='text' min='95' max='110' name='orderData[Temp2]' id='Temp2' required/></div>
     </div>
@@ -167,7 +154,7 @@ $ret.="</select><input type='hidden' name='orderData[language]' value='".$lang."
       </div>
     </div>
     <div class='row'>
-      <div class='col'><input type=\"submit\" class='btn btn-primary' id=\"submit\" value=\"Submit\"/></div>
+      <div class='col'><button class=\"btn btn-primary\" type=\"submit\">Save</button></div>
       <div class='col'></div>
       <div class='col'></div>
     </div>
