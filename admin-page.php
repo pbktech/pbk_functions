@@ -16,18 +16,30 @@ add_action( 'admin_post_pbk-save-devices', 'pbr_edit_devices' );
 add_action('admin_post_pbr_nho_attendance_update','pbr_nho_attendance');
 add_action('admin_post_pbk_save_minibar','pbk_saveMinibar');
 add_action('admin_post_pbk-update-order','pbr_orders');
+$pbkAdminPages[]=array("Name"=>"Manage Restaurants","Access"=>"manage_options","Slug"=>"pbr-edit-restaurant","Function"=>""pbr_edit_restaurant);
+$pbkAdminPages[]=array("Name"=>"Manage NHO Events","Access"=>"manage_options","Slug"=>"pbr-npbr-edit-restaurantho","Function"=>"pbr_nho_setup");
+$pbkAdminPages[]=array("Name"=>"NHO Archive","Access"=>"delete_posts","Slug"=>"pbr-nho-archive","Function"=>"pbr_nho_history");
+$pbkAdminPages[]=array("Name"=>"Incident Archive","Access"=>"upload_files","Slug"=>"pbr-incident-history","Function"=>"pbr_search_incident");
+$pbkAdminPages[]=array("Name"=>"Manage MiniBar","Access"=>"manage_options","Slug"=>"pbr-edit-minibar","Function"=>"pbr_edit_minibar");
+$pbkAdminPages[]=array("Name"=>"Manage Devices","Access"=>"manage_options","Slug"=>"pbr-edit-devices","Function"=>"pbr_edit_devices");
+$pbkAdminPages[]=array("Name"=>"Restaurant Orders","Access"=>"upload_files","Slug"=>"pbr-orders","Funpbr-edit-devicesction"=>"pbr_orders");
+$pbkAdminPages[]=array("Name"=>"Health Screen Archive","Access"=>"upload_files","Slug"=>"pbr-hs-archive","Function"=>"pbr_hs_archive");
 function pbr_setup_menu(){
   add_menu_page( 'PBK Functions', 'PBK Functions', 'delete_posts', 'Manage-PBK', 'pbr_show_admin_functions',PBKF_URL . '/assets/images/PBK-Logo-ONLY-LG-2018_White_new.png');
-  add_submenu_page( 'Manage-PBK', 'Manage Restaurants', 'Manage Restaurants', 'manage_options', 'pbr-edit-restaurant', 'pbr_edit_restaurant' );
-//  add_submenu_page( 'Manage-PBK', 'Add a Restaurant', 'Add a Restaurant', 'manage_options', 'pbr-add-restaurant', 'pbr_add_restaurant' );
-  add_submenu_page( 'Manage-PBK', 'Manage NHO Events', 'Manage NHO Events', 'delete_posts', 'pbr-nho', 'pbr_nho_setup' );
-  add_submenu_page( 'Manage-PBK', 'NHO Archive', 'NHO Archive', 'upload_files', 'pbr-nho-archive', 'pbr_nho_history' );
-  add_submenu_page( 'Manage-PBK', 'Incident Archive', 'Incident Archive', 'upload_files', 'pbr-incident-history', 'pbr_search_incident' );
-  add_submenu_page( 'Manage-PBK', 'Manage MiniBar', 'Manage MiniBar', 'manage_options', 'pbr-edit-minibar', 'pbr_edit_minibar' );
-  add_submenu_page( 'Manage-PBK', 'Manage Devices', 'Manage Devices', 'manage_options', 'pbr-edit-devices', 'pbr_edit_devices' );
-  add_submenu_page( 'Manage-PBK', 'Restaurant Orders', 'Restaurant Orders', 'upload_files', 'pbr-orders', 'pbr_orders' );
+  foreach ($pbkAdminPages as $value) {
+    add_submenu_page('Manage-PBK',$value['Name'],$value['Name'],$value['Access'],$value['Slug'],$value['Function']);
+  }
+  add_submenu_page( 'Manage-PBK', '', 'Manage Restaurants', '', '', '' );
+  add_submenu_page( 'Manage-PBK', '', 'Manage NHO Events', 'delete_posts', '', '' );
+  add_submenu_page( 'Manage-PBK', '', 'NHO Archive', 'upload_files', '', '' );
+  add_submenu_page( 'Manage-PBK', '', 'Incident Archive', 'upload_files', '', '' );
+  add_submenu_page( 'Manage-PBK', '', 'Manage MiniBar', 'manage_options', '', '' );
+  add_submenu_page( 'Manage-PBK', '', 'Manage Devices', 'manage_options', '', '' );
+  add_submenu_page( 'Manage-PBK', '', 'Restaurant Orders', 'upload_files', '', '' );
+  add_submenu_page( 'Manage-PBK', '', 'Health Screen Archive', 'upload_files', '', '' );
 }
 function wpb_custom_toolbar_link($wp_admin_bar) {
+  $wp_admin_bar->remove_node('wp-logo');
     $args = array(
         'id' => 'pbkfunctions',
         'title' => 'PBK Functions',
