@@ -16,7 +16,7 @@ add_action( 'admin_post_pbk-save-devices', 'pbr_edit_devices' );
 add_action('admin_post_pbr_nho_attendance_update','pbr_nho_attendance');
 add_action('admin_post_pbk_save_minibar','pbk_saveMinibar');
 add_action('admin_post_pbk-update-order','pbr_orders');
-$pbkAdminPages[]=array("Name"=>"Manage Restaurants","Access"=>"manage_options","Slug"=>"pbr-edit-restaurant","Function"=>""pbr_edit_restaurant);
+$pbkAdminPages[]=array("Name"=>"Manage Restaurants","Access"=>"manage_options","Slug"=>"pbr-edit-restaurant","Function"=>"pbr_edit_restaurant");
 $pbkAdminPages[]=array("Name"=>"Manage NHO Events","Access"=>"manage_options","Slug"=>"pbr-npbr-edit-restaurantho","Function"=>"pbr_nho_setup");
 $pbkAdminPages[]=array("Name"=>"NHO Archive","Access"=>"delete_posts","Slug"=>"pbr-nho-archive","Function"=>"pbr_nho_history");
 $pbkAdminPages[]=array("Name"=>"Incident Archive","Access"=>"upload_files","Slug"=>"pbr-incident-history","Function"=>"pbr_search_incident");
@@ -29,14 +29,6 @@ function pbr_setup_menu(){
   foreach ($pbkAdminPages as $value) {
     add_submenu_page('Manage-PBK',$value['Name'],$value['Name'],$value['Access'],$value['Slug'],$value['Function']);
   }
-  add_submenu_page( 'Manage-PBK', '', 'Manage Restaurants', '', '', '' );
-  add_submenu_page( 'Manage-PBK', '', 'Manage NHO Events', 'delete_posts', '', '' );
-  add_submenu_page( 'Manage-PBK', '', 'NHO Archive', 'upload_files', '', '' );
-  add_submenu_page( 'Manage-PBK', '', 'Incident Archive', 'upload_files', '', '' );
-  add_submenu_page( 'Manage-PBK', '', 'Manage MiniBar', 'manage_options', '', '' );
-  add_submenu_page( 'Manage-PBK', '', 'Manage Devices', 'manage_options', '', '' );
-  add_submenu_page( 'Manage-PBK', '', 'Restaurant Orders', 'upload_files', '', '' );
-  add_submenu_page( 'Manage-PBK', '', 'Health Screen Archive', 'upload_files', '', '' );
 }
 function wpb_custom_toolbar_link($wp_admin_bar) {
   $wp_admin_bar->remove_node('wp-logo');
@@ -50,6 +42,19 @@ function wpb_custom_toolbar_link($wp_admin_bar) {
             )
     );
     $wp_admin_bar->add_node($args);
+    foreach ($pbkAdminPages as $value) {
+      $args = array(
+          'id' => $value['Slug'],
+          'title' => $value['Name'],
+          'parent' => 'pbkfunctions',
+          'href' => admin_url( 'admin.php?page=' . $value['Slug'] ),
+          'meta' => array(
+              'class' => '',
+              'title' => $value['Name']
+              )
+      );
+      $wp_admin_bar->add_node($args);
+    }
 }
 if(in_array("administrator", $cu->roles) || in_array("editor", $cu->roles)) {
   add_action('admin_bar_menu', 'wpb_custom_toolbar_link', 999);
