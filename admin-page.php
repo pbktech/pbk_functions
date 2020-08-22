@@ -26,7 +26,7 @@ $pbkAdminPages[]=array("Name"=>"Restaurant Orders","Access"=>"upload_files","Slu
 $pbkAdminPages[]=array("Name"=>"Health Screen Archive","Access"=>"upload_files","Slug"=>"pbr-hs-archive","Function"=>"pbr_hs_archive");
 function pbr_setup_menu(){
   add_menu_page( 'PBK Functions', 'PBK Functions', 'delete_posts', 'Manage-PBK', 'pbr_show_admin_functions',PBKF_URL . '/assets/images/PBK-Logo-ONLY-LG-2018_White_new.png');
-  foreach ($pbkAdminPages as $value) {
+  foreach ($this->pbkAdminPages as $value) {
     add_submenu_page('Manage-PBK',$value['Name'],$value['Name'],$value['Access'],$value['Slug'],$value['Function']);
   }
 }
@@ -42,7 +42,7 @@ function wpb_custom_toolbar_link($wp_admin_bar) {
             )
     );
     $wp_admin_bar->add_node($args);
-    foreach ($pbkAdminPages as $value) {
+    foreach ($this->pbkAdminPages as $value) {
       $args = array(
           'id' => $value['Slug'],
           'title' => $value['Name'],
