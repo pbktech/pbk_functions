@@ -22,13 +22,10 @@ $pbkAdminPages[]=array("Name"=>"NHO Archive","Access"=>"delete_posts","Slug"=>"p
 $pbkAdminPages[]=array("Name"=>"Incident Archive","Access"=>"upload_files","Slug"=>"pbr-incident-history","Function"=>"pbr_search_incident");
 $pbkAdminPages[]=array("Name"=>"Manage MiniBar","Access"=>"manage_options","Slug"=>"pbr-edit-minibar","Function"=>"pbr_edit_minibar");
 $pbkAdminPages[]=array("Name"=>"Manage Devices","Access"=>"manage_options","Slug"=>"pbr-edit-devices","Function"=>"pbr_edit_devices");
-$pbkAdminPages[]=array("Name"=>"Restaurant Orders","Access"=>"upload_files","Slug"=>"pbr-orders","Funpbr-edit-devicesction"=>"pbr_orders");
+$pbkAdminPages[]=array("Name"=>"Restaurant Orders","Access"=>"upload_files","Slug"=>"pbr-orders","Function"=>"pbr_orders");
 $pbkAdminPages[]=array("Name"=>"Health Screen Archive","Access"=>"upload_files","Slug"=>"pbr-hs-archive","Function"=>"pbr_hs_archive");
 function pbr_setup_menu(){
   global $pbkAdminPages;
-  echo "<pre>";
-  print_r($pbkAdminPages);
-  echo "</pre>";
   add_menu_page( 'PBK Functions', 'PBK Functions', 'delete_posts', 'Manage-PBK', 'pbr_show_admin_functions',PBKF_URL . '/assets/images/PBK-Logo-ONLY-LG-2018_White_new.png');
   foreach ($pbkAdminPages as $value) {
     add_submenu_page('Manage-PBK',$value['Name'],$value['Name'],$value['Access'],$value['Slug'],$value['Function']);
