@@ -211,7 +211,7 @@ function pbr_hs_archive(){
   					date("m/d/Y",strtotime($key->orderDate))
   				);
         }
-        $d['Options'][]="\"order\": [ 3, 'asc' ]";
+        $d['Options'][]="\"order\": [ 0, 'asc' ]";
   			$d['Options'][]="\"lengthMenu\": [ [25, 50, -1], [25, 50, \"All\"] ]";
   			$d['File']="PBK_Health_Screens_";
   			$d['Headers']=array("Name","Restaurant","Date");
