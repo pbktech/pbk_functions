@@ -158,14 +158,22 @@ function pbr_hs_archive(){
       echo "
       <div class='container' id='queryResults'>
       <div class=\"alert alert-info\" role=\"alert\">This form was entered in ".$info->language."</div>
-        <div class='row' style='background-color:#f9b58f;color:#FFFFFF;'>
+        <div class='row' style='background-color:#f9b58f;color:#000000;'>
           <div class='col'><label>&nbsp;</label><br><strong>".$info->name."</strong></div>
-          <div class='col'><label>Temp 1</label><br><strong>".$info->temp1."</strong></div>
-          <div class='col'><label>Temp 2</label><br><strong>".$info->temp2."</strong></div>
+          <div class='col'><label>Temp 1</label><br><strong>".$info->Temp1."</strong></div>
+          <div class='col'><label>Temp 2</label><br><strong>".$info->Temp2."</strong></div>
         </div>
         <div class='row' style='background-color:#e7e6e6;color:#000000;'>
           <div class='col'>".html_entity_decode ($info->Questions->$one->$lang)."</div>
           <div class='col'><strong>".$info->question->$one."</strong></div>
+        </div>
+        <div class='row' style='background-color:#e7e6e6;color:#000000;'>
+          <div class='col'>".html_entity_decode ($info->Questions->$two->$lang)."</div>
+          <div class='col'><strong>".$info->question->$two."</strong></div>
+        </div>
+        <div class='row' style='background-color:#e7e6e6;color:#000000;'>
+          <div class='col'>".html_entity_decode ($info->Questions->$three->$lang)."</div>
+          <div class='col'><strong>".$info->question->$three."</strong></div>
         </div>
       </div>
       ";
