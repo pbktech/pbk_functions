@@ -272,8 +272,8 @@ jQuery(\'#hsModal\').on(\'show.bs.modal\', function (event) {
   modal.find(\'#language\').html(\'This form was entered in \' + lang)
   modal.find(\'#temp1\').html(obj.Temp1 + "\xB0")
   modal.find(\'#temp2\').html(obj.Temp2 + "\xB0")
-//  modal.find(\'#question1\').html(obj.Questions.1.lang)
-//  modal.find(\'#answer1\').html(obj.question.1)
+  modal.find(\'#question1\').html(obj.Questions.1.lang)
+  modal.find(\'#answer1\').html(obj.question.1)
 })
 </script>';
       }else{
