@@ -248,10 +248,10 @@ function pbr_hs_archive(){
   </div>
 </div>
 <script>
-$(\'#exampleModal\').on(\'show.bs.modal\', function (event) {
+jQuery(\'#exampleModal\').on(\'show.bs.modal\', function (event) {
   var button = $(event.relatedTarget) // Button that triggered the modal
   var obj = jQuery.parseJSON(button.data(\'whatever\')) // Extract info from data-* attributes
-  var modal = $(this)
+  var modal = jQuery(this)
   modal.find(\'.modal-title\').text(\'New message to \' + obj.name)
   modal.find(\'.modal-body input\').val(recipient)
 })
