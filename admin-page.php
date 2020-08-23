@@ -152,6 +152,9 @@ function pbr_hs_archive(){
     if($result){
       $info=json_decode($result->orderData);
       $lang=$info->language;
+      $one=1;
+      $two=2;
+      $three=3;
       echo "
       <div class='container' id='queryResults'>
       <div class=\"alert alert-info\" role=\"alert\">This form was entered in ".$info->language."</div>
@@ -161,8 +164,8 @@ function pbr_hs_archive(){
           <div class='col'><label>Temp 2</label><br><strong>".$info->temp2."</strong></div>
         </div>
         <div class='row' style='background-color:#e7e6e6;color:#000000;'>
-          <div class='col'>".html_entity_decode ($info->Questions[1]->$lang)."</div>
-          <div class='col'><strong>".$info->question[1]."</strong></div>
+          <div class='col'>".html_entity_decode ($info->Questions->$one->$lang)."</div>
+          <div class='col'><strong>".$info->question->$one."</strong></div>
         </div>
       </div>
       ";
