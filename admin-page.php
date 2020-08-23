@@ -224,6 +224,7 @@ function pbr_hs_archive(){
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title" id="exampleModalLabel"></h5>
+        <h6 id="subHead"></div>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
@@ -271,7 +272,8 @@ jQuery(\'#hsModal\').on(\'show.bs.modal\', function (event) {
   console.log(obj.Questions);
   var questions = obj.Questions;
   var answers = obj.question;
-  modal.find(\'.modal-title\').text(\'Health Screen for \' + obj.name + \'<br>at \' + restaurant + \' on \' + dateOftest);
+  modal.find(\'.modal-title\').text(\'Health Screen for \' + obj.name);
+  modal.find(\'#subHead\').text(\'at \' + restaurant + \' on \' + dateOftest);
   modal.find(\'#language\').text(\'This form was entered in \' + lang);
   modal.find(\'#temp1\').text(obj.Temp1 + "\xB0");
   modal.find(\'#temp2\').text(obj.Temp2 + "\xB0");
