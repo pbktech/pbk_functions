@@ -265,7 +265,7 @@ jQuery(\'#hsModal\').on(\'show.bs.modal\', function (event) {
   var modal = jQuery(this)
   var lang = obj.language
   modal.find(\'.modal-title\').text(\'Health Screen for \' + obj.name)
-  modal.find(\'#language\').text(\'This form was entered in \' + lang)
+  modal.find(\'#language\').html(\'This form was entered in \' + lang)
 })
 </script>';
       }else{
