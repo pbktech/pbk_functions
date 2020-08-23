@@ -209,7 +209,7 @@ function pbr_hs_archive(){
   					"<a href='" . admin_url( "admin.php?page=pbr-hs-archive&id=".$key->id)."' target='_blank'>" . $key->employeeName . "</a>",
   					$key->restaurantName,
   					date("m/d/Y",strtotime($key->orderDate)),
-            "<button type=\"button\" class=\"btn btn-primary\" data-toggle=\"modal\" data-target=\"#exampleModal\" data-whatever='".$key->orderData."'>View</button>"
+            "<button type=\"button\" class=\"btn btn-primary\" data-toggle=\"modal\" data-target=\"#hsModal\" data-whatever='".$key->orderData."'>View</button>"
   				);
         }
         $d['Options'][]="\"order\": [ 0, 'asc' ]";
@@ -219,7 +219,7 @@ function pbr_hs_archive(){
         $report= new ToastReport;
         echo $report->showResultsTable($d);
         echo '
-  <div class="modal fade" id="hs-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal fade" id="hsModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
@@ -246,17 +246,21 @@ function pbr_hs_archive(){
       </div>
     </div>
   </div>
-</div>';
-add_action( 'wp_enqueue_scripts', 'pbk_hs_scripts' );
+</div>
+<script>
+jQuery(\'#hsModal\').on(\'show.bs.modal\', function (event) {
+  var button = jQuery(event.relatedTarget) // Button that triggered the modal
+  var obj = jQuery.parseJSON(button.data(\'whatever\')) // Extract info from data-* attributes
+  var modal = jQuery(this)
+  modal.find(\'.modal-title\').text(\'New message to \' + obj.name)
+  modal.find(\'.modal-body input\').val(recipient)
+})
+</script>';
       }else{
         echo "<div class='alert alert-warning'>No Health Screens found for the dates selected ".date("m/d/Y",strtotime($_GET['startDate']))." - ".date("m/d/Y",strtotime($_GET['endDate'])).".</div>";
       }
     }
   }
-}
-
-function pbk_hs_scripts() {
-  wp_enqueue_script( "pbk-hs-modal", PBKF_URL . '/assets/js/hs-script.js', "", 1, TRUE );
 }
 function pbr_edit_devices(){
 
