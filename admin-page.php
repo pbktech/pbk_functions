@@ -209,7 +209,7 @@ function pbr_hs_archive(){
   					"<a href='" . admin_url( "admin.php?page=pbr-hs-archive&id=".$key->id)."' target='_blank'>" . $key->employeeName . "</a>",
   					$key->restaurantName,
   					date("m/d/Y",strtotime($key->orderDate)),
-            "<button type=\"button\" class=\"btn btn-primary\" data-toggle=\"modal\" data-target=\"#exampleModal\" data-whatever=\"".$result->orderData."\">View</button>"
+            "<button type=\"button\" class=\"btn btn-primary\" data-toggle=\"modal\" data-target=\"#exampleModal\" data-whatever=\"".$key->orderData."\">View</button>"
   				);
         }
         $d['Options'][]="\"order\": [ 0, 'asc' ]";
