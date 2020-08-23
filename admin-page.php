@@ -271,8 +271,11 @@ jQuery(\'#hsModal\').on(\'show.bs.modal\', function (event) {
   modal.find(\'#language\').text(\'This form was entered in \' + lang);
   modal.find(\'#temp1\').text(obj.Temp1 + "\xB0");
   modal.find(\'#temp2\').text(obj.Temp2 + "\xB0");
-  modal.find(\'#question1\').text(questions.1);
-  modal.find(\'#answer1\').text(answers.1);
+  jQuery.each( questions, function( key, value ) {
+    alert( key + ": " + value );
+  });
+//  modal.find(\'#question1\').text(questions.1);
+//  modal.find(\'#answer1\').text(answers.1);
 });
 </script>';
       }else{
