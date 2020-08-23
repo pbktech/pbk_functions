@@ -230,11 +230,11 @@ function pbr_hs_archive(){
       </div>
       <div class="modal-body">
       <div class=\'container-fluid\'>
-      <div class=\"alert alert-info\" role=\"alert\"><span id="language"></span></div>
+      <div class="alert alert-info" role="alert"><span id="language"></span></div>
         <div class=\'row\' style=\'background-color:#f9b58f;color:#000000;\'>
           <div class=\'col\'><label>&nbsp;</label><br><strong></strong></div>
-          <div class=\'col\'><label>Temp 1</label><br><strong></strong></div>
-          <div class=\'col\'><label>Temp 2</label><br><strong></strong></div>
+          <div class=\'col\'><label>Temp 1</label><br><strong><span id="temp1"></span></strong></div>
+          <div class=\'col\'><label>Temp 2</label><br><strong><span id="temp2"></span></strong></div>
         </div>
         <div class=\'row\' style=\'background-color:#e7e6e6;color:#000000;\'>
           <div class=\'col\'></div>
@@ -266,6 +266,8 @@ jQuery(\'#hsModal\').on(\'show.bs.modal\', function (event) {
   var lang = obj.language
   modal.find(\'.modal-title\').text(\'Health Screen for \' + obj.name)
   modal.find(\'#language\').html(\'This form was entered in \' + lang)
+  modal.find(\'#temp1\').html(obj.Temp1)
+  modal.find(\'#temp2\').html(obj.Temp2)
 })
 </script>';
       }else{
