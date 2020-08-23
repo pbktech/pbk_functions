@@ -235,14 +235,17 @@ function pbr_hs_archive(){
           <div class=\'col\'><label>Temp 1</label><br><strong><span id="temp1"></span></strong></div>
           <div class=\'col\'><label>Temp 2</label><br><strong><span id="temp2"></span></strong></div>
         </div>
+        <div class="row"><div class="col"> <hr style="width:50%"> </div></div>
         <div class=\'row\' style=\'background-color:#e7e6e6;color:#000000;\'>
           <div class=\'col\'><span id="question1"></span></div>
           <div class=\'col\'><strong><span id="answer1"></span></strong></div>
         </div>
+        <div class="row"><div class="col"> <hr style="width:50%"> </div></div>
         <div class=\'row\' style=\'background-color:#e7e6e6;color:#000000;\'>
           <div class=\'col\'><span id="question2"></span></div>
           <div class=\'col\'><strong><span id="answer2"></span></strong></div>
         </div>
+        <div class="row"><div class="col"> <hr style="width:50%"> </div></div>
         <div class=\'row\' style=\'background-color:#e7e6e6;color:#000000;\'>
           <div class=\'col\'><span id="question3"></span></div>
           <div class=\'col\'><strong><span id="answer3"></span></strong></div>
