@@ -230,7 +230,7 @@ function pbr_hs_archive(){
       </div>
       <div class="modal-body">
       <div class=\'container-fluid\'>
-      <div class=\"alert alert-info\" role=\"alert\" id="language"></div>
+      <div class=\"alert alert-info\" role=\"alert\"><span id="language"></span></div>
         <div class=\'row\' style=\'background-color:#f9b58f;color:#000000;\'>
           <div class=\'col\'><label>&nbsp;</label><br><strong></strong></div>
           <div class=\'col\'><label>Temp 1</label><br><strong></strong></div>
