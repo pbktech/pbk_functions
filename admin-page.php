@@ -223,26 +223,35 @@ function pbr_hs_archive(){
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">New message</h5>
+        <h5 class="modal-title" id="exampleModalLabel"></h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
       <div class="modal-body">
-        <form>
-          <div class="form-group">
-            <label for="recipient-name" class="col-form-label">Recipient:</label>
-            <input type="text" class="form-control" id="recipient-name">
-          </div>
-          <div class="form-group">
-            <label for="message-text" class="col-form-label">Message:</label>
-            <textarea class="form-control" id="message-text"></textarea>
-          </div>
-        </form>
+      <div class=\'container-fluid\'>
+      <div class=\"alert alert-info\" role=\"alert\" id="language"></div>
+        <div class=\'row\' style=\'background-color:#f9b58f;color:#000000;\'>
+          <div class=\'col\'><label>&nbsp;</label><br><strong></strong></div>
+          <div class=\'col\'><label>Temp 1</label><br><strong></strong></div>
+          <div class=\'col\'><label>Temp 2</label><br><strong></strong></div>
+        </div>
+        <div class=\'row\' style=\'background-color:#e7e6e6;color:#000000;\'>
+          <div class=\'col\'></div>
+          <div class=\'col\'><strong></div>
+        </div>
+        <div class=\'row\' style=\'background-color:#e7e6e6;color:#000000;\'>
+          <div class=\'col\'></div>
+          <div class=\'col\'><strong></div>
+        </div>
+        <div class=\'row\' style=\'background-color:#e7e6e6;color:#000000;\'>
+          <div class=\'col\'></div>
+          <div class=\'col\'><strong></div>
+        </div>
+      </div>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary">Send message</button>
       </div>
     </div>
   </div>
@@ -254,7 +263,9 @@ jQuery(\'#hsModal\').on(\'show.bs.modal\', function (event) {
 //  console.log(jsonData);
 //  var obj = jQuery.parseJSON(jsonData) // Extract info from data-* attributes
   var modal = jQuery(this)
-  modal.find(\'.modal-title\').text(\'New message to \' + obj.name)
+  var lang = obj.language
+  modal.find(\'.modal-title\').text(\'Health Screen for \' + obj.name)
+  modal.find(\'#language\').text(\'This form was entered in \' + lang)
 })
 </script>';
       }else{
