@@ -150,7 +150,22 @@ function pbr_hs_archive(){
   if(isset($_GET['id'])){
     $result=$wpdb->get_row("SELECT * FROM pbc_pbk_orders,pbc_pbrestaurants WHERE pbc_pbk_orders.restaurantID = pbc_pbrestaurants.restaurantID AND pbc_pbk_orders.guid='".$_GET['id']."'");
     if($result){
-
+      $info=json_decode($result->orderData);
+      $lang=$info->language;
+      echo "
+      <div class='container' id='queryResults'>
+      <div class=\"alert alert-info\" role=\"alert\">This form was entered in ".$info->language."</div>
+        <div class='row' style='background-color:#f9b58f;color:#FFFFFF;'>
+          <div class='col'><label>&nbsp;</label><br><strong>".$info->name."</strong></div>
+          <div class='col'><label>Temp 1</label><br><strong>".$info->temp1."</strong></div>
+          <div class='col'><label>Temp 2</label><br><strong>".$info->temp2."</strong></div>
+        </div>
+        <div class='row' style='background-color:#e7e6e6;color:#000000;'>
+          <div class='col'>".$info->Questions->1->$lang."</div>
+          <div class='col'><strong>".$info->question->1."</strong></div>
+        </div>
+      </div>
+      ";
     }else{
       echo "<div class='alert alert-warning'>Health Screen not Found</div>";
     }
@@ -175,7 +190,7 @@ function pbr_hs_archive(){
       </form>
     </div>";
     if(isset($_GET['startDate']) && isset($_GET['endDate'])){
-      $result=$wpdb->get_results("SELECT restaurantName,orderDate,JSON_EXTRACT(userID ,'$.name') as 'employeeName',pbc_pbk_orders.guid as 'id' FROM pbc_pbk_orders,pbc_pbrestaurants WHERE pbc_pbk_orders.restaurantID = pbc_pbrestaurants.restaurantID AND orderDate BETWEEN '".date("Y-m-d",strtotime($_GET['startDate']))."' AND '".date("Y-m-d",strtotime($_GET['endDate']))."' ");
+      $result=$wpdb->get_results("SELECT restaurantName,orderDate,JSON_EXTRACT(orderData ,'$.name') as 'employeeName',pbc_pbk_orders.guid as 'id' FROM pbc_pbk_orders,pbc_pbrestaurants WHERE pbc_pbk_orders.restaurantID = pbc_pbrestaurants.restaurantID AND orderDate BETWEEN '".date("Y-m-d",strtotime($_GET['startDate']))."' AND '".date("Y-m-d",strtotime($_GET['endDate']))."' ");
       if($result){
         $d=array();
         foreach ($result as $key) {
