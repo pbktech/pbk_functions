@@ -271,7 +271,7 @@ jQuery(\'#hsModal\').on(\'show.bs.modal\', function (event) {
   modal.find(\'#temp2\').text(obj.Temp2 + "\xB0");
   modal.find(\'#question1\').text(obj.Questions);
   modal.find(\'#answer1\').text(obj.question.1);
-})
+});
 </script>';
       }else{
         echo "<div class='alert alert-warning'>No Health Screens found for the dates selected ".date("m/d/Y",strtotime($_GET['startDate']))." - ".date("m/d/Y",strtotime($_GET['endDate'])).".</div>";
