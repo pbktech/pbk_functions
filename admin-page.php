@@ -156,7 +156,7 @@ function pbr_hs_archive(){
       $two=2;
       $three=3;
       echo "
-      <div class='container' id='queryResults'>
+      <div class='container-fluid' id='queryResults'>
       <div class=\"alert alert-info\" role=\"alert\">This form was entered in ".$info->language."</div>
         <div class='row' style='background-color:#f9b58f;color:#000000;'>
           <div class='col'><label>&nbsp;</label><br><strong>".$info->name."</strong></div>
@@ -201,12 +201,12 @@ function pbr_hs_archive(){
       </form>
     </div>";
     if(isset($_GET['startDate']) && isset($_GET['endDate'])){
-      $result=$wpdb->get_results("SELECT restaurantName,orderDate,JSON_EXTRACT(orderData ,'$.name') as 'employeeName',pbc_pbk_orders.guid as 'id' FROM pbc_pbk_orders,pbc_pbrestaurants WHERE pbc_pbk_orders.restaurantID = pbc_pbrestaurants.restaurantID AND orderDate BETWEEN '".date("Y-m-d",strtotime($_GET['startDate']))."' AND '".date("Y-m-d",strtotime($_GET['endDate']))."' ");
+      $result=$wpdb->get_results("SELECT restaurantName,orderDate,json_unquote(JSON_EXTRACT(orderData ,'$.name')) as 'employeeName',pbc_pbk_orders.guid as 'id' FROM pbc_pbk_orders,pbc_pbrestaurants WHERE pbc_pbk_orders.restaurantID = pbc_pbrestaurants.restaurantID AND orderDate BETWEEN '".date("Y-m-d",strtotime($_GET['startDate']))."' AND '".date("Y-m-d",strtotime($_GET['endDate']))."' ");
       if($result){
         $d=array();
         foreach ($result as $key) {
           $d['Results'][]=array(
-  					"<a href='" . admin_url( "admin.php?page=pbr-hs-archive&id=".$key->id)."'>" . $key->employeeName . "</a>",
+  					"<a href='" . admin_url( "admin.php?page=pbr-hs-archive&id=".$key->id)."' target='_blank'>" . $key->employeeName . "</a>",
   					$key->restaurantName,
   					date("m/d/Y",strtotime($key->orderDate))
   				);
