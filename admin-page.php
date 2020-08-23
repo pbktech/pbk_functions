@@ -209,7 +209,7 @@ function pbr_hs_archive(){
   					"<a href='" . admin_url( "admin.php?page=pbr-hs-archive&id=".$key->id)."' target='_blank'>" . $key->employeeName . "</a>",
   					$key->restaurantName,
   					date("m/d/Y",strtotime($key->orderDate)),
-            "<button type=\"button\" class=\"btn btn-primary\" data-toggle=\"modal\" data-target=\"#hsModal\" data-whatever='".$key->orderData."'>View</button>"
+            "<button type=\"button\" class=\"btn btn-primary\" data-toggle=\"modal\" data-target=\"#hsModal\" data-restaurant='".$key->restaurantName."' data-date='".date("m/d/Y",strtotime($key->orderDate))."' data-whatever='".$key->orderData."'>View</button>"
   				);
         }
         $d['Options'][]="\"order\": [ 0, 'asc' ]";
@@ -236,17 +236,17 @@ function pbr_hs_archive(){
           <div class=\'col\'><label>Temp 2</label><br><strong><span id="temp2"></span></strong></div>
         </div>
         <div class="row"><div class="col"> <hr style="width:50%"> </div></div>
-        <div class=\'row\' style=\'background-color:#e7e6e6;color:#000000;\'>
+        <div class=\'row\' style=\'background-color:#e7e6e6;color:#000000;padding-top:.5em;padding-bottom:.5em;\'>
           <div class=\'col\'><span id="question1"></span></div>
           <div class=\'col\'><strong><span id="answer1"></span></strong></div>
         </div>
         <div class="row"><div class="col"> <hr style="width:50%"> </div></div>
-        <div class=\'row\' style=\'background-color:#e7e6e6;color:#000000;\'>
+        <div class=\'row\' style=\'background-color:#e7e6e6;color:#000000;padding-top:.5em;padding-bottom:.5em;\'>
           <div class=\'col\'><span id="question2"></span></div>
           <div class=\'col\'><strong><span id="answer2"></span></strong></div>
         </div>
         <div class="row"><div class="col"> <hr style="width:50%"> </div></div>
-        <div class=\'row\' style=\'background-color:#e7e6e6;color:#000000;\'>
+        <div class=\'row\' style=\'background-color:#e7e6e6;color:#000000;padding-top:.5em;padding-bottom:.5em;\'>
           <div class=\'col\'><span id="question3"></span></div>
           <div class=\'col\'><strong><span id="answer3"></span></strong></div>
         </div>
@@ -262,6 +262,8 @@ function pbr_hs_archive(){
 jQuery(\'#hsModal\').on(\'show.bs.modal\', function (event) {
   var button = jQuery(event.relatedTarget); // Button that triggered the modal
   var obj = button.data(\'whatever\');
+  var restaurant = button.data(\'restaurant\');
+  var dateOftest = button.data(\'date\');
 //  console.log(jsonData);
 //  var obj = jQuery.parseJSON(jsonData) // Extract info from data-* attributes
   var modal = jQuery(this);
@@ -269,7 +271,7 @@ jQuery(\'#hsModal\').on(\'show.bs.modal\', function (event) {
   console.log(obj.Questions);
   var questions = obj.Questions;
   var answers = obj.question;
-  modal.find(\'.modal-title\').text(\'Health Screen for \' + obj.name);
+  modal.find(\'.modal-title\').text(\'Health Screen for \' + obj.name + \'<br>at \' + restaurant + \' on \' + dateOftest);
   modal.find(\'#language\').text(\'This form was entered in \' + lang);
   modal.find(\'#temp1\').text(obj.Temp1 + "\xB0");
   modal.find(\'#temp2\').text(obj.Temp2 + "\xB0");
