@@ -201,22 +201,61 @@ function pbr_hs_archive(){
       </form>
     </div>";
     if(isset($_GET['startDate']) && isset($_GET['endDate'])){
-      $result=$wpdb->get_results("SELECT restaurantName,orderDate,json_unquote(JSON_EXTRACT(orderData ,'$.name')) as 'employeeName',pbc_pbk_orders.guid as 'id' FROM pbc_pbk_orders,pbc_pbrestaurants WHERE pbc_pbk_orders.restaurantID = pbc_pbrestaurants.restaurantID AND orderDate BETWEEN '".date("Y-m-d",strtotime($_GET['startDate']))."' AND '".date("Y-m-d",strtotime($_GET['endDate']))."' ");
+      $result=$wpdb->get_results("SELECT restaurantName,orderDate,orderData,json_unquote(JSON_EXTRACT(orderData ,'$.name')) as 'employeeName',pbc_pbk_orders.guid as 'id' FROM pbc_pbk_orders,pbc_pbrestaurants WHERE pbc_pbk_orders.restaurantID = pbc_pbrestaurants.restaurantID AND orderDate BETWEEN '".date("Y-m-d",strtotime($_GET['startDate']))."' AND '".date("Y-m-d",strtotime($_GET['endDate']))."' ");
       if($result){
         $d=array();
         foreach ($result as $key) {
           $d['Results'][]=array(
   					"<a href='" . admin_url( "admin.php?page=pbr-hs-archive&id=".$key->id)."' target='_blank'>" . $key->employeeName . "</a>",
   					$key->restaurantName,
-  					date("m/d/Y",strtotime($key->orderDate))
+  					date("m/d/Y",strtotime($key->orderDate)),
+            "<button type=\"button\" class=\"btn btn-primary\" data-toggle=\"modal\" data-target=\"#exampleModal\" data-whatever=\"".$result->orderData."\">View</button>"
   				);
         }
         $d['Options'][]="\"order\": [ 0, 'asc' ]";
   			$d['Options'][]="\"lengthMenu\": [ [25, 50, -1], [25, 50, \"All\"] ]";
   			$d['File']="PBK_Health_Screens_";
-  			$d['Headers']=array("Name","Restaurant","Date");
+  			$d['Headers']=array("Name","Restaurant","Date","");
         $report= new ToastReport;
         echo $report->showResultsTable($d);
+        echo '
+        <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">New message</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form>
+          <div class="form-group">
+            <label for="recipient-name" class="col-form-label">Recipient:</label>
+            <input type="text" class="form-control" id="recipient-name">
+          </div>
+          <div class="form-group">
+            <label for="message-text" class="col-form-label">Message:</label>
+            <textarea class="form-control" id="message-text"></textarea>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary">Send message</button>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+$(\'#exampleModal\').on(\'show.bs.modal\', function (event) {
+  var button = $(event.relatedTarget) // Button that triggered the modal
+  var recipient = button.data(\'whatever\') // Extract info from data-* attributes
+  var modal = $(this)
+  modal.find(\'.modal-title\').text(\'New message to \' + recipient)
+  modal.find(\'.modal-body input\').val(recipient)
+})
+</script>';
       }else{
         echo "<div class='alert alert-warning'>No Health Screens found for the dates selected ".date("m/d/Y",strtotime($_GET['startDate']))." - ".date("m/d/Y",strtotime($_GET['endDate'])).".</div>";
       }
