@@ -265,12 +265,14 @@ jQuery(\'#hsModal\').on(\'show.bs.modal\', function (event) {
   var modal = jQuery(this);
   var lang = obj.language;
   console.log(obj.Questions);
+  var questions = obj.Questions;
+  var answers = obj.question;
   modal.find(\'.modal-title\').text(\'Health Screen for \' + obj.name);
   modal.find(\'#language\').text(\'This form was entered in \' + lang);
   modal.find(\'#temp1\').text(obj.Temp1 + "\xB0");
   modal.find(\'#temp2\').text(obj.Temp2 + "\xB0");
-  modal.find(\'#question1\').text(obj.Questions);
-  modal.find(\'#answer1\').text(obj.question.1);
+  modal.find(\'#question1\').text(questions.1);
+  modal.find(\'#answer1\').text(answers.1);
 });
 </script>';
       }else{
