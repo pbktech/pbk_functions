@@ -237,16 +237,16 @@ function pbr_hs_archive(){
           <div class=\'col\'><label>Temp 2</label><br><strong><span id="temp2"></span></strong></div>
         </div>
         <div class=\'row\' style=\'background-color:#e7e6e6;color:#000000;\'>
-          <div class=\'col\'></div>
-          <div class=\'col\'><strong></div>
+          <div class=\'col\'><span id="question1"></span></div>
+          <div class=\'col\'><strong><span id="answer1"></span></strong></div>
         </div>
         <div class=\'row\' style=\'background-color:#e7e6e6;color:#000000;\'>
-          <div class=\'col\'></div>
-          <div class=\'col\'><strong></div>
+          <div class=\'col\'><span id="question2"></span></div>
+          <div class=\'col\'><strong><span id="answer2"></span></strong></div>
         </div>
         <div class=\'row\' style=\'background-color:#e7e6e6;color:#000000;\'>
-          <div class=\'col\'></div>
-          <div class=\'col\'><strong></div>
+          <div class=\'col\'><span id="question3"></span></div>
+          <div class=\'col\'><strong><span id="answer3"></span></strong></div>
         </div>
       </div>
       </div>
@@ -266,8 +266,12 @@ jQuery(\'#hsModal\').on(\'show.bs.modal\', function (event) {
   var lang = obj.language
   modal.find(\'.modal-title\').text(\'Health Screen for \' + obj.name)
   modal.find(\'#language\').html(\'This form was entered in \' + lang)
-  modal.find(\'#temp1\').html(obj.Temp1)
-  modal.find(\'#temp2\').html(obj.Temp2)
+  modal.find(\'#temp1\').html(obj.Temp1 + "\xB0")
+  modal.find(\'#temp2\').html(obj.Temp2 + "\xB0")
+  for (var i = 1; i < obj.Questions.length; i++) {
+    modal.find(\'#question\'+i).html(obj.Questions.i.lang + "\xB0")
+    modal.find(\'#answer\'+i).html(obj.question.i + "\xB0")
+  }
 })
 </script>';
       }else{
