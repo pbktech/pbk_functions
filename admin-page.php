@@ -272,8 +272,8 @@ jQuery(\'#hsModal\').on(\'show.bs.modal\', function (event) {
   console.log(obj.Questions);
   var questions = obj.Questions;
   var answers = obj.question;
-  modal.find(\'.modal-title\').text(\'Health Screen for \' + obj.name);
-  modal.find(\'#subHead\').text(\'at \' + restaurant + \' on \' + dateOftest);
+  modal.find(\'.modal-title\').text(obj.name);
+  modal.find(\'#subHead\').text(restaurant + \' on \' + dateOftest);
   modal.find(\'#language\').text(\'This form was entered in \' + lang);
   modal.find(\'#temp1\').text(obj.Temp1 + "\xB0");
   modal.find(\'#temp2\').text(obj.Temp2 + "\xB0");
