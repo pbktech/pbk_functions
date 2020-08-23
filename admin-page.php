@@ -246,21 +246,27 @@ function pbr_hs_archive(){
       </div>
     </div>
   </div>
-</div>
-<script>
-jQuery(\'#exampleModal\').on(\'show.bs.modal\', function (event) {
-  var button = jQuery(event.relatedTarget) // Button that triggered the modal
-  var obj = jQuery.parseJSON(button.data(\'whatever\')) // Extract info from data-* attributes
-  var modal = jQuery(this)
-  modal.find(\'.modal-title\').text(\'New message to \' + obj.name)
-  modal.find(\'.modal-body input\').val(recipient)
-})
-</script>';
+</div>';
+add_action( 'wp_enqueue_scripts', 'pbk_hs_scripts' );
       }else{
         echo "<div class='alert alert-warning'>No Health Screens found for the dates selected ".date("m/d/Y",strtotime($_GET['startDate']))." - ".date("m/d/Y",strtotime($_GET['endDate'])).".</div>";
       }
     }
   }
+}
+
+function pbk_hs_scripts() {
+  $script='
+  <script>
+  $(\'#exampleModal\').on(\'show.bs.modal\', function (event) {
+    var button = $(event.relatedTarget) // Button that triggered the modal
+    var obj = jQuery.parseJSON(button.data(\'whatever\')) // Extract info from data-* attributes
+    var modal = $(this)
+    modal.find(\'.modal-title\').text(\'New message to \' + obj.name)
+    modal.find(\'.modal-body input\').val(recipient)
+  })
+  </script>';
+  wp_enqueue_script( "pbk-hs-modal", $script, "", 1, TRUE );
 }
 function pbr_edit_devices(){
 
