@@ -255,7 +255,6 @@ jQuery(\'#hsModal\').on(\'show.bs.modal\', function (event) {
 //  var obj = jQuery.parseJSON(jsonData) // Extract info from data-* attributes
   var modal = jQuery(this)
   modal.find(\'.modal-title\').text(\'New message to \' + obj.name)
-  modal.find(\'.modal-body input\').val(recipient)
 })
 </script>';
       }else{
