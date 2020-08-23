@@ -231,7 +231,7 @@ function pbr_hs_archive(){
       <div class="modal-body">
       <div class=\'container-fluid\'>
       <div class="alert alert-info" role="alert"><span id="language"></span></div>
-        <div class=\'row\' style=\'background-color:#f9b58f;color:#000000;\'>
+        <div class=\'row\' style=\'background-color:#f9b58f;color:#000000;padding-top:.5em;padding-bottom:.5em;\'>
           <div class=\'col\'><label>Temp 1</label><br><strong><span id="temp1"></span></strong></div>
           <div class=\'col\'><label>Temp 2</label><br><strong><span id="temp2"></span></strong></div>
         </div>
