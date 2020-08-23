@@ -264,14 +264,15 @@ jQuery(\'#hsModal\').on(\'show.bs.modal\', function (event) {
 //  var obj = jQuery.parseJSON(jsonData) // Extract info from data-* attributes
   var modal = jQuery(this)
   var lang = obj.language
+  var one = "1"
+  var two = "1"
+  var three = "1"
   modal.find(\'.modal-title\').text(\'Health Screen for \' + obj.name)
   modal.find(\'#language\').html(\'This form was entered in \' + lang)
   modal.find(\'#temp1\').html(obj.Temp1 + "\xB0")
   modal.find(\'#temp2\').html(obj.Temp2 + "\xB0")
-  for (var i = 1; i < obj.Questions.length; i++) {
-    modal.find(\'#question\'+i).html(obj.Questions.i.lang + "\xB0")
-    modal.find(\'#answer\'+i).html(obj.question.i + "\xB0")
-  }
+  modal.find(\'#question1\').html(obj.Questions.one.lang)
+  modal.find(\'#answer1\').html(obj.question.one)
 })
 </script>';
       }else{
