@@ -232,7 +232,6 @@ function pbr_hs_archive(){
       <div class=\'container-fluid\'>
       <div class="alert alert-info" role="alert"><span id="language"></span></div>
         <div class=\'row\' style=\'background-color:#f9b58f;color:#000000;\'>
-          <div class=\'col\'><label>&nbsp;</label><br><strong></strong></div>
           <div class=\'col\'><label>Temp 1</label><br><strong><span id="temp1"></span></strong></div>
           <div class=\'col\'><label>Temp 2</label><br><strong><span id="temp2"></span></strong></div>
         </div>
@@ -272,7 +271,8 @@ jQuery(\'#hsModal\').on(\'show.bs.modal\', function (event) {
   modal.find(\'#temp1\').text(obj.Temp1 + "\xB0");
   modal.find(\'#temp2\').text(obj.Temp2 + "\xB0");
   jQuery.each( questions, function( key, value ) {
-    modal.find(\'#question\'+ key).text(value.lang);
+    if(lang=="English"){modal.find(\'#question\'+ key).text(value.English);}
+    if(lang=="Spanish"){modal.find(\'#question\'+ key).text(value.Spanish);}
   });
   jQuery.each( answers, function( key, value ) {
     modal.find(\'#answer\'+ key).text(value);
