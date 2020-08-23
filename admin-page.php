@@ -140,6 +140,63 @@ function pbr_orders(){
   }
   echo "</div>";
 }
+function pbr_hs_archive(){
+  global $wpdb;
+  echo "<div class='wrap'><h2>PBK Health Screen Archive</h2>";
+  $restaurant = new Restaurant();
+  if($_SERVER['REQUEST_METHOD'] == 'POST'){
+
+  }
+  if(isset($_GET['id'])){
+    $result=$wpdb->get_row("SELECT * FROM pbc_pbk_orders,pbc_pbrestaurants WHERE pbc_pbk_orders.restaurantID = pbc_pbrestaurants.restaurantID AND pbc_pbk_orders.guid='".$_GET['id']."'");
+    if($result){
+
+    }else{
+      echo "<div class='alert alert-warning'>Health Screen not Found</div>";
+    }
+  }else{
+    echo "<h3>Please Select Dates:</h3>
+    <div class='container'>
+      <form  method='get' action='".admin_url( 'admin.php')."'>
+      <div class=\"form-group\">
+        <div class='row'>
+          <div class='col'>
+            " . $restaurant->buildDateSelector('startDate',"Starting Date") . "
+          </div>
+          <div class='col'>
+            " . $restaurant->buildDateSelector('endDate',"Ending Date") . "
+          </div>
+        </div>
+      </div>
+      <div class=\"form-group\">
+        <input id='submit' type='submit' value='SEARCH' />
+      </div>
+        <input type='hidden' name='page' value='pbr-hs-archive' />
+      </form>
+    </div>";
+    if(isset($_GET['startDate']) && isset($_GET['endDate'])){
+      $result=$wpdb->get_results("SELECT restaurantName,orderDate,JSON_EXTRACT(userID ,'$.name') as 'employeeName',pbc_pbk_orders.guid as 'id' FROM pbc_pbk_orders,pbc_pbrestaurants WHERE pbc_pbk_orders.restaurantID = pbc_pbrestaurants.restaurantID AND orderDate BETWEEN '".date("Y-m-d",strtotime($_GET['startDate']))."' AND '".date("Y-m-d",strtotime($_GET['endDate']))."' ");
+      if($result){
+        $d=array();
+        foreach ($result as $key) {
+          $d['Results'][]=array(
+  					"<a href='" . admin_url( "admin.php?page=pbr-hs-archive&id=".$key->id)."'>" . $key->employeeName . "</a>",
+  					$key->restaurantName,
+  					date("m/d/Y",strtotime($key->orderDate))
+  				);
+        }
+        $d['Options'][]="\"order\": [ 5, 'asc' ]";
+  			$d['Options'][]="\"lengthMenu\": [ [25, 50, -1], [25, 50, \"All\"] ]";
+  			$d['File']="PBK_Device_List_";
+  			$d['Headers']=array("Name","Restaurant","Date");
+        $report= new ToastReport;
+        echo $report->showResultsTable($d);
+      }else{
+        echo "<div class='alert alert-warning'>No Health Screens found for the dates selected ".date("m/d/Y",strtotime($_GET['startDate']))." - ".date("m/d/Y",strtotime($_GET['endDate'])).".</div>";
+      }
+    }
+  }
+}
 function pbr_edit_devices(){
 
   $restaurant = new Restaurant();
