@@ -250,9 +250,9 @@ function pbr_hs_archive(){
 <script>
 jQuery(\'#hsModal\').on(\'show.bs.modal\', function (event) {
   var button = jQuery(event.relatedTarget) // Button that triggered the modal
-  var jsonData = button.data(\'whatever\');
-  console.log(jsonData);
-  var obj = jQuery.parseJSON(jsonData) // Extract info from data-* attributes
+  var obj = button.data(\'whatever\');
+//  console.log(jsonData);
+//  var obj = jQuery.parseJSON(jsonData) // Extract info from data-* attributes
   var modal = jQuery(this)
   modal.find(\'.modal-title\').text(\'New message to \' + obj.name)
   modal.find(\'.modal-body input\').val(recipient)
