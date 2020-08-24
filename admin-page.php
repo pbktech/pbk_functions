@@ -373,7 +373,7 @@ function pbr_update_restaurant() {
    	}else {
    		$m=2;
    	}
-    echo pbk_show_response($m);
+    echo switchpbrMessages($m);
 //   	wp_redirect(  admin_url( 'admin.php?page=pbr-edit-restaurant&m='.$m ) );
   wp_die();
 }

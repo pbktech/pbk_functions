@@ -178,7 +178,7 @@ class Restaurant {
 		});
 		</script>
 		<div class='container-fluid;'>
-		<div id='pbk_message'></div>
+		<div id='ServerResponse'></div>
 			<form method=\"post\" action=\"\" id='restaurantEditor'>
          	<input type=\"hidden\" name=\"action\" value=\"pbr_save_restaurant_option\" />
 					<div id='tabs'>
@@ -349,7 +349,7 @@ class Restaurant {
 			        type : 'post',
 			        data : form_data,
 			        success : function( response ) {
-			            jQuery( '#pbk_message' ).html( response );
+			            jQuery( '#ServerResponse' ).html( response );
 			        },
 			        fail : function( err ) {
 			            alert( \"There was an error: \" + err );
