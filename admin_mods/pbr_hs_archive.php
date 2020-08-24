@@ -153,6 +153,7 @@ jQuery( '#send' ).click(function() {
         type : 'post',
         data : form_data,
         success : function( response ) {
+            jQuery('#hsModal').modal('hide');
             jQuery( '#ServerResponse' ).html( response );
         },
         fail : function( err ) {
