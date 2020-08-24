@@ -168,7 +168,7 @@ function pbk_hs_send() {
         if(file_exists(dirname(dirname($report->docSaveLocation)) ."/docs/". $guid)){
           $data=json_decode($hs->orderData);
           $names[]=$data->name;
-          $files[] = glob(dirname(dirname($report->docSaveLocation)) ."/docs/". $guid);
+          $files[] = glob(dirname(dirname($report->docSaveLocation)) ."/docs/". $guid. "/*.pdf");
         }else {
           $respsonse[]="<div class='alert alert-danger'>No health screen pdf found for id ".$guid."</div>";
         }
