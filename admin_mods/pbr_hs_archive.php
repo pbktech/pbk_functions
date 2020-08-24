@@ -115,7 +115,7 @@ if (isset($_GET['id'])) {
     <div class="modal-footer">
       <form class="hs_send_form" method="post" action="<?php echo admin_url('admin-ajax.php'); ?>">
         <input type="hidden" name="action" value="hs_send" id="" />
-        <input type="hidden" name="guids[]" value="" id="guids" />
+        <input type="hidden" name="guids[]" value="" id="guid" />
       <button type="button" class="btn btn-primary" id="send">Send</button>
       </form>
       <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
@@ -130,7 +130,7 @@ jQuery(document).ready(function($) {
     var $form = $(this);
     console.log($form.serialize());
     jQuery.post($form.attr('action'), $form.serialize(), function(response) {
-      alert(response);
+      jQuery("#ServerResponse").html(response);
     });
   });
 });
