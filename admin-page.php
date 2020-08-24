@@ -99,7 +99,9 @@ function pbr_add_restaurant(){
   echo "</div>";
 }
 function pbr_orders(){
-  echo "<div class='wrap'><h2>PBK Restaurant Supply Orders</h2>";
+  echo "<div class='wrap'><h2>PBK Restaurant Supply Orders</h2>
+  <div id='ServerResponse'></div>
+  ";
   $restaurant = new Restaurant();
   if($_SERVER['REQUEST_METHOD'] == 'POST'){
     global $wpdb;
@@ -142,7 +144,9 @@ function pbr_orders(){
 }
 function pbr_hs_archive(){
   global $wpdb;
-  echo "<div class='wrap'><h2>PBK Health Screen Archive</h2>";
+  echo "<div class='wrap'><h2>PBK Health Screen Archive</h2>
+  <div id='ServerResponse'></div>
+  ";
   $restaurant = new Restaurant();
   if($_SERVER['REQUEST_METHOD'] == 'POST'){
 
@@ -201,7 +205,7 @@ function pbr_hs_archive(){
       </form>
     </div>";
     if(isset($_GET['startDate']) && isset($_GET['endDate'])){
-      $result=$wpdb->get_results("SELECT restaurantName,orderDate,orderData,json_unquote(JSON_EXTRACT(orderData ,'$.name')) as 'employeeName',pbc_pbk_orders.guid as 'id' FROM pbc_pbk_orders,pbc_pbrestaurants WHERE pbc_pbk_orders.restaurantID = pbc_pbrestaurants.restaurantID AND orderDate BETWEEN '".date("Y-m-d",strtotime($_GET['startDate']))." 00:00:00' AND '".date("Y-m-d",strtotime($_GET['endDate']))." 23:59:59' ");
+      $result=$wpdb->get_results("SELECT guid,restaurantName,orderDate,orderData,json_unquote(JSON_EXTRACT(orderData ,'$.name')) as 'employeeName',pbc_pbk_orders.guid as 'id' FROM pbc_pbk_orders,pbc_pbrestaurants WHERE pbc_pbk_orders.restaurantID = pbc_pbrestaurants.restaurantID AND orderDate BETWEEN '".date("Y-m-d",strtotime($_GET['startDate']))." 00:00:00' AND '".date("Y-m-d",strtotime($_GET['endDate']))." 23:59:59' ");
       if($result){
         $d=array();
         foreach ($result as $key) {
@@ -209,7 +213,7 @@ function pbr_hs_archive(){
   					"<a href='" . admin_url( "admin.php?page=pbr-hs-archive&id=".$key->id)."' target='_blank'>" . $key->employeeName . "</a>",
   					$key->restaurantName,
   					date("m/d/Y",strtotime($key->orderDate)),
-            "<button type=\"button\" class=\"btn btn-primary\" data-toggle=\"modal\" data-target=\"#hsModal\" data-restaurant='".$key->restaurantName."' data-date='".date("m/d/Y g:i:s a",strtotime($key->orderDate))."' data-whatever='".$key->orderData."'>View</button>"
+            "<button type=\"button\" class=\"btn btn-primary\" data-toggle=\"modal\" data-target=\"#hsModal\" data-guid='".$key->guid."' data-restaurant='".$key->restaurantName."' data-date='".date("m/d/Y g:i:s a",strtotime($key->orderDate))."' data-whatever='".$key->orderData."'>View</button>"
   				);
         }
         $d['Options'][]="\"order\": [ 0, 'asc' ]";
@@ -253,13 +257,30 @@ function pbr_hs_archive(){
       </div>
       </div>
       <div class="modal-footer">
+        <form >
+          <input type="hidden" name="guids" value="" id="" />
+        <button type="button" class="btn btn-primary" data-dismiss="modal" id="send">Send</button>
+        </form>
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
       </div>
     </div>
   </div>
 </div>
 <script>
-jQuery(\'#hsModal\').on(\'show.bs.modal\', function (event) {
+jQuery(document).ready(function($) {
+  jQuery("#send").click(function(e) {
+    e.preventDefault();
+    var $form = $(this);
+  		var data = {
+  			"action": "hs_send",
+  			"guids": $form.serialize()
+  		};
+  		jQuery.post(ajaxurl, data, function(response) {
+  			jQuery.("#ServerResponse").html(response);
+  		});
+    });
+	});
+  jQuery(\'#hsModal\').on(\'show.bs.modal\', function (event) {
   var button = jQuery(event.relatedTarget); // Button that triggered the modal
   var obj = button.data(\'whatever\');
   var restaurant = button.data(\'restaurant\');
@@ -276,6 +297,7 @@ jQuery(\'#hsModal\').on(\'show.bs.modal\', function (event) {
   modal.find(\'#language\').text(\'This form was entered in \' + lang);
   modal.find(\'#temp1\').text(obj.Temp1 + "\xB0");
   modal.find(\'#temp2\').text(obj.Temp2 + "\xB0");
+  modal.find(\'#guid\').val(obj.guid);
   jQuery.each( questions, function( key, value ) {
     if(lang=="English"){modal.find(\'#question\'+ key).text(value.English);}
     if(lang=="Spanish"){modal.find(\'#question\'+ key).text(value.Spanish);}
@@ -290,7 +312,15 @@ jQuery(\'#hsModal\').on(\'show.bs.modal\', function (event) {
       }
     }
   }
+  echo "</div>";
 }
+add_action( 'hs_send', 'pbk_hs_send' );
+function pbk_hs_send() {
+	global $wpdb;
+  print_r(implode(",",$_POST['guids']))
+	wp_die();
+}
+
 function pbr_edit_devices(){
 
   $restaurant = new Restaurant();
