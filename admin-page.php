@@ -363,8 +363,9 @@ function pbr_edit_minibar(){
     </div>
   </div>";
 }
-function pbr_update_restaurant() {
+add_action( 'wp_ajax_pbr_save_restaurant_option', 'pbr_update_restaurant' );
 
+function pbr_update_restaurant() {
    	$restaurant = new Restaurant();
    	$restaurant->setRestaurantInfo($_POST);
    	if($restaurant->insertUpdateRestaurantInfo()) {
@@ -372,8 +373,9 @@ function pbr_update_restaurant() {
    	}else {
    		$m=2;
    	}
-   	wp_redirect(  admin_url( 'admin.php?page=pbr-edit-restaurant&m='.$m ) );
-   	exit;
+    echo pbk_show_response($m);
+//   	wp_redirect(  admin_url( 'admin.php?page=pbr-edit-restaurant&m='.$m ) );
+  wp_die();
 }
 function pbr_nho_setup(){
 
