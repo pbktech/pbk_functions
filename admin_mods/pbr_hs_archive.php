@@ -113,7 +113,7 @@ if (isset($_GET['id'])) {
     <div class="modal-footer">
       <form id="hs_send_form" method="post" action="<?php echo admin_url('admin-ajax.php'); ?>">
         <input type="hidden" name="action" value="hs_send" id="" />
-        <input type="hidden" name="guids" value="" id="guid" />
+        <input type="hidden" name="guids[]" value="" id="guid" />
       <button type="button" class="btn btn-primary" id="send">Send</button>
       </form>
       <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
@@ -136,7 +136,7 @@ jQuery('#hsModal').on('show.bs.modal', function (event) {
   modal.find('#language').text('This form was entered in ' + lang);
   modal.find('#temp1').text(obj.Temp1 + "\xB0");
   modal.find('#temp2').text(obj.Temp2 + "\xB0");
-  jQuery('input[name="guids"]').val(obj.guid);
+  jQuery('input[name="guids[]"]').val(button.data('guid'));
   jQuery.each( questions, function( key, value ) {
     if(lang=="English"){modal.find('#question'+ key).text(value.English);}
     if(lang=="Spanish"){modal.find('#question'+ key).text(value.Spanish);}
