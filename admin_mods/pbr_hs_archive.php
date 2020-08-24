@@ -147,7 +147,7 @@ jQuery('#hsModal').on('show.bs.modal', function (event) {
 });
 jQuery( '#send' ).click(function() {
     var form_data = jQuery( this ).serializeArray();
-    form_data.push( { "name" : "security", "value" : <?php echo wp_create_nonce( "secure_nonce_name" ); ?> } );
+    form_data.push( { "name" : "security", "value" : "<?php echo wp_create_nonce( "secure_nonce_name" ); ?>" } );
     jQuery.ajax({
         url : ajaxurl, // Here goes our WordPress AJAX endpoint.
         type : 'post',
