@@ -170,7 +170,7 @@ function pbk_hs_send() {
           $names[]=$data->name;
           $pdfs=glob(dirname(dirname($report->docSaveLocation)) ."/docs/". $guid. "/*.pdf");
           foreach ($pdfs as $pdf) {
-            if(file_exists($pdf)){$files[]=$pdf;echo $pdf;}
+            if(file_exists($pdf)){$files[]=$pdf;}
           }
         }else {
           $respsonse[]="<div class='alert alert-danger'>No health screen pdf found for id ".$guid."</div>";

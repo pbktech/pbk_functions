@@ -79,12 +79,15 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
     $content['html'].=$questions[2][$_POST['orderData']['language']] . " : <strong>" . $_POST['orderData']['question'][2] . "</strong><br><br>";
     $content['html'].=$questions[3][$_POST['orderData']['language']] . " : <strong>" . $_POST['orderData']['question'][3] . "</strong><br><br>";
     if(
-      (
-        ($_POST['orderData']['Temp1'] || $_POST['orderData']['Temp2'] ) > 99.5
-      ) ||
-      (
-        ($_POST['orderData']['question'][1] || $_POST['orderData']['question'][2] || $_POST['orderData']['question'][3]) === "Yes"
-      )
+      ($_POST['orderData']['Temp1']  > 99.5)
+      ||
+      ($_POST['orderData']['Temp2'] > 99.5)
+      ||
+      ($_POST['orderData']['question'][1] == "Yes")
+      ||
+      ($_POST['orderData']['question'][2] == "Yes")
+      ||
+      ($_POST['orderData']['question'][3] == "Yes")
     ){$emails[]="mcrawford@theproteinbar.com";}
     if($file=$r->buildHTMLPDF(json_encode($content))){
       /*
