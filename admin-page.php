@@ -184,7 +184,7 @@ function pbk_hs_send() {
   }
   if(isset($files)){
     $report->reportEmail($cu->user_email,"Please See Attached Health Screen Forms for ".implode(",",$names) . ".","Health Screen Forms",$files);
-    $respsonse[]="<div class='alert alert-success'>Screen forms have been sent</div>";
+    $respsonse[]="<div class='alert alert-success'>Screen forms for ".implode(",",$names) . " have been sent</div>";
   }
   echo implode("<br>",$respsonse);
 	wp_die();
