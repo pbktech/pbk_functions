@@ -149,7 +149,7 @@ add_action( 'wp_ajax_hs_send', 'pbk_hs_send' );
 add_action( 'wp_ajax_nopriv_hs_send', 'pbk_hs_send' );
 function pbk_hs_send() {
 	global $wpdb;
-  exit(implode(",",$_POST));
+  echo "<div class='alert alert-success'>" . print_r($_POST['guids']) . "</div>";
 	wp_die();
 }
 
