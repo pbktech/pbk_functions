@@ -273,7 +273,7 @@ jQuery(document).ready(function($) {
     var $form = $(this);
   		var data = {
   			"action": "hs_send",
-  			"guids": $(this).jQuery("#guids").val()
+  			"guids": "TEST"
   		};
   		jQuery.post(ajaxurl, data, function(response) {
   			jQuery("#ServerResponse").html(response);
