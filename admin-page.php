@@ -173,7 +173,7 @@ function pbk_hs_send() {
           $respsonse[]="<div class='alert alert-danger'>No health screen pdf found for id ".$guid."</div>";
         }
       }else{
-        $respsonse[]="<div class='alert alert-danger'>You do not have access to health screen for id ".$guid."</div>"
+        $respsonse[]="<div class='alert alert-danger'>You do not have access to health screen for id ".$guid."</div>";
       }
     }else {
       $respsonse[]="<div class='alert alert-danger'>No health screen found for id ".$guid."</div>";
