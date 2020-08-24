@@ -259,7 +259,7 @@ function pbr_hs_archive(){
       <div class="modal-footer">
         <form >
           <input type="hidden" name="guids" value="" id="" />
-        <button type="button" class="btn btn-primary" data-dismiss="modal" id="send">Send</button>
+        <button type="button" class="btn btn-primary" id="send">Send</button>
         </form>
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
       </div>
@@ -276,7 +276,7 @@ jQuery(document).ready(function($) {
   			"guids": $form.serialize()
   		};
   		jQuery.post(ajaxurl, data, function(response) {
-  			jQuery.("#ServerResponse").html(response);
+  			jQuery("#ServerResponse").html(response);
   		});
     });
 	});
