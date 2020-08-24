@@ -123,16 +123,25 @@ if (isset($_GET['id'])) {
   </div>
 </div>
 </div>
-<script>
-jQuery(document).ready(function($) {
-  $('#send').click(function(e) {
-    e.preventDefault();
-    var $form = $(this);
-    jQuery.post($form.attr('action'), $form.serialize(), function(response) {
-      $("#ServerResponse").html(response);
+<?php
+add_action( 'admin_footer', 'pbk_hs_send_javascript' ); // Write our JS below here
+
+function pbk_hs_send_javascript() { ?>
+  <script type="text/javascript" >
+  jQuery(document).ready(function($) {
+    $('#send').click(function(e) {
+      e.preventDefault();
+      var $form = $(this);
+      jQuery.post(ajaxurl, $form.serialize(), function(response) {
+        $("#ServerResponse").html(response);
+      });
     });
   });
-});
+  </script>
+<?php
+}
+?>
+<script>
 jQuery('#hsModal').on('show.bs.modal', function (event) {
   var button = jQuery(event.relatedTarget);
   var obj = button.data('whatever');
