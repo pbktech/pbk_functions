@@ -116,32 +116,23 @@ if (isset($_GET['id'])) {
       <form class="hs_send_form" method="post" action="<?php echo admin_url('admin-ajax.php'); ?>">
         <input type="hidden" name="action" value="hs_send" id="" />
         <input type="hidden" name="guids[]" value="" id="guid" />
-      <button type="button" class="btn btn-primary" id="send">Send</button>
+      <button type="button" class="btn btn-primary" id="send"  data-dismiss="modal">Send</button>
       </form>
       <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
     </div>
   </div>
 </div>
 </div>
-<?php
-add_action( 'admin_footer', 'pbk_hs_send_javascript' ); // Write our JS below here
-
-function pbk_hs_send_javascript() { ?>
-  <script type="text/javascript" >
-  jQuery(document).ready(function($) {
-    $('#send').click(function(e) {
-      e.preventDefault();
-      var $form = $(this);
-      jQuery.post(ajaxurl, $form.serialize(), function(response) {
-        $("#ServerResponse").html(response);
-      });
+<script>
+jQuery(document).ready(function($) {
+  $('#send').click(function(e) {
+    e.preventDefault();
+    var $form = $(this);
+    jQuery.post($form.attr('action'), $form.serialize(), function(response) {
+      $("#ServerResponse").text(response);
     });
   });
-  </script>
-<?php
-}
-?>
-<script>
+});
 jQuery('#hsModal').on('show.bs.modal', function (event) {
   var button = jQuery(event.relatedTarget);
   var obj = button.data('whatever');
