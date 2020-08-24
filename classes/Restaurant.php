@@ -177,8 +177,8 @@ class Restaurant {
 			".$preselect."
 		});
 		</script>
-		<div id='ServerResponse'></div>
 		<div class='container-fluid;'>
+		<div id='ServerResponse'></div>
 			<form method=\"post\" action=\"\" id='restaurantEditor'>
          	<input type=\"hidden\" name=\"action\" value=\"pbr_save_restaurant_option\" />
 					<div id='tabs'>
