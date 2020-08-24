@@ -136,7 +136,7 @@ jQuery('#hsModal').on('show.bs.modal', function (event) {
   modal.find('#language').text('This form was entered in ' + lang);
   modal.find('#temp1').text(obj.Temp1 + "\xB0");
   modal.find('#temp2').text(obj.Temp2 + "\xB0");
-  modal.find('#guid').val(obj.guid);
+  jQuery('input[name="guids[]"]').val(obj.guid);
   jQuery.each( questions, function( key, value ) {
     if(lang=="English"){modal.find('#question'+ key).text(value.English);}
     if(lang=="Spanish"){modal.find('#question'+ key).text(value.Spanish);}
@@ -153,7 +153,7 @@ jQuery( '#send' ).click(function() {
         type : 'post',
         data : form_data,
         success : function( response ) {
-            alert( response );
+            jQuery( '#ServerResponse' ).html( response );
         },
         fail : function( err ) {
             alert( "There was an error: " + err );
