@@ -128,9 +128,8 @@ jQuery(document).ready(function($) {
   $('#send').click(function(e) {
     e.preventDefault();
     var $form = $(this);
-    console.log($form.serialize());
     jQuery.post($form.attr('action'), $form.serialize(), function(response) {
-      alert(response);
+      $("#ServerResponse").html(response);
     });
   });
 });

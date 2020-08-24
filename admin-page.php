@@ -145,7 +145,7 @@ function pbr_orders(){
 function pbr_hs_archive(){
   require "admin_mods/pbr_hs_archive.php";
 }
-add_action( 'hs_send', 'pbk_hs_send' );
+add_action( 'wp_ajax_hs_send', 'pbk_hs_send' );
 function pbk_hs_send() {
 	global $wpdb;
   print_r(implode(",",$_POST['guids']));
