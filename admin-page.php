@@ -168,7 +168,10 @@ function pbk_hs_send() {
         if(file_exists(dirname(dirname($report->docSaveLocation)) ."/docs/". $guid)){
           $data=json_decode($hs->orderData);
           $names[]=$data->name;
-          $files[] = glob(dirname(dirname($report->docSaveLocation)) ."/docs/". $guid. "/*.pdf");
+          $pdfs=glob(dirname(dirname($report->docSaveLocation)) ."/docs/". $guid. "/*.pdf");
+          foreach ($pdfs as $pdf) {
+            if(file_exists($pdf)){$files[]=$pdf;echo $pdf;}
+          }
         }else {
           $respsonse[]="<div class='alert alert-danger'>No health screen pdf found for id ".$guid."</div>";
         }
@@ -180,7 +183,7 @@ function pbk_hs_send() {
     }
   }
   if(isset($files)){
-    $report->reportEmail($cu->user_email,"Please See Attached Health Screen Forms for<br>".implode("<br>",$names),"Health Screen Forms",$files);
+    $report->reportEmail($cu->user_email,"Please See Attached Health Screen Forms for ".implode(",",$names) . ".","Health Screen Forms",$files);
     $respsonse[]="<div class='alert alert-success'>Screen forms have been sent</div>";
   }
   echo implode("<br>",$respsonse);
