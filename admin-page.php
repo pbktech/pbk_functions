@@ -149,11 +149,34 @@ add_action( 'wp_ajax_hs_send', 'pbk_hs_send' );
 //add_action( 'wp_ajax_nopriv_hs_send', 'pbk_hs_send' );
 function pbk_hs_send() {
 	global $wpdb;
+  global $wp;
+  $cu = wp_get_current_user();
   $restaurant = new Restaurant();
+  $respsonse[]="
+   <script type=\"text/javascript\">
+    jQuery(document).ready(function(){
+      setTimeout(function(){
+        jQuery(\".alert\").hide(\"20000\")
+      }, 30000);
+    });
+    </script>";
   foreach($_POST['guids'] as $guid){
-
+    $hs=$wpdb->get_row("SELECT * FROM pbc_pbk_orders WHERE guid = '".$guid."' AND orderType='HealthScreen'");
+    if($hs){
+      if(array_key_exists($hs->restaurantID,$restaurant->myRestaurants)){
+        $files[] = glob(dirname(dirname($report->docSaveLocation)) ."/docs/". $guid);
+      }else{
+        $respsonse[]="<div class='alert alert-danger'>You do not have access to health screen for id ".$guid."</div>"
+      }
+    }else {
+      $respsonse[]="<div class='alert alert-danger'>No health screen found for id ".$guid."</div>";
+    }
   }
-  echo "<div class='alert alert-success'>" . print_r($restaurant->myRestaurants) . "</div>";
+  if(isset($files)){
+    $report=new ToastReport;
+    $report->reportEmail($cu->user_email,"Please See Attached Health Screen Forms for<br>".implode("<br>",$names),"Health Screen Forms",$attach);
+  }
+  echo implode("<br>",$respsonse);
 	wp_die();
 }
 
