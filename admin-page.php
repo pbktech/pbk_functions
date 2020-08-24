@@ -205,7 +205,7 @@ function pbr_hs_archive(){
       </form>
     </div>";
     if(isset($_GET['startDate']) && isset($_GET['endDate'])){
-      $result=$wpdb->get_results("SELECT guid,restaurantName,orderDate,orderData,json_unquote(JSON_EXTRACT(orderData ,'$.name')) as 'employeeName',pbc_pbk_orders.guid as 'id' FROM pbc_pbk_orders,pbc_pbrestaurants WHERE pbc_pbk_orders.restaurantID = pbc_pbrestaurants.restaurantID AND orderDate BETWEEN '".date("Y-m-d",strtotime($_GET['startDate']))." 00:00:00' AND '".date("Y-m-d",strtotime($_GET['endDate']))." 23:59:59' ");
+      $result=$wpdb->get_results("SELECT pbc_pbk_orders.guid as 'guid',restaurantName,orderDate,orderData,json_unquote(JSON_EXTRACT(orderData ,'$.name')) as 'employeeName',pbc_pbk_orders.guid as 'id' FROM pbc_pbk_orders,pbc_pbrestaurants WHERE pbc_pbk_orders.restaurantID = pbc_pbrestaurants.restaurantID AND orderDate BETWEEN '".date("Y-m-d",strtotime($_GET['startDate']))." 00:00:00' AND '".date("Y-m-d",strtotime($_GET['endDate']))." 23:59:59' ");
       if($result){
         $d=array();
         foreach ($result as $key) {
