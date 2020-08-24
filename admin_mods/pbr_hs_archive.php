@@ -125,7 +125,7 @@ if (isset($_GET['id'])) {
 </div>
 <script>
 jQuery(document).ready(function($) {
-  $('.hs_send_form').on('submit', function(e) {
+  $('#send').click(function(e) {
     e.preventDefault();
     var $form = $(this);
     console.log($form.serialize());
