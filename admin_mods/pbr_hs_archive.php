@@ -145,7 +145,7 @@ jQuery('#hsModal').on('show.bs.modal', function (event) {
     modal.find('#answer'+ key).text(value);
   });
 });
-jQuery( 'form[name="hs_send_form"]' ).on( 'submit', function() {
+jQuery( '#send' ).click(function() {
     var form_data = jQuery( this ).serializeArray();
     form_data.push( { "name" : "security", "value" : <?php echo wp_create_nonce( "secure_nonce_name" ); ?> } );
     jQuery.ajax({
