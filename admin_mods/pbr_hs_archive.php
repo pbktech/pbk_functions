@@ -126,9 +126,10 @@ if (isset($_GET['id'])) {
 <script>
 jQuery(document).ready(function($) {
   $('#send').click(function(e) {
-    e.preventDefault();
-    var $form = $(this);
-    jQuery.post($form.attr('action'), $form.serialize(), function(response) {
+    var data = {
+    			'action': 'hs_send',
+    			'guids': 1234
+    		};    jQuery.post(ajaxurl,data, function(response) {
       $("#ServerResponse").text(response);
     });
   });
