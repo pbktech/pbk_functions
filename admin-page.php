@@ -148,7 +148,7 @@ function pbr_hs_archive(){
 add_action( 'wp_ajax_hs_send', 'pbk_hs_send' );
 function pbk_hs_send() {
 	global $wpdb;
-  print_r(implode(",",$_POST['guids']));
+  exit(implode(",",$_POST['guids']));
 	wp_die();
 }
 
