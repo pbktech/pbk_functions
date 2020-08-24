@@ -111,7 +111,7 @@ if (isset($_GET['id'])) {
     </div>
     </div>
     <div class="modal-footer">
-      <form class="hs_send_form" method="post" action="<?php echo admin_url('admin-ajax.php'); ?>">
+      <form name="hs_send_form" method="post" action="<?php echo admin_url('admin-ajax.php'); ?>">
         <input type="hidden" name="action" value="hs_send" id="" />
         <input type="hidden" name="guids[]" value="" id="guid" />
       <button type="button" class="btn btn-primary" id="send">Send</button>
@@ -122,16 +122,6 @@ if (isset($_GET['id'])) {
 </div>
 </div>
 <script>
-jQuery(document).ready(function($) {
-  $('#send').click(function(e) {
-    var data = {
-    			'action': 'hs_send',
-    			'guids': 1234
-    		};    jQuery.post(ajaxurl,data, function(response) {
-      $("#ServerResponse").text(response);
-    });
-  });
-});
 jQuery('#hsModal').on('show.bs.modal', function (event) {
   var button = jQuery(event.relatedTarget);
   var obj = button.data('whatever');
@@ -139,7 +129,6 @@ jQuery('#hsModal').on('show.bs.modal', function (event) {
   var dateOftest = button.data('date');
   var modal = jQuery(this);
   var lang = obj.language;
-  console.log(obj.Questions);
   var questions = obj.Questions;
   var answers = obj.question;
   modal.find('#modal-title').text('Health Screen for ' + obj.name);
@@ -155,6 +144,22 @@ jQuery('#hsModal').on('show.bs.modal', function (event) {
   jQuery.each( answers, function( key, value ) {
     modal.find('#answer'+ key).text(value);
   });
+});
+jQuery( 'form[name="hs_send_form"]' ).on( 'submit', function() {
+    var form_data = jQuery( this ).serializeArray();
+    form_data.push( { "name" : "security", "value" : <?php echo wp_create_nonce( "secure_nonce_name" ); ?> } );
+    jQuery.ajax({
+        url : ajaxurl, // Here goes our WordPress AJAX endpoint.
+        type : 'post',
+        data : form_data,
+        success : function( response ) {
+            alert( response );
+        },
+        fail : function( err ) {
+            alert( "There was an error: " + err );
+        }
+    });
+    return false;
 });
 </script>
 <?php
