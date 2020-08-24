@@ -100,12 +100,10 @@ if (isset($_GET['id'])) {
         <div class='col'><span id="question1"></span></div>
         <div class='col'><strong><span id="answer1"></span></strong></div>
       </div>
-      <div class="row"><div class="col"> <hr style="width:50%"> </div></div>
       <div class='row' style='background-color:#e7e6e6;color:#000000;padding-top:.5em;padding-bottom:.5em;'>
         <div class='col'><span id="question2"></span></div>
         <div class='col'><strong><span id="answer2"></span></strong></div>
       </div>
-      <div class="row"><div class="col"> <hr style="width:50%"> </div></div>
       <div class='row' style='background-color:#e7e6e6;color:#000000;padding-top:.5em;padding-bottom:.5em;'>
         <div class='col'><span id="question3"></span></div>
         <div class='col'><strong><span id="answer3"></span></strong></div>
@@ -116,7 +114,7 @@ if (isset($_GET['id'])) {
       <form class="hs_send_form" method="post" action="<?php echo admin_url('admin-ajax.php'); ?>">
         <input type="hidden" name="action" value="hs_send" id="" />
         <input type="hidden" name="guids[]" value="" id="guid" />
-      <button type="button" class="btn btn-primary" id="send"  data-dismiss="modal">Send</button>
+      <button type="button" class="btn btn-primary" id="send">Send</button>
       </form>
       <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
     </div>
