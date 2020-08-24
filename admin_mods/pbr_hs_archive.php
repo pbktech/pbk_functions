@@ -130,7 +130,7 @@ jQuery(document).ready(function($) {
     var $form = $(this);
     console.log($form.serialize());
     jQuery.post($form.attr('action'), $form.serialize(), function(response) {
-      jQuery("#ServerResponse").html(response);
+      alert(response);
     });
   });
 });
