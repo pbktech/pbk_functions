@@ -258,7 +258,7 @@ function pbr_hs_archive(){
       </div>
       <div class="modal-footer">
         <form >
-          <input type="hidden" name="guids" value="" id="" />
+          <input type="hidden" name="guids[]" value="" id="guids" />
         <button type="button" class="btn btn-primary" id="send">Send</button>
         </form>
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
@@ -273,7 +273,7 @@ jQuery(document).ready(function($) {
     var $form = $(this);
   		var data = {
   			"action": "hs_send",
-  			"guids": $form.serialize()
+  			"guids": $(this).jQuery("#guids").val()
   		};
   		jQuery.post(ajaxurl, data, function(response) {
   			jQuery("#ServerResponse").html(response);
