@@ -111,7 +111,7 @@ if (isset($_GET['id'])) {
     </div>
     </div>
     <div class="modal-footer">
-      <form name="hs_send_form" method="post" action="<?php echo admin_url('admin-ajax.php'); ?>">
+      <form id="hs_send_form" method="post" action="<?php echo admin_url('admin-ajax.php'); ?>">
         <input type="hidden" name="action" value="hs_send" id="" />
         <input type="hidden" name="guids[]" value="" id="guid" />
       <button type="button" class="btn btn-primary" id="send">Send</button>
@@ -146,7 +146,7 @@ jQuery('#hsModal').on('show.bs.modal', function (event) {
   });
 });
 jQuery( '#send' ).click(function() {
-    var form_data = jQuery( this ).serializeArray();
+    var form_data = jQuery( "#hs_send_form" ).serializeArray();
     form_data.push( { "name" : "security", "value" : "<?php echo wp_create_nonce( "secure_nonce_name" ); ?>" } );
     jQuery.ajax({
         url : ajaxurl, // Here goes our WordPress AJAX endpoint.
