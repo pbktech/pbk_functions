@@ -178,6 +178,7 @@ function pbk_hs_send() {
     }else {
       $respsonse[]="<div class='alert alert-danger'>No health screen found for id ".$guid."</div>";
     }
+  }
   if(isset($files)){
     $report->reportEmail($cu->user_email,"Please See Attached Health Screen Forms for<br>".implode("<br>",$names),"Health Screen Forms",$attach);
   }
