@@ -143,7 +143,7 @@ function pbr_orders(){
   echo "</div>";
 }
 function pbr_hs_archive(){
-  require "adming_mods/pbr_hs_archive.php";
+  require "admin_mods/pbr_hs_archive.php";
 }
 add_action( 'hs_send', 'pbk_hs_send' );
 function pbk_hs_send() {
