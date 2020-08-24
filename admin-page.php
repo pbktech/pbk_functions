@@ -317,7 +317,7 @@ jQuery(document).ready(function($) {
 add_action( 'hs_send', 'pbk_hs_send' );
 function pbk_hs_send() {
 	global $wpdb;
-  print_r(implode(",",$_POST['guids']))
+  print_r(implode(",",$_POST['guids']));
 	wp_die();
 }
 
