@@ -369,11 +369,21 @@ function pbr_update_restaurant() {
    	$restaurant = new Restaurant();
    	$restaurant->setRestaurantInfo($_POST);
    	if($restaurant->insertUpdateRestaurantInfo()) {
-   		$m=1;
+   		$ms="Restaurant updated.";
+      $alert="success";
    	}else {
-   		$m=2;
+   		$ms="There was an error. Restaurant not updated.";
+      $alert="danger";
    	}
-    echo switchpbrMessages($m);
+    echo  "
+    <script>
+      jQuery(document).ready(function(){
+        setTimeout(function(){
+        jQuery(\".alert\").hide(\"20000\")
+      }, 30000);
+      });
+    </script>
+  <div class='alert alert-".$alert."'><strong>" . $ms . "</strong></div>";
 //   	wp_redirect(  admin_url( 'admin.php?page=pbr-edit-restaurant&m='.$m ) );
   wp_die();
 }
