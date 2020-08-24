@@ -152,6 +152,7 @@ function pbk_hs_send() {
   global $wp;
   $cu = wp_get_current_user();
   $restaurant = new Restaurant();
+  $report=new ToastReport;
   $respsonse[]="
    <script type=\"text/javascript\">
     jQuery(document).ready(function(){
@@ -164,16 +165,20 @@ function pbk_hs_send() {
     $hs=$wpdb->get_row("SELECT * FROM pbc_pbk_orders WHERE guid = '".$guid."' AND orderType='HealthScreen'");
     if($hs){
       if(array_key_exists($hs->restaurantID,$restaurant->myRestaurants)){
-        $files[] = glob(dirname(dirname($report->docSaveLocation)) ."/docs/". $guid);
+        if(file_exists(dirname(dirname($report->docSaveLocation)) ."/docs/". $guid)){
+          $data=json_decode($hs->orderData);
+          $names[]=$data->name;
+          $files[] = glob(dirname(dirname($report->docSaveLocation)) ."/docs/". $guid);
+        }else {
+          $respsonse[]="<div class='alert alert-danger'>No health screen pdf found for id ".$guid."</div>";
+        }
       }else{
         $respsonse[]="<div class='alert alert-danger'>You do not have access to health screen for id ".$guid."</div>"
       }
     }else {
       $respsonse[]="<div class='alert alert-danger'>No health screen found for id ".$guid."</div>";
     }
-  }
   if(isset($files)){
-    $report=new ToastReport;
     $report->reportEmail($cu->user_email,"Please See Attached Health Screen Forms for<br>".implode("<br>",$names),"Health Screen Forms",$attach);
   }
   echo implode("<br>",$respsonse);
