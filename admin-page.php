@@ -146,15 +146,18 @@ function pbr_hs_archive(){
   require "admin_mods/pbr_hs_archive.php";
 }
 add_action( 'wp_ajax_hs_send', 'pbk_hs_send' );
-add_action( 'wp_ajax_nopriv_hs_send', 'pbk_hs_send' );
+//add_action( 'wp_ajax_nopriv_hs_send', 'pbk_hs_send' );
 function pbk_hs_send() {
 	global $wpdb;
-  echo "<div class='alert alert-success'>" . print_r($_POST['guids']) . "</div>";
+  $restaurant = new Restaurant();
+  foreach($_POST['guids'] as $guid){
+
+  }
+  echo "<div class='alert alert-success'>" . print_r($restaurant->myRestaurants) . "</div>";
 	wp_die();
 }
 
 function pbr_edit_devices(){
-
   $restaurant = new Restaurant();
   if($_SERVER['REQUEST_METHOD'] == 'POST'){
     $restaurant->pbkSaveDevice($_POST);
