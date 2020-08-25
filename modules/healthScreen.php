@@ -149,23 +149,25 @@ $ret.="</select></div><input type='hidden' name='orderData[language]' value='".$
       <div class='col'><label for='Temp2'>".$labels["Temp2"][$lang]."</label><br><input class=\"form-control\" type='text' min='95' max='110' name='orderData[Temp2]' id='Temp2' required/></div>
     </div>
     <div class='row' style='background-color:#e7e6e6;color:#000000;'>
-      <div class='col'><strong>" . $questions[1][$lang] . "</strong></div>
-      <div class='col'>
+      <div class='col-md-9'><strong>" . $questions[1][$lang] . "</strong></div>
+      <div class='col-md-3'>
         <div class=\"form-check form-check-inline\"><input type=\"radio\" id=\"customRadio1y\" name='orderData[question][1]' value='Yes' class=\"form-check-input\" required><label class=\"form-check-label\" for='customRadio1y'>".$labels["Yes"][$lang]."</label></div>
         <div class=\"form-check form-check-inline\"><input type=\"radio\" id=\"customRadio1n\" name='orderData[question][1]' value='No' class=\"form-check-input\" required><label class=\"form-check-label\" for='customRadio1n'>".$labels["No"][$lang]."</label></div>
       </div>
     </div>
     <div class='row' style='background-color:#e7e6e6;color:#000000;'>
-      <div class='col'><strong>" . $questions[2][$lang] . "</strong></div>
-      <div class='col'>
+      <div class='col-md-9'><strong>" . $questions[2][$lang] . "</strong></div>
+      <div class='col-md-3'>
         <div class=\"form-check form-check-inline\"><input type=\"radio\" id=\"customRadio2y\" name='orderData[question][2]' value='Yes' class=\"form-check-input\" required><label class=\"form-check-label\" for='customRadio2y'>".$labels["Yes"][$lang]."</label></div>
         <div class=\"form-check form-check-inline\"><input type=\"radio\" id=\"customRadio2n\" name='orderData[question][2]' value='No' class=\"form-check-input\" required><label class=\"form-check-label\" for='customRadio2n'>".$labels["No"][$lang]."</label></div>
       </div>
     </div>
     <div class='row' style='background-color:#e7e6e6;color:#000000;'>
       <div class='col'><strong>" . $questions[3][$lang] . "</strong></div>
-        <div class='col'><div class=\"form-check form-check-inline\"><input type=\"radio\" id=\"customRadio3y\" name='orderData[question][3]' value='Yes' class=\"form-check-input\" required><label class=\"form-check-label\" for='customRadio3y'>".$labels["Yes"][$lang]."</label></div>
-        <div class=\"form-check form-check-inline\"><input type=\"radio\" id=\"customRadio3n\" name='orderData[question][3]' value='No' class=\"form-check-input\" required><label class=\"form-check-label\" for='customRadio3n'>".$labels["No"][$lang]."</label></div>
+        <div class='col-md-9'><div class=\"form-check form-check-inline\"><input type=\"radio\" id=\"customRadio3y\" name='orderData[question][3]' value='Yes' class=\"form-check-input\" required><label class=\"form-check-label\" for='customRadio3y'>".$labels["Yes"][$lang]."</label></div>
+        <div class='col-md-3'>
+          <div class=\"form-check form-check-inline\"><input type=\"radio\" id=\"customRadio2y\" name='orderData[question][3]' value='Yes' class=\"form-check-input\" required><label class=\"form-check-label\" for='customRadio3y'>".$labels["Yes"][$lang]."</label></div>
+          <div class=\"form-check form-check-inline\"><input type=\"radio\" id=\"customRadio2n\" name='orderData[question][3]' value='No' class=\"form-check-input\" required><label class=\"form-check-label\" for='customRadio3n'>".$labels["No"][$lang]."</label></div>
       </div>
     </div>
     <div class='row'>
