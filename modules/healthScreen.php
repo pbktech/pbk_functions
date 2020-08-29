@@ -35,17 +35,6 @@ $labels["Temp1"]["English"]="Temp 1";
 $labels["Temp1"]["Spanish"]="Temp 1";
 $labels["Temp2"]["English"]="Temp 2";
 $labels["Temp2"]["Spanish"]="Temp 2";
-<<<<<<< HEAD
-$labels["Yes"]["English"]="INITIAL HERE FOR YES";
-$labels["Yes"]["Spanish"]="INICIAL AQUÍ POR SÍ";
-$labels["No"]["English"]="INITIAL HERE FOR NO";
-$labels["No"]["Spanish"]="INICIAL AQUÍ POR NO";
-
-if($_SERVER['REQUEST_METHOD'] == 'POST') {
-  $_POST['orderData']["Questions"]=$questions;
-  $emp=$wpdb->get_row("SELECT * FROM pbc_ToastEmployeeInfo WHERE guid='" . $_POST['orderData']['reporterName'] . "'");
-  $_POST['orderData']['name']=$emp->employeeName;
-=======
 $labels["Yes"]["English"]="YES";
 $labels["Yes"]["Spanish"]="SÍ";
 $labels["No"]["English"]="NO";
@@ -57,7 +46,6 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
   $_POST['orderData']['name']=$emp->employeeName;
   $_POST['restaurantID']=$emp->restaurantID;
   $r->setRestaurantID($_POST['restaurantID']);
->>>>>>> a335fc0e383f4d5dee58b8f100bb013bf51aa800
   $wpdb->query(
   $wpdb->prepare(
     "INSERT INTO pbc_pbk_orders (orderType,restaurantID,userID,orderData,orderDate,orderStatus)VALUES(%s,%d,%d,%s,%s,%s)",
@@ -72,30 +60,11 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
             $_POST['orderData']['name'],$guid
       )
     );
-<<<<<<< HEAD
-    $d=$r->getPBKOrderinfo($wpdb->insert_id);
-=======
     $d=$r->getPBKOrderinfo($guid);
->>>>>>> a335fc0e383f4d5dee58b8f100bb013bf51aa800
     $report=New ToastReport;
     $docFolder=dirname(dirname($report->docSaveLocation)) ."/docs/". $d->guid;
     if (!file_exists($docFolder)) {mkdir($docFolder);}
     $content['format']='A4-P';
-<<<<<<< HEAD
-    $content['Save']=$docFolder . "/";
-    $content['title']="DAILY HEALTH SCREEN for " . $emp->employeeName . " at " . $d->restaurantName;
-    $content['fileName']=$report->hexFileName($content['title']);
-    $content['html']=$r->docHeader("DAILY HEALTH SCREEN");
-    $content['html'].=$labels["Name"][$_POST['orderData']['language']] . " : " . $emp->employeeName . "<br>";
-    $content['html'].="Restaurant" . " : " . $d->restaurantName . "<br>";
-    $content['html'].=$labels["Date"][$_POST['orderData']['language']] . " : " . date("m/d/Y H:i:s", strtotime($_POST['orderData']['date'])) . "<br>";
-    $content['html'].=$labels["Temp1"][$_POST['orderData']['language']] . " : " . $_POST['orderData']['Temp1'] . "<br>";
-    $content['html'].=$labels["Temp2"][$_POST['orderData']['language']] . " : " . $_POST['orderData']['Temp2'] . "<br>";
-    $content['html'].=$questions[1][$_POST['orderData']['language']] . " : " . $_POST['orderData']['question'][1] . "<br>";
-    $content['html'].=$questions[2][$_POST['orderData']['language']] . " : " . $_POST['orderData']['question'][2] . "<br>";
-    $content['html'].=$questions[3][$_POST['orderData']['language']] . " : " . $_POST['orderData']['question'][3];
-    if($file=$r->buildHTMLPDF(json_encode($content))){
-=======
     $content['Save']=$docFolder."/";
     $content['title']="DAILY HEALTH SCREEN for " . $emp->employeeName . " at " . $d->restaurantName;
     $content['watermark']="Generated " . date("m/d/Y H:i:s") . " at " . get_the_user_ip();
@@ -128,7 +97,6 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
       */
       $emails[]=$r->getManagerEmail("STR");
       $report->reportEmail(implode(",",$emails),$content['html'],$content['title'],$file['Local']);
->>>>>>> a335fc0e383f4d5dee58b8f100bb013bf51aa800
       $ret.= "
       <script>
         jQuery(document).ready(function(){
@@ -158,19 +126,6 @@ if($results){
   ';
   exit;
 }
-<<<<<<< HEAD
-$ret.=$r->pbk_form_processing()."
-<script>
-jQuery(document).ready(function() {
-    jQuery('.js-example-basic-single').select2();
-});
-</script>
-<div class='container' id='queryResults'>
-  <form method='post' action='".$page."' id='' enctype='multipart/form-data' >
-    <div class='row' style='background-color:#f9b58f;color:#FFFFFF;'>
-      <div class='col'><label for='reporterName'>".$labels["Name"][$lang]."</label>
-      <select name='reporterName' id='reporterName'  class='js-example-basic-single'><option value=''>Choose an Employee</option>";
-=======
 $ret.="
 <script>
 jQuery(document).ready(function() {
@@ -182,7 +137,6 @@ jQuery(document).ready(function() {
     <div class='row' style='background-color:#f9b58f;color:#FFFFFF;'>
       <div class='col'> <div class=\"form-group\"><label for='reporterName'></label><br>
       <select name='reporterName' id='reporterName'  class='custom-select' required><option value=''>".$labels["Name"][$lang]."</option>";
->>>>>>> a335fc0e383f4d5dee58b8f100bb013bf51aa800
 foreach($employees as $restaurant=>$emps){
   $ret.="<optgroup label='".$restaurant."'>";
   foreach ($emps as $id=>$item) {
@@ -190,39 +144,6 @@ foreach($employees as $restaurant=>$emps){
   }
 }
 
-<<<<<<< HEAD
-$ret.="</select></div>
-      <div class='col'><input type='hidden' name='orderData[language]' value='".$lang."' /></div>
-    </div>
-    <div class='row' style='background-color:#f9b58f;color:#FFFFFF;'>
-      <div class='col'>
-        <div class='row' style='background-color:#f9b58f;color:#FFFFFF;'>
-          <div class='col'>".$r->buildDateSelector('date',$labels["Date"][$lang])."</div>
-          <div class='col'><label for='Temp1'>".$labels["Temp1"][$lang]."</label><input type='text' name='orderData[Temp1]' id='Temp1'/></div>
-          <div class='col'><label for='Temp2'>".$labels["Temp2"][$lang]."</label><input type='text' name='orderData[Temp2]' id='Temp2'/></div>
-        </div>
-      </div>
-      <div class='col'>".$labels["Yes"][$lang]."</div>
-      <div class='col'>".$labels["No"][$lang]."</div>
-    </div>
-    <div class='row' style='background-color:#e7e6e6;color:#FFFFFF;'>
-      <div class='col'>" . $questions[1][$lang] . "</div>
-      <div class='col'><div class=\"custom-control custom-radio\"><input type=\"radio\" id=\"customRadio1\" name='orderData[question][1]' value='Yes' class=\"custom-control-input\"></div></div>
-      <div class='col'><div class=\"custom-control custom-radio\"><input type=\"radio\" id=\"customRadio1\" name='orderData[question][1]' value='No' class=\"custom-control-input\"></div></div>
-    </div>
-    <div class='row' style='background-color:#e7e6e6;color:#FFFFFF;'>
-      <div class='col'>" . $questions[2][$lang] . "</div>
-      <div class='col'><div class=\"custom-control custom-radio\"><input type=\"radio\" id=\"customRadio1\" name='orderData[question][2]' value='Yes' class=\"custom-control-input\"></div></div>
-      <div class='col'><div class=\"custom-control custom-radio\"><input type=\"radio\" id=\"customRadio1\" name='orderData[question][2]' value='No' class=\"custom-control-input\"></div></div>
-    </div>
-    <div class='row' style='background-color:#e7e6e6;color:#FFFFFF;'>
-      <div class='col'>" . $questions[3][$lang] . "</div>
-      <div class='col'><div class=\"custom-control custom-radio\"><input type=\"radio\" id=\"customRadio1\" name='orderData[question][3]' value='Yes' class=\"custom-control-input\"></div></div>
-      <div class='col'><div class=\"custom-control custom-radio\"><input type=\"radio\" id=\"customRadio1\" name='orderData[question][3]' value='No' class=\"custom-control-input\"></div></div>
-    </div>
-    <div class='row'>
-      <div class='col'><input type=\"submit\" class='btn btn-primary' id=\"submit\" value=\"Submit\"/></div>
-=======
 $ret.="</select></div><input type='hidden' name='orderData[language]' value='".$lang."' /></div>
       <div class='col'><label for='Temp1'>".$labels["Temp1"][$lang]."</label><br><input class=\"form-control\" type='text' min='95' max='110' name='orderData[Temp1]' id='Temp1' required/></div>
       <div class='col'><label for='Temp2'>".$labels["Temp2"][$lang]."</label><br><input class=\"form-control\" type='text' min='95' max='110' name='orderData[Temp2]' id='Temp2' required/></div>
@@ -250,14 +171,11 @@ $ret.="</select></div><input type='hidden' name='orderData[language]' value='".$
     </div>
     <div class='row'>
       <div class='col'><button class=\"btn btn-primary\" type=\"submit\">Save</button></div>
->>>>>>> a335fc0e383f4d5dee58b8f100bb013bf51aa800
       <div class='col'></div>
       <div class='col'></div>
     </div>
   </form>
 </div>
-<<<<<<< HEAD
-=======
 <script>
 (function() {
   'use strict';
@@ -277,5 +195,4 @@ $ret.="</select></div><input type='hidden' name='orderData[language]' value='".$
   }, false);
 })();
 </script>
->>>>>>> a335fc0e383f4d5dee58b8f100bb013bf51aa800
 ";
