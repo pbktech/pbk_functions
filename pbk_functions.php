@@ -161,6 +161,16 @@ function switchpbrMessages($m) {
   </script>
 <div class='alert alert-".$alert."'><strong>" . $ms . "</strong></div>";
 }
+function get_the_user_ip() {
+  if ( ! empty( $_SERVER['HTTP_CLIENT_IP'] ) ) {
+    $ip = $_SERVER['HTTP_CLIENT_IP'];
+  } elseif ( ! empty( $_SERVER['HTTP_X_FORWARDED_FOR'] ) ) {
+    $ip = $_SERVER['HTTP_X_FORWARDED_FOR'];
+  } else {
+    $ip = $_SERVER['REMOTE_ADDR'];
+  }
+  return apply_filters( 'wpb_get_ip', $ip );
+}
 add_filter( 'login_headertext', 'acme_login_logo_image' );
 function acme_login_logo_image( $login_header_text ) {
     $logo_url          = 'https://c2.theproteinbar.com/wp-content/uploads/2018/04/PBK-Logo_Secondary_Full-Color-pbc2.png';

@@ -178,7 +178,8 @@ class Restaurant {
 		});
 		</script>
 		<div class='container-fluid;'>
-			<form method=\"post\" action=\"admin-post.php\">
+		<div id='ServerResponse'></div>
+			<form method=\"post\" action=\"\" id='restaurantEditor'>
          	<input type=\"hidden\" name=\"action\" value=\"pbr_save_restaurant_option\" />
 					<div id='tabs'>
 					<ul class=\"nav nav-tabs\">
@@ -332,14 +333,32 @@ class Restaurant {
 			<div class='form-group'>
 				<div class='row' style='padding-left:15px;'>
 					<div class='col'>
-						<button type=\"submit\" class=\"btn btn-primary\"/>Submit</button>
+						<button type=\"submit\" class=\"btn btn-primary\" id='send'/>Submit</button>
 						<button type=\"button\" class='btn btn-warning' onclick=\"javascript:window.location='admin.php?page=pbr-edit-restaurant';\">Cancel</button>
 					</div>
 				</div>
 				</div>
 			</form>
-			</div></div>";
-
+			</div></div>
+			<script>
+			jQuery( '#send' ).click(function() {
+			    var form_data = jQuery( \"#restaurantEditor\" ).serializeArray();
+			    form_data.push( { \"name\" : \"security\", \"value\" : \" " . wp_create_nonce( "secure_nonce_name" ) . "\" } );
+			    jQuery.ajax({
+			        url : ajaxurl, // Here goes our WordPress AJAX endpoint.
+			        type : 'post',
+			        data : form_data,
+			        success : function( response ) {
+			            jQuery( '#ServerResponse' ).html( response );
+			        },
+			        fail : function( err ) {
+			            alert( \"There was an error: \" + err );
+			        }
+			    });
+			    return false;
+			});
+			</script>
+			";
       return $return;
 	}
 	public function insertUpdateRestaurantInfo() {
@@ -770,6 +789,10 @@ if($_GET['nhoDate']!="_new"){
 		$stylesheet=file_get_contents(dirname(dirname(__FILE__)) . "/assets/css/mpdf-bootstrap.css");
 	  $mpdf->SetTitle($content->title);
 	  $mpdf->SetAuthor("Protein Bar & Kitchen");
+		if(isset($content->watermark)){
+			$mpdf->SetWatermarkText($content->watermark);
+			$mpdf->showWatermarkText = true;
+		}
 		$mpdf->WriteHTML($stylesheet,\Mpdf\HTMLParserMode::HEADER_CSS);
 	  $mpdf->WriteHTML(utf8_encode($content->html),\Mpdf\HTMLParserMode::HTML_BODY);
 		if(isset($content->fileName)){

@@ -35,6 +35,7 @@ $labels["Temp1"]["English"]="Temp 1";
 $labels["Temp1"]["Spanish"]="Temp 1";
 $labels["Temp2"]["English"]="Temp 2";
 $labels["Temp2"]["Spanish"]="Temp 2";
+<<<<<<< HEAD
 $labels["Yes"]["English"]="INITIAL HERE FOR YES";
 $labels["Yes"]["Spanish"]="INICIAL AQUÍ POR SÍ";
 $labels["No"]["English"]="INITIAL HERE FOR NO";
@@ -44,6 +45,19 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
   $_POST['orderData']["Questions"]=$questions;
   $emp=$wpdb->get_row("SELECT * FROM pbc_ToastEmployeeInfo WHERE guid='" . $_POST['orderData']['reporterName'] . "'");
   $_POST['orderData']['name']=$emp->employeeName;
+=======
+$labels["Yes"]["English"]="YES";
+$labels["Yes"]["Spanish"]="SÍ";
+$labels["No"]["English"]="NO";
+$labels["No"]["Spanish"]="NO";
+
+if($_SERVER['REQUEST_METHOD'] == 'POST') {
+  $_POST['orderData']["Questions"]=$questions;
+  $emp=$wpdb->get_row("SELECT * FROM pbc_ToastEmployeeInfo WHERE guid='" . $_POST['reporterName'] . "'");
+  $_POST['orderData']['name']=$emp->employeeName;
+  $_POST['restaurantID']=$emp->restaurantID;
+  $r->setRestaurantID($_POST['restaurantID']);
+>>>>>>> a335fc0e383f4d5dee58b8f100bb013bf51aa800
   $wpdb->query(
   $wpdb->prepare(
     "INSERT INTO pbc_pbk_orders (orderType,restaurantID,userID,orderData,orderDate,orderStatus)VALUES(%s,%d,%d,%s,%s,%s)",
@@ -58,11 +72,16 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
             $_POST['orderData']['name'],$guid
       )
     );
+<<<<<<< HEAD
     $d=$r->getPBKOrderinfo($wpdb->insert_id);
+=======
+    $d=$r->getPBKOrderinfo($guid);
+>>>>>>> a335fc0e383f4d5dee58b8f100bb013bf51aa800
     $report=New ToastReport;
     $docFolder=dirname(dirname($report->docSaveLocation)) ."/docs/". $d->guid;
     if (!file_exists($docFolder)) {mkdir($docFolder);}
     $content['format']='A4-P';
+<<<<<<< HEAD
     $content['Save']=$docFolder . "/";
     $content['title']="DAILY HEALTH SCREEN for " . $emp->employeeName . " at " . $d->restaurantName;
     $content['fileName']=$report->hexFileName($content['title']);
@@ -76,6 +95,40 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
     $content['html'].=$questions[2][$_POST['orderData']['language']] . " : " . $_POST['orderData']['question'][2] . "<br>";
     $content['html'].=$questions[3][$_POST['orderData']['language']] . " : " . $_POST['orderData']['question'][3];
     if($file=$r->buildHTMLPDF(json_encode($content))){
+=======
+    $content['Save']=$docFolder."/";
+    $content['title']="DAILY HEALTH SCREEN for " . $emp->employeeName . " at " . $d->restaurantName;
+    $content['watermark']="Generated " . date("m/d/Y H:i:s") . " at " . get_the_user_ip();
+    $content['fileName']=$report->hexFileName($content['title']);
+    $content['html']=$r->docHeader("DAILY HEALTH SCREEN");
+    $content['html'].=$labels["Name"][$_POST['orderData']['language']] . " : <strong>" . $emp->employeeName . "</strong><br><br>";
+    $content['html'].="Restaurant" . " : <strong>" . $d->restaurantName . "</strong><br><br>";
+    $content['html'].=$labels["Date"][$_POST['orderData']['language']] . " : <strong>" . date("m/d/Y H:i:s") . "</strong><br><br>";
+    $content['html'].=$labels["Temp1"][$_POST['orderData']['language']] . " : <strong>" . $_POST['orderData']['Temp1'] . "</strong><br><br>";
+    $content['html'].=$labels["Temp2"][$_POST['orderData']['language']] . " : <strong>" . $_POST['orderData']['Temp2'] . "</strong><br><br>";
+    $content['html'].=$questions[1][$_POST['orderData']['language']] . " : <strong>" . $_POST['orderData']['question'][1] . "</strong><br><br>";
+    $content['html'].=$questions[2][$_POST['orderData']['language']] . " : <strong>" . $_POST['orderData']['question'][2] . "</strong><br><br>";
+    $content['html'].=$questions[3][$_POST['orderData']['language']] . " : <strong>" . $_POST['orderData']['question'][3] . "</strong><br><br>";
+    if(
+      ($_POST['orderData']['Temp1']  > 99.5)
+      ||
+      ($_POST['orderData']['Temp2'] > 99.5)
+      ||
+      ($_POST['orderData']['question'][1] == "Yes")
+      ||
+      ($_POST['orderData']['question'][2] == "Yes")
+      ||
+      ($_POST['orderData']['question'][3] == "Yes")
+    ){$emails[]="mcrawford@theproteinbar.com";}
+    if($file=$r->buildHTMLPDF(json_encode($content))){
+      /*
+      $emails[]=$r->getManagerEmail("GM");
+      $emails[]=$r->getManagerEmail("AM");
+      $emails[]=$r->getManagerEmail("STR");
+      */
+      $emails[]=$r->getManagerEmail("STR");
+      $report->reportEmail(implode(",",$emails),$content['html'],$content['title'],$file['Local']);
+>>>>>>> a335fc0e383f4d5dee58b8f100bb013bf51aa800
       $ret.= "
       <script>
         jQuery(document).ready(function(){
@@ -105,6 +158,7 @@ if($results){
   ';
   exit;
 }
+<<<<<<< HEAD
 $ret.=$r->pbk_form_processing()."
 <script>
 jQuery(document).ready(function() {
@@ -116,6 +170,19 @@ jQuery(document).ready(function() {
     <div class='row' style='background-color:#f9b58f;color:#FFFFFF;'>
       <div class='col'><label for='reporterName'>".$labels["Name"][$lang]."</label>
       <select name='reporterName' id='reporterName'  class='js-example-basic-single'><option value=''>Choose an Employee</option>";
+=======
+$ret.="
+<script>
+jQuery(document).ready(function() {
+/*    jQuery('.custom-select').select2(); */
+});
+</script>
+<div class='container' id='queryResults'>
+  <form method='post' action='".$page."' id='' class=\"needs-validation\" novalidate >
+    <div class='row' style='background-color:#f9b58f;color:#FFFFFF;'>
+      <div class='col'> <div class=\"form-group\"><label for='reporterName'></label><br>
+      <select name='reporterName' id='reporterName'  class='custom-select' required><option value=''>".$labels["Name"][$lang]."</option>";
+>>>>>>> a335fc0e383f4d5dee58b8f100bb013bf51aa800
 foreach($employees as $restaurant=>$emps){
   $ret.="<optgroup label='".$restaurant."'>";
   foreach ($emps as $id=>$item) {
@@ -123,6 +190,7 @@ foreach($employees as $restaurant=>$emps){
   }
 }
 
+<<<<<<< HEAD
 $ret.="</select></div>
       <div class='col'><input type='hidden' name='orderData[language]' value='".$lang."' /></div>
     </div>
@@ -154,9 +222,60 @@ $ret.="</select></div>
     </div>
     <div class='row'>
       <div class='col'><input type=\"submit\" class='btn btn-primary' id=\"submit\" value=\"Submit\"/></div>
+=======
+$ret.="</select></div><input type='hidden' name='orderData[language]' value='".$lang."' /></div>
+      <div class='col'><label for='Temp1'>".$labels["Temp1"][$lang]."</label><br><input class=\"form-control\" type='text' min='95' max='110' name='orderData[Temp1]' id='Temp1' required/></div>
+      <div class='col'><label for='Temp2'>".$labels["Temp2"][$lang]."</label><br><input class=\"form-control\" type='text' min='95' max='110' name='orderData[Temp2]' id='Temp2' required/></div>
+    </div>
+    <div class='row' style='background-color:#e7e6e6;color:#000000;'>
+      <div class='col-md-9'><strong>" . $questions[1][$lang] . "</strong></div>
+      <div class='col-md-3'>
+        <div class=\"form-check form-check-inline\"><input type=\"radio\" id=\"customRadio1y\" name='orderData[question][1]' value='Yes' class=\"form-check-input\" required><label class=\"form-check-label\" for='customRadio1y'>".$labels["Yes"][$lang]."</label></div>
+        <div class=\"form-check form-check-inline\"><input type=\"radio\" id=\"customRadio1n\" name='orderData[question][1]' value='No' class=\"form-check-input\" required><label class=\"form-check-label\" for='customRadio1n'>".$labels["No"][$lang]."</label></div>
+      </div>
+    </div>
+    <div class='row' style='background-color:#e7e6e6;color:#000000;'>
+      <div class='col-md-9'><strong>" . $questions[2][$lang] . "</strong></div>
+      <div class='col-md-3'>
+        <div class=\"form-check form-check-inline\"><input type=\"radio\" id=\"customRadio2y\" name='orderData[question][2]' value='Yes' class=\"form-check-input\" required><label class=\"form-check-label\" for='customRadio2y'>".$labels["Yes"][$lang]."</label></div>
+        <div class=\"form-check form-check-inline\"><input type=\"radio\" id=\"customRadio2n\" name='orderData[question][2]' value='No' class=\"form-check-input\" required><label class=\"form-check-label\" for='customRadio2n'>".$labels["No"][$lang]."</label></div>
+      </div>
+    </div>
+    <div class='row' style='background-color:#e7e6e6;color:#000000;'>
+      <div class='col-md-9'><strong>" . $questions[3][$lang] . "</strong></div>
+        <div class='col-md-3'>
+        <div class=\"form-check form-check-inline\"><input type=\"radio\" id=\"customRadio3y\" name='orderData[question][3]' value='Yes' class=\"form-check-input\" required><label class=\"form-check-label\" for='customRadio3y'>".$labels["Yes"][$lang]."</label></div>
+        <div class=\"form-check form-check-inline\"><input type=\"radio\" id=\"customRadio3n\" name='orderData[question][3]' value='No' class=\"form-check-input\" required><label class=\"form-check-label\" for='customRadio3n'>".$labels["No"][$lang]."</label></div>
+      </div>
+    </div>
+    <div class='row'>
+      <div class='col'><button class=\"btn btn-primary\" type=\"submit\">Save</button></div>
+>>>>>>> a335fc0e383f4d5dee58b8f100bb013bf51aa800
       <div class='col'></div>
       <div class='col'></div>
     </div>
   </form>
 </div>
+<<<<<<< HEAD
+=======
+<script>
+(function() {
+  'use strict';
+  window.addEventListener('load', function() {
+    // Fetch all the forms we want to apply custom Bootstrap validation styles to
+    var forms = document.getElementsByClassName('needs-validation');
+    // Loop over them and prevent submission
+    var validation = Array.prototype.filter.call(forms, function(form) {
+      form.addEventListener('submit', function(event) {
+        if (form.checkValidity() === false) {
+          event.preventDefault();
+          event.stopPropagation();
+        }
+        form.classList.add('was-validated');
+      }, false);
+    });
+  }, false);
+})();
+</script>
+>>>>>>> a335fc0e383f4d5dee58b8f100bb013bf51aa800
 ";
