@@ -918,6 +918,40 @@ if($_GET['nhoDate']!="_new"){
 				<br>
 				<div class='row'>
 					<div class='col'>
+						<label for='lat'>Latitute</label><br />
+						<input class='form-control' id='lat' name='imageFile[lat]' value='".$links['lat']."'/><br />
+					</div>
+					<div class='col'>
+						<label for='long'>Longitude</label><br />
+						<input class='form-control' id='long' name='imageFile[long]' value='".$links['long']."'/><br />
+					</div>
+				</div>
+				<div class='row'>
+					<div class='col'>
+						<label for='address1'>Address 1</label><br />
+						<input class='form-control' id='address1' name='imageFile[addressa]' value='".$links['addressa']."'/><br />
+					</div>
+					<div class='col'>
+						<label for='address2'>Address 2</label><br />
+						<input class='form-control' id='address2' name='imageFile[addressb]' value='".$links['addressb']."'/><br />
+					</div>
+				</div>
+				<div class='row'>
+					<div class='col'>
+					<label for='City'>City</label><br />
+					<input class='form-control' id='City' name='imageFile[city]' value='".$links['city']."'/><br />
+					</div>
+					<div class='col'>
+					<label for='State'>State</label><br />
+					<input class='form-control' id='State' name='imageFile[state]' value='".$links['state']."'/><br />
+					</div>
+					<div class='col'>
+					<label for='Zip'>Zip Code</label><br />
+					<input class='form-control' id='Zip' name='imageFile[zip]' value='".$links['zip']."'/><br />
+					</div>
+				</div>
+				<div class='row'>
+					<div class='col'>
 						<label for='delivery'>Delivery Day</label><br />
 						<select name='imageFile[day][]' class=\"custom-select multipleSelect\" id='deliveryDay' multiple>
 							<option value='Sunday'>Sunday</option>
@@ -945,40 +979,6 @@ if($_GET['nhoDate']!="_new"){
 			".$imageAdd."
 			</div>
   	</div>
-		<div class='row'>
-			<div class='col'>
-				<label for='lat'>Latitute</label><br />
-				<input class='form-control' id='lat' name='imageFile[lat]' value='".$links['lat']."'/><br />
-			</div>
-			<div class='col'>
-				<label for='long'>Longitude</label><br />
-				<input class='form-control' id='long' name='imageFile[long]' value='".$links['long']."'/><br />
-			</div>
-		</div>
-		<div class='row'>
-			<div class='col'>
-				<label for='address1'>Address 1</label><br />
-				<input class='form-control' id='address1' name='imageFile[addressa]' value='".$links['addressa']."'/><br />
-			</div>
-			<div class='col'>
-				<label for='address2'>Address 2</label><br />
-				<input class='form-control' id='address2' name='imageFile[addressb]' value='".$links['addressb']."'/><br />
-			</div>
-		</div>
-		<div class='row'>
-			<div class='col'>
-			<label for='City'>City</label><br />
-			<input class='form-control' id='City' name='imageFile[city]' value='".$links['city']."'/><br />
-			</div>
-			<div class='col'>
-			<label for='State'>State</label><br />
-			<input class='form-control' id='State' name='imageFile[state]' value='".$links['state']."'/><br />
-			</div>
-			<div class='col'>
-			<label for='Zip'>Zip Code</label><br />
-			<input class='form-control' id='Zip' name='imageFile[zip]' value='".$links['zip']."'/><br />
-			</div>
-		</div>
 		<div class='row' style='padding:15px;'>
 			<div class='col'>
 				<button type=\"submit\" class=\"btn btn-primary\"/>Submit</button>
