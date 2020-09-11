@@ -193,7 +193,7 @@ jQuery(document).ready(function() {
           <div class='row'>
             <div class='col'>
               <?php
-              if(isset($info['restaurantID'])){
+              if(isset($info['restaurantID']) && $info['restaurantID']!=0){
                ?>
               <label for='<?php echo $s;?>menu'><strong>Menus</strong></label><br />
               <select name='services[<?php echo $s;?>][menu][]' class="custom-select multipleSelect" style="width:100%;" id='<?php echo $s;?>menu' multiple>
