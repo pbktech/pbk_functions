@@ -168,7 +168,7 @@ jQuery(document).ready(function() {
               <input type='text' id='locationImageFile' class='form-control media-input' name ='imageFile[locationImage]' value='<?php echo $links['locationImage'];?>' /> <button class='media-button'>Select image</button>
             </div>
             <div class='col'>
-              <?php if(isset($links['locationImage']) && file_exists($links['locationImage'])){?><img src="<?php echo $links['locationImage'];?>" alt='Logo' /><?php }?>
+              <?php if(isset($links['locationImage'])){?><img src="<?php echo $links['locationImage'];?>" alt='Logo' /><?php }?>
             </div>
           </div>
         </div>
