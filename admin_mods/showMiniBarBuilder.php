@@ -38,7 +38,10 @@ if(isset($info['services']) && $info['services']!=""){
   $preselect="";
   foreach($serviceInfo as $sn=>$si){
     if(isset($si['day']) && count($si['day'])!=0){
-      $preselect.="jQuery('#".$si."deliveryDay').val(['" . implode("','", $si['day']) . "']).trigger('change');";
+      $preselect.="jQuery('#".$si."deliveryDay').val(['" . implode("','", $si['day']) . "']).trigger('change');\n";
+    }
+    if(isset($si['menu']) && count($si['menu'])!=0){
+      $preselect.="jQuery('#".$si."menu').val(['" . implode("','", $si['menu']) . "']).trigger('change');\n";
     }
   }
 }else {
@@ -65,6 +68,7 @@ jQuery(document).ready(function() {
   jQuery('#Breakfastmenu').select2();
   jQuery('#Lunchmenu').select2();
   jQuery('#Dinnermenu').select2();
+  <?php echo $preselect;?>
 });
 </script>
 <div class='container-fluid;'>
