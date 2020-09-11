@@ -38,9 +38,6 @@ if(isset($links['day']) && count($links['day'])!=0){
 }
 echo $this->pbk_addImageSelector();
 if(isset($info['linkSlug']) && $info['linkSlug']=""){$links['link']=$info['linkSlug'];}
-echo "<pre>";
-print_r($info);
-echo "</pre>";
 ?>
 <script>
 jQuery(document).ready(function() {
