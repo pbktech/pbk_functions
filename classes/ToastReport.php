@@ -1146,7 +1146,8 @@ from pbc2.kds_detail WHERE sent_time BETWEEN  ? AND ? AND station='' and restaur
 		        </thead>";
 			foreach($data['Results'] as $row=>$col){
 				fputcsv($file,$col);
-				$return.=	"<tr><td>" . implode("</td><td>",$col) . "</td></tr>";
+				if($row!=""){$bg="style='background-color:" . $row . ";'";}else{$bg="";}
+				$return.=	"<tr ".$bg."><td>" . implode("</td><td>",$col) . "</td></tr>";
 			}
 			$return.=	"
 			</table>

@@ -824,17 +824,18 @@ if($_GET['nhoDate']!="_new"){
 	}
 	function getMiniBarLocations(){
 		global $wpdb;
-		$results= $wpdb->get_results("SELECT idpbc_minibar,company,restaurantName,imageFile,linkSlug FROM pbc2.pbc_minibar,pbc_pbrestaurants WHERE pbc_minibar.restaurantID=pbc_pbrestaurants.restaurantID");
+		$results= $wpdb->get_results("SELECT idpbc_minibar,company,restaurantName,imageFile,linkSlug,isActive FROM pbc2.pbc_minibar,pbc_pbrestaurants WHERE pbc_minibar.restaurantID=pbc_pbrestaurants.restaurantID");
 		if($results){
 			$d['Options'][]="\"lengthMenu\": [ [25, 50, -1], [25, 50, \"All\"] ]";
 			$d['File']="PBK_Device_List_";
 			$d['Headers']=array("MiniBar","Restaurant","Ordering Link");
 			foreach($results as $r){
 				$json=json_decode($r->imageFile);
-				$d['Results'][]=array(
+				if($r->isActive==1){$bg="#28a745";}else{$bg="#dc3545";}
+				$d['Results'][$bg]=array(
 					"<a href='".admin_url( 'admin.php?page=pbr-edit-minibar&id='.$r->idpbc_minibar )."'>" . $r->company . "</a>",
 					$r->restaurantName,
-					"<a href='https://mb.theproteinbar.com/".$r->linkSlug."' target='_blank'>" . str_replace("https://minibar.theproteinbar.com/","",$json->link) . "</a>"
+					"<a href='https://mb.theproteinbar.com/".$r->linkSlug."' target='_blank'>" . $r->linkSlug . "</a>"
 				);
 			}
 			return $d;
