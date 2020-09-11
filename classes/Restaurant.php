@@ -824,7 +824,7 @@ if($_GET['nhoDate']!="_new"){
 	}
 	function getMiniBarLocations(){
 		global $wpdb;
-		$results= $wpdb->get_results("SELECT idpbc_minibar,company,restaurantName,imageFile FROM pbc2.pbc_minibar,pbc_pbrestaurants WHERE pbc_minibar.restaurantID=pbc_pbrestaurants.restaurantID");
+		$results= $wpdb->get_results("SELECT idpbc_minibar,company,restaurantName,imageFile,linkSlug FROM pbc2.pbc_minibar,pbc_pbrestaurants WHERE pbc_minibar.restaurantID=pbc_pbrestaurants.restaurantID");
 		if($results){
 			$d['Options'][]="\"lengthMenu\": [ [25, 50, -1], [25, 50, \"All\"] ]";
 			$d['File']="PBK_Device_List_";
@@ -834,7 +834,7 @@ if($_GET['nhoDate']!="_new"){
 				$d['Results'][]=array(
 					"<a href='".admin_url( 'admin.php?page=pbr-edit-minibar&id='.$r->idpbc_minibar )."'>" . $r->company . "</a>",
 					$r->restaurantName,
-					"<a href='".$json->link."' target='_blank'>" . str_replace("https://minibar.theproteinbar.com/","",$json->link) . "</a>"
+					"<a href='https://mb.theproteinbar.com/".$r->linkSlug."' target='_blank'>" . str_replace("https://minibar.theproteinbar.com/","",$json->link) . "</a>"
 				);
 			}
 			return $d;
@@ -906,54 +906,63 @@ if($_GET['nhoDate']!="_new"){
   		<div class='col'>
 				<label for='restaurantID'><strong>Restaurant</strong></label><br />
   			" . $this->buildRestaurantSelector(0,'restaurantID',$info['restaurantID']) . "
-				<br>
+			</div>
+			<div class='col'>
 				<label for='company'><strong>Company Name</strong></label>
   			<input type='text' class='form-control' name ='company' value='".$info['company']."' />
-				<br>
+			</div>
+		</div>
+		<div class='row'>
+  		<div class='col'>
 				<label for='imageFile'><strong>Order Link</strong></label>
-				<input type='text' class='form-control' name ='imageFile[link]' value='".$links['link']."' />
-				<br>
+				<input type='text' class='form-control' name ='linkSlug' value='".$links['link']."' />
+			</div>
+			<div class='col'>
 				<label for='outpostIdentifier'><strong>Toast Dining Option</strong></label>
 				<input type='text' class='form-control' name ='outpostIdentifier' value='".$info['outpostIdentifier']."' />
-				<br>
+			</div>
+		</div>
+				<div class='row'><div class='col'><h3>Location</h3></div></div>
 				<div class='row'>
 					<div class='col'>
-						<label for='lat'>Latitute</label><br />
-						<input class='form-control' id='lat' name='imageFile[lat]' value='".$links['lat']."'/><br />
+						<label for='lat'><strong>Latitute</strong></label><br />
+						<input type='text' class='form-control' id='lat' name='imageFile[lat]' value='".$links['lat']."'/><br />
 					</div>
 					<div class='col'>
-						<label for='long'>Longitude</label><br />
-						<input class='form-control' id='long' name='imageFile[long]' value='".$links['long']."'/><br />
+						<label for='long'><strong>Longitude</strong></label><br />
+						<input type='text' class='form-control' id='long' name='imageFile[long]' value='".$links['long']."'/><br />
 					</div>
 				</div>
 				<div class='row'>
 					<div class='col'>
-						<label for='address1'>Address 1</label><br />
-						<input class='form-control' id='address1' name='imageFile[addressa]' value='".$links['addressa']."'/><br />
+						<label for='address1'><strong>Address 1</strong></label><br />
+						<input type='text' class='form-control' id='address1' name='imageFile[addressa]' value='".$links['addressa']."'/><br />
 					</div>
 					<div class='col'>
-						<label for='address2'>Address 2</label><br />
-						<input class='form-control' id='address2' name='imageFile[addressb]' value='".$links['addressb']."'/><br />
-					</div>
-				</div>
-				<div class='row'>
-					<div class='col'>
-					<label for='City'>City</label><br />
-					<input class='form-control' id='City' name='imageFile[city]' value='".$links['city']."'/><br />
-					</div>
-					<div class='col'>
-					<label for='State'>State</label><br />
-					<input class='form-control' id='State' name='imageFile[state]' value='".$links['state']."'/><br />
-					</div>
-					<div class='col'>
-					<label for='Zip'>Zip Code</label><br />
-					<input class='form-control' id='Zip' name='imageFile[zip]' value='".$links['zip']."'/><br />
+						<label for='address2'><strong>Address 2</strong></label><br />
+						<input type='text' class='form-control' id='address2' name='imageFile[addressb]' value='".$links['addressb']."'/><br />
 					</div>
 				</div>
 				<div class='row'>
 					<div class='col'>
-						<label for='delivery'>Delivery Day</label><br />
-						<select name='imageFile[day][]' class=\"custom-select multipleSelect\" id='deliveryDay' multiple>
+					<label for='City'><strong>City</strong></label><br />
+					<input type='text' class='form-control' id='City' name='imageFile[city]' value='".$links['city']."'/><br />
+					</div>
+					<div class='col'>
+					<label for='State'><strong>State</strong></label><br />
+					<input type='text' class='form-control' id='State' name='imageFile[state]' value='".$links['state']."'/><br />
+					</div>
+					<div class='col'>
+					<label for='Zip'><strong>Zip Code</strong></label><br />
+					<input type='text' class='form-control' id='Zip' name='imageFile[zip]' value='".$links['zip']."'/><br />
+					</div>
+				</div>
+				<div class='row'><div class='col'><h3>Services</h3></div></div>
+				<div class='row'><div class='col'><h4>Breakfast</h4></div></div>
+				<div class='row'>
+					<div class='col'>
+						<label for='delivery'><strong>Delivery Day</strong></label><br />
+						<select name='services[Breakfast][day][]' class=\"custom-select multipleSelect\" id='deliveryDay' multiple>
 							<option value='Sunday'>Sunday</option>
 							<option value='Monday'>Monday</option>
 							<option value='Tuesday'>Tuesday</option>
@@ -964,12 +973,12 @@ if($_GET['nhoDate']!="_new"){
 						</select>
 					</div>
 					<div class='col'>
-						<label for='cutoff'>Cutoff Time</label><br />
-						<input class='timepicker form-control' id='cutoff' name='imageFile[cutoff]' value='".$links['cutoff']."'/><br />
+						<label for='cutoff'><strong>Cutoff Time</strong></label><br />
+						<input type='text' class='timepicker form-control' id='cutoff' name='services[Breakfast][cutoff]' value='".$links['cutoff']."'/><br />
 					</div>
 					<div class='col'>
-						<label for='delivery'>Delivery Time</label><br />
-						<input class='timepicker form-control' id='delivery' name='imageFile[delivery]' value='".$links['delivery']."'/><br />
+						<label for='delivery'><strong>Delivery Time</strong></label><br />
+						<input type='text' class='timepicker form-control' id='delivery' name='services[Breakfast][delivery]' value='".$links['delivery']."'/><br />
 					</div>
 				</div>
 				<label for='imageFile'><strong>Image</strong></label>
@@ -993,17 +1002,18 @@ if($_GET['nhoDate']!="_new"){
 	function pbkSaveMinibar($info){
 		global $wpdb;
 		$imageFile=json_encode($info['imageFile']);
+		$services=json_encode($info['services']);
 		if(isset($info["idpbc_minibar"]) && $info["idpbc_minibar"]=="_NEW"){
 			$wpdb->query(
 				$wpdb->prepare( "
-					INSERT INTO pbc_minibar (restaurantID,company,outpostIdentifier,imageFile)VALUES(%s,%s,%s,%s)",
-					$info['restaurantID'],$info['company'],$info['outpostIdentifier'],$imageFile));
+					INSERT INTO pbc_minibar (restaurantID,company,outpostIdentifier,imageFile,linkSlug,services)VALUES(%s,%s,%s,%s,%s,%s)",
+					$info['restaurantID'],$info['company'],$info['outpostIdentifier'],$imageFile,$info['linkSlug'],$services));
 				if(isset($wpdb->insert_id)){$info["idpbc_minibar"]=$wpdb->insert_id;}else{die("ID ERROR");}
 		}else {
 			$wpdb->query(
 				$wpdb->prepare( "
-					REPLACE INTO pbc_minibar (idpbc_minibar,restaurantID,company,outpostIdentifier,imageFile)VALUES(%s,%s,%s,%s,%s)",
-					$info['idpbc_minibar'],$info['restaurantID'],$info['company'],$info['outpostIdentifier'],$imageFile));
+					REPLACE INTO pbc_minibar (idpbc_minibar,restaurantID,company,outpostIdentifier,imageFile,linkSlug,services)VALUES(%s,%s,%s,%s,%s,%s,%s)",
+					$info['idpbc_minibar'],$info['restaurantID'],$info['company'],$info['outpostIdentifier'],$imageFile,$info['linkSlug'],$services));
 		}
 		wp_redirect(  admin_url( 'admin.php?page=pbr-edit-minibar&id='.$info["idpbc_minibar"].'&m=1' ));
 	}
