@@ -31,11 +31,14 @@ if(isset($_GET['testEmail']) && $_GET['testEmail']==1){
     echo switchpbrMessages(5);
   }
 }
+$preselect="";
 echo $this->pbk_addImageSelector();
 if(isset($info['linkSlug']) && $info['linkSlug']!=""){$links['link']=$info['linkSlug'];}
 if(isset($info['services']) && $info['services']!=""){
   $serviceInfo=json_decode($info['services'],true);
-  $preselect="";
+  echo "<pre>";
+  print_r($serviceInfo);
+  echo "</pre>";
   foreach($serviceInfo as $sn=>$si){
     if(isset($si['day']) && count($si['day'])!=0){
       $preselect.="jQuery('#".$si."deliveryDay').val(['" . implode("','", $si['day']) . "']).trigger('change');\n";
