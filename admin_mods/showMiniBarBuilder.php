@@ -1,7 +1,4 @@
 <?php
-echo "<pre>";
-print_r($info);
-echo "</pre>";
 $mealServices=array("Breakfast","Lunch","Dinner");
 if(isset($info['imageFile']) && $info['imageFile']!=""){
   $links=json_decode($info['imageFile'],true);
@@ -35,7 +32,7 @@ if(isset($_GET['testEmail']) && $_GET['testEmail']==1){
   }
 }
 echo $this->pbk_addImageSelector();
-if(isset($info['linkSlug']) && $info['linkSlug']==""){$links['link']=$info['linkSlug'];}
+if(isset($info['linkSlug']) && $info['linkSlug']!=""){$links['link']=$info['linkSlug'];}
 if(isset($info['services']) && $info['services']==""){
   $serviceInfo=json_decode($info['services'],true);
   $preselect="";
