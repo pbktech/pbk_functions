@@ -218,10 +218,6 @@ function pbr_edit_minibar(){
     $restaurant = new Restaurant();
     if($mb=$restaurant->getMiniBarInformation($_GET['id'])){
       echo "<h2>".$mb['company']."</h2>";
-      echo "<pre>";
-      print_r($mb);
-      echo "</pre>";
-
       echo $restaurant->showMiniBarBuilder($mb);
     }
   }elseif(isset($_GET['id']) && $_GET['id']=="_NEW") {
