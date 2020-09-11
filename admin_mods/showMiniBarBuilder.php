@@ -176,11 +176,33 @@ jQuery(document).ready(function() {
             </div>
             <div class='col'>
               <label for='<?php echo $s;?>cutoff'><strong>Cutoff Time</strong></label><br />
-              <input type='text' class='timepicker form-control' id='<?php echo $s;?>cutoff' name='services[<?php echo $s;?>][cutoff]' value='<?php echo $links['cutoff'];?>'/><br />
+              <input type='text' class='timepicker form-control' id='<?php echo $s;?>cutoff' name='services[<?php echo $s;?>][cutoff]' value='<?php echo $services[$s]['cutoff'];?>'/><br />
             </div>
             <div class='col'>
               <label for='<?php echo $s;?>delivery'><strong>Delivery Time</strong></label><br />
-              <input type='text' class='timepicker form-control' id='<?php echo $s;?>delivery' name='services[<?php echo $s;?>][delivery]' value='<?php echo $links['delivery'];?>'/><br />
+              <input type='text' class='timepicker form-control' id='<?php echo $s;?>delivery' name='services[<?php echo $s;?>][delivery]' value='<?php echo $services[$s]['delivery'];?>'/><br />
+            </div>
+          </div>
+          <div class='row'>
+            <div class='col'>
+              <?php
+              if(isset($info['restaurantID'])){
+               ?>
+              <label for='<?php echo $s;?>menu'><strong>Menus</strong></label><br />
+              <select name='services[<?php echo $s;?>][menu][]' class="custom-select multipleSelect" id='<?php echo $s;?>menu' multiple>
+                <option value='33d281c5-3790-423b-8f54-4039a0d24171'>Shakes</option>
+                <option value='f3603f5e-ecd2-4e9c-be2d-d74bc9778f44'>Entrees</option>
+                <option value='fb381331-1cf3-4fe2-8364-4864bbcaf629'>Breakfast</option>
+                <option value='a0feaf5c-349f-4d85-997c-c4874601fb9c'>Beverages</option>
+                <option value='567107e9-1537-4c24-b767-8a658b33fbb4'>Sides & Snacks</option>
+              </select>
+              <?php
+            }else{
+               ?>
+               <div class='alert alert-warning'>Menus cannot be added until a restaurant has been assigned.</div>
+              <?php
+            }
+               ?>
             </div>
           </div>
         <?php }?>
