@@ -828,13 +828,14 @@ if($_GET['nhoDate']!="_new"){
 		if($results){
 			$d['Options'][]="\"lengthMenu\": [ [25, 50, -1], [25, 50, \"All\"] ]";
 			$d['File']="PBK_Device_List_";
-			$d['Headers']=array("MiniBar","Restaurant","Ordering Link");
+			$d['Headers']=array("MiniBar","Restaurant","Active","Ordering Link");
 			foreach($results as $r){
 				$json=json_decode($r->imageFile);
-				if($r->isActive==1){$bg="#28a745";}else{$bg="#dc3545";}
-				$d['Results'][$bg]=array(
+				if($r->isActive==1){$bg="#28a745";$active="Yes";}else{$bg="#dc3545";$active="No";}
+				$d['Results'][]=array(
 					"<a href='".admin_url( 'admin.php?page=pbr-edit-minibar&id='.$r->idpbc_minibar )."'>" . $r->company . "</a>",
 					$r->restaurantName,
+					"<strong style='color:".$bg."'>".$active."</strong>",
 					"<a href='https://mb.theproteinbar.com/".$r->linkSlug."' target='_blank'>" . $r->linkSlug . "</a>"
 				);
 			}
