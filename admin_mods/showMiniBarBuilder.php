@@ -122,7 +122,7 @@ jQuery(document).ready(function() {
           </div>
           <div class='row'>
             <div class='col'>
-              <label for='imageFile'><strong>Image</strong></label>
+              <label for='imageFile'><strong>Delivery Image</strong></label>
               <input type='text' class='form-control media-input' name ='imageFile[image]' value='<?php echo $links['image'];?>' /> <button class='media-button'>Select image</button>
             </div>
           </div>
@@ -160,6 +160,15 @@ jQuery(document).ready(function() {
             <div class='col'>
               <label for='Zip'><strong>Zip Code</strong></label><br />
               <input type='text' class='form-control' id='Zip' name='imageFile[zip]' value='<?php echo $links['zip'];?>'/><br />
+            </div>
+          </div>
+          <div class='row'>
+            <div class='col'>
+              <label for='locationImageFile'><strong>Location Image</strong></label>
+              <input type='text' id='locationImageFile' class='form-control media-input' name ='imageFile[locationImage]' value='<?php echo $links['locationImage'];?>' /> <button class='media-button'>Select image</button>
+            </div>
+            <div class='col'>
+              <?php if(isset($links['locationImage']) && file_exists($links['locationImage'])){?><img src="<?php echo $links['locationImage'];?>" alt='Logo' /><?php }?>
             </div>
           </div>
         </div>
