@@ -10,7 +10,6 @@ if(isset($info['imageFile']) && $info['imageFile']!=""){
   $links['image']="";
   $links['link']="";
 }
-if(isset($info['linkSlug']) && $info['linkSlug']=""){$links['link']=$info['linkSlug'];}
 if($info['idpbc_minibar']!="_NEW" && isset($links['image']) && $links['image']!=""){
   $sendTest="
   <a href='".admin_url( 'admin.php?page=pbr-edit-minibar&id='.$info['idpbc_minibar'] )."&testEmail=1' class=\"btn btn-secondary\">Send Test Email</a>
@@ -38,6 +37,10 @@ if(isset($links['day']) && count($links['day'])!=0){
   $preselect="";
 }
 echo $this->pbk_addImageSelector();
+if(isset($info['linkSlug']) && $info['linkSlug']=""){$links['link']=$info['linkSlug'];}
+echo "<pre>";
+print_r($info);
+echo "</pre>";
 ?>
 <script>
 jQuery(document).ready(function() {
