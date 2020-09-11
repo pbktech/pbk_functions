@@ -192,7 +192,7 @@ jQuery(document).ready(function() {
               if(isset($info['restaurantID'])){
                ?>
               <label for='<?php echo $s;?>menu'><strong>Menus</strong></label><br />
-              <select name='services[<?php echo $s;?>][menu][]' class="custom-select multipleSelect" id='<?php echo $s;?>menu' multiple>
+              <select name='services[<?php echo $s;?>][menu][]' class="custom-select multipleSelect js-example-basic-multiple" id='<?php echo $s;?>menu' multiple>
                 <option value='33d281c5-3790-423b-8f54-4039a0d24171'>Shakes</option>
                 <option value='f3603f5e-ecd2-4e9c-be2d-d74bc9778f44'>Entrees</option>
                 <option value='fb381331-1cf3-4fe2-8364-4864bbcaf629'>Breakfast</option>
