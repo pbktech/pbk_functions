@@ -1,4 +1,7 @@
 <?php
+echo "<pre>";
+print_r($info);
+echo "</pre>";
 $mealServices=array("Breakfast","Lunch","Dinner");
 if(isset($info['imageFile']) && $info['imageFile']!=""){
   $links=json_decode($info['imageFile'],true);
@@ -99,7 +102,7 @@ jQuery(document).ready(function() {
           </div>
           <div class='row'>
             <div class='col'>
-              <h5>Active</h5>
+              <h5><strong>Active</strong></h5>
               <?php
               foreach(array(0=>"No",1=>"Yes") as $n=>$a){
                 if(isset($info['isActive']) && $info['isActive']==$n){$checked="checked";}else{$checked="";}

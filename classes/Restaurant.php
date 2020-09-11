@@ -845,7 +845,7 @@ if($_GET['nhoDate']!="_new"){
 		global $wpdb;
 		return $wpdb->get_row("SELECT * FROM pbc2.pbc_minibar WHERE idpbc_minibar='".$id."'",ARRAY_A);
 	}
-	function showMiniBarBuilder($info=array("idpbc_minibar"=>"_NEW","company"=>"","restaurantID"=>"","outpostIdentifier"=>"","imageFile"=>"","services"=>"","linkSlug"=>"","isActive"=>0)){
+	function showMiniBarBuilder($info=array("idpbc_minibar"=>"_NEW","company"=>"","restaurantID"=>"","outpostIdentifier"=>"","imageFile"=>"","services"=>"","isActive"=>0)){
 		require dirname(dirname(__FILE__)) . "/admin_mods/showMiniBarBuilder.php";
 	}
 	function pbkSaveMinibar($info){
