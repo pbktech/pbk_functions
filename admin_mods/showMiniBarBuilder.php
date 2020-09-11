@@ -10,6 +10,7 @@ if(isset($info['imageFile']) && $info['imageFile']!=""){
   $links['image']="";
   $links['link']="";
 }
+if(isset($info['linkSlug']) && $info['linkSlug']=""){$links['link']=$info['linkSlug'];}
 if($info['idpbc_minibar']!="_NEW" && isset($links['image']) && $links['image']!=""){
   $sendTest="
   <a href='".admin_url( 'admin.php?page=pbr-edit-minibar&id='.$info['idpbc_minibar'] )."&testEmail=1' class=\"btn btn-secondary\">Send Test Email</a>
@@ -32,7 +33,7 @@ if(isset($_GET['testEmail']) && $_GET['testEmail']==1){
   }
 }
 if(isset($links['day']) && count($links['day'])!=0){
-  $preselect="jQuery('#deliveryDay').val(['" . implode("','", $links['day']) . "']).trigger('change');";
+  $preselect="jQuery('#LunchdeliveryDay').val(['" . implode("','", $links['day']) . "']).trigger('change');";
 }else{
   $preselect="";
 }
@@ -50,8 +51,9 @@ jQuery(document).ready(function() {
     dropdown: true,
     scrollbar: true
   });
-  jQuery('#deliveryDay').select2();
-  <?php echo $preselect;?>
+  jQuery('#BreakfastdeliveryDay').select2();
+  jQuery('#LunchdeliveryDay').select2();
+  jQuery('#DinnerdeliveryDay').select2();
 });
 </script>
 <div class='container-fluid;'>
