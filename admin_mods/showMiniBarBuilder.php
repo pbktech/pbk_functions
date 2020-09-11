@@ -33,7 +33,7 @@ if(isset($_GET['testEmail']) && $_GET['testEmail']==1){
 }
 echo $this->pbk_addImageSelector();
 if(isset($info['linkSlug']) && $info['linkSlug']!=""){$links['link']=$info['linkSlug'];}
-if(isset($info['services']) && $info['services']==""){
+if(isset($info['services']) && $info['services']!=""){
   $serviceInfo=json_decode($info['services'],true);
   $preselect="";
   foreach($serviceInfo as $sn=>$si){
@@ -179,11 +179,11 @@ jQuery(document).ready(function() {
             </div>
             <div class='col'>
               <label for='<?php echo $s;?>cutoff'><strong>Cutoff Time</strong></label><br />
-              <input type='text' class='timepicker form-control' id='<?php echo $s;?>cutoff' name='services[<?php echo $s;?>][cutoff]' value='<?php echo $s['cutoff'];?>'/><br />
+              <input type='text' class='timepicker form-control' id='<?php echo $s;?>cutoff' name='services[<?php echo $s;?>][cutoff]' value='<?php echo $serviceInfo[$s]['cutoff'];?>'/><br />
             </div>
             <div class='col'>
               <label for='<?php echo $s;?>delivery'><strong>Delivery Time</strong></label><br />
-              <input type='text' class='timepicker form-control' id='<?php echo $s;?>delivery' name='services[<?php echo $s;?>][delivery]' value='<?php echo $s['delivery'];?>'/><br />
+              <input type='text' class='timepicker form-control' id='<?php echo $s;?>delivery' name='services[<?php echo $s;?>][delivery]' value='<?php echo $serviceInfo[$s]['delivery'];?>'/><br />
             </div>
           </div>
           <div class='row'>
