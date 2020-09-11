@@ -31,13 +31,21 @@ if(isset($_GET['testEmail']) && $_GET['testEmail']==1){
     echo switchpbrMessages(5);
   }
 }
-if(isset($links['day']) && count($links['day'])!=0){
-  $preselect="jQuery('#LunchdeliveryDay').val(['" . implode("','", $links['day']) . "']).trigger('change');";
-}else{
-  $preselect="";
-}
 echo $this->pbk_addImageSelector();
-if(isset($info['linkSlug']) && $info['linkSlug']=""){$links['link']=$info['linkSlug'];}
+if(isset($info['linkSlug']) && $info['linkSlug']==""){$links['link']=$info['linkSlug'];}
+if(isset($info['services']) && $info['services']==""){
+  $serviceInfo=json_decode($info['services'],true);
+  $preselect="";
+  foreach($serviceInfo as $sn=>$si){
+    if(isset($si['day']) && count($si['day'])!=0){
+      $preselect.="jQuery('#".$si."deliveryDay').val(['" . implode("','", $si['day']) . "']).trigger('change');";
+    }
+  }
+}else {
+  foreach($mealServices as $s){
+    $serviceInfo[$s]=array("day"=>array(),"cutoff"=>"","delivery"=>"");
+  }
+}
 ?>
 <script>
 jQuery(document).ready(function() {
@@ -87,6 +95,22 @@ jQuery(document).ready(function() {
             <div class='col'>
               <label for='outpostIdentifier'><strong>Toast Dining Option</strong></label>
               <input type='text' class='form-control' name ='outpostIdentifier' value='<?php echo $info['outpostIdentifier'];?>' />
+            </div>
+          </div>
+          <div class='row'>
+            <div class='col'>
+              <h5>Active</h5>
+              <?php
+              foreach(array(0=>"No",1=>"Yes") as $n=>$a){
+                if(isset($info['isActive']) && $info['isActive']==$n){$checked="checked";}else{$checked="";}
+              ?>
+              <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" name="isActive" id="inlineRadio<?php echo $n;?>" value="<?php echo $n;?>" <?php echo $checked;?>>
+                <label class="form-check-label" for="inlineRadio<?php echo $n;?>"><?php echo $a;?></label>
+              </div>
+              <?php
+              }
+              ?>
             </div>
           </div>
           <div class='row'>

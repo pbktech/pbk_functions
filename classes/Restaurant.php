@@ -845,7 +845,7 @@ if($_GET['nhoDate']!="_new"){
 		global $wpdb;
 		return $wpdb->get_row("SELECT * FROM pbc2.pbc_minibar WHERE idpbc_minibar='".$id."'",ARRAY_A);
 	}
-	function showMiniBarBuilder($info=array("idpbc_minibar"=>"_NEW","company"=>"","restaurantID"=>"","outpostIdentifier"=>"","imageFile"=>"","services"=>"")){
+	function showMiniBarBuilder($info=array("idpbc_minibar"=>"_NEW","company"=>"","restaurantID"=>"","outpostIdentifier"=>"","imageFile"=>"","services"=>"","linkSlug"=>"","isActive"=>0)){
 		require dirname(dirname(__FILE__)) . "/admin_mods/showMiniBarBuilder.php";
 	}
 	function pbkSaveMinibar($info){
@@ -855,14 +855,14 @@ if($_GET['nhoDate']!="_new"){
 		if(isset($info["idpbc_minibar"]) && $info["idpbc_minibar"]=="_NEW"){
 			$wpdb->query(
 				$wpdb->prepare( "
-					INSERT INTO pbc_minibar (restaurantID,company,outpostIdentifier,imageFile,linkSlug,services)VALUES(%s,%s,%s,%s,%s,%s)",
-					$info['restaurantID'],$info['company'],$info['outpostIdentifier'],$imageFile,$info['linkSlug'],$services));
+					INSERT INTO pbc_minibar (restaurantID,company,outpostIdentifier,imageFile,linkSlug,services,isActive)VALUES(%s,%s,%s,%s,%s,%s,%s)",
+					$info['restaurantID'],$info['company'],$info['outpostIdentifier'],$imageFile,$info['linkSlug'],$services,$info['isActive']));
 				if(isset($wpdb->insert_id)){$info["idpbc_minibar"]=$wpdb->insert_id;}else{die("ID ERROR");}
 		}else {
 			$wpdb->query(
 				$wpdb->prepare( "
-					REPLACE INTO pbc_minibar (idpbc_minibar,restaurantID,company,outpostIdentifier,imageFile,linkSlug,services)VALUES(%s,%s,%s,%s,%s,%s,%s)",
-					$info['idpbc_minibar'],$info['restaurantID'],$info['company'],$info['outpostIdentifier'],$imageFile,$info['linkSlug'],$services));
+					REPLACE INTO pbc_minibar (idpbc_minibar,restaurantID,company,outpostIdentifier,imageFile,linkSlug,services,isActive)VALUES(%s,%s,%s,%s,%s,%s,%s,%s)",
+					$info['idpbc_minibar'],$info['restaurantID'],$info['company'],$info['outpostIdentifier'],$imageFile,$info['linkSlug'],$services,$info['isActive']));
 		}
 		wp_redirect(  admin_url( 'admin.php?page=pbr-edit-minibar&id='.$info["idpbc_minibar"].'&m=1' ));
 	}
