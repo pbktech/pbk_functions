@@ -36,15 +36,12 @@ echo $this->pbk_addImageSelector();
 if(isset($info['linkSlug']) && $info['linkSlug']!=""){$links['link']=$info['linkSlug'];}
 if(isset($info['services']) && $info['services']!=""){
   $serviceInfo=json_decode($info['services'],true);
-  echo "<pre>";
-  print_r($serviceInfo);
-  echo "</pre>";
   foreach($serviceInfo as $sn=>$si){
     if(isset($si['day']) && count($si['day'])!=0){
-      $preselect.="jQuery('#".$si."deliveryDay').val(['" . implode("','", $si['day']) . "']).trigger('change');\n";
+      $preselect.="jQuery('#".$sn."deliveryDay').val(['" . implode("','", $si['day']) . "']).trigger('change');\n";
     }
     if(isset($si['menu']) && count($si['menu'])!=0){
-      $preselect.="jQuery('#".$si."menu').val(['" . implode("','", $si['menu']) . "']).trigger('change');\n";
+      $preselect.="jQuery('#".$sn."menu').val(['" . implode("','", $si['menu']) . "']).trigger('change');\n";
     }
   }
 }else {
