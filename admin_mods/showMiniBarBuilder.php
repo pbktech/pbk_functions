@@ -11,7 +11,7 @@ if(isset($info['imageFile']) && $info['imageFile']!=""){
 }
 if($info['idpbc_minibar']!="_NEW" && isset($links['image']) && $links['image']!=""){
   $sendTest="
-  <a href='".admin_url( 'admin.php?page=pbr-edit-minibar&id='.$info['idpbc_minibar'] )."&testEmail=1' class="btn btn-secondary">Send Test Email</a>
+  <a href='".admin_url( 'admin.php?page=pbr-edit-minibar&id='.$info['idpbc_minibar'] )."&testEmail=1' class=\"btn btn-secondary\">Send Test Email</a>
   ";
 }
 if(isset($_GET['testEmail']) && $_GET['testEmail']==1){
