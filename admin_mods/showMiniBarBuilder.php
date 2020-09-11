@@ -62,6 +62,9 @@ jQuery(document).ready(function() {
   jQuery('#BreakfastdeliveryDay').select2();
   jQuery('#LunchdeliveryDay').select2();
   jQuery('#DinnerdeliveryDay').select2();
+  jQuery('#Breakfastmenu').select2();
+  jQuery('#Lunchmenu').select2();
+  jQuery('#Dinnermenu').select2();
 });
 </script>
 <div class='container-fluid;'>
@@ -176,11 +179,11 @@ jQuery(document).ready(function() {
             </div>
             <div class='col'>
               <label for='<?php echo $s;?>cutoff'><strong>Cutoff Time</strong></label><br />
-              <input type='text' class='timepicker form-control' id='<?php echo $s;?>cutoff' name='services[<?php echo $s;?>][cutoff]' value='<?php echo $services[$s]['cutoff'];?>'/><br />
+              <input type='text' class='timepicker form-control' id='<?php echo $s;?>cutoff' name='services[<?php echo $s;?>][cutoff]' value='<?php echo $s['cutoff'];?>'/><br />
             </div>
             <div class='col'>
               <label for='<?php echo $s;?>delivery'><strong>Delivery Time</strong></label><br />
-              <input type='text' class='timepicker form-control' id='<?php echo $s;?>delivery' name='services[<?php echo $s;?>][delivery]' value='<?php echo $services[$s]['delivery'];?>'/><br />
+              <input type='text' class='timepicker form-control' id='<?php echo $s;?>delivery' name='services[<?php echo $s;?>][delivery]' value='<?php echo $s['delivery'];?>'/><br />
             </div>
           </div>
           <div class='row'>
