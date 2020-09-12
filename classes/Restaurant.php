@@ -866,6 +866,9 @@ if($_GET['nhoDate']!="_new"){
 		if($info["idpbc_minibar"]=="_NEW" || $newGeocode==1){
 			$report=new ToastReport();
 			$geo=$report->getGeoCode($info["imageFile"]["addressa"] . " " . $info["imageFile"]["city"] . ", " . $info["imageFile"]["state"] . " " . $info["imageFile"]["zip"]);
+			echo "<pre>";
+			print_r($geo);
+			echo "</pre>";
 			$info["imageFile"]["lat"]=$geo->results->geometry->location->lat;
 			$info["imageFile"]["long"]=$geo->results->geometry->location->lng;
 		}
