@@ -852,6 +852,23 @@ if($_GET['nhoDate']!="_new"){
 	}
 	function pbkSaveMinibar($info){
 		global $wpdb;
+		$newGeocode=0;
+		if($info["idpbc_minibar"]!="_NEW"){
+			$imageFile=$wpdb->get_var("SELECT imageFile FROM pbc_minibar WHERE idpbc_minibar=" . $info["idpbc_minibar"]);
+			if($imageFile){
+				$json=json_decode($imageFile);
+				if($info["imageFile"]["addressa"]!=$json->imageFile->addressa){$newGeocode=1;}
+				if($info["imageFile"]["city"]!=$json->imageFile->city){$newGeocode=1;}
+				if($info["imageFile"]["state"]!=$json->imageFile->state){$newGeocode=1;}
+				if($info["imageFile"]["zip"]!=$json->imageFile->zip){$newGeocode=1;}
+			}
+		}
+		if($info["idpbc_minibar"]=="_NEW" || $newGeocode==1){
+			$report=new ToastReport();
+			$geo=$report->getGeoCode($info["imageFile"]["addressa"] . " " . $info["imageFile"]["city"] . ", " . $info["imageFile"]["state"] . " " . $info["imageFile"]["zip"]);
+			$info["imageFile"]["lat"]=$geo->results->geometry->location->lat;
+			$info["imageFile"]["long"]=$geo->results->geometry->location->lng;
+		}
 		$imageFile=json_encode($info['imageFile']);
 		$services=json_encode($info['services']);
 		if(isset($info["idpbc_minibar"]) && $info["idpbc_minibar"]=="_NEW"){

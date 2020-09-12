@@ -131,11 +131,13 @@ jQuery(document).ready(function() {
           <div class='row'>
             <div class='col'>
               <label for='lat'><strong>Latitute</strong></label><br />
-              <input type='text' class='form-control' id='lat' name='imageFile[lat]' value='<?php echo $links['lat'];?>'/><br />
+              <input type='text' class='form-control' id='lat' value='<?php echo $links['lat'];?>' disabled/><br />
+              <input type='hidden' name='imageFile[lat]' value='<?php echo $links['lat'];?>'/>
             </div>
             <div class='col'>
               <label for='long'><strong>Longitude</strong></label><br />
-              <input type='text' class='form-control' id='long' name='imageFile[long]' value='<?php echo $links['long'];?>'/><br />
+              <input type='text' class='form-control' id='long' value='<?php echo $links['long'];?>' disabled/><br />
+              <input type='hidden' name='imageFile[long]' value='<?php echo $links['long'];?>'/>
             </div>
           </div>
           <div class='row'>

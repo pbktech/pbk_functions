@@ -1125,6 +1125,16 @@ from pbc2.kds_detail WHERE sent_time BETWEEN  ? AND ? AND station='' and restaur
 				die();
 		}
 	}
+	public function getGeoCode($address){
+		$address=str_replace(" ","+",$address);
+		$url="https://maps.googleapis.com/maps/api/geocode/json?address=" . $address . "&key=" . $this->config->geocodeAPI;
+		$ch = curl_init();
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+		curl_setopt($ch, CURLOPT_URL,$url);
+		$result=curl_exec($ch);
+		curl_close($ch);
+		return json_decode($result);
+	}
 	function showResultsTable($data=array(),$tableName="myTable"){
 		if(isset($data['Results']) && count($data['Results'])!=0){
 			if(isset($data['File'])){$data['File']=$this->genGUID($data['File']);}else{$data['File']=$this->genGUID(md5(time()));}
