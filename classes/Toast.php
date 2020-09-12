@@ -153,7 +153,7 @@ class Toast{
 		if($result->status!=200 && $result->status!="") {$this->notifyIT(json_decode($result)."\n\n Authorization: Bearer " . $this->auth->accessToken."Toast-Restaurant-External-ID: " . $this->guid."\n\n".$this->url. "/orders/v2/orders?businessDate=" . $date,"JSON Error - getOrders");}
 		return json_decode($result);
 	}
-	function getMenus($v=1;) {
+	function getMenus($v=1) {
 		$ch = curl_init();
 		curl_setopt($ch, CURLOPT_HEADER, 0);
 		curl_setopt ($ch, CURLOPT_HTTPHEADER,Array("Authorization: Bearer " . $this->auth->accessToken,"Toast-Restaurant-External-ID: " . $this->guid));
