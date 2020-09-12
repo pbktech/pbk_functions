@@ -34,6 +34,13 @@ class Toast{
 		}
 	}
 	public function setConfig($sandbox=0){
+		if(!defined('ABSPATH')){
+		  if (file_exists('/var/www/html/c2.theproteinbar.com')) {
+		    define('ABSPATH', '/var/www/html/c2.theproteinbar.com/');
+		  }else {
+		    define('ABSPATH', '/var/www/html/c2dev.theproteinbar.com/');
+		  }
+		}
 		$default = dirname(ABSPATH) . '/config.json';
 		$this->config=json_decode(file_get_contents($default));
 		if($sandbox==0){
