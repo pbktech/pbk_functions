@@ -869,8 +869,8 @@ if($_GET['nhoDate']!="_new"){
 			echo "<pre>";
 			print_r($geo);
 			echo "</pre>";
-			$info["imageFile"]["lat"]=$geo['results']['geometry']['location']->lat;
-			$info["imageFile"]["long"]=$geo['results'][0]->geometry->location->lng;
+			$info["imageFile"]["lat"]=$geo->results[0]->geometry->location->lat;
+			$info["imageFile"]["long"]=$geo->results[0]->geometry->location->lng;
 		}
 		$imageFile=json_encode($info['imageFile']);
 		$services=json_encode($info['services']);
