@@ -857,10 +857,10 @@ if($_GET['nhoDate']!="_new"){
 			$imageFile=$wpdb->get_var("SELECT imageFile FROM pbc_minibar WHERE idpbc_minibar=" . $info["idpbc_minibar"]);
 			if($imageFile){
 				$json=json_decode($imageFile);
-				if($info["imageFile"]["addressa"]!=$json->imageFile->addressa){$newGeocode=1;}
-				if($info["imageFile"]["city"]!=$json->imageFile->city){$newGeocode=1;}
-				if($info["imageFile"]["state"]!=$json->imageFile->state){$newGeocode=1;}
-				if($info["imageFile"]["zip"]!=$json->imageFile->zip){$newGeocode=1;}
+				if($info["imageFile"]["addressa"]!=$json->addressa){$newGeocode=1;}
+				if($info["imageFile"]["city"]!=$json->city){$newGeocode=1;}
+				if($info["imageFile"]["state"]!=$json->state){$newGeocode=1;}
+				if($info["imageFile"]["zip"]!=$json->zip){$newGeocode=1;}
 			}
 		}
 		if($info["idpbc_minibar"]=="_NEW" || $newGeocode==1){
@@ -869,8 +869,8 @@ if($_GET['nhoDate']!="_new"){
 			echo "<pre>";
 			print_r($geo);
 			echo "</pre>";
-			$info["imageFile"]["lat"]=$geo->results->geometry->location->lat;
-			$info["imageFile"]["long"]=$geo->results->geometry->location->lng;
+			$info["imageFile"]["lat"]=$geo['results']['geometry']['location']->lat;
+			$info["imageFile"]["long"]=$geo['results'][0]->geometry->location->lng;
 		}
 		$imageFile=json_encode($info['imageFile']);
 		$services=json_encode($info['services']);
