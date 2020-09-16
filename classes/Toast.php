@@ -30,10 +30,21 @@ class Toast{
 		$this->auth=$this->getAuthorized();
 		$this->connectDB();
 		if(isset($b) ) {
+<<<<<<< HEAD
 			$this->setRestaurantGUID($b);
+=======
+			$this->setguid($b);
+>>>>>>> 29ba1cea6c5e3cf47b893c143235e70aad28ce43
 		}
 	}
 	public function setConfig($sandbox=0){
+		if(!defined('ABSPATH')){
+		  if (file_exists('/var/www/html/c2.theproteinbar.com')) {
+		    define('ABSPATH', '/var/www/html/c2.theproteinbar.com/');
+		  }else {
+		    define('ABSPATH', '/var/www/html/c2dev.theproteinbar.com/');
+		  }
+		}
 		$default = dirname(ABSPATH) . '/config.json';
 		$this->config=json_decode(file_get_contents($default));
 		if($sandbox==0){
@@ -60,17 +71,6 @@ class Toast{
 		$result=curl_exec($ch);
 		$token=json_decode($result);
 		return $token->token;
-
-		/*
-		$ch = curl_init();
-		curl_setopt($ch, CURLOPT_HEADER, 0);
-		curl_setopt ($ch, CURLOPT_RETURNTRANSFER, 1);
-		curl_setopt ($ch, CURLOPT_HTTPHEADER,Array("Content-Type: application/x-www-form-urlencoded"));
-		curl_setopt($ch, CURLOPT_POSTFIELDS, "grant_type=client_credentials&client_id=".$this->ToastClient."&client_secret=".$this->ToastSecret."");
-		curl_setopt($ch, CURLOPT_URL,$this->url. "/usermgmt/v1/oauth/token");
-		$result=curl_exec($ch);
-		return json_decode($result);
-		*/
 	}
 	function connectDB() {
 		$this->mysqli = new mysqli($this->config->host, $this->config->username, $this->config->password, $this->config->dBase);
@@ -157,12 +157,16 @@ class Toast{
 		if($result->status!=200 && $result->status!="") {$this->notifyIT(json_decode($result)."\n\n Authorization: Bearer " . $this->auth->accessToken."Toast-Restaurant-External-ID: " . $this->guid."\n\n".$this->url. "/orders/v2/orders?businessDate=" . $date,"JSON Error - getOrders");}
 		return json_decode($result);
 	}
-	function getMenus() {
+	function getMenus($v=1) {
 		$ch = curl_init();
 		curl_setopt($ch, CURLOPT_HEADER, 0);
 		curl_setopt ($ch, CURLOPT_HTTPHEADER,Array("Authorization: Bearer " . $this->auth->accessToken,"Toast-Restaurant-External-ID: " . $this->guid));
 		curl_setopt ($ch, CURLOPT_RETURNTRANSFER, 1);
-		curl_setopt($ch, CURLOPT_URL,$this->url. "/config/v2/menus?pageSize=100");
+		if($v==1){
+			curl_setopt($ch, CURLOPT_URL,$this->url. "/config/v2/menus?pageSize=100");
+		}elseif ($v==2) {
+			curl_setopt($ch, CURLOPT_URL,$this->url. "/menus/v2/menus");
+		}
 		$result=curl_exec($ch);
 //		if($result->status!=200 && $result->status!="") {$this->notifyIT(json_decode($result)."\n\n Authorization: Bearer " . $this->auth->accessToken."Toast-Restaurant-External-ID: " . $this->guid."\n\n".$this->url. "/orders/v2/orders?businessDate=" . $date,"JSON Error - getOrders");}
 		return json_decode($result);
@@ -316,6 +320,23 @@ class Toast{
 		curl_setopt($ch, CURLOPT_VERBOSE, false);
 		curl_setopt ($ch, CURLOPT_RETURNTRANSFER, 1);
 		curl_setopt($ch, CURLOPT_URL,$this->url. "/crm/v1/customers/".$c . "/creditTransactions");
+		$result=curl_exec($ch);
+		return json_decode($result);
+	}
+	function postOrder($c,$ph) {
+		$ph=json_encode($ph);
+		$ch = curl_init();
+		curl_setopt($ch, CURLOPT_HEADER, 0);
+		curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
+		curl_setopt ($ch, CURLOPT_HTTPHEADER,Array("Authorization: Bearer " . $this->auth->accessToken,
+		"Toast-Restaurant-External-ID: " . $this->guid,
+		'Content-Type: application/json',
+    'Content-Length: ' . strlen($ph)));
+    curl_setopt($ch, CURLOPT_POST, true);
+		curl_setopt($ch, CURLOPT_POSTFIELDS, $ph);
+		curl_setopt($ch, CURLOPT_VERBOSE, false);
+		curl_setopt ($ch, CURLOPT_RETURNTRANSFER, 1);
+		curl_setopt($ch, CURLOPT_URL,$this->url. "/orders/v2/".$c );
 		$result=curl_exec($ch);
 		return json_decode($result);
 	}
@@ -599,10 +620,20 @@ class Toast{
 		$stmt->execute();
 		if($stmt->error!='') {$this->notifyIT("storeCashInDB \n\n".$stmt->error."\n\n".$sql,"SQL Import Error");}
 	}
+<<<<<<< HEAD
 	function setRestaurantGUID($guid){
 		$this->guid=$guid;
 		$this->getRestaurantID();
 		$this->loadGUIDs();
 		date_default_timezone_set($this->getTimeZone());
+=======
+	function setguid($guid){
+		$this->guid=$guid;
+		if(isset($this->guid)){
+			$this->getRestaurantID();
+			$this->loadGUIDs();
+			date_default_timezone_set($this->getTimeZone());
+		}
+>>>>>>> 29ba1cea6c5e3cf47b893c143235e70aad28ce43
 	}
 }

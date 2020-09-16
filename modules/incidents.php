@@ -27,20 +27,19 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
     case "foodborneIllness":
       $content['html'].=pbk_form_foodborneIllness($_POST['reportInfo']['foodborneIllness']);
       $incidentTypeName="foodborneIllness";
-      $emailAddress[]="vwillis@theproteinbar.com";
-      $emailAddress[]="lcominsky@theproteinbar.com";
+      $emailAddress[]="mcrawford@theproteinbar.com";
       break;
     case "injury":
       $content['html'].=pbk_form_injury($_POST['reportInfo']['injury']);
       $incidentTypeName="injury";
       $emailAddress[]="hr@theproteinbar.com";
-      $emailAddress[]="lcominsky@theproteinbar.com";
+      $emailAddress[]="mcrawford@theproteinbar.com";
       break;
     case "lostStolenProperty":
       $content['html'].=pbk_form_lostStolenProperty($_POST['reportInfo']['lostStolenProperty']);
       $incidentTypeName="lostStolenProperty";
       $emailAddress[]="jarbitman@theproteinbar.com";
-      $emailAddress[]="lcominsky@theproteinbar.com";
+      $emailAddress[]="mcrawford@theproteinbar.com";
       break;
   }
   $email= new ToastReport();

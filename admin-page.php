@@ -16,18 +16,24 @@ add_action( 'admin_post_pbk-save-devices', 'pbr_edit_devices' );
 add_action('admin_post_pbr_nho_attendance_update','pbr_nho_attendance');
 add_action('admin_post_pbk_save_minibar','pbk_saveMinibar');
 add_action('admin_post_pbk-update-order','pbr_orders');
+$pbkAdminPages[]=array("Name"=>"Manage Restaurants","Access"=>"manage_options","Slug"=>"pbr-edit-restaurant","Function"=>"pbr_edit_restaurant");
+$pbkAdminPages[]=array("Name"=>"Manage NHO Events","Access"=>"manage_options","Slug"=>"pbr-npbr-edit-restaurantho","Function"=>"pbr_nho_setup");
+$pbkAdminPages[]=array("Name"=>"NHO Archive","Access"=>"delete_posts","Slug"=>"pbr-nho-archive","Function"=>"pbr_nho_history");
+$pbkAdminPages[]=array("Name"=>"Incident Archive","Access"=>"upload_files","Slug"=>"pbr-incident-history","Function"=>"pbr_search_incident");
+$pbkAdminPages[]=array("Name"=>"Manage MiniBar","Access"=>"manage_options","Slug"=>"pbr-edit-minibar","Function"=>"pbr_edit_minibar");
+$pbkAdminPages[]=array("Name"=>"Manage Devices","Access"=>"manage_options","Slug"=>"pbr-edit-devices","Function"=>"pbr_edit_devices");
+$pbkAdminPages[]=array("Name"=>"Restaurant Orders","Access"=>"upload_files","Slug"=>"pbr-orders","Function"=>"pbr_orders");
+$pbkAdminPages[]=array("Name"=>"Health Screen Archive","Access"=>"upload_files","Slug"=>"pbr-hs-archive","Function"=>"pbr_hs_archive");
 function pbr_setup_menu(){
+  global $pbkAdminPages;
   add_menu_page( 'PBK Functions', 'PBK Functions', 'delete_posts', 'Manage-PBK', 'pbr_show_admin_functions',PBKF_URL . '/assets/images/PBK-Logo-ONLY-LG-2018_White_new.png');
-  add_submenu_page( 'Manage-PBK', 'Manage Restaurants', 'Manage Restaurants', 'manage_options', 'pbr-edit-restaurant', 'pbr_edit_restaurant' );
-//  add_submenu_page( 'Manage-PBK', 'Add a Restaurant', 'Add a Restaurant', 'manage_options', 'pbr-add-restaurant', 'pbr_add_restaurant' );
-  add_submenu_page( 'Manage-PBK', 'Manage NHO Events', 'Manage NHO Events', 'delete_posts', 'pbr-nho', 'pbr_nho_setup' );
-  add_submenu_page( 'Manage-PBK', 'NHO Archive', 'NHO Archive', 'upload_files', 'pbr-nho-archive', 'pbr_nho_history' );
-  add_submenu_page( 'Manage-PBK', 'Incident Archive', 'Incident Archive', 'upload_files', 'pbr-incident-history', 'pbr_search_incident' );
-  add_submenu_page( 'Manage-PBK', 'Manage MiniBar', 'Manage MiniBar', 'manage_options', 'pbr-edit-minibar', 'pbr_edit_minibar' );
-  add_submenu_page( 'Manage-PBK', 'Manage Devices', 'Manage Devices', 'manage_options', 'pbr-edit-devices', 'pbr_edit_devices' );
-  add_submenu_page( 'Manage-PBK', 'Restaurant Orders', 'Restaurant Orders', 'upload_files', 'pbr-orders', 'pbr_orders' );
+  foreach ($pbkAdminPages as $value) {
+    add_submenu_page('Manage-PBK',$value['Name'],$value['Name'],$value['Access'],$value['Slug'],$value['Function']);
+  }
 }
 function wpb_custom_toolbar_link($wp_admin_bar) {
+  global $pbkAdminPages;
+  $wp_admin_bar->remove_node('wp-logo');
     $args = array(
         'id' => 'pbkfunctions',
         'title' => 'PBK Functions',
@@ -38,6 +44,19 @@ function wpb_custom_toolbar_link($wp_admin_bar) {
             )
     );
     $wp_admin_bar->add_node($args);
+    foreach ($pbkAdminPages as $value) {
+      $args = array(
+          'id' => $value['Slug'],
+          'title' => $value['Name'],
+          'parent' => 'pbkfunctions',
+          'href' => admin_url( 'admin.php?page=' . $value['Slug'] ),
+          'meta' => array(
+              'class' => '',
+              'title' => $value['Name']
+              )
+      );
+      $wp_admin_bar->add_node($args);
+    }
 }
 if(in_array("administrator", $cu->roles) || in_array("editor", $cu->roles)) {
   add_action('admin_bar_menu', 'wpb_custom_toolbar_link', 999);
@@ -80,7 +99,9 @@ function pbr_add_restaurant(){
   echo "</div>";
 }
 function pbr_orders(){
-  echo "<div class='wrap'><h2>PBK Restaurant Supply Orders</h2>";
+  echo "<div class='wrap'><h2>PBK Restaurant Supply Orders</h2>
+  <div id='ServerResponse'></div>
+  ";
   $restaurant = new Restaurant();
   if($_SERVER['REQUEST_METHOD'] == 'POST'){
     global $wpdb;
@@ -121,8 +142,55 @@ function pbr_orders(){
   }
   echo "</div>";
 }
-function pbr_edit_devices(){
+function pbr_hs_archive(){
+  require "admin_mods/pbr_hs_archive.php";
+}
+add_action( 'wp_ajax_hs_send', 'pbk_hs_send' );
+//add_action( 'wp_ajax_nopriv_hs_send', 'pbk_hs_send' );
+function pbk_hs_send() {
+	global $wpdb;
+  global $wp;
+  $cu = wp_get_current_user();
+  $restaurant = new Restaurant();
+  $report=new ToastReport;
+  $respsonse[]="
+   <script type=\"text/javascript\">
+    jQuery(document).ready(function(){
+      setTimeout(function(){
+        jQuery(\".alert\").hide(\"20000\")
+      }, 30000);
+    });
+    </script>";
+  foreach($_POST['guids'] as $guid){
+    $hs=$wpdb->get_row("SELECT * FROM pbc_pbk_orders WHERE guid = '".$guid."' AND orderType='HealthScreen'");
+    if($hs){
+      if(array_key_exists($hs->restaurantID,$restaurant->myRestaurants)){
+        if(file_exists(dirname(dirname($report->docSaveLocation)) ."/docs/". $guid)){
+          $data=json_decode($hs->orderData);
+          $names[]=$data->name;
+          $pdfs=glob(dirname(dirname($report->docSaveLocation)) ."/docs/". $guid. "/*.pdf");
+          foreach ($pdfs as $pdf) {
+            if(file_exists($pdf)){$files[]=$pdf;}
+          }
+        }else {
+          $respsonse[]="<div class='alert alert-danger'>No health screen pdf found for id ".$guid."</div>";
+        }
+      }else{
+        $respsonse[]="<div class='alert alert-danger'>You do not have access to health screen for id ".$guid."</div>";
+      }
+    }else {
+      $respsonse[]="<div class='alert alert-danger'>No health screen found for id ".$guid."</div>";
+    }
+  }
+  if(isset($files)){
+    $report->reportEmail($cu->user_email,"Please See Attached Health Screen Forms for ".implode(",",$names) . ".","Health Screen Forms",$files);
+    $respsonse[]="<div class='alert alert-success'>Screen forms for ".implode(",",$names) . " have been sent</div>";
+  }
+  echo implode("<br>",$respsonse);
+	wp_die();
+}
 
+function pbr_edit_devices(){
   $restaurant = new Restaurant();
   if($_SERVER['REQUEST_METHOD'] == 'POST'){
     $restaurant->pbkSaveDevice($_POST);
@@ -295,17 +363,29 @@ function pbr_edit_minibar(){
     </div>
   </div>";
 }
-function pbr_update_restaurant() {
+add_action( 'wp_ajax_pbr_save_restaurant_option', 'pbr_update_restaurant' );
 
+function pbr_update_restaurant() {
    	$restaurant = new Restaurant();
    	$restaurant->setRestaurantInfo($_POST);
    	if($restaurant->insertUpdateRestaurantInfo()) {
-   		$m=1;
+   		$ms="Restaurant updated.";
+      $alert="success";
    	}else {
-   		$m=2;
+   		$ms="There was an error. Restaurant not updated.";
+      $alert="danger";
    	}
-   	wp_redirect(  admin_url( 'admin.php?page=pbr-edit-restaurant&m='.$m ) );
-   	exit;
+    echo  "
+    <script>
+      jQuery(document).ready(function(){
+        setTimeout(function(){
+        jQuery(\".alert\").hide(\"20000\")
+      }, 30000);
+      });
+    </script>
+  <div class='alert alert-".$alert."'><strong>" . $ms . "</strong></div>";
+//   	wp_redirect(  admin_url( 'admin.php?page=pbr-edit-restaurant&m='.$m ) );
+  wp_die();
 }
 function pbr_nho_setup(){
 

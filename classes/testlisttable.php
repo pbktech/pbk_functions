@@ -68,7 +68,7 @@ function prepare_items() {
   $sortable = array();
   $this->_column_headers = array( $columns, $hidden, $sortable );
   global $wpdb;
-  $query = "SELECT * FROM pbc_pbrestaurants";
+  $query = "SELECT * FROM pbc_pbrestaurants WHERE archived=0";
   $this->items = $wpdb->get_results($query, ARRAY_A);;
 }
 

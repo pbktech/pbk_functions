@@ -178,7 +178,8 @@ class Restaurant {
 		});
 		</script>
 		<div class='container-fluid;'>
-			<form method=\"post\" action=\"admin-post.php\">
+		<div id='ServerResponse'></div>
+			<form method=\"post\" action=\"\" id='restaurantEditor'>
          	<input type=\"hidden\" name=\"action\" value=\"pbr_save_restaurant_option\" />
 					<div id='tabs'>
 					<ul class=\"nav nav-tabs\">
@@ -332,14 +333,32 @@ class Restaurant {
 			<div class='form-group'>
 				<div class='row' style='padding-left:15px;'>
 					<div class='col'>
-						<button type=\"submit\" class=\"btn btn-primary\"/>Submit</button>
+						<button type=\"submit\" class=\"btn btn-primary\" id='send'/>Submit</button>
 						<button type=\"button\" class='btn btn-warning' onclick=\"javascript:window.location='admin.php?page=pbr-edit-restaurant';\">Cancel</button>
 					</div>
 				</div>
 				</div>
 			</form>
-			</div></div>";
-
+			</div></div>
+			<script>
+			jQuery( '#send' ).click(function() {
+			    var form_data = jQuery( \"#restaurantEditor\" ).serializeArray();
+			    form_data.push( { \"name\" : \"security\", \"value\" : \" " . wp_create_nonce( "secure_nonce_name" ) . "\" } );
+			    jQuery.ajax({
+			        url : ajaxurl, // Here goes our WordPress AJAX endpoint.
+			        type : 'post',
+			        data : form_data,
+			        success : function( response ) {
+			            jQuery( '#ServerResponse' ).html( response );
+			        },
+			        fail : function( err ) {
+			            alert( \"There was an error: \" + err );
+			        }
+			    });
+			    return false;
+			});
+			</script>
+			";
       return $return;
 	}
 	public function insertUpdateRestaurantInfo() {
@@ -770,6 +789,10 @@ if($_GET['nhoDate']!="_new"){
 		$stylesheet=file_get_contents(dirname(dirname(__FILE__)) . "/assets/css/mpdf-bootstrap.css");
 	  $mpdf->SetTitle($content->title);
 	  $mpdf->SetAuthor("Protein Bar & Kitchen");
+		if(isset($content->watermark)){
+			$mpdf->SetWatermarkText($content->watermark);
+			$mpdf->showWatermarkText = true;
+		}
 		$mpdf->WriteHTML($stylesheet,\Mpdf\HTMLParserMode::HEADER_CSS);
 	  $mpdf->WriteHTML(utf8_encode($content->html),\Mpdf\HTMLParserMode::HTML_BODY);
 		if(isset($content->fileName)){
@@ -801,17 +824,19 @@ if($_GET['nhoDate']!="_new"){
 	}
 	function getMiniBarLocations(){
 		global $wpdb;
-		$results= $wpdb->get_results("SELECT idpbc_minibar,company,restaurantName,imageFile FROM pbc2.pbc_minibar,pbc_pbrestaurants WHERE pbc_minibar.restaurantID=pbc_pbrestaurants.restaurantID");
+		$results= $wpdb->get_results("SELECT idpbc_minibar,company,restaurantName,imageFile,linkSlug,isActive FROM pbc2.pbc_minibar,pbc_pbrestaurants WHERE pbc_minibar.restaurantID=pbc_pbrestaurants.restaurantID");
 		if($results){
 			$d['Options'][]="\"lengthMenu\": [ [25, 50, -1], [25, 50, \"All\"] ]";
 			$d['File']="PBK_Device_List_";
-			$d['Headers']=array("MiniBar","Restaurant","Ordering Link");
+			$d['Headers']=array("MiniBar","Restaurant","Active","Ordering Link");
 			foreach($results as $r){
 				$json=json_decode($r->imageFile);
+				if($r->isActive==1){$bg="#28a745";$active="Yes";}else{$bg="#dc3545";$active="No";}
 				$d['Results'][]=array(
 					"<a href='".admin_url( 'admin.php?page=pbr-edit-minibar&id='.$r->idpbc_minibar )."'>" . $r->company . "</a>",
 					$r->restaurantName,
-					"<a href='".$json->link."' target='_blank'>" . str_replace("https://minibar.theproteinbar.com/","",$json->link) . "</a>"
+					"<strong style='color:".$bg."'>".$active."</strong>",
+					"<a href='https://mb.theproteinbar.com/".$r->linkSlug."' target='_blank'>" . $r->linkSlug . "</a>"
 				);
 			}
 			return $d;
@@ -822,131 +847,41 @@ if($_GET['nhoDate']!="_new"){
 		global $wpdb;
 		return $wpdb->get_row("SELECT * FROM pbc2.pbc_minibar WHERE idpbc_minibar='".$id."'",ARRAY_A);
 	}
-	function showMiniBarBuilder($info=array("idpbc_minibar"=>"_NEW","company"=>"","restaurantID"=>"","outpostIdentifier"=>"","imageFile"=>"")){
-		if(isset($info['imageFile']) && $info['imageFile']!=""){
-			$links=json_decode($info['imageFile'],true);
-			$imageAdd="
-					<strong>Current Image</strong><br><img src='".$links['image']."' alt='' />
-			";
-		}else {
-			$imageAdd="";
-			$links['image']="";
-			$links['link']="";
-		}
-		if($info['idpbc_minibar']!="_NEW" && isset($links['image']) && $links['image']!=""){
-			$sendTest="
-			<a href='".admin_url( 'admin.php?page=pbr-edit-minibar&id='.$info['idpbc_minibar'] )."&testEmail=1' class=\"btn btn-secondary\">Send Test Email</a>
-			";
-		}
-		if(isset($_GET['testEmail']) && $_GET['testEmail']==1){
-			$current_user = wp_get_current_user();
-			$report=new ToastReport;
-			$content="<div>
-	    <a href='".$links['link']."' target='_blank'>
-	    <img src='".$links['image']."' alt='Your Protein Bar MiniBar order has been delivered!' />
-	    </a>
-	    </div>'";
-			$handle = @fopen($links['image'], 'r');
-			if($handle){
-				$report->reportEmail($current_user->user_email,$content,"IT'S ALL GOOD: Your meal has arrived!");
-				echo switchpbrMessages(4);
-			}else {
-				echo switchpbrMessages(5);
-			}
-		}
-		if(isset($links['day']) && count($links['day'])!=0){
-			$preselect="jQuery('#deliveryDay').val(['" . implode("','", $links['day']) . "']).trigger('change');";
-		}else{
-			$preselect="";
-		}
-		return $this->pbk_addImageSelector()."
-		<script>
-		jQuery(document).ready(function() {
-			jQuery('input.timepicker').timepicker({
-				'timeFormat': 'h:mm p',
-				interval: 30,
-				minTime: '5:00 am',
-				maxTime: '9:00 pm',
-				dynamic: false,
-				dropdown: true,
-				scrollbar: true
-			});
-			jQuery('#deliveryDay').select2();
-			".$preselect."
-		});
-		</script>
-		<div class='container-fluid;'>
-	<form method=\"post\" action=\"admin-post.php\">
-  	<input type=\"hidden\" name=\"action\" value=\"pbk_save_minibar\" />
-		<input type=\"hidden\" name=\"idpbc_minibar\" value=\"".$info['idpbc_minibar']."\" />
-  	<div class='row'>
-  		<div class='col'>
-				<label for='restaurantID'><strong>Restaurant</strong></label><br />
-  			" . $this->buildRestaurantSelector(0,'restaurantID',$info['restaurantID']) . "
-				<br>
-				<label for='company'><strong>Company Name</strong></label>
-  			<input type='text' class='form-control' name ='company' value='".$info['company']."' />
-				<br>
-				<label for='imageFile'><strong>Order Link</strong></label>
-				<input type='text' class='form-control' name ='imageFile[link]' value='".$links['link']."' />
-				<br>
-				<label for='outpostIdentifier'><strong>Toast Dining Option</strong></label>
-				<input type='text' class='form-control' name ='outpostIdentifier' value='".$info['outpostIdentifier']."' />
-				<br>
-				<div class='row'>
-					<div class='col'>
-						<label for='delivery'>Delivery Day</label><br />
-						<select name='imageFile[day][]' class=\"custom-select multipleSelect\" id='deliveryDay' multiple>
-							<option value='Sunday'>Sunday</option>
-							<option value='Monday'>Monday</option>
-							<option value='Tuesday'>Tuesday</option>
-							<option value='Wednesday'>Wednesday</option>
-							<option value='Thursday'>Thursday</option>
-							<option value='Friday'>Friday</option>
-							<option value='Saturday'>Saturday</option>
-						</select>
-					</div>
-					<div class='col'>
-						<label for='cutoff'>Cutoff Time</label><br />
-						<input class='timepicker form-control' id='cutoff' name='imageFile[cutoff]' value='".$links['cutoff']."'/><br />
-					</div>
-					<div class='col'>
-						<label for='delivery'>Delivery Time</label><br />
-						<input class='timepicker form-control' id='delivery' name='imageFile[delivery]' value='".$links['delivery']."'/><br />
-					</div>
-				</div>
-				<label for='imageFile'><strong>Image</strong></label>
-				<input type='text' class='form-control media-input' name ='imageFile[image]' value='".$links['image']."' /> <button class='media-button'>Select image</button>
-			</div>
-			<div class='col'>
-			".$imageAdd."
-			</div>
-  	</div>
-		<div class='row' style='padding:15px;'>
-			<div class='col'>
-				<button type=\"submit\" class=\"btn btn-primary\"/>Submit</button>
-				<button type=\"button\" class='btn btn-warning' onclick=\"javascript:window.location='admin.php?page=pbr-edit-minibar';\">Cancel</button>
-			</div>
-		</div>
-	</form>
-</div>
-<div>$sendTest</div>
-		";
+	function showMiniBarBuilder($info=array("idpbc_minibar"=>"_NEW","company"=>"","restaurantID"=>"","outpostIdentifier"=>"","imageFile"=>"","services"=>"","isActive"=>0)){
+		require dirname(dirname(__FILE__)) . "/admin_mods/showMiniBarBuilder.php";
 	}
 	function pbkSaveMinibar($info){
 		global $wpdb;
+		$newGeocode=0;
+		if($info["idpbc_minibar"]!="_NEW"){
+			$imageFile=$wpdb->get_var("SELECT imageFile FROM pbc_minibar WHERE idpbc_minibar=" . $info["idpbc_minibar"]);
+			if($imageFile){
+				$json=json_decode($imageFile);
+				if($info["imageFile"]["addressa"]!=$json->addressa){$newGeocode=1;}
+				if($info["imageFile"]["city"]!=$json->city){$newGeocode=1;}
+				if($info["imageFile"]["state"]!=$json->state){$newGeocode=1;}
+				if($info["imageFile"]["zip"]!=$json->zip){$newGeocode=1;}
+			}
+		}
+		if($info["idpbc_minibar"]=="_NEW" || $newGeocode==1){
+			$report=new ToastReport();
+			$geo=$report->getGeoCode($info["imageFile"]["addressa"] . " " . $info["imageFile"]["city"] . ", " . $info["imageFile"]["state"] . " " . $info["imageFile"]["zip"]);
+			$info["imageFile"]["lat"]=$geo->results[0]->geometry->location->lat;
+			$info["imageFile"]["long"]=$geo->results[0]->geometry->location->lng;
+		}
 		$imageFile=json_encode($info['imageFile']);
+		$services=json_encode($info['services']);
 		if(isset($info["idpbc_minibar"]) && $info["idpbc_minibar"]=="_NEW"){
 			$wpdb->query(
 				$wpdb->prepare( "
-					INSERT INTO pbc_minibar (restaurantID,company,outpostIdentifier,imageFile)VALUES(%s,%s,%s,%s)",
-					$info['restaurantID'],$info['company'],$info['outpostIdentifier'],$imageFile));
+					INSERT INTO pbc_minibar (restaurantID,company,outpostIdentifier,imageFile,linkSlug,services,isActive)VALUES(%s,%s,%s,%s,%s,%s,%s)",
+					$info['restaurantID'],$info['company'],$info['outpostIdentifier'],$imageFile,$info['linkSlug'],$services,$info['isActive']));
 				if(isset($wpdb->insert_id)){$info["idpbc_minibar"]=$wpdb->insert_id;}else{die("ID ERROR");}
 		}else {
 			$wpdb->query(
 				$wpdb->prepare( "
-					REPLACE INTO pbc_minibar (idpbc_minibar,restaurantID,company,outpostIdentifier,imageFile)VALUES(%s,%s,%s,%s,%s)",
-					$info['idpbc_minibar'],$info['restaurantID'],$info['company'],$info['outpostIdentifier'],$imageFile));
+					REPLACE INTO pbc_minibar (idpbc_minibar,restaurantID,company,outpostIdentifier,imageFile,linkSlug,services,isActive)VALUES(%s,%s,%s,%s,%s,%s,%s,%s)",
+					$info['idpbc_minibar'],$info['restaurantID'],$info['company'],$info['outpostIdentifier'],$imageFile,$info['linkSlug'],$services,$info['isActive']));
 		}
 		wp_redirect(  admin_url( 'admin.php?page=pbr-edit-minibar&id='.$info["idpbc_minibar"].'&m=1' ));
 	}
