@@ -30,11 +30,7 @@ class Toast{
 		$this->auth=$this->getAuthorized();
 		$this->connectDB();
 		if(isset($b) ) {
-<<<<<<< HEAD
-			$this->setRestaurantGUID($b);
-=======
 			$this->setguid($b);
->>>>>>> 29ba1cea6c5e3cf47b893c143235e70aad28ce43
 		}
 	}
 	public function setConfig($sandbox=0){
@@ -620,13 +616,6 @@ class Toast{
 		$stmt->execute();
 		if($stmt->error!='') {$this->notifyIT("storeCashInDB \n\n".$stmt->error."\n\n".$sql,"SQL Import Error");}
 	}
-<<<<<<< HEAD
-	function setRestaurantGUID($guid){
-		$this->guid=$guid;
-		$this->getRestaurantID();
-		$this->loadGUIDs();
-		date_default_timezone_set($this->getTimeZone());
-=======
 	function setguid($guid){
 		$this->guid=$guid;
 		if(isset($this->guid)){
@@ -634,6 +623,5 @@ class Toast{
 			$this->loadGUIDs();
 			date_default_timezone_set($this->getTimeZone());
 		}
->>>>>>> 29ba1cea6c5e3cf47b893c143235e70aad28ce43
 	}
 }
