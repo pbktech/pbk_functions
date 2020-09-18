@@ -49,6 +49,17 @@ if(isset($info['services']) && $info['services']!=""){
     $serviceInfo[$s]=array("day"=>array(),"cutoff"=>"","delivery"=>"");
   }
 }
+$menuOptions=array();
+if(isset($info['restaurantID']) && $info['restaurantID']!=0){
+  $results = $wpdb->get_results("SELECT name,masterId,menuGUID FROM pbc_pbrestaurants pp, pbc_ref_menuGroups prmg, pbc_ToastMenus ptm WHERE
+pp.GUID = prmg.restaurantGUID AND prmg.menuGUID = ptm.guid AND pp.restaurantID=".$info['restaurantID']." group by masterId order by restaurantID,masterId");
+  if($results){
+    foreach($results as $r){
+      $menuOptions[]="<option value='".$r->menuGUID."'>".$r->name." (".$r->masterId.")</option>";
+    }
+  }
+}
+
 ?>
 <script>
 jQuery(document).ready(function() {
@@ -208,11 +219,7 @@ jQuery(document).ready(function() {
                ?>
               <label for='<?php echo $s;?>menu'><strong>Menus</strong></label><br />
               <select name='services[<?php echo $s;?>][menu][]' class="custom-select multipleSelect" style="width:100%;" id='<?php echo $s;?>menu' multiple>
-                <option value='33d281c5-3790-423b-8f54-4039a0d24171'>Shakes</option>
-                <option value='f3603f5e-ecd2-4e9c-be2d-d74bc9778f44'>Entrees</option>
-                <option value='fb381331-1cf3-4fe2-8364-4864bbcaf629'>Breakfast</option>
-                <option value='a0feaf5c-349f-4d85-997c-c4874601fb9c'>Beverages</option>
-                <option value='567107e9-1537-4c24-b767-8a658b33fbb4'>Sides & Snacks</option>
+                <?php echo implode("\n",$menuOptions);?>
               </select>
               <?php
             }else{
