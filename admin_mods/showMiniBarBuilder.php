@@ -51,6 +51,7 @@ if(isset($info['services']) && $info['services']!=""){
 }
 $menuOptions=array();
 if(isset($info['restaurantID']) && $info['restaurantID']!=0){
+  global $wpdb;
   $results = $wpdb->get_results("SELECT name,masterId,menuGUID FROM pbc_pbrestaurants pp, pbc_ref_menuGroups prmg, pbc_ToastMenus ptm WHERE
 pp.GUID = prmg.restaurantGUID AND prmg.menuGUID = ptm.guid AND pp.restaurantID=".$info['restaurantID']." group by masterId order by restaurantID,masterId");
   if($results){
