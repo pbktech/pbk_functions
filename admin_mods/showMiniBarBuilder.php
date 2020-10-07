@@ -178,18 +178,16 @@ jQuery(document).ready(function() {
           </div>
           <div class='row'>
             <div class='col'>
-              <div class="form-check">
+              <div class="form-check form-check-inline">
                 <input class="form-check-input" type="radio" name="imageFile[buildingType]" id="OfficeBuilding" value="employee" <?php if(isset($links['buildingType']) && $links['buildingType']=='employee'){echo "checked";}?>>
                 <label class="form-check-label" for="OfficeBuilding">
-                  Office Building
+                  <strong>Office</strong>
                 </label>
               </div>
-            </div>
-            <div class='col'>
-              <div class="form-check">
+              <div class="form-check form-check-inline">
                 <input class="form-check-input" type="radio" name="imageFile[buildingType]" id="ResidentialBuilding" value="resident" <?php if(isset($links['buildingType']) && $links['buildingType']=='resident'){echo "checked";}?>>
                 <label class="form-check-label" for="ResidentialBuilding">
-                  Residential Building
+                  <strong>Residential</strong>
                 </label>
               </div>
             </div>
