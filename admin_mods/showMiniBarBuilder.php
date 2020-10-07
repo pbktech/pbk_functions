@@ -68,7 +68,7 @@ jQuery(document).ready(function() {
   jQuery('input.timepicker').timepicker({
     'timeFormat': 'h:mm p',
     interval: 30,
-    minTime: '5:00 am',
+    minTime: '7:00 am',
     maxTime: '9:00 pm',
     dynamic: false,
     dropdown: true,
@@ -174,6 +174,24 @@ jQuery(document).ready(function() {
             <div class='col'>
               <label for='Zip'><strong>Zip Code</strong></label><br />
               <input type='text' class='form-control' id='Zip' name='imageFile[zip]' value='<?php echo $links['zip'];?>'/><br />
+            </div>
+          </div>
+          <div class='row'>
+            <div class='col'>
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="imageFile[buildingType]" id="OfficeBuilding" value="employee" <?php if(isset($links['buildingType']) && $links['buildingType']=='employee'){echo "checked";}?>>
+                <label class="form-check-label" for="OfficeBuilding">
+                  Office Building
+                </label>
+              </div>
+            </div>
+            <div class='col'>
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="imageFile[buildingType]" id="ResidentialBuilding" value="resident" <?php if(isset($links['buildingType']) && $links['buildingType']=='resident'){echo "checked";}?>>
+                <label class="form-check-label" for="ResidentialBuilding">
+                  Residential Building
+                </label>
+              </div>
             </div>
           </div>
           <div class='row'>
