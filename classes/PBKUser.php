@@ -5,8 +5,8 @@ class PBKUser{
   private $userID;
   private $guestUser = FALSE;
   private $mysqli;
-  $userDetails = null;
-  $yesvno = array(1=>"Yes",0=>"No");
+  var $userDetails = null;
+  var $yesvno = array(1=>"Yes",0=>"No");
 
   function __construct($mysql,$user=null) {
     if(!isset($mysql)){
