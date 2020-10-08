@@ -7,7 +7,7 @@ class PBKUser{
   private $mysqli;
 
   function __construct($mysql,$user=null) {
-    if(!isset($mysqli)){
+    if(!isset($mysql)){
       $report=new ToastReport;
       $m="Users class failed to construct. Missing MySQLi object.";
       $report->reportEmail("errors@theproteinbar.com",$m,"User error");
@@ -55,7 +55,10 @@ class PBKUser{
   }
 
   function getUserExists(){
-    return $this->userExists;
+    if($this->userExists === TRUE){
+      return TRUE;
+    }
+    return FALSE;
   }
   function setUserExists($var){
     $this->userExists=$var;
