@@ -89,7 +89,7 @@ class PBKUser{
         return array("message"=>"Login Successful","Variant"=>"success","sessionID"=>$row->session,"guestName"=>$this->userDetails->real_name1);
       }
     }
-    return array("message"=>"Invalid Username/Password".print_r($this->userDetails),"Variant"=>"danger");
+    return array("message"=>"Invalid Username/Password","Variant"=>"danger");
   }
   function checkSession($sessionGUID){
     $stmt=$this->mysqli->prepare("SELECT * FROM pbc_minibar_users_sessions WHERE SessionGUID = UuidToBin(?) AND expireTime >= NOW()");
@@ -158,7 +158,7 @@ class PBKUser{
   private function addNewUser($request){
     $phone=$this->cleanPhone($request->phone);
     $emailConsent=$this->switchEmailConsent($request->emailConsent);
-    $password = password_hash($password, PASSWORD_DEFAULT);
+    $password = password_hash($request->password, PASSWORD_DEFAULT);
     $stmt=$this->mysqli->prepare("INSERT INTO pbc_minibar_user (login_name, password, email_address, real_name1, phone_number, emailConsent)VALUES(?,?,?,?,?,?)");
     $stmt->bind_param("ssssss", $request->user,$password,$request->user,$request->name,$phone,$emailConsent);
     $stmt->execute();
