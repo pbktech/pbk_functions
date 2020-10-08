@@ -1,6 +1,6 @@
 <?php
 
-class User{
+class PBKUser{
   private $userExists = FALSE;
   private $userID;
   private $guestUser = FALSE;
