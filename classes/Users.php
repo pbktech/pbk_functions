@@ -1,10 +1,10 @@
 <?php
 
 class User{
-  private userExists = FALSE;
-  private userID;
-  private guestUser = FALSE;
-  private mysqli;
+  private $userExists = FALSE;
+  private $userID;
+  private $guestUser = FALSE;
+  private $mysqli;
 
   function __construct($mysql,$user=null) {
     if(!isset($mysqli)){
