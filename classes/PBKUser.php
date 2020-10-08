@@ -1,4 +1,5 @@
 <?php
+include "ToastReport.php";
 
 class PBKUser{
   private $userExists = FALSE;
@@ -8,7 +9,6 @@ class PBKUser{
 
   function __construct($mysql,$user=null) {
     if(!isset($mysqli)){
-      include "ToastReport.php";
       $report=new ToastReport;
       $m="Users class failed to construct. Missing MySQLi object.";
       $report->reportEmail("errors@theproteinbar.com",$m,"User error");
