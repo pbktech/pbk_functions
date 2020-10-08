@@ -68,7 +68,7 @@ class PBKUser{
     if(!$this->getUserExists()){
       return array("message"=>"Invalid Username","Variant"=>"danger");
     }
-    if(password_verify($request->password, $this->userDetails->password)){
+    if(password_verify($request->password, $this->userDetails->password)==1){
       $loginTime=date("Y-m-d G:i:s");
       $loginExpires=date("Y-m-d G:i:s", strtotime('+3 hours'));
       $stmt=$this->mysqli->prepare("INSERT INTO pbc2.pbc_minibar_users_sessions (mbUserId,loginTime,expireTime)VALUES(?,?,?)");
@@ -89,7 +89,7 @@ class PBKUser{
         return array("message"=>"Login Successful","Variant"=>"success","sessionID"=>$row->session,"guestName"=>$this->userDetails->real_name1);
       }
     }
-    return array("message"=>"Invalid Username/Password " .password_verify($request->password, $this->userDetails->password),"Variant"=>"danger");
+    return array("message"=>"Invalid Username/Password","Variant"=>"danger");
   }
   function checkSession($sessionGUID){
     $stmt=$this->mysqli->prepare("SELECT * FROM pbc_minibar_users_sessions WHERE SessionGUID = UuidToBin(?) AND expireTime >= NOW()");
