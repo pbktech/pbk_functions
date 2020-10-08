@@ -43,13 +43,13 @@ class PBKUser{
       return array("message"=>"Username is already being used.","Variant"=>"danger");
     }
     if($this->getGuestUser()){
-      if($newUserID=$this->addNewUser($request)){
-        $this->setUserID($newUserID);
-      }else{
+      if(!$this->updateUser($request)){
         return array("message"=>"There was an error signing you up. This error has been reported.","Variant"=>"danger");
       }
     }else{
-      if(!$this->updateUser($request)){
+      if($newUserID=$this->addNewUser($request)){
+        $this->setUserID($newUserID);
+      }else{
         return array("message"=>"There was an error signing you up. This error has been reported.","Variant"=>"danger");
       }
     }
