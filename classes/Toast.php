@@ -418,7 +418,7 @@ class Toast{
 		$mail->Username = $this->config->SMTP_USERNAME;
 		$mail->Password = $this->config->SMTP_PASSWORD;
 		$mail->setFrom('otrs@theproteinbar.com', 'PBK SYSTEM NOTIFY');
-	  $mail->addAddress("jon@theproteinbar.com","Jon Arbitman");
+	  $mail->addAddress("errors@theproteinbar.com","Jon Arbitman");
 		$mail->Subject = $subject;
 		$mail->msgHTML($body, __DIR__);
 		if (!$mail->send()) {
