@@ -89,7 +89,7 @@ class PBKUser{
         return array("message"=>"Login Successful","Variant"=>"success","sessionID"=>$row->session,"guestName"=>$this->userDetails->real_name1);
       }
     }
-    return array("message"=>"Invalid Username/Password","Variant"=>"danger");
+    return array("message"=>"Invalid Username/Password" .$request->password,"Variant"=>"danger");
   }
   function checkSession($sessionGUID){
     $stmt=$this->mysqli->prepare("SELECT * FROM pbc_minibar_users_sessions WHERE SessionGUID = UuidToBin(?) AND expireTime >= NOW()");
