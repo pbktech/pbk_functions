@@ -179,6 +179,19 @@ class PBKUser
         }
         return false;
     }
+    public function doLogout($sessionID)
+    {
+      $logOutTime=date("Y-m-d G:i:s");
+      $stmt=$this->mysqli->prepare("UPDATE pbc_minibar_users_sessions SET logoutTime=? WHERE SessionGUID = UuidToBin(?)");
+      $stmt->bind_param("s", $logOutTime,$sessionGUID);
+      $stmt->execute();
+      $result = $stmt->get_result();
+      $row = $result->fetch_object();
+      if (isset($row->sessionID)) {
+          return true;
+      }
+      return false;
+    }
     public function checkValidLinkHEX($linkHEX, $lp)
     {
         $stmt=$this->mysqli->prepare("SELECT * FROM pbc_minibar_users_links,pbc_minibar_user WHERE linkHEX=? AND linkPurpose=? AND id=mbUserID");
@@ -206,7 +219,7 @@ class PBKUser
             if ($linkHEX=$this->generateHexLink("forgot_password")) {
                 $report=new ToastReport;
                 $m="Someone has requested a new password to Protein Bar & Kitchen using this email. Please use this link to reset your password. <a href='https://mb.theproteinbar.com/forgotpass/".$linkHEX."'>https://mb.theproteinbar.com/forgotpass/".$linkHEX."</a>";
-                $report->reportEmail($this->userDetails->email_address, $m, "Minibar Email Verification");
+                $report->reportEmail($this->userDetails->email_address, $m, "Protein Bar & Kitchen Password Reset");
             } else {
                 return false;
             }
