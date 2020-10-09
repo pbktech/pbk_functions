@@ -187,9 +187,9 @@ class PBKUser
       $stmt->bind_param("ss", $logOutTime,$sessionGUID);
       $stmt->execute();
       if (isset($stmt->error) && $stmt->error!='') {
-          return true;
+          return false;
       }
-      return false;
+      return true;
     }
     public function checkValidLinkHEX($linkHEX, $lp)
     {
