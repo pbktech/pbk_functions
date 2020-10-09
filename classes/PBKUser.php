@@ -155,6 +155,7 @@ class PBKUser
         if (isset($row->sessionID)) {
             return true;
         }
+        $this->doLogout($sessionGUID);
         return false;
     }
     public function generateHexLink($lp)
@@ -187,7 +188,7 @@ class PBKUser
       $stmt->execute();
       $result = $stmt->get_result();
       $row = $result->fetch_object();
-      if (isset($row->sessionID)) {
+      if (isset($stmt->error) && $stmt->error!='') {
           return true;
       }
       return false;
