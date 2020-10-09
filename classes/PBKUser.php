@@ -184,7 +184,7 @@ class PBKUser
     {
       $logOutTime=date("Y-m-d G:i:s");
       $stmt=$this->mysqli->prepare("UPDATE pbc_minibar_users_sessions SET logoutTime=? WHERE SessionGUID = UuidToBin(?)");
-      $stmt->bind_param("s", $logOutTime,$sessionGUID);
+      $stmt->bind_param("ss", $logOutTime,$sessionGUID);
       $stmt->execute();
       $result = $stmt->get_result();
       $row = $result->fetch_object();
