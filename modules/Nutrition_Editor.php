@@ -22,24 +22,26 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     if ($_REQUEST['item']=='_NEW') {
         $wpdb->query($wpdb->prepare(
             "
-      INSERT INTO pbc_public_nutritional (itemName,itemSection,published,itemInfo)VALUES(%s,%s,%s,%s)
+      INSERT INTO pbc_public_nutritional (itemName,itemSection,published,itemInfo,toastGUID)VALUES(%s,%s,%s,%s,%s)
       ",
             $_POST['itemName'],
             $_POST['itemSection'],
             $_POST['published'],
-            $itemInfo
+            $itemInfo,
+            $_POST['toastGUID']
         ));
         $_REQUEST['item']=$wpdb->insert_id;
     } else {
         $wpdb->query($wpdb->prepare(
             "
-      REPLACE INTO pbc_public_nutritional (idpbc_public_nutritional,itemName,itemSection,published,itemInfo)VALUES(%s,%s,%s,%s,%s)
+      REPLACE INTO pbc_public_nutritional (idpbc_public_nutritional,itemName,itemSection,published,itemInfo,toastGUID)VALUES(%s,%s,%s,%s,%s,%s)
       ",
             $_POST['item'],
             $_POST['itemName'],
             $_POST['itemSection'],
             $_POST['published'],
-            $itemInfo
+            $itemInfo,
+            $_POST['toastGUID']
         ));
     }
     if ($wpdb->last_error !== '') {
@@ -173,7 +175,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
       <div class='row'>
         <div class='col'><label for='DF'>Dietary Fiber</label><br><input class='form-control' type='text' name='itemInfo[DF]' value='".$itemInfo->DF."' id='DF' /></div>
         <div class='col'><label for='SG'>Sugars</label><br><input class='form-control' type='text' name='itemInfo[SG]' value='".$itemInfo->SG."' id='SG' /></div>
-        <div class='col'></div>
+        <div class='col'><label for='guid'>Toast GUID</label><br><input class='form-control' type='text' name='toastGUID' value='".$item->toastGUID."' id='SG' /></div>
       </div>
       <div class='row'>
         <div class='col'>
