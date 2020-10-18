@@ -88,7 +88,7 @@ class PBKUser
         if ($this->userDetails->isConfirmed===0) {
             return array("message"=>"Your must confirm your email before you can access your account.","Variant"=>"danger");
         }
-        if (password_verify($request->password, $this->userDetails->password)==1) {
+        if (password_verify($request->password, $this->userDetails->password)) {
             $loginTime=date("Y-m-d G:i:s");
             $loginExpires=date("Y-m-d G:i:s", strtotime('+3 hours'));
             $stmt=$this->mysqli->prepare("INSERT INTO pbc2.pbc_minibar_users_sessions (mbUserId,loginTime,expireTime)VALUES(?,?,?)");
