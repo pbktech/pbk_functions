@@ -108,7 +108,7 @@ class PBKUser
             $row = $result->fetch_object();
             if (isset($row->session)) {
                 $guestCredits=array();
-                /*
+
                 $toast=new Toast("d76525a6-fa31-4122-b13c-148924d10512");
                 $customers=$toast->findCustomerID(preg_replace("/[^0-9]/", "",$this->userDetails->phone_number));
                 if(!empty($customers)){
@@ -116,7 +116,6 @@ class PBKUser
                         $guestCredits[] = $toast->getCustCredits($c->guid);
                     }
                 }
-                */
                 return array("message"=>"Login Successful","Variant"=>"success","sessionID"=>$row->session,"guestName"=>$this->userDetails->real_name1, "guestCredits" => $guestCredits);
             }
         } else {
