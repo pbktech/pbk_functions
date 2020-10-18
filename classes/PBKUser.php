@@ -112,10 +112,11 @@ class PBKUser
                 $toast=new Toast("d76525a6-fa31-4122-b13c-148924d10512");
                 $customers=$toast->findCustomerID(preg_replace("/[^0-9]/", "",$this->userDetails->phone_number));
                 if(!empty($customers)){
+                    $fmt = new NumberFormatter( 'en_US', NumberFormatter::CURRENCY );
                     foreach($customers as $c) {
                         $credits = $toast->getCustCredits($c->guid);
                         if(isset($credits->amount) && $credits->amount!=0){
-                            $guestCredits[]=$credits->amount;
+                            $guestCredits[]= $fmt->formatCurrency($credits->amount,"USD");
                         }
                     }
                 }
