@@ -354,7 +354,6 @@ class Toast{
 		return json_decode($result);
 	}
 	function findCustomerID($ph) {
-		echo $ph;
 		$ph=array("query" => array("phone"=>$ph));
 		$ph=json_encode($ph);
 		$ch = curl_init();

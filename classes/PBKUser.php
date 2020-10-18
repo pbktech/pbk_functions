@@ -113,7 +113,10 @@ class PBKUser
                 $customers=$toast->findCustomerID(preg_replace("/[^0-9]/", "",$this->userDetails->phone_number));
                 if(!empty($customers)){
                     foreach($customers as $c) {
-                        $guestCredits[] = $toast->getCustCredits($c->guid);
+                        $credits = $toast->getCustCredits($c->guid);
+                        if(isset($credits->amount) && $credits->amount!=0){
+                            $guestCredits[]=$credits->amount;
+                        }
                     }
                 }
                 return array("message"=>"Login Successful","Variant"=>"success","sessionID"=>$row->session,"guestName"=>$this->userDetails->real_name1, "guestCredits" => $guestCredits);
