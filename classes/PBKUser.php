@@ -120,7 +120,7 @@ class PBKUser
                         }
                     }
                 }
-                return array("message"=>"Login Successful","Variant"=>"success","sessionID"=>$row->session,"guestName"=>$this->userDetails->real_name1, "guestCredits" => $guestCredits);
+                return array("message"=>"Login Successful","Variant"=>"success","sessionID"=>$row->session,"guestName"=>$this->userDetails->real_name1, "guestCredits" => $guestCredits, "phone" => $this->userDetails->phone_number, "email" => $this->userDetails->email_address);
             }
         } else {
             $ip=$this->getClientIP();
