@@ -82,13 +82,13 @@ class PBKUser
             $this->userDetails->isLocked=1;
             $this->lockUserAccount();
         }
-        if ($this->userDetails->isLocked==1) {
+        if ($this->userDetails->isLocked===1) {
             return array("message"=>"Your account is locked. Please reset your password to unlock it.","Variant"=>"danger");
         }
-        if ($this->userDetails->isConfirmed==0) {
+        if ($this->userDetails->isConfirmed===0) {
             return array("message"=>"Your must confirm your email before you can access your account.","Variant"=>"danger");
         }
-        if (password_verify($request->password, $this->userDetails->password)==1) {
+        if (password_verify($request->password, $this->userDetails->password)===1) {
             $loginTime=date("Y-m-d G:i:s");
             $loginExpires=date("Y-m-d G:i:s", strtotime('+3 hours'));
             $stmt=$this->mysqli->prepare("INSERT INTO pbc2.pbc_minibar_users_sessions (mbUserId,loginTime,expireTime)VALUES(?,?,?)");
@@ -107,7 +107,15 @@ class PBKUser
             $result = $stmt->get_result();
             $row = $result->fetch_object();
             if (isset($row->session)) {
-                return array("message"=>"Login Successful","Variant"=>"success","sessionID"=>$row->session,"guestName"=>$this->userDetails->real_name1);
+                $guestCredits=array();
+                $toast=new Toast("d76525a6-fa31-4122-b13c-148924d10512");
+                $customers=$toast->findCustomerID(preg_replace("/[^0-9]/", "",$this->userDetails->phone_number));
+                if(!empty($customers)){
+                    foreach($customers as $c) {
+                        $guestCredits[] = $toast->getCustCredits($c->guid);
+                    }
+                }
+                return array("message"=>"Login Successful","Variant"=>"success","sessionID"=>$row->session,"guestName"=>$this->userDetails->real_name1, "guestCredits" => $guestCredits);
             }
         } else {
             $ip=$this->getClientIP();
