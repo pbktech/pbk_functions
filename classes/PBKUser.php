@@ -111,9 +111,10 @@ class PBKUser
                 $stmt=$this->mysqli->prepare("SELECT addressID,street,addStreet,city,state,zip FROM pbc_minibar_users_address WHERE mbUserID=? AND addressType='billing' AND isDeleted=0");
                 $stmt->bind_param("s", $this->userID);
                 $stmt->execute();
-                $result = $stmt->get_result();
-                while($row = $result->fetch_object()){
-                    $addresses[]=$row;
+                if($result = $stmt->get_result()) {
+                    while ($row = $result->fetch_object()) {
+                        $addresses[] = $row;
+                    }
                 }
 
 /*
