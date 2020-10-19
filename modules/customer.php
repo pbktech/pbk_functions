@@ -62,7 +62,6 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
 			$count=1;
 			foreach($customers as $c){
 				$credits=$toast->getCustCredits($c->guid);
-				print_r($credits);
 				$ret.="<div>
 							<p><strong>".ucfirst($c->firstName)." ".ucfirst($c->lastName). " ".$c->phone. " " .$c->email."</strong><br />";
 						if(!isset($credits->amount) || $credits->amount=='' || $credits->amount==0) {
