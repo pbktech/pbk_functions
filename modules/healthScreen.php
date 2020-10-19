@@ -96,7 +96,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
       $emails[]=$r->getManagerEmail("STR");
       */
       $emails[]=$r->getManagerEmail("STR");
-      $report->reportEmail(implode(",",$emails),$content['html'],$content['title'],$file['Local']);
+      $report->reportEmail(implode(",","jon@theproteinbar.com"),$content['html'],$content['title'],$file['Local']);
       $ret.= "
       <script>
         jQuery(document).ready(function(){
