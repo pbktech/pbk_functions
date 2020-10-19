@@ -107,8 +107,17 @@ class PBKUser
             $result = $stmt->get_result();
             $row = $result->fetch_object();
             if (isset($row->session)) {
-                $guestCredits=array();
+                $addresses=array();
+                $stmt=$this->mysqli->prepare("SELECT addressID,street,addStreet,city,state,zip FROM pbc_minibar_users_address WHERE mbUserID=? AND addressType='billing' AND isDeleted=0");
+                $stmt->bind_param("s", $this->userID);
+                $stmt->execute();
+                $result = $stmt->get_result();
+                while($row = $result->fetch_object()){
+                    $addresses[]=$row;
+                }
+
 /*
+                $guestCredits=array();
                 $toast=new Toast("d76525a6-fa31-4122-b13c-148924d10512");
                 $customers=$toast->findCustomerID(preg_replace("/[^0-9]/", "",$this->userDetails->phone_number));
                 if(!empty($customers)){
@@ -121,7 +130,15 @@ class PBKUser
                     }
                 }
 */
-                return array("message"=>"Login Successful","Variant"=>"success","sessionID"=>$row->session,"guestName"=>$this->userDetails->real_name1, "guestCredits" => $guestCredits, "phone" => $this->userDetails->phone_number, "email" => $this->userDetails->email_address);
+                return array(
+                    "message"=>"Login Successful",
+                    "Variant"=>"success",
+                    "sessionID"=>$row->session,
+                    "guestName"=>$this->userDetails->real_name1,
+                    "addresses" => $addresses,
+                    "phone" => $this->userDetails->phone_number,
+                    "email" => $this->userDetails->email_address
+                );
             }
         } else {
             $ip=$this->getClientIP();
