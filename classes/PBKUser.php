@@ -107,7 +107,7 @@ class PBKUser
             $row = $result->fetch_object();
             if (isset($row->session)) {
                 $addresses=array();
-                $stmt=$this->mysqli->prepare("SELECT addressID,street,addStreet,city,state,zip FROM pbc_minibar_users_address WHERE mbUserID=? AND addressType='billing' AND isDeleted=0");
+                $stmt=$this->mysqli->prepare("SELECT addressID,addressType as 'type', street,addStreet,city,state,zip FROM pbc_minibar_users_address WHERE mbUserID=? AND addressType='billing' AND isDeleted=0");
                 $stmt->bind_param("s", $this->userID);
                 $stmt->execute();
                 if($result = $stmt->get_result()) {
@@ -183,7 +183,15 @@ class PBKUser
             $report->reportEmail("errors@theproteinbar.com", $m, "User error");
             return array("message"=>"There was an error logging you in. This error has been reported.","Variant"=>"danger");
         }else{
-            return array("message"=>".","Variant"=>"success", addressID=>$stmt->insert_id);
+            return array("message"=>".","Variant"=>"success", "address"=>[
+                "addressID" => $stmt->insert_id,
+                "type" => $request->type,
+                "street" => $request->street,
+                "addStreet" => $request->addStreet,
+                "city" => $request->city,
+                "state" => $request->state,
+                "zip" => $request->zip
+            ]);
         }
     }
     public function getClientIP()
