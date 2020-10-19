@@ -112,8 +112,8 @@ class PBKUser
                 $stmt->bind_param("s", $this->userID);
                 $stmt->execute();
                 if($result = $stmt->get_result()) {
-                    while ($row = $result->fetch_object()) {
-                        $addresses[] = $row;
+                    while ($rows = $result->fetch_object()) {
+                        $addresses[] = $rows;
                     }
                 }
 
