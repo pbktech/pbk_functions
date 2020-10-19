@@ -15,7 +15,6 @@ class PBKUser
             $report=new ToastReport;
             $m="Users class failed to construct. Missing MySQLi object.";
             $report->reportEmail("errors@theproteinbar.com", $m, "User error");
-            return array("message"=>"There was an error setting up, this has been reported.","Variant"=>"danger");
             exit;
         }
         $this->setmysqli($mysql);
@@ -164,6 +163,27 @@ class PBKUser
             $m="User (".$this->userID.") failed to lock account.<br><br>DB Error: " . $stmt->error;
             $report->reportEmail("errors@theproteinbar.com", $m, "User error");
             return false;
+        }
+    }
+    public function addUserAddress($request){
+        $stmt=$this->mysqli->prepare("INSERT INTO pbc2.pbc_minibar_users_address (mbUserID, addressType, street, addStreet, city, state, zip, isDeleted)VALUES (?,?,?,?,?,?,?,0)");
+        $stmt->bind_param("sssssss",
+            $this->userID,
+            $request->type,
+            $request->street,
+            $request->addstreet,
+            $request->city,
+            $request->state,
+            $request->zip
+        );
+        $stmt->execute();
+        if (isset($stmt->error) && $stmt->error!='') {
+            $report=new ToastReport;
+            $m="User (".$this->userID.") failed to insert new address.<br><br>LP: ".$lp."<br><br>DB Error: " . $stmt->error . "<br><br>Request: " . print_r($request, true);
+            $report->reportEmail("errors@theproteinbar.com", $m, "User error");
+            return array("message"=>"There was an error logging you in. This error has been reported.","Variant"=>"danger");
+        }else{
+            return array("message"=>".","Variant"=>"success", addressID=>$stmt->insert_id);
         }
     }
     public function getClientIP()
