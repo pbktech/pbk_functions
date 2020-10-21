@@ -116,7 +116,7 @@ class PBKUser
                         $addresses[] = $rows;
                     }
                 }
-                $stmt=$this->mysqli->prepare("SELECT UuidFromBin(pbc_minibar_order_check.publicUnique) as 'checkGUID', company, DATE_FORMAT(dateDue,'%c/%d/%Y %l:%i %p') FROM pbc_minibar_order_check,pbc_minibar_order_header, pbc_minibar pm WHERE mbOrderID = headerID AND pbc_minibar_order_check.mbUserID = ? AND pm.idpbc_minibar = minibarID");
+                $stmt=$this->mysqli->prepare("SELECT UuidFromBin(pbc_minibar_order_check.publicUnique) as 'checkGUID', company, DATE_FORMAT(dateDue,'%c/%d/%Y %l:%i %p') as 'dateDue' FROM pbc_minibar_order_check,pbc_minibar_order_header, pbc_minibar pm WHERE mbOrderID = headerID AND pbc_minibar_order_check.mbUserID = ? AND pm.idpbc_minibar = minibarID");
                 $stmt->bind_param("s", $this->userID);
                 $stmt->execute();
                 if($result = $stmt->get_result()) {
