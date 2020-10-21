@@ -106,6 +106,7 @@ class PBKUser
             $result = $stmt->get_result();
             $row = $result->fetch_object();
             if (isset($row->session)) {
+                $orders=array();
                 $addresses=array();
                 $stmt=$this->mysqli->prepare("SELECT addressID,addressType as 'type', street,addStreet,city,state,zip FROM pbc_minibar_users_address WHERE mbUserID=? AND addressType='billing' AND isDeleted=0");
                 $stmt->bind_param("s", $this->userID);
@@ -113,6 +114,14 @@ class PBKUser
                 if($result = $stmt->get_result()) {
                     while ($rows = $result->fetch_object()) {
                         $addresses[] = $rows;
+                    }
+                }
+                $stmt=$this->mysqli->prepare("SELECT UuidFromBin(pbc_minibar_order_check.publicUnique) as 'checkGUID', company, dateDue FROM pbc_minibar_order_check,pbc_minibar_order_header, pbc_minibar pm WHERE mbOrderID = headerID AND pbc_minibar_order_check.mbUserID = ? AND pm.idpbc_minibar = minibarID");
+                $stmt->bind_param("s", $this->userID);
+                $stmt->execute();
+                if($result = $stmt->get_result()) {
+                    while ($rows = $result->fetch_object()) {
+                        $orders[] = $rows;
                     }
                 }
 
@@ -137,7 +146,8 @@ class PBKUser
                     "guestName"=>$this->userDetails->real_name1,
                     "addresses" => $addresses,
                     "phone" => $this->userDetails->phone_number,
-                    "email" => $this->userDetails->email_address
+                    "email" => $this->userDetails->email_address,
+                    "orders" => $orders
                 );
             }
         } else {
