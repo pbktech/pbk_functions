@@ -108,6 +108,7 @@ class PBKUser
             if (isset($row->session)) {
                 $orders=array();
                 $addresses=array();
+                $groupOrders=array();
                 $stmt=$this->mysqli->prepare("SELECT addressID,addressType as 'type', street,addStreet,city,state,zip FROM pbc_minibar_users_address WHERE mbUserID=? AND addressType='billing' AND isDeleted=0");
                 $stmt->bind_param("s", $this->userID);
                 $stmt->execute();
@@ -116,7 +117,7 @@ class PBKUser
                         $addresses[] = $rows;
                     }
                 }
-                $stmt=$this->mysqli->prepare("SELECT UuidFromBin(pbc_minibar_order_check.publicUnique) as 'checkGUID', company, DATE_FORMAT(dateDue,'%c/%d/%Y %l:%i %p') as 'dateDue' FROM pbc_minibar_order_check,pbc_minibar_order_header, pbc_minibar pm WHERE mbOrderID = headerID AND pbc_minibar_order_check.mbUserID = ? AND pm.idpbc_minibar = minibarID");
+                $stmt=$this->mysqli->prepare("SELECT UuidFromBin(pbc_minibar_order_check.publicUnique) as 'checkGUID', company, DATE_FORMAT(dateDue,'%c/%d/%Y %l:%i %p') as 'dateDue', DATE_FORMAT(checkAdded,'%c/%d/%Y %l:%i %p') as 'orderDate' FROM pbc_minibar_order_check,pbc_minibar_order_header, pbc_minibar pm WHERE mbOrderID = headerID AND pbc_minibar_order_check.mbUserID = ? AND pm.idpbc_minibar = minibarID");
                 $stmt->bind_param("s", $this->userID);
                 $stmt->execute();
                 if($result = $stmt->get_result()) {
@@ -147,7 +148,8 @@ class PBKUser
                     "addresses" => $addresses,
                     "phone" => $this->userDetails->phone_number,
                     "email" => $this->userDetails->email_address,
-                    "orders" => $orders
+                    "orders" => $orders,
+                    "groupOrders" => $groupOrders
                 );
             }
         } else {
