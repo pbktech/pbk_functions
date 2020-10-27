@@ -32,7 +32,7 @@ final class PBKMenu
         return $menuGroupOrder;
     }
 
-    public function getNutrtitional(string $guid): object{
+    public function getNutrtitional(string $guid): string{
         $stmt=$this->mysqli->prepare("SELECT itemInfo FROM pbc_public_nutritional WHERE toastGUID='".$guid."'");
         $stmt->execute();
         $result = $stmt->get_result();
