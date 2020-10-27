@@ -219,15 +219,28 @@ class PBKUser
     }
     public function checkSession($sessionGUID)
     {
-        $stmt=$this->mysqli->prepare("SELECT * FROM pbc_minibar_users_sessions WHERE SessionGUID = UuidToBin(?) AND expireTime >= NOW()");
+        $stmt=$this->mysqli->prepare("SELECT mbUserId FROM pbc_minibar_users_sessions WHERE SessionGUID = UuidToBin(?) AND expireTime >= NOW()");
         $stmt->bind_param("s", $sessionGUID);
         $stmt->execute();
         $result = $stmt->get_result();
         $row = $result->fetch_object();
-        if (isset($row->sessionID)) {
-            return true;
+        if (isset($row->mbUserId)) {
+            return $row->mbUserId;
         }
         $this->doLogout($sessionGUID);
+        return false;
+    }
+
+    public function getContactFomSession($sessionGUID){
+        if($ID =  $this -> checkSession($sessionGUID)){
+            $stmt=$this->mysqli->prepare("SELECT real_name1,id,phone_number,email_address FROM pbc_minibar_user WHERE id=?");
+            $stmt->bind_param("s", $ID);
+            $stmt->execute();
+            $result = $stmt->get_result();
+            if($row = $result->fetch_object()){
+                return $row;
+            }
+        }
         return false;
     }
     public function generateHexLink($lp)
