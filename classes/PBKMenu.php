@@ -32,7 +32,7 @@ final class PBKMenu
         return $menuGroupOrder;
     }
 
-    public function getNutrtitional($guid){
+    public function getNutrtitional(string $guid): object{
         $stmt=$this->mysqli->prepare("SELECT itemInfo FROM pbc_public_nutritional WHERE toastGUID='".$guid."'");
         $stmt->execute();
         $result = $stmt->get_result();
@@ -69,7 +69,7 @@ final class PBKMenu
                     "sort"=>$menuGroupOrder[$item->name],
                     "modGroups"=>$modGroups,
                     "nutritionalShort"=>$nutritionalShort,
-                    "nutritional"=>getNutrtitional($item->guid)
+                    "nutritional"=>$this->getNutrtitional($item->guid)
                 );
             }
             $menuGroups[]=array(
