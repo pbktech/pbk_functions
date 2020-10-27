@@ -85,7 +85,7 @@ final class PBKMenu
             );
         }
         $name=$this->getMenuInfo("name");
-        return array("menuName"=>$$name,"sort"=>$menuGroupOrder[$name],"menuGroups"=>$menuGroups);
+        return array("menuName"=>$name,"sort"=>$menuGroupOrder[$name],"menuGroups"=>$menuGroups);
     }
 
     public function getMenuInfo($field){
@@ -93,8 +93,8 @@ final class PBKMenu
         $stmt->bind_param("s", $this->menu);
         $stmt->execute();
         $result = $stmt->get_result();
-        $row = $result->fetch_object();
-        return $row->$field;
+        $row = $result->fetch_array();
+        return $row[$field];
 
     }
 
