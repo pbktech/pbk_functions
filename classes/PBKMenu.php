@@ -51,7 +51,7 @@ final class PBKMenu
             $menuItems=array();
             foreach ($items as $item){
                 $modGroups=array();
-                $mods=$this->getMenuModGroups($group,$item);
+                $mods=$this->getMenuModGroups($group->menuGroupGUID,$item->guid);
                 if(count($mods) > 1 ){
                     foreach ($mods as $mod) {
                         $modGroups[] = $allModGroups[$mod->modifierGroupGUID];
