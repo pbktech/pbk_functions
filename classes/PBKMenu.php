@@ -5,7 +5,6 @@ final class PBKMenu
 {
     private $mysqli;
     public $today;
-    private $menuGroupOrder;
     private $restaurantGUID;
     private $restaurantID;
     private $menu;
@@ -43,8 +42,8 @@ final class PBKMenu
 
     public function buildMenu($menuGUID): array{
         $this->menu = $menuGUID;
-        $modGroups=$this->buildModGroups();
-        $menuGroupOrder=$this->menuGroupOrder();
+        $allModGroups=$this->buildModGroups();
+        $menuGroupOrder=$this->buildSortOrder();
         $groups=$this->getMenuGroups();
         $menuGroups=array();
         foreach ($groups as $group){
@@ -55,7 +54,7 @@ final class PBKMenu
                 $mods=$this->getMenuModGroups($group,$item);
                 if(count($mods) > 1 ){
                     foreach ($mods as $mod) {
-                        $modGroups[] = $modGroups[$mod->modifierGroupGUID];
+                        $modGroups[] = $allModGroups[$mod->modifierGroupGUID];
                     }
                 }
                 $nutritionalShort="";
