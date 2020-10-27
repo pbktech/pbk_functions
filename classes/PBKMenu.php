@@ -7,6 +7,7 @@ final class PBKMenu
     public $today;
     private $menuGroupOrder;
     private $restaurantGUID;
+    private $restaurantID;
     private $menu;
 
     public function __construct($mysql){
@@ -157,6 +158,10 @@ where ptmmg.guid = prmmg.modifierGroupGUID AND ptmmgi.guid = prmmg.modifierGUID"
 
     public function setrestaurantID(int $restaurantID): void{
         $this->restaurantID = $restaurantID;
+    }
+
+    public function setrestaurantGUID(string $restaurantGUID): void{
+        $this->restaurantGUID = $restaurantGUID;
     }
 
     public function setMenu(string $menu): void{
