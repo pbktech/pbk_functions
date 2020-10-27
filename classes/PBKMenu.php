@@ -176,7 +176,7 @@ where ptmmg.guid = prmmg.modifierGroupGUID AND ptmmgi.guid = prmmg.modifierGUID"
         $this->menuGroupOrder = $menuGroupOrder;
     }
 
-    private function setToday(datetime $date): void{
+    private function setToday(string $date): void{
         $this->today = $date;
     }
 
