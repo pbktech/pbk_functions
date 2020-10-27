@@ -132,8 +132,8 @@ where ptmmg.guid = prmmg.modifierGroupGUID AND ptmmgi.guid = prmmg.modifierGUID"
     }
 
     public function getMenuItems($menuGroupGUID): array{
-        $stmt=$this->mysqli->prepare("SELECT * FROM pbc_ToastMenuItems ptmi, pbc_ref_menuItems prmi WHERE isActive=1 AND prmi.menuItemGUID = ptmi .guid AND restaurantGUID=? AND prmi.menuGroupGUID = ?");
         echo "SELECT * FROM pbc_ToastMenuItems ptmi, pbc_ref_menuItems prmi WHERE isActive=1 AND prmi.menuItemGUID = ptmi .guid AND restaurantGUID=".$this->restaurantGUID." AND prmi.menuGroupGUID = " . $menuGroupGUID;
+        $stmt=$this->mysqli->prepare("SELECT * FROM pbc_ToastMenuItems ptmi, pbc_ref_menuItems prmi WHERE isActive=1 AND prmi.menuItemGUID = ptmi .guid AND restaurantGUID=? AND prmi.menuGroupGUID = ?");
         $stmt->bind_param("ss", $this->restaurantGUID, $menuGroupGUID);
         $stmt->execute();
         $result = $stmt->get_result();
