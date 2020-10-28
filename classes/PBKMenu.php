@@ -8,6 +8,7 @@ final class PBKMenu
     private $restaurantGUID;
     private $restaurantID;
     private $menu;
+    private $linkSlug;
 
     public function __construct($mysql){
         if (!isset($mysql)) {
@@ -134,6 +135,18 @@ where ptmmg.guid = prmmg.modifierGroupGUID AND ptmmgi.guid = prmmg.modifierGUID"
         return $menuGroups;
     }
 
+    public function getServiceMenus(string $service): array{
+        $stmt=$this->mysqli->prepare("SELECT json_extract(services,'$.". $service .".menu') FROM pbc_minibar pm WHERE linkSlug = ?");
+        $stmt->bind_param("s", $this->linkSlug);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $menuGroups=array();
+        while ($row = $result->fetch_object()) {
+            $menuGroups[] = $row;
+        }
+        return $menuGroups;
+    }
+
     public function getMenuItems($menuGroupGUID): array{
         $stmt=$this->mysqli->prepare("SELECT * FROM pbc_ToastMenuItems ptmi, pbc_ref_menuItems prmi WHERE isActive=1 AND prmi.menuItemGUID = ptmi .guid AND restaurantGUID=? AND prmi.menuGroupGUID = ?");
         $stmt->bind_param("ss", $this->restaurantGUID, $menuGroupGUID);
@@ -164,6 +177,10 @@ where ptmmg.guid = prmmg.modifierGroupGUID AND ptmmgi.guid = prmmg.modifierGUID"
 
     public function setrestaurantGUID(string $restaurantGUID): void{
         $this->restaurantGUID = $restaurantGUID;
+    }
+
+    public function setLinkSlug(string $linkSlug): void{
+        $this->linkSlug = $linkSlug;
     }
 
     public function setMenu(string $menu): void{
