@@ -21,6 +21,8 @@ class Payeezy extends PBKPayment{
 
         $authorize_response = $authorize_card_transaction->authorize(
             [
+                "merchant_ref" => "Astonishing-Sale",
+                "amount" => "1",
                 "currency_code" => "USD",
                 "credit_card" => array(
                     "type" =>  $this->getCCType($this->card->number),
