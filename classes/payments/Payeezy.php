@@ -39,7 +39,7 @@ class Payeezy extends PBKPayment{
                 "cvv" => $this->card->cvc
             ],
             "auth" => "false",
-            "ta_token" => "123"
+            "ta_token" => "NOIW"
         ];
         return $this->processTransaction( "v1/transactions/tokens", $payload);
     }
