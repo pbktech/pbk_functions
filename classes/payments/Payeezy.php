@@ -1,5 +1,5 @@
 <?php
-require dirname(dirname(dirname(__FILE__, 2))) . "/vendor/autoload.php";
+require dirname(dirname(__FILE__, 2)) . "/vendor/autoload.php";
 
 class Payeezy extends PBKPayment{
 
