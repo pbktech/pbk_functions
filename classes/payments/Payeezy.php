@@ -34,7 +34,7 @@ class Payeezy extends PBKPayment{
             "credit_card" => [
                 "type" => $this->getCCType($this->card->number),
                 "cardholder_name" => $this->billingName,
-                "card_number" => $this->card->number,
+                "card_number" => $this->card->cardNumber,
                 "exp_date" => preg_replace('/\D/', '', $this->card->expiryDate),
                 "cvv" => $this->card->cvc
             ],
