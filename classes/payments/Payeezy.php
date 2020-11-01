@@ -33,13 +33,15 @@ class Payeezy extends PBKPayment{
                 "auth" => "false"
             ]
         );
-        $tasks=new task_engine($this->mysqli);
-        $tasks->add_task(
-            ['what'=>'execBackground',
-            'target'=>"/home/jewmanfoo/toast-api/ccFunction.php ",
-            'files' => json_encode(array("action" => "void", "transaction_tag"=> $authorize_response->transaction_tag, "transaction_id" => $authorize_response->transaction_id)),
-            'dueDate' => date('Y-m-d H:i:s', strtotime('+1 hour'))]
-        );
+        if($authorize_response->transaction_status == 'approved') {
+            $tasks = new task_engine($this->mysqli);
+            $tasks->add_task(
+                ['what' => 'execBackground',
+                    'target' => "/home/jewmanfoo/toast-api/ccFunction.php ",
+                    'files' => json_encode(array("action" => "void", "transaction_tag" => $authorize_response->transaction_tag, "transaction_id" => $authorize_response->transaction_id)),
+                    'dueDate' => date('Y-m-d H:i:s', strtotime('+1 hour'))]
+            );
+        }
         return $authorize_response;
     }
 
