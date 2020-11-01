@@ -1,6 +1,6 @@
 <?php
 
-class PBKUser
+final class PBKUser
 {
     private $userExists = false;
     private $userID;
@@ -40,7 +40,7 @@ class PBKUser
         }
     }
 
-    public function doRegister($request)
+    public function doRegister(object $request): array
     {
         if ($this->getUserExists()) {
             return array("message"=>"Username is already being used.","Variant"=>"danger");
@@ -67,7 +67,7 @@ class PBKUser
         return array("message"=>"There was an error signing you up. This error has been reported.","Variant"=>"danger");
     }
 
-    public function doLogin($request)
+    public function doLogin(object $request): array
     {
         if (!$this->getUserExists()) {
             return array("message"=>"Invalid Username/Password","Variant"=>"danger");
@@ -95,7 +95,7 @@ class PBKUser
             $stmt->execute();
             if (isset($stmt->error) && $stmt->error!='') {
                 $report=new ToastReport;
-                $m="User (".$this->userID.") failed to create hex link.<br><br>LP: ".$lp."<br><br>DB Error: " . $stmt->error;
+                $m="User (".$this->userID.") failed to create hex link.<br><br>LP: ".print_r($request,true)."<br><br>DB Error: " . $stmt->error;
                 $report->reportEmail("errors@theproteinbar.com", $m, "User error");
                 return array("message"=>"There was an error logging you in. This error has been reported.","Variant"=>"danger");
             }
@@ -106,40 +106,9 @@ class PBKUser
             $result = $stmt->get_result();
             $row = $result->fetch_object();
             if (isset($row->session)) {
-                $orders=array();
-                $addresses=array();
-                $groupOrders=array();
-                $stmt=$this->mysqli->prepare("SELECT addressID,addressType as 'type', street,addStreet,city,state,zip FROM pbc_minibar_users_address WHERE mbUserID=? AND addressType='billing' AND isDeleted=0");
-                $stmt->bind_param("s", $this->userID);
-                $stmt->execute();
-                if($result = $stmt->get_result()) {
-                    while ($rows = $result->fetch_object()) {
-                        $addresses[] = $rows;
-                    }
-                }
-                $stmt=$this->mysqli->prepare("SELECT UuidFromBin(pbc_minibar_order_check.publicUnique) as 'checkGUID', company, DATE_FORMAT(dateDue,'%c/%d/%Y %l:%i %p') as 'dateDue', DATE_FORMAT(checkAdded,'%c/%d/%Y %l:%i %p') as 'orderDate' FROM pbc_minibar_order_check,pbc_minibar_order_header, pbc_minibar pm WHERE mbOrderID = headerID AND pbc_minibar_order_check.mbUserID = ? AND pm.idpbc_minibar = minibarID");
-                $stmt->bind_param("s", $this->userID);
-                $stmt->execute();
-                if($result = $stmt->get_result()) {
-                    while ($rows = $result->fetch_object()) {
-                        $orders[] = $rows;
-                    }
-                }
-
-/*
-                $guestCredits=array();
-                $toast=new Toast("d76525a6-fa31-4122-b13c-148924d10512");
-                $customers=$toast->findCustomerID(preg_replace("/[^0-9]/", "",$this->userDetails->phone_number));
-                if(!empty($customers)){
-                    $fmt = new NumberFormatter( 'en_US', NumberFormatter::CURRENCY );
-                    foreach($customers as $c) {
-                        $credits = $toast->getCustCredits($c->guid);
-                        if(isset($credits->amount) && $credits->amount!=0){
-                            $guestCredits[]= (object)["guid"=>, "amount"=>$fmt->formatCurrency($credits->amount,"USD")];
-                        }
-                    }
-                }
-*/
+                $orders=$this->getUserOrders('individual');
+                $addresses=$this->getUserAddresses();
+                $groupOrders=$this->getUserOrders('group');
                 return array(
                     "message"=>"Login Successful",
                     "Variant"=>"success",
@@ -159,14 +128,45 @@ class PBKUser
             $stmt->execute();
             if (isset($stmt->error) && $stmt->error!='') {
                 $report=new ToastReport;
-                $m="User (".$this->userID.") failed to insert failed login.<br><br>LP: ".$lp."<br><br>DB Error: " . $stmt->error;
+                $m="User (".$this->userID.") failed to insert failed login.<br><br>DB Error: " . $stmt->error;
                 $report->reportEmail("errors@theproteinbar.com", $m, "User error");
                 return array("message"=>"There was an error logging you in. This error has been reported.","Variant"=>"danger");
             }
         }
         return array("message"=>"Invalid Username/Password","Variant"=>"danger");
     }
-    private function lockUserAccount()
+
+    private function getUserOrders(string $type=null): array{
+        $orders = array();
+        if($type=='group'){
+            $stmt = $this->mysqli->prepare("SELECT UuidFromBin(pbc_minibar_order_header.publicUnique) as 'checkGUID', company, DATE_FORMAT(dateDue,'%c/%d/%Y %l:%i %p') as 'dateDue', DATE_FORMAT(dateOrdered,'%c/%d/%Y %l:%i %p') as 'orderDate' FROM pbc_minibar_order_header, pbc_minibar pm WHERE pbc_minibar_order_header.mbUserID = ? AND pm.idpbc_minibar = minibarID AND orderType='minibar' and isGroup=1");
+        }else {
+            $stmt = $this->mysqli->prepare("SELECT UuidFromBin(pbc_minibar_order_check.publicUnique) as 'checkGUID', company, DATE_FORMAT(dateDue,'%c/%d/%Y %l:%i %p') as 'dateDue', DATE_FORMAT(checkAdded,'%c/%d/%Y %l:%i %p') as 'orderDate' FROM pbc_minibar_order_check,pbc_minibar_order_header, pbc_minibar pm WHERE mbOrderID = headerID AND pbc_minibar_order_check.mbUserID = ? AND pm.idpbc_minibar = minibarID AND orderType='minibar' and isGroup=0");
+        }
+        $stmt->bind_param("s", $this->userID);
+        $stmt->execute();
+        if($result = $stmt->get_result()) {
+            while ($rows = $result->fetch_object()) {
+                $orders[] = $rows;
+            }
+        }
+        return $orders;
+    }
+
+    private function getUserAddresses(): array{
+        $addresses=array();
+        $stmt=$this->mysqli->prepare("SELECT addressID,addressType as 'type', street,addStreet,city,state,zip FROM pbc_minibar_users_address WHERE mbUserID=? AND addressType='billing' AND isDeleted=0");
+        $stmt->bind_param("s", $this->userID);
+        $stmt->execute();
+        if($result = $stmt->get_result()) {
+            while ($rows = $result->fetch_object()) {
+                $addresses[] = $rows;
+            }
+        }
+        return $addresses;
+    }
+
+    private function lockUserAccount(): bool
     {
         $stmt=$this->mysqli->prepare("UPDATE pbc_minibar_user SET isLocked=1 WHERE id='".$this->userID."'");
         $stmt->execute();
@@ -176,6 +176,7 @@ class PBKUser
             $report->reportEmail("errors@theproteinbar.com", $m, "User error");
             return false;
         }
+        return true;
     }
     public function addUserAddress($request){
         $stmt=$this->mysqli->prepare("INSERT INTO pbc2.pbc_minibar_users_address (mbUserID, addressType, street, addStreet, city, state, zip, isDeleted)VALUES (?,?,?,?,?,?,?,0)");
@@ -191,7 +192,7 @@ class PBKUser
         $stmt->execute();
         if (isset($stmt->error) && $stmt->error!='') {
             $report=new ToastReport;
-            $m="User (".$this->userID.") failed to insert new address.<br><br>LP: ".$lp."<br><br>DB Error: " . $stmt->error . "<br><br>Request: " . print_r($request, true);
+            $m="User (".$this->userID.") failed to insert new address.<br><br>LP: ".print_r($request,true)."<br><br>DB Error: " . $stmt->error . "<br><br>Request: " . print_r($request, true);
             $report->reportEmail("errors@theproteinbar.com", $m, "User error");
             return array("message"=>"There was an error logging you in. This error has been reported.","Variant"=>"danger");
         }else{
@@ -206,7 +207,7 @@ class PBKUser
             ]);
         }
     }
-    public function getClientIP()
+    public function getClientIP(): string
     {
         if (!empty($_SERVER['HTTP_CLIENT_IP'])) {
             $ip = $_SERVER['HTTP_CLIENT_IP'];
@@ -217,7 +218,7 @@ class PBKUser
         }
         return $ip;
     }
-    public function checkSession($sessionGUID)
+    public function checkSession(string $sessionGUID): string
     {
         $stmt=$this->mysqli->prepare("SELECT mbUserId FROM pbc_minibar_users_sessions WHERE SessionGUID = UuidToBin(?) AND expireTime >= NOW()");
         $stmt->bind_param("s", $sessionGUID);
@@ -231,7 +232,7 @@ class PBKUser
         return false;
     }
 
-    public function getContactFomSession($sessionGUID){
+    public function getContactFomSession(string $sessionGUID): object{
         if($ID =  $this -> checkSession($sessionGUID)){
             $stmt=$this->mysqli->prepare("SELECT real_name1,id,phone_number,email_address FROM pbc_minibar_user WHERE id=?");
             $stmt->bind_param("s", $ID);
@@ -241,12 +242,17 @@ class PBKUser
                 return $row;
             }
         }
-        return false;
+        return (object)[null];
     }
-    public function generateHexLink($lp)
+    public function generateHexLink(string $lp, array $orderparams = null): string
     {
-        $stmt=$this->mysqli->prepare("INSERT INTO pbc2.pbc_minibar_users_links (mbUserID, linkPurpose)VALUES(?,?)");
-        $stmt->bind_param("ss", $this->userID, $lp);
+        if(empty($orderparams)) {
+            $stmt = $this->mysqli->prepare("INSERT INTO pbc2.pbc_minibar_users_links (mbUserID, linkPurpose)VALUES(?,?)");
+            $stmt->bind_param("ss", $this->userID, $lp);
+        }else{
+            $stmt = $this->mysqli->prepare("INSERT INTO pbc2.pbc_minibar_users_links (mbUserID, linkPurpose, linkExpires, orderHeaderID, mbService)VALUES(?,?,?,?,?)");
+            $stmt->bind_param("sssss", $this->userID, $lp, $orderparams['linkPurpose'], $orderparams['orderHeaderID'], $orderparams['mbService']);
+        }
         $stmt->execute();
         if (isset($stmt->error) && $stmt->error!='') {
             $report=new ToastReport;
@@ -265,7 +271,7 @@ class PBKUser
         }
         return false;
     }
-    public function doLogout($sessionID)
+    public function doLogout(string $sessionID): bool
     {
       $logOutTime=date("Y-m-d G:i:s");
       $stmt=$this->mysqli->prepare("UPDATE pbc_minibar_users_sessions SET logoutTime=? WHERE SessionGUID = UuidToBin(?)");

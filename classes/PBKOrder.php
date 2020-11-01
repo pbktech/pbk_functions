@@ -20,8 +20,8 @@ final class PBKOrder{
     }
 
     public function createOrderHeader(array $headerInfo): int{
-        $stmt = $this->mysqli->prepare("INSERT INTO pbc_minibar_order_header (mbUserID, minibarID, dateDue, orderType, dateOrdered,isGroup) VALUES(?, ?, ?, ?, ?, ?) ");
-        $stmt->bind_param("ssssss", $headerInfo['mbUserID'], $headerInfo['minibarID'], $headerInfo['deliveryDate'], $headerInfo['orderType'], $this->today, $headerInfo['isGroup']);
+        $stmt = $this->mysqli->prepare("INSERT INTO pbc_minibar_order_header (mbUserID, minibarID, dateDue, orderType, dateOrdered,isGroup,payerType) VALUES(?, ?, ?, ?, ?, ?, ?) ");
+        $stmt->bind_param("sssssss", $headerInfo['mbUserID'], $headerInfo['minibarID'], $headerInfo['deliveryDate'], $headerInfo['orderType'], $this->today, $headerInfo['isGroup'], $headerInfo['payerType']);
         $stmt->execute();
         if(isset($stmt->insert_id) && is_numeric($stmt->insert_id)){
             $this->setOrderID($stmt->insert_id);
@@ -56,7 +56,7 @@ final class PBKOrder{
     }
 
     public function checkOrderLink(string $link): ?object{
-        $stmt = $this->mysqli->prepare("SELECT orderHeaderID, payerType FROM pbc_minibar_users_links WHERE linkPurpose = 'group_order' AND linkHEX=? AND linkExpires >= NOW()");
+        $stmt = $this->mysqli->prepare("SELECT orderHeaderID FROM pbc_minibar_users_links WHERE linkPurpose = 'group_order' AND linkHEX=? AND linkExpires >= NOW()");
         $stmt->bind_param("s", $link);
         $stmt->execute();
         $result = $stmt->get_result();
@@ -84,7 +84,7 @@ final class PBKOrder{
         $this->payment = $paymentInfo;
     }
 
-    private function setToday(datetime $date): void{
+    private function setToday(string $date): void{
         $this->today = $date;
     }
 
