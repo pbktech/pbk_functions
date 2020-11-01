@@ -13,7 +13,7 @@ class Payeezy extends PBKPayment{
 
     private function hmacAuthorizationToken($payload): array
     {
-        $nonce = (string)random_bytes(8);
+        $nonce = (string)hexdec(bin2hex(random_bytes(8)));
         $timestamp = (string)(time()*1000); //time stamp in milli seconds
         $data = $this->config->Payeezy->Key . $nonce . $timestamp . $this->config->Payeezy->Merchant . $payload;
         $hashAlgorithm = "sha256";
