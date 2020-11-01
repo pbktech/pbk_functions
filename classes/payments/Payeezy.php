@@ -15,31 +15,12 @@ class Payeezy extends PBKPayment{
 
     }
 
-    private function hmacAuthorizationToken($payload): array
-    {
-        $nonce = (string)hexdec(bin2hex(random_bytes(8)));
-        $timestamp = (string)(time()*1000); //time stamp in milli seconds
-        $data = $this->config->Payeezy->Key . $nonce . $timestamp . $this->config->Payeezy->Merchant . $payload;
-        $hashAlgorithm = "sha256";
-        $hmac = hash_hmac($hashAlgorithm, $data, $this->config->Payeezy->Secret, false);    // HMAC Hash in hex
-        $authorization = base64_encode($hmac);
-        return array(
-            'authorization' => $authorization,
-            'nonce' => $nonce,
-            'timestamp' => $timestamp,
-            'apikey' => $this->config->Payeezy->Key,
-            'token' => $this->config->Payeezy->Merchant,
-        );
-    }
-
     public function getAuthToken(): object{
-        $this->client->setUrl("https://api-cert.payeezy.com/v1/transactions/tokens");
+        $this->client->setUrl("https://api-cert.payeezy.com/v1/transactions");
         $authorize_card_transaction = new Payeezy_CreditCard($this->client);
 
         $authorize_response = $authorize_card_transaction->authorize(
             [
-                "merchant_ref" => "Astonishing-Sale",
-                "amount" => "1",
                 "currency_code" => "USD",
                 "credit_card" => array(
                     "type" =>  $this->getCCType($this->card->number),
@@ -47,7 +28,8 @@ class Payeezy extends PBKPayment{
                     "card_number" => $this->card->cardNumber,
                     "exp_date" => preg_replace('/\D/', '', $this->card->expiryDate),
                     "cvv" => $this->card->cvc
-                )
+                ),
+                "auth" => "false"
             ]
         );
         return $authorize_response;
