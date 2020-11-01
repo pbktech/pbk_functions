@@ -100,9 +100,11 @@ class Payeezy extends PBKPayment{
 
         $answer=json_decode($response);
         if($answer->code == 200 || $answer->code == 201 || $answer->code == 202){
-            return json_decode($response);
+            return $answer;
         }else{
-            return (object)["headers" => array(
+            return (object)[
+                "response" => $answer,
+                "headers" => array(
                 'Content-Type: application/json',
                 'apikey:'. $this->config->Payeezy->Key,
                 'token:'. $this->config->Payeezy->Merchant,
