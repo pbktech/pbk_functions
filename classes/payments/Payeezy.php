@@ -81,7 +81,7 @@ class Payeezy extends PBKPayment{
         $authorization = base64_encode($hmac);
 
         $json=json_encode($payload, JSON_FORCE_OBJECT);
-        $headers=$this->hmacAuthorizationToken($payload);
+        $headers=$this->hmacAuthorizationToken($json);
         $request = curl_init();
         curl_setopt($request, CURLOPT_URL, $this->config->Payeezy->URL . $endpoint);
         curl_setopt($request, CURLOPT_POST, true);
