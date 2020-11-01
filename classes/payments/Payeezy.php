@@ -11,7 +11,7 @@ class Payeezy extends PBKPayment{
         $this->client->setApiKey($this->config->Payeezy->Key);
         $this->client->setApiSecret($this->config->Payeezy->Secret);
         $this->client->setMerchantToken($this->config->Payeezy->Merchant);
-        $this->client->setUrl($this->config->Payeezy->URL);
+      //  $this->client->setUrl($this->config->Payeezy->URL);
 
     }
 
@@ -33,6 +33,7 @@ class Payeezy extends PBKPayment{
     }
 
     public function getAuthToken(): object{
+        $this->client->setUrl("https://api-cert.payeezy.com/v1/transactions");
         $authorize_card_transaction = new Payeezy_CreditCard($this->client);
 
         $authorize_response = $authorize_card_transaction->authorize(
