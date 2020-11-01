@@ -4,10 +4,14 @@ require dirname(dirname(__FILE__, 2)) . "/vendor/autoload.php";
 class Payeezy extends PBKPayment{
 
     private $client;
-    private $header;
 
     public function __construct($mysqli){
         parent::__construct($mysqli);
+        $this->client = new Payeezy_Client();
+        $this->client->setApiKey($this->config->Payeezy->Key);
+        $this->client->setApiSecret($this->config->Payeezy->Secret);
+        $this->client->setMerchantToken($this->config->Payeezy->Merchant);
+        $this->client->setUrl($this->config->Payeezy->URL);
 
     }
 
@@ -29,19 +33,23 @@ class Payeezy extends PBKPayment{
     }
 
     public function getAuthToken(): object{
-        $payload=[
-            "type" => "FDToken",
-            "credit_card" => [
-                "type" => $this->getCCType($this->card->number),
-                "cardholder_name" => $this->billingName,
-                "card_number" => $this->card->cardNumber,
-                "exp_date" => preg_replace('/\D/', '', $this->card->expiryDate),
-                "cvv" => $this->card->cvc
-            ],
-            "auth" => "false",
-            "ta_token" => "NOIW"
-        ];
-        return $this->processTransaction( "v1/transactions/tokens", $payload);
+        $authorize_card_transaction = new Payeezy_CreditCard($client);
+
+        $authorize_response = $authorize_card_transaction->authorize(
+            [
+                "merchant_ref" => "Astonishing-Sale",
+                "amount" => "1",
+                "currency_code" => "USD",
+                "credit_card" => array(
+                    "type" =>  $this->getCCType($this->card->number),
+                    "cardholder_name" => $this->billingName,
+                    "card_number" => $this->card->cardNumber,
+                    "exp_date" => preg_replace('/\D/', '', $this->card->expiryDate),
+                    "cvv" => $this->card->cvc
+                )
+            ]
+        );
+        return $authorize_response;
     }
 
     public function authCard(): object{
