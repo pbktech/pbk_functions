@@ -86,7 +86,7 @@ class Payeezy extends PBKPayment{
         $request = curl_init();
         curl_setopt($request, CURLOPT_URL, $this->config->Payeezy->URL . $endpoint);
         curl_setopt($request, CURLOPT_POST, true);
-        curl_setopt($request, CURLOPT_POSTFIELDS, $payload);
+        curl_setopt($request, CURLOPT_POSTFIELDS, $json);
         curl_setopt($request, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($request, CURLOPT_HEADER, false);
         curl_setopt(
