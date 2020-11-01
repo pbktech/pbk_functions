@@ -21,7 +21,6 @@ class Payeezy extends PBKPayment{
 
         $authorize_response = $authorize_card_transaction->authorize(
             [
-                "merchant_ref" => "Astonishing-Sale",
                 "amount" => "1",
                 "currency_code" => "USD",
                 "credit_card" => array(
@@ -34,7 +33,16 @@ class Payeezy extends PBKPayment{
                 "auth" => "false"
             ]
         );
-        return $authorize_response;
+        $void_card_transaction = new Payeezy_CreditCard($this->client);
+        $void_response = $void_card_transaction->void(
+            $authorize_response->transaction_id,
+            array(
+                "amount"=> "1",
+                "transaction_tag" => $authorize_response->transaction_tag,
+                "currency_code" => "USD",
+            )
+        );
+        return (object)["auth" => $authorize_response, "void" => $void_response];
     }
 
     public function authCard(): object{
