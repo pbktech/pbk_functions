@@ -15,7 +15,7 @@ class Payeezy extends PBKPayment{
     {
         $nonce = (string)hexdec(bin2hex(openssl_random_pseudo_bytes(4, $cstrong)));
         $timestamp = (string)(time()*1000); //time stamp in milli seconds
-        $data = $this->config->Payeezy->Key . $nonce . $timestamp . $this->config->Payeezy->Merchant . $payload;
+        $data = $this->config->Payeezy->Key . $nonce . $timestamp . $this->config->Payeezy->Merchant . serialize($payload);
         $hashAlgorithm = "sha256";
         $hmac = hash_hmac($hashAlgorithm, $data, $this->config->Payeezy->Secret, false);    // HMAC Hash in hex
         $authorization = base64_encode($hmac);
