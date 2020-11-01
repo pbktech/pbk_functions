@@ -98,7 +98,19 @@ class Payeezy extends PBKPayment{
         }
         curl_close($request);
 
-        return json_decode($response);
+        $answer=json_decode($response);
+        if($answer->code == 200 || $answer->code == 201 || $answer->code == 202){
+            return json_decode($response);
+        }else{
+            return (object)["headers" => array(
+                'Content-Type: application/json',
+                'apikey:'. $this->config->Payeezy->Key,
+                'token:'. $this->config->Payeezy->Merchant,
+                'Authorization:'.$headers['authorization'],
+                'nonce:'.$headers['nonce'],
+                'timestamp:'.$headers['timestamp'],
+            ), "payload" => $json];
+        }
     }
 
 }
