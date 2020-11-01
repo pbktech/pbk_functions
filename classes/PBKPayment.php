@@ -6,7 +6,7 @@ class PBKPayment
     protected $card;
     protected $billing;
     private $paymentType;
-    private $mysqli;
+    protected $mysqli;
     protected $config;
     protected $billAmount;
     protected $billingName;
