@@ -69,6 +69,17 @@ class Payeezy extends PBKPayment{
     }
 
     private function processTransaction(string $endpoint,array $payload): object {
+        $apiKey = $this->config->Payeezy->Key;
+        $apiSecret = $this->config->Payeezy->Secret;
+        $nonce = random_bytes(4);
+        $timestamp = microtime();
+        $token = $this->config->Payeezy->Merchant;
+        $payloadString = print_r($payload,true);
+        $data = $apiKey . $nonce . $timestamp . $token . $payloadString;
+        $hashAlgorithm = "sha256";
+        $hmac = hash_hmac ( $hashAlgorithm , $data , $apiSecret, false );
+        $authorization = base64_encode($hmac);
+
         $json=json_encode($payload);
 
         $headers=$this->hmacAuthorizationToken($payload);
@@ -83,11 +94,11 @@ class Payeezy extends PBKPayment{
             CURLOPT_HTTPHEADER,
             array(
                 'Content-Type: application/json',
-                'apikey:'. $this->config->Payeezy->Key,
-                'token:'. $this->config->Payeezy->Merchant,
-                'Authorization:'.$headers['authorization'],
-                'nonce:'.$headers['nonce'],
-                'timestamp:'.$headers['timestamp'],
+                'apikey:' => $this->config->Payeezy->Key,
+                'token:' => $this->config->Payeezy->Merchant,
+                'Authorization:' => $authorization,
+                'nonce:' => $nonce,
+                'timestamp:' => $timestamp,
             )
         );
 
@@ -106,11 +117,11 @@ class Payeezy extends PBKPayment{
                 "response" => $answer,
                 "headers" => array(
                 'Content-Type: application/json',
-                'apikey:'. $this->config->Payeezy->Key,
-                'token:'. $this->config->Payeezy->Merchant,
-                'Authorization:'.$headers['authorization'],
-                'nonce:'.$headers['nonce'],
-                'timestamp:'.$headers['timestamp'],
+                'apikey:' => $this->config->Payeezy->Key,
+                'token:' => $this->config->Payeezy->Merchant,
+                'Authorization:' => $authorization,
+                'nonce:' => $nonce,
+                'timestamp:' => $timestamp,
             ), "payload" => $json];
         }
     }
