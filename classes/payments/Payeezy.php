@@ -94,11 +94,11 @@ class Payeezy extends PBKPayment{
             CURLOPT_HTTPHEADER,
             array(
                 'Content-Type: application/json',
-                'apikey:' => $this->config->Payeezy->Key,
+                'apikey:'=> $this->config->Payeezy->Key,
                 'token:' => $this->config->Payeezy->Merchant,
-                'Authorization:' => $authorization,
-                'nonce:' => $nonce,
-                'timestamp:' => $timestamp,
+                'Authorization:' => $headers['authorization'],
+                'nonce:' => $headers['nonce'],
+                'timestamp:' => $headers['timestamp'],
             )
         );
 
@@ -119,9 +119,9 @@ class Payeezy extends PBKPayment{
                 'Content-Type: application/json',
                 'apikey:' => $this->config->Payeezy->Key,
                 'token:' => $this->config->Payeezy->Merchant,
-                'Authorization:' => $authorization,
-                'nonce:' => $nonce,
-                'timestamp:' => $timestamp,
+                    'Authorization:' => $headers['authorization'],
+                    'nonce:' => $headers['nonce'],
+                    'timestamp:' => $headers['timestamp'],
             ), "payload" => $json];
         }
     }
