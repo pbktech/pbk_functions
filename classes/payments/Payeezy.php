@@ -33,7 +33,7 @@ class Payeezy extends PBKPayment{
     }
 
     public function getAuthToken(): object{
-        $authorize_card_transaction = new Payeezy_CreditCard($client);
+        $authorize_card_transaction = new Payeezy_CreditCard($this->client);
 
         $authorize_response = $authorize_card_transaction->authorize(
             [
