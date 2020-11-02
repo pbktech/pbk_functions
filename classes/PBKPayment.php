@@ -135,6 +135,9 @@ class PBKPayment
         $this->userID=$var;
     }
 
+    protected function getMysqli(): mysqli{
+        return $this->mysqli;
+    }
     public function setMysqli(mysqli $mysql): void {
         $this->mysqli = $mysql;
     }
