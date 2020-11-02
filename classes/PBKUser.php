@@ -32,6 +32,7 @@ final class PBKUser
         $row1 = $result1->fetch_object();
         if (isset($row1->id)) {
             $this->setUserID($row1->id);
+            $this->loadUserDetails();
             if (isset($row1->password)) {
                 $this->setUserExists(true);
             } else {
@@ -110,6 +111,7 @@ final class PBKUser
                 $addresses=$this->getUserAddresses();
                 $groupOrders=$this->getUserOrders('group');
                 $grouplinks = $this->getGroupLinks();
+                $houseaccounts = $this->getHouseAccounts();
                 return array(
                     "message"=>"Login Successful",
                     "Variant"=>"success",
@@ -120,7 +122,8 @@ final class PBKUser
                     "email" => $this->userDetails->email_address,
                     "orders" => $orders,
                     "groupOrders" => $groupOrders,
-                    "grouplinks" => $grouplinks
+                    "grouplinks" => $grouplinks,
+                    "houseAccounts" => $houseaccounts
                 );
             }
         } else {
@@ -137,6 +140,21 @@ final class PBKUser
         }
         return array("message"=>"Invalid Username/Password","Variant"=>"danger");
     }
+
+    private function getHouseAccounts(): array{
+        $orders = array();
+        $stmt = $this->mysqli->prepare("SELECT UuidFromBin(publicUnique) as 'guid' FROM pbc_minibar_ha_users, pbc_minibar_house_accounts  WHERE 
+           userID =? AND houseAccountID = accountID");
+        $stmt->bind_param("s", $this->userID);
+        $stmt->execute();
+        if($result = $stmt->get_result()) {
+            while ($rows = $result->fetch_object()) {
+                $orders[] = $rows;
+            }
+        }
+        return $orders;
+    }
+
 
     private function getGroupLinks(): array{
         $orders = array();
@@ -390,6 +408,10 @@ final class PBKUser
         }
         return true;
     }
+    public function getUserDetails(){
+        return $this->userDetails;
+    }
+
     public function cleanPhone($phone)
     {
         return preg_replace('/\D+/', '', $phone);
