@@ -178,7 +178,7 @@ final class PBKUser
         }
         return true;
     }
-    public function addUserAddress($request){
+    public function addUserAddress(object $request): array{
         $stmt=$this->mysqli->prepare("INSERT INTO pbc2.pbc_minibar_users_address (mbUserID, addressType, street, addStreet, city, state, zip, isDeleted)VALUES (?,?,?,?,?,?,?,0)");
         $stmt->bind_param("sssssss",
             $this->userID,

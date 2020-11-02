@@ -24,7 +24,7 @@ class Payeezy extends PBKPayment{
                 "amount" => "1",
                 "currency_code" => "USD",
                 "credit_card" => array(
-                    "type" =>  $this->getCCType($this->card->number),
+                    "type" =>  $this->getCCType($this->card->cardNumber),
                     "cardholder_name" => $this->billingName,
                     "card_number" => $this->card->cardNumber,
                     "exp_date" => preg_replace('/\D/', '', $this->card->expiryDate),
@@ -33,6 +33,20 @@ class Payeezy extends PBKPayment{
                 "auth" => "false"
             ]
         );
+        $args=array();
+        $args['mbCheckID']=null;
+        $args['mbUserID'] = $this->userID;
+        $args['paymentType'] = $authorize_response->card->type;
+        $args['paymentDate'] = date('Y-m-d H:i:s');
+        $args['paymentAmount'] = .01;
+        $args['paymentStatus'] = $authorize_response->transaction_status;
+        $args['authorization'] = json_encode(array("bank_resp_code" => $authorize_response->bank_resp_code, "bank_message" => $authorize_response->bank_message, "gateway_resp_code"=>$authorize_response->gateway_resp_code, "gateway_message" => $authorize_response->gateway_message));
+        $args['fdsToken'] = json_encode(array("token_type" => $authorize_response->token->token_type, "value" =>$authorize_response->token->token_data->value));
+        $args['cardNum'] = $authorize_response->card->card_number;
+        $args['transactionID'] = json_encode(array());
+        $args['addressID'] = $this->billingID;
+        $info=$this->addPaymentToTable($args);
+
         if($authorize_response->transaction_status == 'approved') {
             $tasks = new task_engine($this->mysqli);
             $tasks->add_task(
@@ -42,7 +56,7 @@ class Payeezy extends PBKPayment{
                     'dueDate' => date('Y-m-d H:i:s', strtotime('+1 hour'))]
             );
         }
-        return $authorize_response;
+        return (object)["response" => $authorize_response, "info" => $info];
     }
 
     public function authCard(): object{
