@@ -76,7 +76,7 @@ class PBKPayment
             $newStmt->execute();
             $result = $newStmt->get_result();
             $row = $result->fetch_object();
-            return ['status' => 200, "id" => $stmt->insert_id, "guid" => $row->guid];
+            return ['status' => 200, "id" => $stmt->insert_id, "guid" => "SELECT UuidFromBin(publicUnique) as 'guid' FROM pbc_minibar_order_payment WHERE paymentID = " .$stmt->insert_id ];
         }
         return ["status" => 400, "msg" => "Insert Failure", "request" => $args];
     }
