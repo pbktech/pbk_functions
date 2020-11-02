@@ -13,7 +13,7 @@ class HouseAccount extends PBKPayment{
     public function validateHouseAccount(){
         if($mysqli=$this->getMysqli()) {
             $stmt = $mysqli->prepare("SELECT accountID, maxIndividualOrder FROM pbc_minibar_house_accounts WHERE publicUnique=UuidToBin(?) AND onHold=0");
-            $stmt->bind_params('s', $this->guid);
+            $stmt->bind_param('s', $this->guid);
             $stmt->execute();
             $result = $stmt->get_result();
             $row = $result->fetch_object();
