@@ -109,6 +109,7 @@ final class PBKUser
                 $orders=$this->getUserOrders('individual');
                 $addresses=$this->getUserAddresses();
                 $groupOrders=$this->getUserOrders('group');
+                $grouplinks = $this->getGroupLinks();
                 return array(
                     "message"=>"Login Successful",
                     "Variant"=>"success",
@@ -118,7 +119,8 @@ final class PBKUser
                     "phone" => $this->userDetails->phone_number,
                     "email" => $this->userDetails->email_address,
                     "orders" => $orders,
-                    "groupOrders" => $groupOrders
+                    "groupOrders" => $groupOrders,
+                    "grouplinks" => $grouplinks
                 );
             }
         } else {
@@ -134,6 +136,19 @@ final class PBKUser
             }
         }
         return array("message"=>"Invalid Username/Password","Variant"=>"danger");
+    }
+
+    private function getGroupLinks(): array{
+        $orders = array();
+        $stmt = $this->mysqli->prepare("SELECT linkHEX FROM pbc_minibar_users_links WHERE mbUserID =? AND linkExpires >= NOW() AND linkPurpose = 'group_order'");
+        $stmt->bind_param("s", $this->userID);
+        $stmt->execute();
+        if($result = $stmt->get_result()) {
+            while ($rows = $result->fetch_object()) {
+                $orders[] = $rows;
+            }
+        }
+        return $orders;
     }
 
     private function getUserOrders(string $type=null): array{
