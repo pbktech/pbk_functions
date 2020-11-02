@@ -446,7 +446,7 @@ final class PBKUser
     }
     public function getUserID()
     {
-        return $this->userExists;
+        return $this->userID;
     }
     public function setUserID($var)
     {
