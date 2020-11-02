@@ -53,10 +53,7 @@ class PBKPayment
 
     protected function addPaymentToTable(array $args): array{
         $stmt = $this->mysqli->prepare("INSERT INTO pbc_minibar_order_payment (mbCheckID, mbUserID, paymentType, paymentDate, paymentAmount, paymentStatus, authorization, fdsToken, cardNum, transactionID, addressID) VALUES (?,?,?,?,?,?,?,?,?,?,?)");
-        if(isset($stmt->error) && $stmt->error!=''){
-            return [$stmt->error];
-        }
-        $stmt->bind_params('sssssssssss',
+        $stmt->bind_param('sssssssssss',
             $args['mbCheckID'],
             $args['mbUserID'],
             $args['paymentType'],
