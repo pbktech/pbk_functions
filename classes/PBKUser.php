@@ -251,7 +251,7 @@ final class PBKUser
             $stmt->bind_param("ss", $this->userID, $lp);
         }else{
             $stmt = $this->mysqli->prepare("INSERT INTO pbc2.pbc_minibar_users_links (mbUserID, linkPurpose, linkExpires, orderHeaderID, mbService)VALUES(?,?,?,?,?)");
-            $stmt->bind_param("sssss", $this->userID, $lp, $orderparams['linkPurpose'], $orderparams['orderHeaderID'], $orderparams['mbService']);
+            $stmt->bind_param("sssss", $this->userID, $lp, $orderparams['linkExpires'], $orderparams['orderHeaderID'], $orderparams['mbService']);
         }
         $stmt->execute();
         if (isset($stmt->error) && $stmt->error!='') {
