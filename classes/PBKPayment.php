@@ -81,7 +81,7 @@ class PBKPayment
             }
             $result = $newStmt->get_result();
             $row = $result->fetch_object();
-            return ['status' => 200, "id" => $stmt->insert_id, "guid" => $row->GUID];
+            return ['status' => 200, "id" => $stmt->insert_id, "guid" => print_r($row,true)];
         }
         return ["status" => 400, "msg" => "Insert Failure", "request" => $args];
     }
