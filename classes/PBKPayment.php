@@ -5,11 +5,13 @@ class PBKPayment
 {
     protected $card;
     protected $billing;
+    protected $billingID;
     private $paymentType;
     protected $mysqli;
     protected $config;
     protected $billAmount;
     protected $billingName;
+    protected  $userID;
 
     public function __construct($mysql){
         if (!isset($mysql)) {
@@ -49,7 +51,38 @@ class PBKPayment
         $this->localDB=$this->config->dBase;
     }
 
+    protected function addPaymentToTable(array $args): array{
+        $stmt = $this->mysqli->prepare("INSERT INTO pbc_minibar_order_payment (mbCheckID, mbUserID, paymentType, paymentDate, paymentAmount, paymentStatus, authorization, fdsToken, cardNum, transactionID, addressID) VALUES (?,?,?,?,?,?,?,?,?,?,?)");
+        $stmt->bind_params('sssssssssss',
+            $args['mbCheckID'],
+            $args['mbUserID'],
+            $args['paymentType'],
+            $args['paymentDate'],
+            $args['paymentAmount'],
+            $args['paymentStatus'],
+            $args['authorization'],
+            $args['fdsToken'],
+            $args['cardNum'],
+            $args['transactionID'],
+            $args['addressID']
+        );
+        $stmt->execute();
+        if(isset($stmt->error) && $stmt->error!=''){
+            return [$stmt->error];
+        }
+        if(!empty($stmt->insert_id)){
+            $newStmt=$this->mysqli->prepare("SELECT UuidFromBin(publicUnique) as 'guid' FROM pbc_minibar_order_payment WHERE paymentID = ?");
+            $newStmt->bind_param('s',$stmt->insert_id);
+            $newStmt->execute();
+            $result = $newStmt->get_result();
+            $row = $result->fetch_object();
+            return ['status' => 200, "id" => $stmt->insert_id, "guid" => $row->guid];
+        }
+        return ["status" => 400, "msg" => "Insert Failure", "request" => $args];
+    }
+
     public function setBilling(int $billingID): void {
+        $this->billingID=$billingID;
         $stmt=$this->mysqli->prepare("SELECT * FROM pbc_minibar_users_address WHERE addressID=? AND addressType='billing'");
         $stmt->bind_param('s',$billingID);
         $stmt->execute();
@@ -98,6 +131,11 @@ class PBKPayment
 
     private function setToday(string $date): void{
         $this->today = $date;
+    }
+
+    public function setUserID($var)
+    {
+        $this->userID=$var;
     }
 
     public function setMysqli(mysqli $mysql): void {
