@@ -140,7 +140,7 @@ final class PBKUser
 
     private function getGroupLinks(): array{
         $orders = array();
-        $stmt = $this->mysqli->prepare("SELECT linkHEX FROM pbc_minibar_users_links WHERE mbUserID =? AND linkExpires >= NOW() AND linkPurpose = 'group_order'");
+        $stmt = $this->mysqli->prepare("SELECT linkHEX,DATE_FORMAT(linkExpires, '%M %d %Y') as 'orderDate',mbService FROM pbc_minibar_users_links WHERE mbUserID =? AND linkExpires >= NOW() AND linkPurpose = 'group_order'");
         $stmt->bind_param("s", $this->userID);
         $stmt->execute();
         if($result = $stmt->get_result()) {
