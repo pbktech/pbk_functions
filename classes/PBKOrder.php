@@ -23,6 +23,7 @@ final class PBKOrder{
         $stmt = $this->mysqli->prepare("INSERT INTO pbc_minibar_order_header (mbUserID, minibarID, dateDue, orderType, dateOrdered,isGroup,payerType,defaultPayment) VALUES(?, ?, ?, ?, ?, ?, ?, ?) ");
         $stmt->bind_param("ssssssss", $headerInfo['mbUserID'], $headerInfo['minibarID'], $headerInfo['deliveryDate'], $headerInfo['orderType'], $this->today, $headerInfo['isGroup'], $headerInfo['payerType'], $headerInfo['defaultPayment']);
         $stmt->execute();
+        echo $stmt->error;
         if(isset($stmt->insert_id) && is_numeric($stmt->insert_id)){
             $this->setOrderID($stmt->insert_id);
             return $stmt->insert_id;
