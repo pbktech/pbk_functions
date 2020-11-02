@@ -135,6 +135,11 @@ class PBKPayment
         $this->userID=$var;
     }
 
+    public function setBillAmount($var)
+    {
+        $this->billAmount=$var;
+    }
+
     protected function getMysqli(): mysqli{
         return $this->mysqli;
     }

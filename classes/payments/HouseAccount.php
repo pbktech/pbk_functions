@@ -23,7 +23,7 @@ class HouseAccount extends PBKPayment{
                 $args['mbUserID'] = $this->userID;
                 $args['paymentType'] = "House";
                 $args['paymentDate'] = date('Y-m-d H:i:s');
-                $args['paymentAmount'] = .01;
+                $args['paymentAmount'] = $this->billAmount;
                 $args['paymentStatus'] = "approved";
                 $args['authorization'] = json_encode(array());
                 $args['fdsToken'] = json_encode(array());
