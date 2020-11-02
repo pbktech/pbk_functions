@@ -67,13 +67,18 @@ class PBKPayment
             $args['addressID']
         );
         $stmt->execute();
-        if(isset($stmt->error) && $stmt->error!=''){
+
+        if(isset($stmt->error) && $stmt->error !== ''){
             return [$stmt->error];
         }
-        if(!empty($stmt->insert_id)){
+
+        if(!empty($stmt->insert_id)) {
             $newStmt=$this->mysqli->prepare("SELECT UuidFromBin(publicUnique) as 'guid' FROM pbc_minibar_order_payment WHERE paymentID = ?");
             $newStmt->bind_param('s',$stmt->insert_id);
             $newStmt->execute();
+            if(!empty($newStmt->error)){
+                return [$newStmt->error];
+            }
             $result = $newStmt->get_result();
             $row = $result->fetch_object();
             return ['status' => 200, "id" => $stmt->insert_id, "guid" => $row->guid];
