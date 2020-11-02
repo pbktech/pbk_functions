@@ -73,7 +73,7 @@ class PBKPayment
         }
 
         if(!empty($stmt->insert_id)) {
-            $newStmt=$this->mysqli->prepare("SELECT UuidFromBin(publicUnique) as 'guid' FROM pbc_minibar_order_payment WHERE paymentID = ?");
+            $newStmt=$this->mysqli->prepare("SELECT UuidFromBin(publicUnique) as 'GUID' FROM pbc_minibar_order_payment WHERE paymentID = ?");
             $newStmt->bind_param('s',$stmt->insert_id);
             $newStmt->execute();
             if(!empty($newStmt->error)){
@@ -81,7 +81,7 @@ class PBKPayment
             }
             $result = $newStmt->get_result();
             $row = $result->fetch_object();
-            return ['status' => 200, "id" => $stmt->insert_id, "guid" => $row->guid];
+            return ['status' => 200, "id" => $stmt->insert_id, "guid" => $row->GUID];
         }
         return ["status" => 400, "msg" => "Insert Failure", "request" => $args];
     }
