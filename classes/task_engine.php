@@ -16,6 +16,12 @@ function task_dispatch ($task) {
   array_pop($t);
   $dir=implode('/', $t);
   if ($task['what']=='sendEmail') {
+      $email=new ToastReport();
+      $recip = explode(',', $task['target']);
+      foreach($recip as $r) {
+          $email->reportEmail($r,$task['text'],$task['subject']);
+      }
+      /*
     print "Sending email to " . $task['target'] . "\n";
     //$mime = new Mail_mime();
     $head=((isset($task['template']) && file_exists($task['template'] . '.header'))?file_get_contents($task['template'] . '.header'):'');
