@@ -31,7 +31,7 @@ class HouseAccount extends PBKPayment{
                 $args['transactionID'] = json_encode(array());
                 $args['addressID'] = $this->billingID;
                 $info = $this->addPaymentToTable($args);
-                return (object)["response" => array("transaction_status" => "approved"), "info" => $info];
+                return (object)["response" => (object)["transaction_status" => "approved"], "info" => $info];
             }else{
                 return (object)["response" => array("transaction_status" => "failed")];
             }
