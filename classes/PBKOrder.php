@@ -20,8 +20,19 @@ final class PBKOrder{
     }
 
     public function createOrderHeader(array $headerInfo): ?int{
+        $report = new ToastReport;
+        $m = "HEader Info: " . print_r($headerInfo,true);
+        $report->reportEmail("errors@theproteinbar.com", $m, "User error");
         $stmt = $this->mysqli->prepare("INSERT INTO pbc_minibar_order_header (mbUserID, minibarID, dateDue, orderType, dateOrdered,isGroup,payerType,defaultPayment) VALUES(?, ?, ?, ?, ?, ?, ?, ?) ");
-        $stmt->bind_param("ssssssss", $headerInfo['mbUserID'], $headerInfo['minibarID'], $headerInfo['deliveryDate'], $headerInfo['orderType'], $this->today, $headerInfo['isGroup'], $headerInfo['payerType'], $headerInfo['defaultPayment']);
+        $stmt->bind_param("ssssssss",
+            $headerInfo['mbUserID'],
+            $headerInfo['minibarID'],
+            $headerInfo['deliveryDate'],
+            $headerInfo['orderType'],
+            $this->today,
+            $headerInfo['isGroup'],
+            $headerInfo['payerType'],
+            $headerInfo['defaultPayment']);
         $stmt->execute();
         if(isset($stmt->insert_id) && is_numeric($stmt->insert_id)){
             $this->setOrderID($stmt->insert_id);
