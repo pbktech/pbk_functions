@@ -20,9 +20,6 @@ final class PBKOrder{
     }
 
     public function createOrderHeader(array $headerInfo): ?int{
-        $report = new ToastReport;
-        $m = "HEader Info: " . print_r($headerInfo,true);
-        $report->reportEmail("errors@theproteinbar.com", $m, "User error");
         $stmt = $this->mysqli->prepare("INSERT INTO pbc_minibar_order_header (mbUserID, minibarID, dateDue, orderType, dateOrdered,isGroup,payerType,defaultPayment) VALUES(?, ?, ?, ?, ?, ?, ?, ?) ");
         $stmt->bind_param("ssssssss",
             $headerInfo['mbUserID'],
@@ -38,9 +35,6 @@ final class PBKOrder{
             $this->setOrderID($stmt->insert_id);
             return $stmt->insert_id;
         }
-        $report = new ToastReport;
-        $m = "MySQL Error: " . $stmt->error;
-        $report->reportEmail("errors@theproteinbar.com", $m, "User error");
         return false;
     }
 
