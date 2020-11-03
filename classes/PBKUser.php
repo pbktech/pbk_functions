@@ -230,7 +230,7 @@ final class PBKUser
             $report->reportEmail("errors@theproteinbar.com", $m, "User error");
             return array("message"=>"There was an error logging you in. This error has been reported.","Variant"=>"danger");
         }else{
-            return array("message"=>".","Variant"=>"success", "address"=>[
+            return array("message"=>"Address Added.","Variant"=>"success", "address"=>[
                 "addressID" => $stmt->insert_id,
                 "type" => $request->type,
                 "street" => $request->street,
