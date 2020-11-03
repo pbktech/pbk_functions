@@ -19,7 +19,7 @@ final class PBKOrder{
         $this->setToday(date(TODAY_FORMAT));
     }
 
-    public function createOrderHeader(array $headerInfo): int{
+    public function createOrderHeader(array $headerInfo): ?int{
         $stmt = $this->mysqli->prepare("INSERT INTO pbc_minibar_order_header (mbUserID, minibarID, dateDue, orderType, dateOrdered,isGroup,payerType,defaultPayment) VALUES(?, ?, ?, ?, ?, ?, ?, ?) ");
         $stmt->bind_param("ssssssss", $headerInfo['mbUserID'], $headerInfo['minibarID'], $headerInfo['deliveryDate'], $headerInfo['orderType'], $this->today, $headerInfo['isGroup'], $headerInfo['payerType'], $headerInfo['defaultPayment']);
         $stmt->execute();
@@ -28,7 +28,7 @@ final class PBKOrder{
             return $stmt->insert_id;
         }
         $report = new ToastReport;
-        $m = "MYslq Error: " . $stmt->error;
+        $m = "MySQL Error: " . $stmt->error;
         $report->reportEmail("errors@theproteinbar.com", $m, "User error");
         return false;
     }
