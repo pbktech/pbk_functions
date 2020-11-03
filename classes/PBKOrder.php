@@ -27,6 +27,9 @@ final class PBKOrder{
             $this->setOrderID($stmt->insert_id);
             return $stmt->insert_id;
         }
+        $report = new ToastReport;
+        $m = "MYslq Error: " . $stmt->error;
+        $report->reportEmail("errors@theproteinbar.com", $m, "User error");
         return false;
     }
 
