@@ -189,7 +189,7 @@ final class PBKUser
 
     private function getUserAddresses(): array{
         $addresses=array();
-        $stmt=$this->mysqli->prepare("SELECT addressID,addressType as 'type', street,addStreet,city,state,zip FROM pbc_minibar_users_address WHERE mbUserID=? AND addressType='billing' AND isDeleted=0");
+        $stmt=$this->mysqli->prepare("SELECT addressID,addressType as 'type', street,addStreet,city,state,zip FROM pbc_minibar_users_address WHERE mbUserID=? AND isDeleted=0");
         $stmt->bind_param("s", $this->userID);
         $stmt->execute();
         if($result = $stmt->get_result()) {
@@ -370,6 +370,17 @@ final class PBKUser
     public function updateUserInfo($field, $value){
         $stmt=$this->mysqli->prepare("UPDATE pbc_minibar_user SET ".$field."=? WHERE id=?");
         $stmt->bind_param("ss", $value, $this->userID);
+        $stmt->execute();
+        if(isset($stmt->error) && $stmt->error!=''){
+            return ["status" => 400, "msg" => "Error saving."];
+        }else{
+            return ["status" => 200, "msg" => "Save successful."];
+        }
+    }
+
+    public function removeAddress($id){
+        $stmt=$this->mysqli->prepare("UPDATE pbc_minibar_users_address SET isDeleted=1 WHERE addressID=?");
+        $stmt->bind_param("s", $id);
         $stmt->execute();
         if(isset($stmt->error) && $stmt->error!=''){
             return ["status" => 400, "msg" => "Error saving."];
