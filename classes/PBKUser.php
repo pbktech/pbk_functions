@@ -367,6 +367,17 @@ final class PBKUser
         return $stmt->insert_id;
     }
 
+    public function updateUserInfo($field, $value){
+        $stmt=$this->mysqli->prepare("UPDATE pbc_minibar_user SET ".$field."=? WHERE id=?");
+        $stmt->bind_param("ss", $value, $this->userID);
+        $stmt->execute();
+        if(isset($stmt->error) && $stmt->error!=''){
+            return ["status" => 400, "msg" => "Error saving."];
+        }else{
+            return ["status" => 200, "msg" => "Save successful."];
+        }
+    }
+
     private function loadUserDetails()
     {
         $stmt1=$this->mysqli->prepare("SELECT email_address,real_name1,phone_number,emailConsent,password,isLocked,requireNewPassword,isConfirmed FROM pbc_minibar_user WHERE  id=?");
