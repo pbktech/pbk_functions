@@ -385,7 +385,7 @@ final class PBKUser
         if(isset($stmt->error) && $stmt->error!=''){
             return ["status" => 400, "msg" => "Error saving."];
         }else{
-            return ["status" => 200, "msg" => "Save successful."];
+            return ["status" => 200, "msg" => "Address Removed"];
         }
     }
 
