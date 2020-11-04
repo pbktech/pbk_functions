@@ -143,7 +143,7 @@ final class PBKUser
 
     private function getHouseAccounts(): array{
         $orders = array();
-        $stmt = $this->mysqli->prepare("SELECT UuidFromBin(publicUnique) as 'guid', companyName FROM pbc_minibar_ha_users, pbc_minibar_house_accounts  WHERE 
+        $stmt = $this->mysqli->prepare("SELECT UuidFromBin(publicUnique) as 'guid', companyName, maxIndividualOrder FROM pbc_minibar_ha_users, pbc_minibar_house_accounts  WHERE 
            userID =? AND houseAccountID = accountID");
         $stmt->bind_param("s", $this->userID);
         $stmt->execute();
