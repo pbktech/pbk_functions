@@ -36,6 +36,19 @@ class HouseAccount extends PBKPayment{
                 return (object)["response" => array("transaction_status" => "failed")];
             }
         }
+
+    }
+
+    public function getAccountInfo(string $field): ?string{
+        $stmt = $this->mysqli->prepare("SELECT ".$field." FROM pbc_minibar_house_accounts WHERE publicUnique=UuidToBin(?)");
+        $stmt->bind_param('s', $this->guid);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $row = $result->fetch_array();
+        if (!empty($row)) {
+            return $row[$field];
+        }
+        return false;
     }
 
     public function setGUID(string $guid): void{
