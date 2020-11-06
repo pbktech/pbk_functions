@@ -99,7 +99,7 @@ class PBKPayment
         return $result->fetch_object();
     }
 
-    final protected function getCCType(int $cardNumber): string {
+    final protected function getCCType(string $cardNumber): string {
         $cardType = 'Unknown';
         // Remove non-digits from the number
         $cardNumber = preg_replace('/\D/', '', $cardNumber);
