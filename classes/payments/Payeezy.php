@@ -26,7 +26,7 @@ class Payeezy extends PBKPayment{
                 "credit_card" => array(
                     "type" =>  $this->getCCType($this->card->number),
                     "cardholder_name" => $this->billingName,
-                    "card_number" => $this->card->number,
+                    "card_number" => $this->card->cardNumber,
                     "exp_date" => preg_replace('/\D/', '', $this->card->expiryDate),
                     "cvv" => $this->card->cvc
                 ),
@@ -46,7 +46,7 @@ class Payeezy extends PBKPayment{
         $args['transactionID'] = json_encode(array());
         $args['addressID'] = $this->billingID;
         $info=$this->addPaymentToTable($args);
-
+/*
         if($authorize_response->transaction_status == 'approved') {
             $tasks = new task_engine($this->mysqli);
             $tasks->add_task(
@@ -56,12 +56,13 @@ class Payeezy extends PBKPayment{
                     'dueDate' => date('Y-m-d H:i:s', strtotime('+1 hour'))]
             );
         }
+*/
         return (object)["response" => $authorize_response, "info" => $info];
     }
 
     public function authCard(): object{
         $authorize_card_transaction = new Payeezy_CreditCard($this->client);
-        $cardType = $this->getCCType($this->card->number);
+        $cardType = $this->getCCType($this->card->cardNumber);
         return  $authorize_card_transaction->authorize(
             [
                 "merchant_ref" => "PBKMinibar-" . $checkGUID,
@@ -71,7 +72,7 @@ class Payeezy extends PBKPayment{
                 "credit_card" => array(
                     "type" => $cardType,
                     "cardholder_name" => $this->billingName,
-                    "card_number" => $this->card->number,
+                    "card_number" => $this->card->cardNumber,
                     "exp_date" => preg_replace('/\D/', '', $this->card->expiryDate),
                     "cvv" => $this->card->cvc
                 )
