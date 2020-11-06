@@ -37,12 +37,12 @@ final class PBKCheck
         }
         $this->setCheckID($stmt->insert_id);
         $stmt = $this->mysqli->prepare("SELECT UuidFromBin(publicUnique) as 'guid' FROM pbc_minibar_order_check WHERE checkID=?");
-        $stmt->bind_param("s",$stmt->insert_id);
+        $stmt->bind_param("s",$this->checkID);
         $stmt->execute();
         $result = $stmt->get_result();
         $row = $result->fetch_object();
         $this->setGUID($row->guid);
-        return $stmt->insert_id;
+        return $this->checkID;
     }
 
     public function verifyGUID(string $guid): ?int{
