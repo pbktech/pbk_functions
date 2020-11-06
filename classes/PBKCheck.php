@@ -31,7 +31,6 @@ final class PBKCheck
             $h['smsConsent']
         );
         $stmt->execute();
-        $this->reportError( "Failed to insert check header. <br><br> The server said: " . print_r($h,true) . "<br>insert_id: " .$stmt->insert_id);
         if (isset($stmt->error) && $stmt->error != '') {
             $this->reportError( "Failed to insert check header. <br><br> The server said: " . $stmt->error);
             return false;

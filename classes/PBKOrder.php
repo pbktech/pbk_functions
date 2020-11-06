@@ -64,7 +64,7 @@ final class PBKOrder{
     }
 
     public function returnHeaderInfo(): ?object{
-        $stmt = $this->mysqli->prepare("SELECT isGroup,payerType,maximumCheck,defaultPayment FROM pbc_minibar_order_header WHERE headerID=?)");
+        $stmt = $this->mysqli->prepare("SELECT isGroup,payerType,maximumCheck,defaultPayment FROM pbc_minibar_order_header WHERE headerID=?");
         $stmt->bind_param("s", $this->orderID);
         $stmt->execute();
         $result = $stmt->get_result();
