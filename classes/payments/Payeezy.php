@@ -39,7 +39,7 @@ class Payeezy extends PBKPayment{
             ]
         );
         $args=array();
-        $args['mbCheckID']=null;
+        $args['mbCheckID']=$this->checkID;
         $args['mbUserID'] = $this->userID;
         $args['paymentType'] = $authorize_response->card->type;
         $args['paymentDate'] = date('Y-m-d H:i:s');
