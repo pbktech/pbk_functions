@@ -18,10 +18,15 @@ class Payeezy extends PBKPayment{
     public function getAuthToken(): object{
         $this->client->setUrl("https://api-cert.payeezy.com/v1/transactions");
         $authorize_card_transaction = new Payeezy_CreditCard($this->client);
-
+        if(isset($this->checkID)){
+            $merchant_ref = "PBKMinibar-" . $this->checkID;
+        }else{
+            $merchant_ref = "Protein Bar Pre-auth";
+        }
         $authorize_response = $authorize_card_transaction->authorize(
             [
-                "amount" => "1",
+                "merchant_ref" => $merchant_ref,
+                "amount" => $this->billAmount,
                 "currency_code" => "USD",
                 "credit_card" => array(
                     "type" =>  $this->getCCType($this->card->number),
@@ -38,7 +43,7 @@ class Payeezy extends PBKPayment{
         $args['mbUserID'] = $this->userID;
         $args['paymentType'] = $authorize_response->card->type;
         $args['paymentDate'] = date('Y-m-d H:i:s');
-        $args['paymentAmount'] = .01;
+        $args['paymentAmount'] = $this->billAmount;
         $args['paymentStatus'] = $authorize_response->transaction_status;
         $args['authorization'] = json_encode(array("bank_resp_code" => $authorize_response->bank_resp_code, "bank_message" => $authorize_response->bank_message, "gateway_resp_code"=>$authorize_response->gateway_resp_code, "gateway_message" => $authorize_response->gateway_message));
         $args['fdsToken'] = json_encode(array("token_type" => $authorize_response->token->token_type, "value" =>$authorize_response->token->token_data->value));
@@ -58,26 +63,6 @@ class Payeezy extends PBKPayment{
         }
 */
         return (object)["response" => $authorize_response, "info" => $info];
-    }
-
-    public function authCard(): object{
-        $authorize_card_transaction = new Payeezy_CreditCard($this->client);
-        $cardType = $this->getCCType($this->card->cardNumber);
-        return  $authorize_card_transaction->authorize(
-            [
-                "merchant_ref" => "PBKMinibar-" . $checkGUID,
-                "amount" => $this->billAmount,
-                "currency_code" => "USD",
-                "billing_address" => $billing_address,
-                "credit_card" => array(
-                    "type" => $cardType,
-                    "cardholder_name" => $this->billingName,
-                    "card_number" => $this->card->cardNumber,
-                    "exp_date" => preg_replace('/\D/', '', $this->card->expiryDate),
-                    "cvv" => $this->card->cvc
-                )
-            ]
-        );
     }
 
     public function captureCard(){
