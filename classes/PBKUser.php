@@ -32,7 +32,6 @@ final class PBKUser
         $row1 = $result1->fetch_object();
         if (isset($row1->id)) {
             $this->setUserID($row1->id);
-            $this->loadUserDetails();
             if (isset($row1->password)) {
                 $this->setUserExists(true);
             } else {
@@ -475,6 +474,7 @@ final class PBKUser
     public function setUserID($var)
     {
         $this->userID=$var;
+        $this->loadUserDetails();
     }
     public function setGuestUser($var)
     {
