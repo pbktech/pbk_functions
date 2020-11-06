@@ -92,7 +92,7 @@ class PBKPayment
     }
 
     final public function returnPayementInfo(): ?object{
-        $stmt = $this->mysqli->prepare("SELECT * FROM pbc_minibar_order_payment WHERE paymentID=?)");
+        $stmt = $this->mysqli->prepare("SELECT * FROM pbc_minibar_order_payment WHERE paymentID=?");
         $stmt->bind_param("s", $this->paymentID);
         $stmt->execute();
         $result = $stmt->get_result();
