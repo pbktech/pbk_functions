@@ -23,7 +23,7 @@ final class PBKUser
         }
     }
 
-    public function userCheck($user)
+    public function userCheck(string $user): ?int
     {
         $stmt1=$this->mysqli->prepare("SELECT id,password FROM pbc_minibar_user WHERE  email_address=?");
         $stmt1->bind_param("s", $user);
@@ -38,7 +38,9 @@ final class PBKUser
             } else {
                 $this->setGuestUser(true);
             }
+            return $row1->id;
         }
+        return false;
     }
 
     public function doRegister(object $request): array
@@ -59,7 +61,7 @@ final class PBKUser
         }
         if ($linkHEX=$this->generateHexLink("user_registration")) {
             $report=new ToastReport;
-            $m="Thank you for signing up for an account with Protein Bar & Kitchen. Please click this link you confrim your email. <a href='https://mb.theproteinbar.com/confirm/".$linkHEX."'>https://mb.theproteinbar.com/confirm/".$linkHEX."</a>";
+            $m="Thank you for signing up for an account with Protein Bar & Kitchen. Please click this link you confrim your email. <a href='https://www.pbkminibar.com/confirm/".$linkHEX."'>https://www.pbkminibar.com/confirm/".$linkHEX."</a>";
             $report->reportEmail($request->user, $m, "Minibar Email Verification");
             return array("message"=>"Thank you for signing up. Please check your email for an email confirmation.","Variant"=>"success");
         } else {
@@ -342,7 +344,7 @@ final class PBKUser
             }
             if ($linkHEX=$this->generateHexLink("forgot_password")) {
                 $report=new ToastReport;
-                $m="Someone has requested a new password to Protein Bar & Kitchen using this email. Please use this link to reset your password. <a href='https://mb.theproteinbar.com/forgotpass/".$linkHEX."'>https://mb.theproteinbar.com/forgotpass/".$linkHEX."</a>";
+                $m="Someone has requested a new password to Protein Bar & Kitchen using this email. Please use this link to reset your password. <a href='https://www.pbkminibar.com/forgotpass/".$linkHEX."'>https://www.pbkminibar.com/forgotpass/".$linkHEX."</a>";
                 $report->reportEmail($this->userDetails->email_address, $m, "Protein Bar & Kitchen Password Reset");
             } else {
                 return false;

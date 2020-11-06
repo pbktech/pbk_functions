@@ -7,6 +7,9 @@ class PBKPayment
     protected $billing;
     protected $billingID;
     private $paymentType;
+    protected $paymentID;
+    private $guid;
+    protected $checkID;
     protected $mysqli;
     protected $config;
     protected $billAmount;
@@ -25,11 +28,11 @@ class PBKPayment
         $this->setConfig();
     }
 
-    public function setCard(object $card): void {
+    final public function setCard(object $card): void {
         $this->card = $card;
     }
 
-    private function setConfig($sandbox=0){
+    final private function setConfig($sandbox=0): void{
         if(!defined('ABSPATH')){
             if (file_exists('/var/www/html/c2.theproteinbar.com')) {
                 define('ABSPATH', '/var/www/html/c2.theproteinbar.com/');
@@ -51,7 +54,7 @@ class PBKPayment
         $this->localDB=$this->config->dBase;
     }
 
-    protected function addPaymentToTable(array $args): array{
+    public final function addPaymentToTable(array $args): array{
         $stmt = $this->mysqli->prepare("INSERT INTO pbc_minibar_order_payment (mbCheckID, mbUserID, paymentType, paymentDate, paymentAmount, paymentStatus, authorization, fdsToken, cardNum, transactionID, addressID) VALUES (?,?,?,?,?,?,?,?,?,?,?)");
         $stmt->bind_param('sssssssssss',
             $args['mbCheckID'],
@@ -78,7 +81,7 @@ class PBKPayment
         return ["status" => 400, "msg" => "Insert Failure", "request" => $args];
     }
 
-    public function setBilling(int $billingID): void {
+    final public function setBilling(int $billingID): void {
         $this->billingID=$billingID;
         $stmt=$this->mysqli->prepare("SELECT * FROM pbc_minibar_users_address WHERE addressID=? AND addressType='billing'");
         $stmt->bind_param('s',$billingID);
@@ -88,7 +91,15 @@ class PBKPayment
         $this->billing = $row;
     }
 
-    protected function getCCType($cardNumber) {
+    final public function returnPayementInfo(): ?object{
+        $stmt = $this->mysqli->prepare("SELECT * FROM pbc_minibar_order_payment WHERE paymentID=?)");
+        $stmt->bind_param("s", $this->paymentID);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        return $result->fetch_object();
+    }
+
+    final protected function getCCType(int $cardNumber): string {
         $cardType = 'Unknown';
         // Remove non-digits from the number
         $cardNumber = preg_replace('/\D/', '', $cardNumber);
@@ -118,11 +129,43 @@ class PBKPayment
         return $cardType;
     }
 
-    public function setBillingName(string $type): void {
+    final public function validateGUID(string $guid): int{
+        $stmt = $this->mysqli->prepare("SELECT paymentID FROM pbc_minibar_order_payment WHERE publicUnique=UuidToBin(?)");
+        $stmt->bind_param("s",$guid);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $row = $result->fetch_object();
+        if(isset($row->checkID)) {
+            $this->setGUID($guid);
+            $this->setPaymentID($row->paymentID);
+            return $row->paymentID;
+        }
+        return false;
+
+    }
+
+    protected function setGUID(string $guid): void{
+        $this->guid = $guid;
+    }
+
+    public function getGUID(): string{
+        return $this->guid;
+    }
+
+    final public function setPaymentID(int $type): void {
+        $this->paymentID = $type;
+    }
+
+    final public function setBillingName(string $type): void {
         $this->billingName = $type;
     }
 
-    public function setPaymentType(string $type): void {
+    final public function setCheckID(int $check): void {
+        $this->checkID = $check;
+    }
+
+
+    final public function setPaymentType(string $type): void {
         $this->paymentType = $type;
     }
 
@@ -130,20 +173,21 @@ class PBKPayment
         $this->today = $date;
     }
 
-    public function setUserID($var)
+    final public function setUserID(int $var): void
     {
         $this->userID=$var;
     }
 
-    public function setBillAmount($var)
+    final public function setBillAmount(float $var): void
     {
         $this->billAmount=$var;
     }
 
-    protected function getMysqli(): mysqli{
+    final protected function getMysqli(): mysqli{
         return $this->mysqli;
     }
-    public function setMysqli(mysqli $mysql): void {
+
+    final public function setMysqli(mysqli $mysql): void {
         $this->mysqli = $mysql;
     }
 

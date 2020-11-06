@@ -63,15 +63,14 @@ final class PBKOrder{
         return false;
     }
 
-    public function checkOrderLink(string $link): ?object{
-        $stmt = $this->mysqli->prepare("SELECT orderHeaderID FROM pbc_minibar_users_links WHERE linkPurpose = 'group_order' AND linkHEX=? AND linkExpires >= NOW()");
-        $stmt->bind_param("s", $link);
+    public function returnHeaderInfo(): ?object{
+        $stmt = $this->mysqli->prepare("SELECT isGroup,payerType,maximumCheck,defaultPayment FROM pbc_minibar_order_header WHERE headerID=?)");
+        $stmt->bind_param("s", $this->orderID);
         $stmt->execute();
         $result = $stmt->get_result();
         $row = $result->fetch_object();
-        if(isset($row->linkID)){
-            $this->setOrderID($row->orderHeaderID);
-            return (object)["headerGUID" => $this->getGUID(), "payer" => $row->payerType];
+        if(isset($row->payerType)){
+            return $row;
         }
         return null;
     }
@@ -82,10 +81,6 @@ final class PBKOrder{
 
     public function setContact(object $contactInfo): void{
         $this->contact = $contactInfo;
-    }
-
-    public function setOrder(object $orderInfo): void{
-        $this->contact = $orderInfo;
     }
 
     public function setPayment(object $paymentInfo): void{

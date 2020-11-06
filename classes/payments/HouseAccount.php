@@ -19,7 +19,7 @@ class HouseAccount extends PBKPayment{
             $row = $result->fetch_object();
             if (!empty($row)) {
                 $args = array();
-                $args['mbCheckID'] = null;
+                $args['mbCheckID'] = $this->checkID;
                 $args['mbUserID'] = $this->userID;
                 $args['paymentType'] = "House";
                 $args['paymentDate'] = date('Y-m-d H:i:s');
