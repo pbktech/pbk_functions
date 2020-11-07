@@ -372,7 +372,7 @@ class Toast{
 		return json_decode($result);
 	}
 	public function toastDate($date){
-	    $time=strtime($date);
+	    $time=strtotime($date);
 	    return date("Y-m-d",$time) . "T" . date("H:i:s",$time) . ".000" . date("O",$time);
     }
 	function dateToUTC($date) {
