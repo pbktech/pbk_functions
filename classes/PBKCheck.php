@@ -160,7 +160,7 @@ final class PBKCheck
 
     public Function returnPayments():array{
         $payments=[];
-        $stmt = $this->mysqli->prepare("SELECT * from pbc_minibar_order_payment WHERE checkID = ?");
+        $stmt = $this->mysqli->prepare("SELECT * from pbc_minibar_order_payment WHERE mbCheckID = ?");
         $stmt->bind_param("s", $this->checkID);
         $stmt->execute();
         $result = $stmt->get_result();
