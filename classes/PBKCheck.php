@@ -202,7 +202,7 @@ final class PBKCheck
         return $checks;
     }
 
-    private function setCheckID(int $checkID): void{
+    public function setCheckID(int $checkID): void{
         $this->checkID = $checkID;
     }
 
