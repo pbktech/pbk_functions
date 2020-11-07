@@ -371,6 +371,10 @@ class Toast{
 		$result=curl_exec($ch);
 		return json_decode($result);
 	}
+	public function toastDate($date){
+	    $time=strtime($date);
+	    return date("Y-m-d",$time) . "T" . date("H:i:s",$time) . ".000" . date("O",$time);
+    }
 	function dateToUTC($date) {
 		date_default_timezone_set("UTC");
 		return date("Y-d-mTG:i:sz", strtotime($date));

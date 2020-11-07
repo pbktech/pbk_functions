@@ -146,6 +146,62 @@ final class PBKCheck
         }
     }
 
+    public Function returnDiscounts():array{
+        $discounts=[];
+        $stmt = $this->mysqli->prepare("SELECT * from pbc_minibar_order_discount WHERE checkID = ?");
+        $stmt->bind_param("s", $this->checkID);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        while($row = $result->fetch_object()){
+            $discounts[]=$row;
+        }
+        return $discounts;
+    }
+
+    public Function returnPayments():array{
+        $payments=[];
+        $stmt = $this->mysqli->prepare("SELECT * from pbc_minibar_order_payment WHERE checkID = ?");
+        $stmt->bind_param("s", $this->checkID);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        while($row = $result->fetch_object()){
+            $payments[]=$row;
+        }
+        return $payments;
+    }
+
+    public function buildCheckItems(): array{
+        $items = [];
+        $stmt = $this->mysqli->prepare("SELECT * from pbc_minibar_order_items WHERE checkID = ?");
+        $stmt->bind_param("s", $this->checkID);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        while($row = $result->fetch_object()){
+            $mods = [];
+            $stmt1 = $this->mysqli->prepare("SELECT * from pbc_minibar_order_mods WHERE itemID = ?");
+            $stmt1->bind_param("s", $row->itemID);
+            $stmt1->execute();
+            $result1 = $stmt1->get_result();
+            while($row1 = $result1->fetch_object()){
+                $mods[] = (object)["guid"=>$row1->modGUID, "name"=>$row1->modName, "price"=>$row1->modPrice];
+            }
+            $items[] = (object)["mods"=>$mods, "guid"=>$row->itemGUID, 'name'=>$row->itemName, "price" => $row->itemPrice, "quantity"=>$row->quantity];
+        }
+        return $items;
+    }
+
+    public Function returnChecks():array{
+        $checks=[];
+        $stmt = $this->mysqli->prepare("SELECT * from pbc_minibar_order_check pmoc WHERE mbOrderID = ?");
+        $stmt->bind_param("s", $this->orderID);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        while($row = $result->fetch_object()){
+            $checks[]=$row;
+        }
+        return $checks;
+    }
+
     private function setCheckID(int $checkID): void{
         $this->checkID = $checkID;
     }
