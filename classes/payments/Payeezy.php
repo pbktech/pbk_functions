@@ -4,6 +4,8 @@ require dirname(dirname(__FILE__, 2)) . "/vendor/autoload.php";
 class Payeezy extends PBKPayment{
 
     public $client;
+    private $transaction_id;
+    private $transaction_tag;
 
     public function __construct($mysqli){
         parent::__construct($mysqli);
@@ -11,15 +13,14 @@ class Payeezy extends PBKPayment{
         $this->client->setApiKey($this->config->Payeezy->Key);
         $this->client->setApiSecret($this->config->Payeezy->Secret);
         $this->client->setMerchantToken($this->config->Payeezy->Merchant);
-      //  $this->client->setUrl($this->config->Payeezy->URL);
 
     }
 
     public function getAuthToken(): object{
-        $this->client->setUrl("https://api-cert.payeezy.com/v1/transactions");
+        $this->client->setUrl($this->config->Payeezy->URL . "v1/transactions");
         $authorize_card_transaction = new Payeezy_CreditCard($this->client);
         if(isset($this->checkID)){
-            $merchant_ref = "PBKMinibar-" . $this->checkID;
+            $merchant_ref = "PBKMinibar-" . $this->checkGUID;
         }else{
             $merchant_ref = "Protein Bar Pre-auth";
         }
@@ -38,92 +39,80 @@ class Payeezy extends PBKPayment{
                 "auth" => "false"
             ]
         );
-        $args=array();
-        $args['mbCheckID']=$this->checkID;
-        $args['mbUserID'] = $this->userID;
-        $args['paymentType'] = $authorize_response->card->type;
-        $args['paymentDate'] = date('Y-m-d H:i:s');
-        $args['paymentAmount'] = $this->billAmount;
-        $args['paymentStatus'] = $authorize_response->transaction_status;
-        $args['authorization'] = json_encode(array("bank_resp_code" => $authorize_response->bank_resp_code, "bank_message" => $authorize_response->bank_message, "gateway_resp_code"=>$authorize_response->gateway_resp_code, "gateway_message" => $authorize_response->gateway_message));
-        $args['fdsToken'] = json_encode(array("token_type" => $authorize_response->token->token_type, "value" =>$authorize_response->token->token_data->value));
-        $args['cardNum'] = $authorize_response->card->card_number;
-        $args['transactionID'] = json_encode(array());
-        $args['addressID'] = $this->billingID;
+        $args = [
+            'mbCheckID'=>$this->checkID,
+        'mbUserID' => $this->userID,
+        'paymentType' => $authorize_response->card->type,
+        'paymentDate' => date('Y-m-d H:i:s'),
+        'paymentAmount' => $this->billAmount,
+        'paymentStatus' => $authorize_response->transaction_status,
+        'authorization' => json_encode(array("bank_resp_code" => $authorize_response->bank_resp_code, "bank_message" => $authorize_response->bank_message, "gateway_resp_code"=>$authorize_response->gateway_resp_code, "gateway_message" => $authorize_response->gateway_message)),
+        'fdsToken' => json_encode(
+            array(
+                "token_type" => $authorize_response->token->token_type,
+                "token_data" => [
+                    "type" => $this->getCCType($this->card->cardNumber),
+                    "value" => $authorize_response->token->token_data->value,
+                    "cardholder_name" => $this->billingName,
+                    "exp_date" => preg_replace('/\D/', '', $this->card->expiryDate)
+                ]
+            )
+        ),
+        'cardNum' => $authorize_response->card->card_number,
+        'transactionID' => json_encode(array("transaction_id"=>$authorize_response->transaction_id, "transaction_tag"=>$authorize_response->transaction_tag)),
+        'addressID' => $this->billingID,
+        'expDate' => preg_replace('/\D/', '', $this->card->expiryDate)
+        ];
         $info=$this->addPaymentToTable($args);
-/*
-        if($authorize_response->transaction_status == 'approved') {
-            $tasks = new task_engine($this->mysqli);
-            $tasks->add_task(
-                ['what' => 'execBackground',
-                    'target' => "/home/jewmanfoo/toast-api/ccFunction.php ",
-                    'files' => json_encode(array("action" => "void", "transaction_tag" => $authorize_response->transaction_tag, "transaction_id" => $authorize_response->transaction_id)),
-                    'dueDate' => date('Y-m-d H:i:s', strtotime('+1 hour'))]
-            );
-        }
-*/
         return (object)["response" => $authorize_response, "info" => $info];
     }
 
     public function captureCard(){
-
-    }
-
-    private function processTransaction(string $endpoint,array $payload): object {
-        $apiKey = $this->config->Payeezy->Key;
-        $apiSecret = $this->config->Payeezy->Secret;
-        $nonce = random_bytes(4);
-        $timestamp = microtime();
-        $token = $this->config->Payeezy->Merchant;
-        $payloadString = print_r($payload,true);
-        $data = $apiKey . $nonce . $timestamp . $token . $payloadString;
-        $hashAlgorithm = "sha256";
-        $hmac = hash_hmac ( $hashAlgorithm , $data , $apiSecret, false );
-        $authorization = base64_encode($hmac);
-
-        $json=json_encode($payload, JSON_FORCE_OBJECT);
-        $headers=$this->hmacAuthorizationToken($json);
-        $request = curl_init();
-        curl_setopt($request, CURLOPT_URL, $this->config->Payeezy->URL . $endpoint);
-        curl_setopt($request, CURLOPT_POST, true);
-        curl_setopt($request, CURLOPT_POSTFIELDS, $json);
-        curl_setopt($request, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($request, CURLOPT_HEADER, false);
-        curl_setopt(
-            $request,
-            CURLOPT_HTTPHEADER,
+        $this->client->setUrl($this->config->Payeezy->URL . "v1/transactions");
+        $capture_card_transaction = new Payeezy_CreditCard($this->client);
+        $reponse =  $capture_card_transaction->capture(
+            $this->transaction_id,
             array(
-                'Content-Type: application/json',
-                'apikey:'=> $this->config->Payeezy->Key,
-                'token:' => $this->config->Payeezy->Merchant,
-                'Authorization:' => $headers['authorization'],
-                'nonce:' => $headers['nonce'],
-                'timestamp:' => $headers['timestamp'],
+                "amount"=> $this->billAmount,
+                "transaction_tag" => $this->transaction_tag,
+                "merchant_ref" => "PBKMinibar-" . $this->checkGUID,
+                "currency_code" => "USD",
             )
         );
-
-        $response = curl_exec($request);
-
-        if (false === $response) {
-            echo curl_error($request);
-        }
-        curl_close($request);
-
-        $answer=json_decode($response);
-        if($answer->code == 200 || $answer->code == 201 || $answer->code == 202){
-            return $answer;
-        }else{
-            return (object)[
-                "response" => $answer,
-                "headers" => array(
-                'Content-Type: application/json',
-                'apikey:' => $this->config->Payeezy->Key,
-                'token:' => $this->config->Payeezy->Merchant,
-                    'Authorization:' => $headers['authorization'],
-                    'nonce:' => $headers['nonce'],
-                    'timestamp:' => $headers['timestamp'],
-            ), "payload" => $payload];
-        }
+        $stmt = $this->mysqli->prepare("UPDATE pbc_minibar_order_payment SET capture = ? WHERE paymentID = ?");
+        $stmt->bind_param("ss",$reponse, $this->paymentID);
+        $stmt->execute();
+        return $reponse;
     }
 
+    public function captureTokenSale(){
+        $stmt = $this->mysqli->prepare("SELECT fdsToken FROM pbc_minibar_order_payment WHERE paymentID = ?");
+        $stmt->bind_param("s", $this->paymentID);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $row = $result->fetch_object();
+
+        $this->client->setUrl($this->config->Payeezy->URL . "v1/transactions");
+
+        $authorize_card_transaction = new Payeezy_Token($this->client);
+
+        return $authorize_card_transaction->authorize(
+            [
+                "merchant_ref" => "PBKMinibar-" . $this->checkGUID,
+                "transaction_type" => "purchase",
+                "method" => "token",
+                "amount" => $this->billAmount,
+                "currency_code" => "USD",
+                "token" => json_decode($row->fdsToken,true)
+            ]
+        );
+    }
+
+    public function setTransactionID(string $id): void{
+        $this->transaction_id = $id;
+    }
+
+    public function setTransactionTag(string $tag): void{
+        $this->transaction_tag = $tag;
+    }
 }

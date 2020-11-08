@@ -15,6 +15,7 @@ class PBKPayment
     protected $billAmount;
     protected $billingName;
     protected  $userID;
+    protected $checkGUID;
 
     public function __construct($mysql){
         if (!isset($mysql)) {
@@ -55,8 +56,8 @@ class PBKPayment
     }
 
     public final function addPaymentToTable(array $args): array{
-        $stmt = $this->mysqli->prepare("INSERT INTO pbc_minibar_order_payment (mbCheckID, mbUserID, paymentType, paymentDate, paymentAmount, paymentStatus, authorization, fdsToken, cardNum, transactionID, addressID) VALUES (?,?,?,?,?,?,?,?,?,?,?)");
-        $stmt->bind_param('sssssssssss',
+        $stmt = $this->mysqli->prepare("INSERT INTO pbc_minibar_order_payment (mbCheckID, mbUserID, paymentType, paymentDate, paymentAmount, paymentStatus, authorization, fdsToken, cardNum, transactionID, addressID, expDate) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)");
+        $stmt->bind_param('ssssssssssss',
             $args['mbCheckID'],
             $args['mbUserID'],
             $args['paymentType'],
@@ -67,7 +68,8 @@ class PBKPayment
             $args['fdsToken'],
             $args['cardNum'],
             $args['transactionID'],
-            $args['addressID']
+            $args['addressID'],
+            $args['expDate']
         );
         $stmt->execute();
 
@@ -152,8 +154,8 @@ class PBKPayment
         return $this->guid;
     }
 
-    final public function setPaymentID(int $type): void {
-        $this->paymentID = $type;
+    final public function setPaymentID(int $id): void {
+        $this->paymentID = $id;
     }
 
     final public function setBillingName(string $type): void {
@@ -164,6 +166,9 @@ class PBKPayment
         $this->checkID = $check;
     }
 
+    final public function setCheckGUID(string $guid): void {
+        $this->checkGUID = $guid;
+    }
 
     final public function setPaymentType(string $type): void {
         $this->paymentType = $type;
