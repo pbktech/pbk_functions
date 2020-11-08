@@ -104,7 +104,7 @@ class Payeezy extends PBKPayment{
                 "merchant_ref" => "PBKMinibar-" . $this->checkGUID,
                 "transaction_type" => "purchase",
                 "method" => "token",
-                "amount" => $this->billAmount,
+                "amount" => round($this->billAmount*100),,
                 "currency_code" => "USD",
                 "token" => json_decode($row->fdsToken,true)
             ]
