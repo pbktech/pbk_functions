@@ -79,6 +79,7 @@ class Payeezy extends PBKPayment{
                 "currency_code" => "USD",
             )
         );
+        $reponse = json_encode(json_decode($reponse));
         $stmt = $this->mysqli->prepare("UPDATE pbc_minibar_order_payment SET capture = ? WHERE paymentID = ?");
         $stmt->bind_param("ss",$reponse, $this->paymentID);
         $stmt->execute();
