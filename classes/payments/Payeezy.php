@@ -73,7 +73,7 @@ class Payeezy extends PBKPayment{
         $reponse =  $capture_card_transaction->capture(
             $this->transaction_id,
             array(
-                "amount"=> $this->billAmount,
+                "amount"=> round($this->billAmount*100),
                 "transaction_tag" => $this->transaction_tag,
                 "merchant_ref" => "PBKMinibar-" . $this->checkGUID,
                 "currency_code" => "USD",
