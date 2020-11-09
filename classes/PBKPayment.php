@@ -1,23 +1,22 @@
 <?php
 
 
-class PBKPayment
-{
+class PBKPayment {
     protected $card;
     protected $billing;
     protected $billingID;
-    private $paymentType;
     protected $paymentID;
-    private $guid;
     protected $checkID;
     protected $mysqli;
     protected $config;
     protected $billAmount;
     protected $billingName;
-    protected  $userID;
+    protected $userID;
     protected $checkGUID;
+    private $paymentType;
+    private $guid;
 
-    public function __construct($mysql){
+    public function __construct($mysql) {
         if (!isset($mysql)) {
             $report = new ToastReport;
             $m = "Users class failed to construct. Missing MySQLi object.";
@@ -29,33 +28,37 @@ class PBKPayment
         $this->setConfig();
     }
 
-    final public function setCard(object $card): void {
-        $this->card = $card;
+    private function setToday(string $date): void {
+        $this->today = $date;
     }
 
-    final private function setConfig($sandbox=0): void{
-        if(!defined('ABSPATH')){
+    final private function setConfig($sandbox = 0): void {
+        if (!defined('ABSPATH')) {
             if (file_exists('/var/www/html/c2.theproteinbar.com')) {
                 define('ABSPATH', '/var/www/html/c2.theproteinbar.com/');
-            }else {
+            } else {
                 define('ABSPATH', '/var/www/html/c2dev.theproteinbar.com/');
             }
         }
         $default = dirname(ABSPATH) . '/config.json';
-        $this->config=json_decode(file_get_contents($default));
-        if($sandbox==0){
-            $this->ToastClient=$this->config->ToastClient;
-            $this->ToastSecret=$this->config->ToastSecret;
-            $this->url=$this->config->ToastURL;
-        }else {
-            $this->ToastClient=$this->config->sbToastClient;
-            $this->ToastSecret=$this->config->sbToastSecret;
-            $this->url=$this->config->sbToastURL;
+        $this->config = json_decode(file_get_contents($default));
+        if ($sandbox == 0) {
+            $this->ToastClient = $this->config->ToastClient;
+            $this->ToastSecret = $this->config->ToastSecret;
+            $this->url = $this->config->ToastURL;
+        } else {
+            $this->ToastClient = $this->config->sbToastClient;
+            $this->ToastSecret = $this->config->sbToastSecret;
+            $this->url = $this->config->sbToastURL;
         }
-        $this->localDB=$this->config->dBase;
+        $this->localDB = $this->config->dBase;
     }
 
-    public final function addPaymentToTable(array $args): array{
+    final public function setCard(object $card): void {
+        $this->card = $card;
+    }
+
+    public final function addPaymentToTable(array $args): array {
         $stmt = $this->mysqli->prepare("INSERT INTO pbc_minibar_order_payment (mbCheckID, mbUserID, paymentType, paymentDate, paymentAmount, paymentStatus, authorization, fdsToken, cardNum, transactionID, addressID, expDate) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)");
         $stmt->bind_param('ssssssssssss',
             $args['mbCheckID'],
@@ -84,21 +87,72 @@ class PBKPayment
     }
 
     final public function setBilling(int $billingID): void {
-        $this->billingID=$billingID;
-        $stmt=$this->mysqli->prepare("SELECT * FROM pbc_minibar_users_address WHERE addressID=? AND addressType='billing'");
-        $stmt->bind_param('s',$billingID);
+        $this->billingID = $billingID;
+        $stmt = $this->mysqli->prepare("SELECT * FROM pbc_minibar_users_address WHERE addressID=? AND addressType='billing'");
+        $stmt->bind_param('s', $billingID);
         $stmt->execute();
         $result = $stmt->get_result();
         $row = $result->fetch_object();
         $this->billing = $row;
     }
 
-    final public function returnPayementInfo(): ?object{
+    final public function returnPayementInfo(): ?object {
         $stmt = $this->mysqli->prepare("SELECT * FROM pbc_minibar_order_payment WHERE paymentID=?");
         $stmt->bind_param("s", $this->paymentID);
         $stmt->execute();
         $result = $stmt->get_result();
         return $result->fetch_object();
+    }
+
+    final public function validateGUID(string $guid): int {
+        $stmt = $this->mysqli->prepare("SELECT paymentID FROM pbc_minibar_order_payment WHERE publicUnique=UuidToBin(?)");
+        $stmt->bind_param("s", $guid);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $row = $result->fetch_object();
+        if (isset($row->checkID)) {
+            $this->setGUID($guid);
+            $this->setPaymentID($row->paymentID);
+            return $row->paymentID;
+        }
+        return false;
+
+    }
+
+    final public function setPaymentID(int $id): void {
+        $this->paymentID = $id;
+    }
+
+    public function getGUID(): string {
+        return $this->guid;
+    }
+
+    protected function setGUID(string $guid): void {
+        $this->guid = $guid;
+    }
+
+    final public function setBillingName(string $type): void {
+        $this->billingName = $type;
+    }
+
+    final public function setCheckID(int $check): void {
+        $this->checkID = $check;
+    }
+
+    final public function setCheckGUID(string $guid): void {
+        $this->checkGUID = $guid;
+    }
+
+    final public function setPaymentType(string $type): void {
+        $this->paymentType = $type;
+    }
+
+    final public function setUserID(int $var): void {
+        $this->userID = $var;
+    }
+
+    final public function setBillAmount(float $var): void {
+        $this->billAmount = $var;
     }
 
     final protected function getCCType(string $cardNumber): string {
@@ -131,64 +185,7 @@ class PBKPayment
         return $cardType;
     }
 
-    final public function validateGUID(string $guid): int{
-        $stmt = $this->mysqli->prepare("SELECT paymentID FROM pbc_minibar_order_payment WHERE publicUnique=UuidToBin(?)");
-        $stmt->bind_param("s",$guid);
-        $stmt->execute();
-        $result = $stmt->get_result();
-        $row = $result->fetch_object();
-        if(isset($row->checkID)) {
-            $this->setGUID($guid);
-            $this->setPaymentID($row->paymentID);
-            return $row->paymentID;
-        }
-        return false;
-
-    }
-
-    protected function setGUID(string $guid): void{
-        $this->guid = $guid;
-    }
-
-    public function getGUID(): string{
-        return $this->guid;
-    }
-
-    final public function setPaymentID(int $id): void {
-        $this->paymentID = $id;
-    }
-
-    final public function setBillingName(string $type): void {
-        $this->billingName = $type;
-    }
-
-    final public function setCheckID(int $check): void {
-        $this->checkID = $check;
-    }
-
-    final public function setCheckGUID(string $guid): void {
-        $this->checkGUID = $guid;
-    }
-
-    final public function setPaymentType(string $type): void {
-        $this->paymentType = $type;
-    }
-
-    private function setToday(string $date): void{
-        $this->today = $date;
-    }
-
-    final public function setUserID(int $var): void
-    {
-        $this->userID=$var;
-    }
-
-    final public function setBillAmount(float $var): void
-    {
-        $this->billAmount=$var;
-    }
-
-    final protected function getMysqli(): mysqli{
+    final protected function getMysqli(): mysqli {
         return $this->mysqli;
     }
 
