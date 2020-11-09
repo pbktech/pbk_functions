@@ -67,7 +67,7 @@ final class PBKMenu
                 if(isset($description[1]) && $description[1]!=''){
                     $nutritional = $this->getNutrtitional($item->guid);
                     $n=json_decode($nutritional);
-                    $nutritionalShort="protein: " . $n->PR;
+                    $nutritionalShort=$n->PR . " protein";
                 }
                 $menuItems[]=array(
                     "name"=>$item->name,
