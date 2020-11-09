@@ -62,8 +62,13 @@ final class PBKMenu
                     }
                 }
                 $nutritionalShort="";
+                $nutritional="";
                 $description=explode("[",$item->description);
-                if(isset($description[1]) && $description[1]!=''){$nutritionalShort="[" . $description[1];}
+                if(isset($description[1]) && $description[1]!=''){
+                    $nutritional = $this->getNutrtitional($item->guid);
+                    $n=json_decode($nutritional);
+                    $nutritionalShort="protein: " . $n->PR;
+                }
                 $menuItems[]=array(
                     "name"=>$item->name,
                     "guid"=>$item->guid,
@@ -73,7 +78,7 @@ final class PBKMenu
                     "sort"=>$menuGroupOrder[$item->name],
                     "modGroups"=>$modGroups,
                     "nutritionalShort"=>$nutritionalShort,
-                    "nutritional"=>$this->getNutrtitional($item->guid)
+                    "nutritional"=>$nutritional
                 );
             }
             $menuGroups[]=array(
