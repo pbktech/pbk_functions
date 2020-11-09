@@ -41,6 +41,12 @@ final class PBKOrder {
             $headerInfo['maximumCheck']
         );
         $stmt->execute();
+        if (isset($stmt->error) && $stmt->error!='') {
+            $report=new ToastReport;
+            $m="User (".$this->userID.") failed to create order<br><br>DB Error: " . $stmt->error;
+            $report->reportEmail("errors@theproteinbar.com", $m, "User error");
+            return false;
+        }
         if (isset($stmt->insert_id) && is_numeric($stmt->insert_id)) {
             $this->setOrderID($stmt->insert_id);
             return $stmt->insert_id;
