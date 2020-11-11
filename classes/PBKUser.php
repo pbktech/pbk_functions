@@ -102,8 +102,8 @@ final class PBKUser
                 return array("message"=>"There was an error logging you in. This error has been reported.","Variant"=>"danger");
             }
             $newid=$stmt->insert_id;
-            $stmt=$this->mysqli->prepare("SELECT UuidFromBin(SessionGUID) as 'session' FROM pbc_minibar_users_sessions WHERE sessionID = ?");
-            $stmt->bind_param("s", $newid);
+            $stmt=$this->mysqli->prepare("SELECT UuidFromBin(SessionGUID) as 'session' FROM pbc2.pbc_minibar_users_sessions WHERE sessionID = ?");
+            $stmt->bind_param("i", $newid);
             $stmt->execute();
             $result = $stmt->get_result();
             $row = $result->fetch_object();
@@ -214,15 +214,16 @@ final class PBKUser
         return true;
     }
     public function addUserAddress(object $request): array{
-        $stmt=$this->mysqli->prepare("INSERT INTO pbc2.pbc_minibar_users_address (mbUserID, addressType, street, addStreet, city, state, zip, isDeleted)VALUES (?,?,?,?,?,?,?,0)");
-        $stmt->bind_param("sssssss",
+        $stmt=$this->mysqli->prepare("INSERT INTO pbc2.pbc_minibar_users_address (mbUserID, addressType, street, addStreet, city, state, zip, isDeleted)VALUES (?,?,?,?,?,?,?,?)");
+        $stmt->bind_param("ssssssss",
             $this->userID,
             $request->type,
             $request->street,
             $request->addstreet,
             $request->city,
             $request->state,
-            $request->zip
+            $request->zip,
+            $request->isDeleted
         );
         $stmt->execute();
         if (isset($stmt->error) && $stmt->error!='') {
