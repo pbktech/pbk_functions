@@ -1065,7 +1065,7 @@ from pbc2.kds_detail WHERE sent_time BETWEEN  ? AND ? AND station='' and restaur
 		if($d=="2019-12-30"){return "2018-12-31";}
 		return $sameDayLastYear->format('Y-m-d');
 	}
-	function buildPDF($htmlPages){
+	function buildPDF($content){
         $content=json_decode($content);
         $report=new ToastReport();
         if(isset($content->Save) && $content->Save!=''){$docSaveLocation=$content->Save;}else{$docSaveLocation=$report->docSaveLocation;}
