@@ -1067,8 +1067,7 @@ from pbc2.kds_detail WHERE sent_time BETWEEN  ? AND ? AND station='' and restaur
 	}
 	function buildPDF($content, $save=1){
         $content=json_decode($content);
-        $report=new ToastReport();
-        if(isset($content->Save) && $content->Save!=''){$docSaveLocation=$content->Save;}else{$docSaveLocation=$report->docSaveLocation;}
+        if(isset($content->Save) && $content->Save!=''){$docSaveLocation=$content->Save;}else{$docSaveLocation=$this->docSaveLocation;}
         $mpdf = new \Mpdf\Mpdf([
             'mode' => 'c',
             'format' => $content->format,
@@ -1101,7 +1100,7 @@ from pbc2.kds_detail WHERE sent_time BETWEEN  ? AND ? AND station='' and restaur
             $mpdf->Output($docSaveLocation.$filename, 'F');
         }
         if(file_exists($docSaveLocation.$filename)){
-            return array("Link"=>$report->docDownloadLocation.$filename,"Local"=>$docSaveLocation.$filename);
+            return array("Link"=>$this->docDownloadLocation.$filename,"Local"=>$docSaveLocation.$filename);
         }else {
             return false;
         }
