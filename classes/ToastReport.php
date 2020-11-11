@@ -1066,27 +1066,45 @@ from pbc2.kds_detail WHERE sent_time BETWEEN  ? AND ? AND station='' and restaur
 		return $sameDayLastYear->format('Y-m-d');
 	}
 	function buildPDF($htmlPages,$title){
-		require_once('vendor/tecnickcom/tcpdf/tcpdf.php');
-		$pdf = new TCPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
-		$pdf->SetCreator(PDF_CREATOR);
-		$pdf->SetAuthor('Protein Bar & Kitchen');
-		$pdf->SetTitle($title);
-		$pdf->setPrintHeader(false);
-		$pdf->setPrintFooter(false);
-		$pdf->SetDefaultMonospacedFont(PDF_FONT_MONOSPACED);
-		$pdf->SetMargins(PDF_MARGIN_LEFT, PDF_MARGIN_TOP, PDF_MARGIN_RIGHT);
-		// set auto page breaks
-		$pdf->SetAutoPageBreak(FALSE, PDF_MARGIN_BOTTOM);
-		foreach($htmlPages as $html){
-			$pdf->AddPage();
-			$pdf->writeHTML($html, true, false, true, false, '');
-			$pdf->lastPage();
-		}
-		$pdf->Output($this->docSaveLocation.'/'.str_replace(" ","_",$title).".pdf", 'I');
-		if (file_exists($this->docSaveLocation.'/'.str_replace(" ","_",$title).".pdf")) {
-			return $this->docSaveLocation.'/'.str_replace(" ","_",$title).".pdf";
-		}
-		return FALSE;
+        $content=json_decode($content);
+        $report=new ToastReport();
+        if(isset($content->Save) && $content->Save!=''){$docSaveLocation=$content->Save;}else{$docSaveLocation=$report->docSaveLocation;}
+        $mpdf = new \Mpdf\Mpdf([
+            'mode' => 'c',
+            'format' => $content->format,
+            'margin_left' => 5,
+            'margin_right' => 5,
+            'margin_top' => 5,
+            'margin_bottom' => 5,
+            'margin_header' => 0,
+            'margin_footer' => 0,
+            'CSSselectMedia' => 'Screen'
+        ]);
+        $stylesheet=file_get_contents(dirname(dirname(__FILE__)) . "/assets/css/mpdf-bootstrap.css");
+        $mpdf->SetTitle($content->title);
+        $mpdf->SetAuthor("Protein Bar & Kitchen");
+        if(isset($content->watermark)){
+            $mpdf->SetWatermarkText($content->watermark);
+            $mpdf->showWatermarkText = true;
+        }
+        $mpdf->WriteHTML($stylesheet,\Mpdf\HTMLParserMode::HEADER_CSS);
+        $mpdf->WriteHTML(utf8_encode($content->html),\Mpdf\HTMLParserMode::HTML_BODY);
+        if(isset($content->fileName)){
+            $filename=$content->fileName . ".pdf";
+        }else{
+            $filename=str_replace(" ","_",str_replace("/","_",$content->title)).".pdf";
+        }
+        if(file_exists($docSaveLocation.$filename)){unlink($docSaveLocation.$filename);}
+        if($save==0){
+            $mpdf->Output();
+        }else {
+            $mpdf->Output($docSaveLocation.$filename, 'F');
+        }
+        if(file_exists($docSaveLocation.$filename)){
+            return array("Link"=>$report->docDownloadLocation.$filename,"Local"=>$docSaveLocation.$filename);
+        }else {
+            return false;
+        }
 	}
 	function reportEmail($to,$body,$subject,$attach=null) {
 		$mail = new PHPMailer;
