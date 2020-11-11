@@ -1105,7 +1105,7 @@ from pbc2.kds_detail WHERE sent_time BETWEEN  ? AND ? AND station='' and restaur
             return false;
         }
 	}
-	function reportEmail($to,$body,$subject,$attach=null) {
+	function reportEmail($to,$body,$subject,$attach=null, $bcc=null) {
 		$mail = new PHPMailer;
 		$mail->isSMTP();
 		$mail->SMTPDebug = 0;
@@ -1120,6 +1120,9 @@ from pbc2.kds_detail WHERE sent_time BETWEEN  ? AND ? AND station='' and restaur
 		foreach($addresses as $address){
 		  $mail->addAddress($address);
 		}
+		if($bcc) {
+            $mail->addBcc($bcc);
+        }
 		$mail->Subject = $subject;
 		$mail->msgHTML($body, __DIR__);
 		if (isset($attach) && is_array($attach)) {
