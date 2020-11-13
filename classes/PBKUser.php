@@ -391,7 +391,7 @@ final class PBKUser
         }
     }
 
-    private function loadUserDetails()
+    private function loadUserDetails():void
     {
         $stmt1=$this->mysqli->prepare("SELECT email_address,real_name1,phone_number,emailConsent,password,isLocked,requireNewPassword,isConfirmed FROM pbc_minibar_user WHERE  id=?");
         $stmt1->bind_param("s", $this->userID);

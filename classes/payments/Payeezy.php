@@ -6,6 +6,7 @@ class Payeezy extends PBKPayment {
     public Payeezy_Client $client;
     private string $transaction_id;
     private string $transaction_tag;
+    private array $token;
 
     public function __construct($mysqli) {
         parent::__construct($mysqli);
@@ -35,8 +36,7 @@ class Payeezy extends PBKPayment {
                     "card_number" => $this->card->cardNumber,
                     "exp_date" => preg_replace('/\D/', '', $this->card->expiryDate),
                     "cvv" => $this->card->cvc
-                ),
-                "auth" => "false"
+                )
             ]
         );
         $args = [
@@ -46,18 +46,16 @@ class Payeezy extends PBKPayment {
             'paymentDate' => date('Y-m-d H:i:s'),
             'paymentAmount' => $this->billAmount,
             'paymentStatus' => $authorize_response->transaction_status,
-            'authorization' => json_encode(array("bank_resp_code" => $authorize_response->bank_resp_code, "bank_message" => $authorize_response->bank_message, "gateway_resp_code" => $authorize_response->gateway_resp_code, "gateway_message" => $authorize_response->gateway_message)),
-            'fdsToken' => json_encode(
-                array(
-                    "token_type" => $authorize_response->token->token_type,
-                    "token_data" => [
-                        "type" => $this->getCCType($this->card->cardNumber),
-                        "value" => $authorize_response->token->token_data->value,
-                        "cardholder_name" => $this->billingName,
-                        "exp_date" => preg_replace('/\D/', '', $this->card->expiryDate)
-                    ]
-                )
-            ),
+            'authorization' => json_encode(array("bank_resp_code" => $authorize_response->bank_resp_code, "bank_message" => $authorize_response->bank_message, "gateway_resp_code" => $authorize_response->gateway_resp_code, "gateway_message" => $authorize_response->gateway_message), JSON_THROW_ON_ERROR),
+            'fdsToken' => json_encode(array(
+                "token_type" => $authorize_response->token->token_type,
+                "token_data" => [
+                    "type" => $this->getCCType($this->card->cardNumber),
+                    "value" => $authorize_response->token->token_data->value,
+                    "cardholder_name" => $this->billingName,
+                    "exp_date" => preg_replace('/\D/', '', $this->card->expiryDate)
+                ]
+            ), JSON_THROW_ON_ERROR),
             'cardNum' => $authorize_response->card->card_number,
             'transactionID' => json_encode(array("transaction_id" => $authorize_response->transaction_id, "transaction_tag" => $authorize_response->transaction_tag)),
             'addressID' => $this->billingID,
@@ -87,7 +85,7 @@ class Payeezy extends PBKPayment {
             "bank_message" => $reponse->bank_message,
             "gateway_resp_code" => $reponse->gateway_resp_code,
             "gateway_message" => $reponse->gateway_message
-        ]);
+        ], JSON_THROW_ON_ERROR);
 
         $reponse = json_encode(json_decode($reponse));
         $stmt = $this->mysqli->prepare("UPDATE pbc_minibar_order_payment SET capture = ? WHERE paymentID = ?");
@@ -97,16 +95,9 @@ class Payeezy extends PBKPayment {
     }
 
     public function captureTokenSale() {
-        $stmt = $this->mysqli->prepare("SELECT fdsToken FROM pbc_minibar_order_payment WHERE paymentID = ?");
-        $stmt->bind_param("s", $this->paymentID);
-        $stmt->execute();
-        $result = $stmt->get_result();
-        $row = $result->fetch_object();
-
         $this->client->setUrl($this->config->Payeezy->URL . "v1/transactions");
 
         $authorize_card_transaction = new Payeezy_Token($this->client);
-
         return $authorize_card_transaction->authorize(
             [
                 "merchant_ref" => "PBKMinibar-" . $this->checkGUID,
@@ -114,13 +105,17 @@ class Payeezy extends PBKPayment {
                 "method" => "token",
                 "amount" => round($this->billAmount * 100),
                 "currency_code" => "USD",
-                "token" => json_decode($row->fdsToken, true)
+                "token" => $this->token
             ]
         );
     }
 
     public function setTransactionID(string $id): void {
         $this->transaction_id = $id;
+    }
+
+    public function setToken(array $token): void{
+        $this->token = $token;
     }
 
     public function setTransactionTag(string $tag): void {

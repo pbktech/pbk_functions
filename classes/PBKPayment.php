@@ -32,29 +32,18 @@ class PBKPayment {
         $this->today = $date;
     }
 
-    final private function setConfig($sandbox = 0): void {
+    final private function setConfig(): void {
         if (!defined('ABSPATH')) {
-            if (file_exists('/var/www/html/c2.theproteinbar.com')) {
                 define('ABSPATH', '/var/www/html/c2.theproteinbar.com/');
-            } else {
-                define('ABSPATH', '/var/www/html/c2dev.theproteinbar.com/');
-            }
         }
         $default = dirname(ABSPATH) . '/config.json';
         $this->config = json_decode(file_get_contents($default));
-        if ($sandbox == 0) {
-            $this->ToastClient = $this->config->ToastClient;
-            $this->ToastSecret = $this->config->ToastSecret;
-            $this->url = $this->config->ToastURL;
-        } else {
-            $this->ToastClient = $this->config->sbToastClient;
-            $this->ToastSecret = $this->config->sbToastSecret;
-            $this->url = $this->config->sbToastURL;
-        }
-        $this->localDB = $this->config->dBase;
+        $this->ToastClient = $this->config->sbToastClient;
+        $this->ToastSecret = $this->config->sbToastSecret;
+        $this->url = $this->config->sbToastURL;
     }
 
-    final public function setCard(object $card): void {
+    final public function setCard( $card): void {
         $this->card = $card;
     }
 
