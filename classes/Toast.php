@@ -8,7 +8,7 @@ use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 
 require dirname(__DIR__) . '/vendor/autoload.php';
 
-class Toast {
+final class Toast {
     var $auth = null;
     public $mysqli = null;
     var $restaurantID = 0;
@@ -26,6 +26,8 @@ class Toast {
     private $sbToastSecret;
     private $sburl;
     private $localDB;
+    public const DINING_OPTION = '1bf29ca2-c3a3-42fc-8eb8-0129f7f83baa';
+    public const PAYMENT = '74656949-f191-4c2d-8965-8a422ccc51b6';
 
     function __construct($b = null, $sandbox = 0) {
         $this->setConfig($sandbox);
@@ -735,6 +737,119 @@ class Toast {
         if ($stmt->error != '') {
             $this->notifyIT("storeShiftsInDB \n\n" . $stmt->error . "\n\n" . $sql, "SQL Import Error");
         }
+    }
+
+    public function buildOrderRequest(object $order): object{
+        $orderObject = array(
+            "entityType" => "Order",
+            "diningOption" => array(
+                "guid" => self::DINING_OPTION,
+                "entityType" => "DiningOption"
+            ),
+            "checks" => array()
+        );
+        $orderHeader = $order->returnHeaderInfo();
+        $check = new PBKCheck($this->mysqli);
+        $check->setOrderID($orderHeader->headerID);
+        $grandTotal = 0;
+        $orderChecks = $check->returnChecks();
+        foreach ($orderChecks as $orderCheck) {
+            $check->setCheckID($orderCheck->checkID);
+            $items = $check->buildCheckItems();
+            $selections = array();
+
+            foreach ($items as $item) {
+                $modifiers = array();
+                foreach ($item->mods as $mod) {
+                    if (!empty($mod)) {
+                        if ($mod->guid == "SPECIAL_REQUEST" || $mod->guid == "FOR") {
+                            switch ($mod->guid) {
+                                case "FOR":
+                                    $pretext = "FOR";
+                                    break;
+                                default:
+                                    $pretext = "SR";
+                            }
+                            $modifiers[] = (object)[
+                                "displayName" => " --- " . $pretext . ": " . $mod->modName,
+                                "selectionType" => "SPECIAL_REQUEST"
+                            ];
+                        } else {
+                            $modGUIDS = explode("/", $mod->guid);
+                            $modifiers[] = (object)
+                            [
+                                "entityType" => "MenuItemSelection",
+                                "optionGroup" => (object)["guid" => $modGUIDS[0]],
+                                "item" => (object)[
+                                    "entityType" => "MenuItem",
+                                    "guid" => $modGUIDS[1]
+                                ],
+                                "quantity" => $item->quantity
+                            ];
+                        }
+                    }
+                }
+                $itemGUIDS = explode("/", $item->guid);
+                $selections[] = (object)[
+                    "entityType" => "MenuItemSelection",
+                    "itemGroup" => array("guid" => $itemGUIDS[0], "entityType" => "MenuGroup"),
+                    "item" => array("guid" => $itemGUIDS[1], "entityType" => "MenuItem"),
+                    "quantity" => $item->quantity,
+                    "modifiers" => $modifiers
+                ];
+            }
+
+            $appliedDiscounts = array();
+            if ($discounts = $check->returnDiscounts()) {
+                foreach ($discounts as $d) {
+                    $appliedDiscounts[] = (object)[
+                        "discount" => (object)["guid" => $d->discountGUID]
+                    ];
+                }
+            }
+            $payments = array();
+
+            if ($appliedPayments = $check->returnPayments()) {
+                $amount = 0;
+                foreach ($appliedPayments as $p) {
+                    if($p->paymentStatus == 'approved') {
+                        $amount += $p->paymentAmount;
+                        if (in_array($p->paymentType, array('Visa', 'Mastercard', 'American Express', 'Diners Club', 'Discover', 'JCB'))) {
+                            $txn = json_decode($p->transactionID);
+                            $payeezy = new Payeezy($this->mysqli);
+                            $payeezy->setPaymentID($p->paymentID);
+                            $payeezy->setBillAmount($p->paymentAmount);
+                            $payeezy->setTransactionID($txn->transaction_id);
+                            $payeezy->setTransactionTag($txn->transaction_tag);
+                            $response = $payeezy->captureCard();
+                        }
+
+                        if ($p->paymentType == 'Prepay') {
+                            $grandTotal += $p->paymentAmount;
+                        }
+                    }
+                }
+
+                $payments[] = (object)[
+                    "paidDate" => $this->toastDate(date(TODAY_FORMAT)),
+                    "type" => "OTHER",
+                    "amount" => $amount,
+                    "otherPayment" => (object)["guid" => self::PAYMENT],
+                    "tipAmount" => 0.00,
+                    "amountTendered" => $amount
+                ];
+            }
+
+            $orderObject["checks"][] = (object)[
+                "entityType" => "Check",
+                "selections" => $selections,
+                "appliedDiscounts" => $appliedDiscounts,
+                "payments" => $payments,
+                "tabName" => $orderCheck->tabName
+            ];
+        }
+        return (object)["order" => $orderObject, "grandtotal" => $grandTotal];
+
     }
 
     function storeCashInDB($json, $stmt) {
