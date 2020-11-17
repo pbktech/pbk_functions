@@ -739,16 +739,29 @@ final class Toast {
         }
     }
 
-    public function buildOrderRequest(object $order): object{
-        $orderObject = array(
+    private function createOrderHeader(object $orderHeader): array{
+        $q = "SELECT * FROM pbc2.pbc_ToastGUIDOptions WHERE optionName = '".$orderHeader->outpostIdentifier."'";
+        $stmt = $this->mysqli->prepare($q);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        if ($row = $result->fetch_object()) {
+            $guid= $row->GUID;
+        }else{
+            $guid=self::DINING_OPTION;
+        }
+        return array(
             "entityType" => "Order",
             "diningOption" => array(
-                "guid" => self::DINING_OPTION,
+                "guid" => $guid,
                 "entityType" => "DiningOption"
             ),
             "checks" => array()
         );
+    }
+
+    public function buildOrderRequest(object $order): object{
         $orderHeader = $order->returnHeaderInfo();
+        $orderObject = $this->createOrderHeader($orderHeader);
         $check = new PBKCheck($this->mysqli);
         $check->setOrderID($orderHeader->headerID);
         $grandTotal = 0;
@@ -852,7 +865,7 @@ final class Toast {
 
     }
 
-    function storeCashInDB($json, $stmt) {
+    function storeCashInDB($json, $stmt): void {
         $date = date("Y-m-d", strtotime($json->date));
         if (isset($json->cashDrawer->guid) && $json->cashDrawer->guid != '') {
             $cDrawer = $json->cashDrawer->guid;

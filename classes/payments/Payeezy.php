@@ -87,7 +87,7 @@ class Payeezy extends PBKPayment {
             "gateway_message" => $reponse->gateway_message
         ], JSON_THROW_ON_ERROR);
 
-        $reponse = json_encode(json_decode($reponse));
+   //     $reponse = json_encode(json_decode($reponse));
         $stmt = $this->mysqli->prepare("UPDATE pbc_minibar_order_payment SET capture = ? WHERE paymentID = ?");
         $stmt->bind_param("ss", $r, $this->paymentID);
         $stmt->execute();
