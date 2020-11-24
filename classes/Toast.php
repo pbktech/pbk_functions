@@ -9,9 +9,13 @@ use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 require dirname(__DIR__) . '/vendor/autoload.php';
 
 final class Toast {
+    public const DINING_OPTION = '1bf29ca2-c3a3-42fc-8eb8-0129f7f83baa';
+    public const PAYMENT = '74656949-f191-4c2d-8965-8a422ccc51b6';
+    public const CUBSIDE_GUID = 'b5fda380-66db-4b6b-b98b-94d3dc30db59';
     var $auth = null;
     public $mysqli = null;
     var $restaurantID = 0;
+    var $restaurantName;
     var $timeZone = null;
     var $guid = null;
     var $json = null;
@@ -26,9 +30,6 @@ final class Toast {
     private $sbToastSecret;
     private $sburl;
     private $localDB;
-    public const DINING_OPTION = '1bf29ca2-c3a3-42fc-8eb8-0129f7f83baa';
-    public const PAYMENT = '74656949-f191-4c2d-8965-8a422ccc51b6';
-    public const CUBSIDE_GUID = '';
 
     function __construct($b = null, $sandbox = 0) {
         $this->setConfig($sandbox);
@@ -91,13 +92,14 @@ final class Toast {
     }
 
     function getRestaurantID() {
-        $q = "SELECT restaurantID, timeZone FROM `pbc_pbrestaurants` WHERE GUID='" . $this->guid . "'";
+        $q = "SELECT restaurantID, timeZone, restaurantName FROM `pbc_pbrestaurants` WHERE GUID='" . $this->guid . "'";
         $stmt = $this->mysqli->prepare($q);
         $stmt->execute();
         $result = $stmt->get_result();
         $row = $result->fetch_array(MYSQLI_NUM);
         $this->restaurantID = $row[0];
         $this->timeZone = $row[1];
+        $this->restaurantName = $row[2];
     }
 
     function loadGUIDs() {
@@ -407,11 +409,6 @@ final class Toast {
         return json_decode($result);
     }
 
-    public function toastDate($date) {
-        $time = strtotime($date);
-        return date("Y-m-d", $time) . "T" . date("H:i:s", $time) . ".000" . date("O", $time);
-    }
-
     function dateToUTC($date) {
         date_default_timezone_set("UTC");
         return date("Y-d-mTG:i:sz", strtotime($date));
@@ -440,7 +437,7 @@ final class Toast {
         $encJSON = json_encode($json);
         $stmt->bind_param('ssss', $timeToComplete, $dateOfBusiness, $encJSON, $this->restaurantID);
         $stmt->execute();
-        if ($stmt->error != '') {
+        if (!empty($stmt->error)) {
             $this->notifyIT("createImportRecord \n\n" . $stmt->error . "\n\n", "SQL Import Error");
         }
     }
@@ -453,7 +450,7 @@ final class Toast {
         $tabName = str_replace("\\", " ", $tabName);
         $stmt->bind_param('sssssssssss', $c->guid, $ToastOrderID, $c->displayNumber, $closedDate, $openedDate, $modifiedDate, $c->paymentStatus, $tabName, $c->taxExempt, $c->amount, $c->totalAmount);
         $stmt->execute();
-        if ($stmt->error != '') {
+        if (!empty($stmt->error)) {
             $this->notifyIT("storeCheckInfo \n\n" . $stmt->error . "\n\n" . $c->guid . "\n" . $ToastOrderID . "\n" . $c->displayNumber . "\n" . $closedDate . "\n" . $openedDate . "\n" . $modifiedDate . "\n" . $c->paymentStatus . "\n" . $tabName . "\n" . $c->taxExempt . "\n" . $c->amount . "\n" . $c->totalAmount, "SQL Import Error");
         }
     }
@@ -469,7 +466,7 @@ final class Toast {
         $displayName = htmlentities(substr($s->displayName, 0, 254));
         $stmt->bind_param('sssssssss', $s->guid, $ToastCheckID, $displayName, $s->quantity, $s->preDiscountPrice, $salesCategories, $createdDate, $s->tax, $voidBusinessDate);
         $stmt->execute();
-        if ($stmt->error != '') {
+        if (!empty($stmt->error)) {
             $this->notifyIT("storeSelectionInfo \n\n" . $stmt->error . "\n\n" . $s->guid . "\n" . $ToastCheckID . "\n" . $displayName . "\n" . $s->quantity . "\n" . $s->preDiscountPrice . "\n" . $salesCategories . "\n" . $createdDate . "\n" . $s->tax . "\n" . $voidBusinessDate, "SQL Import Error");
         }
         if ($displayName == 'Gift Card') {
@@ -480,14 +477,31 @@ final class Toast {
                 $this->notifyIT("pbc_ToastGiftCardSold \n\n" . $stmt->error . "\n\n" . $s->guid . "\n" . $ToastCheckID . "\n" . "\n" . $s->quantity . "\n" . $s->preDiscountPrice . "\n" . "\n" . $createdDate . "\n" . "\n" . $voidBusinessDate, "SQL Import Error");
             }
         }
-        /*
-        //TODO add if statement to handle specific item $s->item->guid
-        $csStatus='sent';
-        $csTime=date("Y-m-d G:i:s");
-        $q = $this->mysqli->prepare("INSERT IGNORE INTO pbc_curbside_link (toastCheckID,curbsideItemID,status,sentTime) VALUES (?, ?, ?, ?)");
-        $q->bind_param('ssss',$ToastCheckID,$s->guid,$csStatus,$csTime);
-        $q->execute();
-        */
+        if ((string)$s->item->guid === self::CUBSIDE_GUID) {
+            $csStatus = 'sent';
+            $csTime = date("Y-m-d G:i:s");
+            $q = $this->mysqli->prepare("INSERT IGNORE INTO pbc_curbside_link (toastCheckID,curbsideItemID,status,sentTime) VALUES (?, ?, ?, ?)");
+            $q->bind_param('ssss', $ToastCheckID, $s->guid, $csStatus, $csTime);
+            $q->execute();
+            if (!empty($q->insert_id)) {
+                $id = $q->insert_id;
+                $q = $this->mysqli->prepare("SELECT linkHEX, phone FROM pbc_curbside_link pcl, pbc_ToastContactInfo ptci WHERE linkID = ? AND ptci.ToastCheckID = pcl.toastCheckID ");
+                $q->bind_param('s', $id);
+                $q->execute();
+                $result = $q->get_result();
+                $row = $result->fetch_object();
+                if (!empty($row->linkHEX) && !empty($row->phone)) {
+                    if(empty($this->restaurantName)){
+                        $pbkName = "PBK!";
+                    }else{
+                        $pbkName = "PBK " . $this->restaurantName . "!";
+                    }
+                    $m = "Thanks for ordering Curbside from $pbkName 🚗 \nClick the link to let us know you’re here! https://pbkcurbside.com/" . $row->linkHEX;
+                    $text = new ToastReport();
+                    $text->sendText($row->phone, $m);
+                }
+            }
+        }
     }
 
     function getRestaurantOptions($do, $option) {
@@ -527,7 +541,7 @@ final class Toast {
         $displayName = htmlentities($m->displayName);
         $stmt->bind_param('sssssss', $m->guid, $CheckItemID, $displayName, $m->price, $m->tax, $m->voided, $createdDate);
         $stmt->execute();
-        if ($stmt->error != '') {
+        if (!empty($stmt->error)) {
             $this->notifyIT("storeModifierInfo \n\n" . $stmt->error . "\n\n" . $m->guid . "\n" . $CheckItemID . "\n" . $displayName . "\n" . $m->price . "\n" . $m->tax . "\n" . $m->voided . "\n" . $createdDate, "SQL Import Error");
         }
     }
@@ -538,7 +552,7 @@ final class Toast {
         }
         $stmt->bind_param('ssss', $t->guid, $CheckItemID, $t->rate, $t->taxAmount);
         $stmt->execute();
-        if ($stmt->error != '') {
+        if (!empty($stmt->error)) {
             $this->notifyIT("storeTaxInfo \n\n" . $stmt->error . "\n\n" . $t->guid . "\n" . $CheckItemID . "\n" . $t->rate . "\n" . $t->taxAmount, "SQL Import Error");
         }
     }
@@ -578,7 +592,7 @@ final class Toast {
         }
         $stmt->bind_param('ssssssssssssss', $p->guid, $ToastCheckID, $p->amount, $p->tipAmount, $paymentType, $p->originalProcessingFee, $paidBusinessDate, $refund, $p->paymentStatus, $paidDate, $p->last4Digits, $p->cardEntryMode, $restaurant, $date);
         $stmt->execute();
-        if ($stmt->error != '') {
+        if (!empty($stmt->error)) {
             $this->notifyIT("storePaymentInfo \n\n" . $stmt->error . "\n\n" . $p->guid . "\n" . $ToastCheckID . "\n" . $p->amount . "\n" . $p->tipAmount . "\n" . $paymentType . "\n" . $p->originalProcessingFee . "\n" . $paidBusinessDate . "\n" . $p->refund . "\n" . $p->paymentStatus . "\n" . $paidDate . "\n" . $p->last4Digits . "\n" . $p->cardEntryMode, "SQL Import Error");
         }
     }
@@ -586,7 +600,7 @@ final class Toast {
     function storeServiceChargeInfo($d, $ToastOrderID, $stmt) {
         $stmt->bind_param('ssss', $d->guid, $ToastOrderID, $d->name, $d->chargeAmount);
         $stmt->execute();
-        if ($stmt->error != '') {
+        if (!empty($stmt->error)) {
             $this->notifyIT("storeServiceChargeInfo \n\n" . $stmt->error . "\n\n<pre>" . print_r($d, true) . "</pre>\n" . $ToastOrderID . "\n", "SQL Import Error");
         }
     }
@@ -594,7 +608,7 @@ final class Toast {
     function storeCheckSum($i, $stmt) {
         $stmt->bind_param('sssssssssssss', $i['orderGUID'], $i['restaurantID'], $i['businessDate'], $i['checkIds'], $i['checkAmount'], $i['orderSource'], $i['diningOption'], $i['taxAmount'], $i['serviceCharges'], $i['discounts'], $i['voidBusinessDate'], $i['isCatering'], $i['gcSold']);
         $stmt->execute();
-        if ($stmt->error != '') {
+        if (!empty($stmt->error)) {
             $this->notifyIT(
                 "checkSum \n\n" . $stmt->error . "\n\n<pre>" . print_r($i, true) . "</pre>\n",
                 "SQL Import Error");
@@ -610,7 +624,7 @@ final class Toast {
         }
         $stmt->bind_param('sssssss', $d->guid, $ToastOrderID, $mod, $d->name, $d->discountAmount, $d->appliedPromoCode, $type);
         $stmt->execute();
-        if ($stmt->error != '') {
+        if (!empty($stmt->error)) {
             $this->notifyIT("storeDiscountInfo \n\n" . $stmt->error . "\n\n" . $d->guid . "\n" . $ToastOrderID . "\n" . $mod . "\n" . $d->name . "\n" . $d->discountAmount . "\n" . $d->appliedPromoCode . "\n" . $type, "SQL Import Error");
         }
     }
@@ -629,7 +643,7 @@ final class Toast {
         $delivery = json_encode($delivery);
         $stmt->bind_param('sssssss', $d->guid, $ToastOrderID, $d->firstName, $d->lastName, $d->phone, $d->email, $delivery);
         $stmt->execute();
-        if ($stmt->error != '') {
+        if (!empty($stmt->error)) {
             $this->notifyIT("storeGuestInfo \n\n" . $stmt->error . "\n\n" . $d->guid . "\n" . $ToastOrderID . "\n" . $mod . "\n" . $d->name . "\n" . $d->discountAmount . "\n" . $d->appliedPromoCode . "\n" . $type, "SQL Import Error");
         }
     }
@@ -646,7 +660,7 @@ final class Toast {
         }
         $stmt->bind_param('sssssssssss', $this->restaurantID, $json->guid, $json->entityType, $rev, $json->source, $businessDate, $json->voided, $openedDate, $paidDate, $closedDate, $diningOptions);
         $stmt->execute();
-        if ($stmt->error != '') {
+        if (!empty($stmt->error)) {
             $this->notifyIT("storeOrderInfo\n\n" . $stmt->error . "\n\n" . $this->restaurantID . "\n" . $json->guid . "\n" . $json->entityType . "\n" . $rev . "\n" . $json->source . "\n" . $businessDate . "\n" . $json->voided . "\n" . $openedDate . "\n" . $paidDate . "\n" . $closedDate . "\n" . $diningOptions, "SQL Import Error");
         }
     }
@@ -661,7 +675,7 @@ final class Toast {
         $modifiedDate = date("Y-m-d G:i:s", strtotime($json->modifiedDate));
         $stmt->bind_param('sssssssss', $this->restaurantID, $json->guid, $empName, $json->externalEmployeeId, $createdDate, $json->deleted, $deletedDate, $modifiedDate, $json->email);
         $stmt->execute();
-        if ($stmt->error != '') {
+        if (!empty($stmt->error)) {
             $this->notifyIT("storeEmployeeInDB\n\n" . $stmt->error . "\n\n" . $this->restaurantID . "\n" . $json->guid . "\n" . $empName . "\n" . $json->externalEmployeeId . "\n" . $createdDate . "\n" . $json->deleted . "\n" . $deletedDate . "\n" . $modifiedDate . "\n" . $json->email, "SQL Import Error");
         }
         if (isset($json->wageOverrides[0])) {
@@ -683,7 +697,7 @@ final class Toast {
         $sql = "SELECT wage FROM pbc_ToastEmployeeWages WHERE entryID IN (SELECT MAX(entryID) FROM pbc_ToastEmployeeWages WHERE employeeGUID = '$guid' AND restaurantID='" . $this->restaurantID . "' )";
         $stmt = $this->mysqli->prepare($sql);
         $stmt->execute();
-        if ($stmt->error != '') {
+        if (!empty($stmt->error)) {
             $this->notifyIT(" \n\n" . $stmt->error . "\n\n" . $sql, "SQL Import Error");
         }
         if ($result = $stmt->get_result()) {
@@ -727,7 +741,7 @@ final class Toast {
             $json->guid,
             $json->employeeReference->guid, $businessDate, $inDate, $outDate, $regularHours, $overtimeHours, $breaks, $hourlyWage, $createdDate, $modifiedDate, $deletedDate, $jc->title, $nonCashTips, $declaredCashTips);
         $stmt->execute();
-        if ($stmt->error != '') {
+        if (!empty($stmt->error)) {
             $this->notifyIT("storePunchesInDB \n\n" . $stmt->error . "\n\n" . $sql, "SQL Import Error");
         }
     }
@@ -743,32 +757,12 @@ final class Toast {
 		'" . $this->restaurantID . "','" . $json->guid . "','" . $json->employeeReference->guid . "','" . date("Y-m-d G:i:s", strtotime($json->inDate)) . "','" . date("Y-m-d G:i:s", strtotime($json->outDate)) . "','" . date("Y-m-d G:i:s", strtotime($json->createdDate)) . "','" . date("Y-m-d G:i:s", strtotime($json->modifiedDate)) . "','" . date("Y-m-d G:i:s", strtotime($json->deletedDate)) . "','" . $jc->title . "')";
         $stmt->bind_param('sssssssss', $this->restaurantID, $json->guid, $json->employeeReference->guid, $inDate, $outDate, $createdDate, $modifiedDate, $deletedDate, $jc->title);
         $stmt->execute();
-        if ($stmt->error != '') {
+        if (!empty($stmt->error)) {
             $this->notifyIT("storeShiftsInDB \n\n" . $stmt->error . "\n\n" . $sql, "SQL Import Error");
         }
     }
 
-    private function createOrderHeader(object $orderHeader): array{
-        $q = "SELECT * FROM pbc2.pbc_ToastGUIDOptions WHERE optionName = '".$orderHeader->outpostIdentifier."'";
-        $stmt = $this->mysqli->prepare($q);
-        $stmt->execute();
-        $result = $stmt->get_result();
-        if ($row = $result->fetch_object()) {
-            $guid= $row->GUID;
-        }else{
-            $guid=self::DINING_OPTION;
-        }
-        return array(
-            "entityType" => "Order",
-            "diningOption" => array(
-                "guid" => $guid,
-                "entityType" => "DiningOption"
-            ),
-            "checks" => array()
-        );
-    }
-
-    public function buildOrderRequest(object $order): object{
+    public function buildOrderRequest(object $order): object {
         $orderHeader = $order->returnHeaderInfo();
         $orderObject = $this->createOrderHeader($orderHeader);
         $check = new PBKCheck($this->mysqli);
@@ -834,7 +828,7 @@ final class Toast {
             if ($appliedPayments = $check->returnPayments()) {
                 $amount = 0;
                 foreach ($appliedPayments as $p) {
-                    if($p->paymentStatus == 'approved') {
+                    if ($p->paymentStatus == 'approved') {
                         $amount += $p->paymentAmount;
                         if (in_array($p->paymentType, array('Visa', 'Mastercard', 'American Express', 'Diners Club', 'Discover', 'JCB'))) {
                             $txn = json_decode($p->transactionID);
@@ -874,6 +868,31 @@ final class Toast {
 
     }
 
+    private function createOrderHeader(object $orderHeader): array {
+        $q = "SELECT * FROM pbc2.pbc_ToastGUIDOptions WHERE optionName = '" . $orderHeader->outpostIdentifier . "'";
+        $stmt = $this->mysqli->prepare($q);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        if ($row = $result->fetch_object()) {
+            $guid = $row->GUID;
+        } else {
+            $guid = self::DINING_OPTION;
+        }
+        return array(
+            "entityType" => "Order",
+            "diningOption" => array(
+                "guid" => $guid,
+                "entityType" => "DiningOption"
+            ),
+            "checks" => array()
+        );
+    }
+
+    public function toastDate($date) {
+        $time = strtotime($date);
+        return date("Y-m-d", $time) . "T" . date("H:i:s", $time) . ".000" . date("O", $time);
+    }
+
     function storeCashInDB($json, $stmt): void {
         $date = date("Y-m-d", strtotime($json->date));
         if (isset($json->cashDrawer->guid) && $json->cashDrawer->guid != '') {
@@ -903,7 +922,7 @@ final class Toast {
 		'" . $json->type . "')";
         $stmt->bind_param('sssssssss', $this->restaurantID, $json->guid, $date, $json->reason, $json->amount, $payoutReasons, $json->cashDrawer->guid, $noSaleReason, $json->type);
         $stmt->execute();
-        if ($stmt->error != '') {
+        if (!empty($stmt->error)) {
             $this->notifyIT("storeCashInDB \n\n" . $stmt->error . "\n\n" . $sql, "SQL Import Error");
         }
     }

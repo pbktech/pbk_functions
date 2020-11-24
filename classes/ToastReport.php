@@ -1037,6 +1037,7 @@ from pbc2.kds_detail WHERE sent_time BETWEEN  ? AND ? AND station='' and restaur
 			return $r->tipAmount;
 		}
 	}
+
 	function getMiniBarOrders($outpost) {
 		$r=array();
 		$q="SELECT GUID FROM pbc2.pbc_ToastOrderHeaders WHERE pbc_ToastOrderHeaders.diningOption IN (SELECT outpostIdentifier FROM pbc_minibar WHERE idpbc_minibar=?)
@@ -1048,6 +1049,18 @@ from pbc2.kds_detail WHERE sent_time BETWEEN  ? AND ? AND station='' and restaur
 		while($row=$result->fetch_object()){$r[]=$row->GUID;}
 		return $r;
 	}
+
+    final public function getManagerEmails(): array{
+        $r=array();
+        $q="SELECT user_email FROM pbc_users WHERE ID in (SELECT managerID FROM pbc_pbr_managers WHERE restaurantID= ? )";
+        $stmt = $this->mysqli->prepare($q);
+        $stmt->bind_param("s", $this->restaurantID);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        while($row=$result->fetch_object()){$r[]=$row->user_email;}
+        return $r;
+    }
+
 	function sameDayLastYear($d) {
 		/*
 		$d=date('Y-m-d', strtotime('-1 year', strtotime($d)));
