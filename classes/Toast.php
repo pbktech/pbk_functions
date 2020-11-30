@@ -455,7 +455,7 @@ final class Toast {
         }
     }
 
-    function storeSelectionInfo($s, $ToastCheckID, $stmt): void {
+    function storeSelectionInfo($s, $ToastCheckID, $stmt, $sendSMS=null): void {
         $createdDate = date("Y-m-d G:i:s", strtotime($s->createdDate));
         $voidBusinessDate = date("Y-m-d G:i:s", strtotime($s->voidBusinessDate));
         if (isset($s->salesCategory->guid) && $s->salesCategory->guid != "") {
@@ -477,7 +477,7 @@ final class Toast {
                 $this->notifyIT("pbc_ToastGiftCardSold \n\n" . $stmt->error . "\n\n" . $s->guid . "\n" . $ToastCheckID . "\n" . "\n" . $s->quantity . "\n" . $s->preDiscountPrice . "\n" . "\n" . $createdDate . "\n" . "\n" . $voidBusinessDate, "SQL Import Error");
             }
         }
-        if ((string)$s->item->guid === self::CUBSIDE_GUID) {
+        if ((string)$s->item->guid === self::CUBSIDE_GUID && !empty($sendSMS)) {
             $csStatus = 'sent';
             $csTime = date("Y-m-d G:i:s");
             $q = $this->mysqli->prepare("INSERT IGNORE INTO pbc_curbside_link (toastCheckID,curbsideItemID,status,sentTime) VALUES (?, ?, ?, ?)");
