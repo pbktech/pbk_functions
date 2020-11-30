@@ -1,0 +1,16 @@
+<configuration xmlns="http://logging.apache.org/log4php/">
+    <appender name="tmpLogFile" class="LoggerAppenderFile">
+        <layout class="LoggerLayoutPattern">
+            <param name="conversionPattern" value="%date [%level] %message%newline%ex" />
+        </layout>
+        <param name="file" value="/tmp/pbk_functions.log" />
+    </appender>
+    <root>
+        <level value="INFO" />
+        <appender_ref ref="tmpLogFile" />
+    </root>
+    <root>
+        <level value="WARN" />
+        <appender_ref ref="tmpLogFile" />
+    </root>
+</configuration>

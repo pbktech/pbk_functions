@@ -10,6 +10,7 @@
         "dmitry-ivanov/dark-sky-api": "^1.0",
         "google/apiclient": "^2.8",
         "payeezy/payeezy-php": "dev-master",
-        "textalk/websocket": "^1.4"
+        "textalk/websocket": "^1.4",
+	"apache/log4php": "^2.3.0"
     }
 }
