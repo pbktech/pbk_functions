@@ -139,7 +139,7 @@ class Restaurant {
 		$r_info= (array) $this->rinfo;
 		$allUsers=$this->getUserNames();
 		$colOne=array("restaurantName"=>"Restaurant Name","restaurantID"=>"Restaurant ID","restaurantCode"=>"Restaurant Code","toastID"=>"Toast ID",
-	"GUID"=>"Toast GUID","mnkyID"=>"Monkey ID","levelUpID"=>"LevelUp ID","openingDate"=>"Opening Date",""=>"");
+	"GUID"=>"Toast GUID","mnkyID"=>"Monkey ID","levelUpID"=>"LevelUp ID","openingDate"=>"Opening Date","ipAddress"=>"IP Address");
 	$colTwo=array("address1"=>"Address","address2"=>"Suite","city"=>"City","state"=>"State","zip"=>"Zip","latLong"=>"Latitute & Longitude",
 	"phone"=>"Phone","email"=>"E-mail");
 	$aa_users = $wpdb->get_results("SELECT managerID FROM pbc2.pbc_pbr_managers where mgrType LIKE '%AA%' AND restaurantID='".$this->restaurantID."'");
@@ -385,9 +385,10 @@ class Restaurant {
 		'isOpen' => $this->rinfo->isOpen,
 		'mnkyID' => $this->rinfo->mnkyID,
 		'latLong' => $this->rinfo->latLong,
-		'market' => $this->rinfo->market
+		'market' => $this->rinfo->market,
+        'ipAddress' => $this->rinfo->ipAddress
 	),
-	array('%d','%d','%s','%s','%d','%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%d', '%s', '%s', '%s' )
+	array('%d','%d','%s','%s','%d','%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%d', '%s', '%s', '%s', '%s' )
 		)){
 			$wpdb->replace('pbc_pbr_managers',array( 'restaurantID'=> $this->rinfo->restaurantID, 'managerID'=> $this->rinfo->am, 'mgrType' => 'AM'), array('%d','%s','%s'));
 			$wpdb->replace('pbc_pbr_managers',array( 'restaurantID'=> $this->rinfo->restaurantID, 'managerID'=> $this->rinfo->gm, 'mgrType' => 'GM'), array('%d','%s','%s'));
