@@ -23,7 +23,7 @@ if(isset($_GET['id'])){
 	$selectedRestaurants=implode(", ",$restaurants);
 	if($taskActions->action=="true"){$onChecked="checked='checked'";}else{$offChecked="checked='checked'";}
 }
-$query = "SELECT levelUpID,restaurantName FROM pbc2.pbc_pbrestaurants WHERE levelUpID is not null";
+$query = "SELECT levelUpID,restaurantName FROM pbc2.pbc_pbrestaurants WHERE levelUpID is not null AND isOpen =1";
 $records=$wpdb->get_results($query);
 if(!empty($records)){
 	$restaurants="<div style='width:100%;'><select style='width:100%;' class=\"custom-select multipleSelect\" id=\"restaurantPicker\" name=\"change[restaurants][]\" multiple=\"multiple\">";
