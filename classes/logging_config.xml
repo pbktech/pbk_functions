@@ -3,7 +3,8 @@
         <layout class="LoggerLayoutPattern">
             <param name="conversionPattern" value="%date [%level] %message%newline%ex" />
         </layout>
-        <param name="file" value="/tmp/pbk_functions.log" />
+        <param name="file" value="/home/log/pbk_functions-%s.log" />
+        <param name="datePattern" value="Y-m-d" />
     </appender>
     <root>
         <level value="INFO" />
