@@ -477,7 +477,7 @@ final class Toast {
                 $this->notifyIT("pbc_ToastGiftCardSold \n\n" . $stmt->error . "\n\n" . $s->guid . "\n" . $ToastCheckID . "\n" . "\n" . $s->quantity . "\n" . $s->preDiscountPrice . "\n" . "\n" . $createdDate . "\n" . "\n" . $voidBusinessDate, "SQL Import Error");
             }
         }
-        if ((string)$s->item->guid === self::CUBSIDE_GUID && !empty($sendSMS)) {
+        if ((string)$s->item->guid === self::CUBSIDE_GUID && !empty($sendSMS) && isset($s->item->guid)) {
             $csStatus = 'sent';
             $csTime = date("Y-m-d G:i:s");
             $q = $this->mysqli->prepare("INSERT IGNORE INTO pbc_curbside_link (toastCheckID,curbsideItemID,status,sentTime) VALUES (?, ?, ?, ?)");

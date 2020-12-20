@@ -11,6 +11,7 @@
         "google/apiclient": "^2.8",
         "payeezy/payeezy-php": "dev-master",
         "textalk/websocket": "^1.4",
-	"apache/log4php": "^2.3.0"
+	    "apache/log4php": "^2.3.0",
+        "google/cloud-logging": "^1.21"
     }
 }
