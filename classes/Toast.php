@@ -8,10 +8,10 @@ use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 
 require dirname(__DIR__) . '/vendor/autoload.php';
 
-final class Toast {
+class Toast {
     public const DINING_OPTION = '1bf29ca2-c3a3-42fc-8eb8-0129f7f83baa';
     public const PAYMENT = '74656949-f191-4c2d-8965-8a422ccc51b6';
-    public const CUBSIDE_GUID = 'b5fda380-66db-4b6b-b98b-94d3dc30db59';
+    public const CURBSIDE_GUID = 'b5fda380-66db-4b6b-b98b-94d3dc30db59';
     var $auth = null;
     public $mysqli = null;
     var $restaurantID = 0;
@@ -477,7 +477,7 @@ final class Toast {
                 $this->notifyIT("pbc_ToastGiftCardSold \n\n" . $stmt->error . "\n\n" . $s->guid . "\n" . $ToastCheckID . "\n" . "\n" . $s->quantity . "\n" . $s->preDiscountPrice . "\n" . "\n" . $createdDate . "\n" . "\n" . $voidBusinessDate, "SQL Import Error");
             }
         }
-        if ((string)$s->item->guid === self::CUBSIDE_GUID && !empty($sendSMS) && isset($s->item->guid)) {
+        if ((string)$s->item->guid === self::CURBSIDE_GUID && !empty($sendSMS) && isset($s->item->guid)) {
             $csStatus = 'sent';
             $csTime = date("Y-m-d G:i:s");
             $q = $this->mysqli->prepare("INSERT IGNORE INTO pbc_curbside_link (toastCheckID,curbsideItemID,status,sentTime) VALUES (?, ?, ?, ?)");

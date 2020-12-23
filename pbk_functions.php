@@ -77,6 +77,9 @@ include('shortcodes/pbr_show_restaurant_hours.php');
 include('shortcodes/pbk_showChildPages.php');
 include('shortcodes/pbk_checkTips.php');
 
+/*AJAX*/
+include('ajax/restClosure.php');
+
 /*Admin Pages*/
 include('admin-page.php'); // the plugin options page HTML and save functions
 add_action('init','pbk_force_download');
