@@ -4,7 +4,7 @@ global $wpdb;
 global $ret;
 $cu = wp_get_current_user();
 $page = home_url(add_query_arg(array(), $wp->request));
-wp_localize_script( 'closure-script', 'closure_ajax', array( 'ajax_url' => admin_url('admin-ajax.php')) );
+wp_localize_script('closure-script', 'closure_ajax', array('ajax_url' => admin_url('admin-ajax.php')));
 $query = "SELECT restaurantID,restaurantName FROM pbc2.pbc_pbrestaurants WHERE levelUpID is not null AND isOpen =1";
 $records = $wpdb->get_results($query);
 $restaurants = '';
@@ -15,54 +15,94 @@ if (!empty($records)) {
 }
 ?>
 <script>
-    function closureList(){
-      jQuery.ajax({
-        url : closure_ajax.ajax_url,
-        type : 'post',
-        data : {
-          action : 'closureList'
-        },
-        success : function( response ) {
-          jQuery('.rml_contents').html(response);
-        }
-      });
-    }
+  function closureList() {
+    jQuery.ajax({
+      url: '<?php echo admin_url('admin-ajax.php');?>',
+      type: 'get',
+      data: {
+        action: 'get_closure_list',
+        nonce: '<?php echo wp_create_nonce("get_closure_list_nonce");?>'
+      },
+      success: function(response) {
+        console.log(response.data);
+
+        jQuery('#example').DataTable({
+          'data': response.data,
+          fixedHeader: true,
+          'deferRender': true,
+          'processing': true,
+          columns: [
+            { "visible": false, "targets": 0 },
+            { title: 'Close' },
+            { title: 'Re-Open' },
+            { title: 'Restaurants' },
+            { title: 'Actions',"searchable": false, "orderable": false }
+          ]
+        });
+        jQuery('.datePicker').datepicker({
+          dateFormat: 'MM d, yy'
+        });
+
+        jQuery('#restaurantPicker').select2({
+          allowClear: true,
+          theme: 'classic'
+        });
+        jQuery(".itemName").on("click", function(e) {
+          var elem = jQuery("#" + e.target.id),
+            restaurants = elem.data("restaurants"),
+            modalTitle = elem.data("title");
+          console.log(elem)
+          jQuery( "#title" ).replaceWith( modalTitle );
+          jQuery('#starttime').val(elem.data("starttime"));
+          jQuery('#endtime').val(elem.data("endtime"));
+          jQuery('#startdate').val(elem.data("startdate"));
+          jQuery('#enddate').val(elem.data("enddate"));
+          jQuery('#closureid').val(elem.data("closureid"));
+          if(restaurants){
+            jQuery('#restaurantPicker').val([restaurants]);
+            jQuery("#restaurantPicker").trigger("change");
+          }
+        });
+        jQuery('.deleteSchedule').on('click', function(e) {
+          var elem = jQuery('#' + e.target.id);
+          alert(elem.data('closureid'));
+        });
+
+      }
+    });
+  }
 
   jQuery(document).ready(function() {
-    jQuery('.datePicker').datepicker({
-      dateFormat: 'MM d, yy'
-    });
-    jQuery('#restaurantPicker').select2({
-      allowClear: true,
-      theme: 'classic'
-    });
-    jQuery(".itemName").on("click", function(e) {
-      var elem = jQuery("#" + e.target.id),
-        restaurants = elem.data("restaurants"),
-        modalTitle = elem.data("title");
-      console.log(elem)
-      jQuery( "#title" ).replaceWith( modalTitle );
-      jQuery('input.timePicker').timepicker({
-        timeFormat: 'h:mm p',
-        interval: 15,
-        minTime: '5:00am',
-        maxTime: '10:00pm',
-        dynamic: false,
-        dropdown: true,
-        scrollbar: true
+    closureList();
+    jQuery('#save').on('click', function(e) {
+      jQuery('#saveButtons').hide();
+      jQuery('#spinner').show();
+      jQuery.ajax({
+        url: '<?php echo admin_url('admin-ajax.php');?>',
+        type: 'post',
+        data: {
+          action: 'add_new_closure',
+          startDate: jQuery('#startdate').val(),
+          startTime: jQuery('#starttime').val(),
+          endDate: jQuery('#enddate').val(),
+          endTime: jQuery('#endtime').val(),
+          restaurants: jQuery('#restaurantpicker').val(),
+          closureID: jQuery('#closureid').val(),
+          nonce: '<?php echo wp_create_nonce("add_closure_nonce");?>'
+        },
+        success: function(response) {
+          if (response === '1') {
+            closureList();
+            jQuery('#saveButtons').show();
+            jQuery('#spinner').hide();
+            jQuery('#exampleModalLong').modal('hide');
+          } else {
+            alert(response);
+            jQuery('#saveButtons').show();
+            jQuery('#spinner').hide();
+          }
+        }
       });
-      jQuery('#startTime').timepicker('setTime', elem.data("startTime"));
-      jQuery('#endTime').timepicker('setTime', elem.data("endTime"));
-      jQuery('input.change-format').click(function() {
-        var input = jQuery(this),
-          timepicker = input.closest('div').find('.timePicker'),
-          instance = timepicker.timepicker();
-        instance.option('timeFormat', jQuery(this).data('format'));
-      });
-      if(restaurants){
-        jQuery('#restaurantPicker').val([restaurants]);
-        jQuery("#restaurantPicker").trigger("change");
-      }
     });
   });
 </script>
@@ -82,7 +122,7 @@ if (!empty($records)) {
             <div class="modal-body">
                 <div class='form-group'>
                     <form method='post' action='<?php echo $page; ?>'>
-                        <input type='hidden' name='action' value='<?php echo $page; ?>'/>
+                        <input type='hidden' name='closureID' id="closureID" value=''/>
                         <div class='form-group'>
                             <div class='row'>
                                 <div class='col'>
@@ -93,14 +133,14 @@ if (!empty($records)) {
                                 <div class='col'>
                                     <div class='form-group'>
                                         <label for='startDate'>Date</label>
-                                        <input class='form-control datePicker' type='text' id='startDate'
-                                               name='startDate' value=""/>
+                                        <input class='form-control datePicker' type='text' id='startdate'
+                                               name='startdate' value=""/>
                                     </div>
                                 </div>
                                 <div class='col'>
                                     <div class='form-group'>
                                         <label for='startTime'>Time</label>
-                                        <input class='form-control timePicker' type='text' id='startTime'
+                                        <input class='form-control timePicker' type='text' id='starttime'
                                                name='startTime' style='width: 100px;' value=""/>
                                     </div>
                                 </div>
@@ -116,14 +156,14 @@ if (!empty($records)) {
                                 <div class='col'>
                                     <div class='form-group'>
                                         <label for='endDate'>Date</label>
-                                        <input class='form-control datePicker' type='text' id='endDate' name='endDate'
+                                        <input class='form-control datePicker' type='text' id='enddate' name='enddate'
                                                value=""/>
                                     </div>
                                 </div>
                                 <div class='col'>
                                     <div class='form-group'>
                                         <label for='endTime'>Time</label>
-                                        <input class='form-control timePicker' type='text' id='endTime' name='endTime'
+                                        <input class='form-control timePicker' type='text' id='endtime' name='endtime'
                                                style='width: 100px;' value=""/>
                                     </div>
                                 </div>
@@ -146,54 +186,26 @@ if (!empty($records)) {
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary" id="save">Save changes</button>
+                <div id="spinner" style="display: none; text-align: center;"><img
+                            src='<?php echo WP_PLUGIN_URL; ?>/pbk_functions/assets/images/processing.gif'
+                            style='height:92px;width:92px;'/></div>
+                <div id="saveButtons" style="display: block">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" id="save">Save changes</button>
+                </div>
             </div>
         </div>
     </div>
 </div>
 <!-- Button trigger modal -->
 <div class="container">
-    <button type="button" class="btn btn-primary itemName" id="NEW" data-toggle="modal" data-target=".bd-example-modal-lg"
-            data-title="Add New Closure" data-startTime="now" data-endTime="end" data-restaurants=""
-    >
+    <button type="button" class="btn btn-primary itemName" id="AddNewClosureButton" data-toggle="modal"
+            data-target=".bd-example-modal-lg"
+            data-title="Add New Closure" data-starttime="" data-endtime="" data-restaurants="" data-closureid="new">
         Add New Closure
     </button>
 </div>
 <div class="container-fluid" style="padding-top: 1em;">
-    <table class="table table-striped">
-        <thead class="thead-dark">
-            <tr>
-                <th scope="col">Close</th>
-                <th scope="col">Reopen</th>
-                <th scope="col" colspan="2">Restaurants</th>
-            </tr>
-        </thead>
-        <tbody>
-        <?php
-        if($restClose){
-            foreach($restClose as $c){
-        ?>
-            <tr>
-                <td><?php echo date("m/d/Y @ g:i a",strtotime($c['closureTime']));?></td>
-                <td><?php echo date("m/d/Y @ g:i a",strtotime($c['reopenTime']));?></td>
-                <td><?php echo implode(",",$c['RestaurantNames']);?></td>
-                <td>
-                    <button type="button" class="btn outline-warning itemName" data-toggle="modal" data-target=".bd-example-modal-lg"
-                            id="<?php echo $c['id'];?>"
-                            data-title="Update Closure"
-                            data-startTime="<?php echo date("g:i a",strtotime($c['closureTime']));?>"
-                            data-endTime="<?php echo date("g:i a",strtotime($c['reopenTime']));?>"
-                            data-restaurants="<?php echo implode(",",$c['RestaurantNameIDs']);?>"
-                    >Edit</button>
-                    <button type="button" class="btn outline-danger" >Delete</button>
-                </td>
-            </tr>
-        <?php
-            }
-        }
-        ?>
-        </tbody>
-    </table>
+    <h4 id='uc'>Upcoming Changes</h4>
+    <table id="example" class="table table-striped table-bordered" style="width:100%;"></table>
 </div>
-

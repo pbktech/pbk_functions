@@ -1,31 +1,123 @@
 <?php
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
 add_action( 'wp_ajax_get_closure_list', 'closureList' );
 add_action( 'wp_ajax_add_new_closure', 'addClosure');
+add_action( 'wp_ajax_remove_closure', 'deleteClosure');
 
 function closureList(){
+
+    if (!isset($_REQUEST['nonce']) || !wp_verify_nonce( $_REQUEST['nonce'], "get_closure_list_nonce")) {
+        exit();
+    }
     global $wpdb;
-    $restClose=array();
-    $closures = $wpdb->get_results("SELECT closureTime, reopenTime,restaurantName, ppc.restaurantID as 'restaurantID'  FROM pbc_pbr_closures ppc, pbc_pbrestaurants ppr WHERE ppc.restaurantID = ppr.restaurantID AND isDeleted = 0 AND closureTime >= CURRENT_DATE() ");
+    $restClose=array("data" => array());
+
+    $closures = $wpdb->get_results("SELECT * FROM pbc_pbr_closures ppc WHERE isDeleted = 0 AND closureTime >= CURRENT_DATE() ");
     if($closures) {
         foreach ($closures as $c) {
-
-            $restClose[$c->closureTime]['closureTime'] = $c->closureTime;
-            $restClose[$c->closureTime]['reopenTime'] = $c->reopenTime;
-            $restClose[$c->closureTime]['RestaurantIDs'][] = array_keys(json_decode($c->restaurantID,true));
-            $restClose[$c->closureTime]['RestaurantNames'][] = array_values(json_decode($c->restaurantID,true));
+            $restClose['data'][] = array($c->id, date("m/d/Y g:i a", strtotime($c->closureTime)), date("m/d/Y g:i a", strtotime($c->reopenTime)), implode(", ", array_values(json_decode($c->restaurantID, true))),
+                '<button type="button" class="btn outline-warning itemName" id="edit-' . $c->id . '" data-toggle="modal" data-target=".bd-example-modal-lg"
+                            data-closureid="' . $c->id . '"
+                            data-title="Update Closure"
+                            data-starttime="' . date("g:i a", strtotime($c->closureTime)) . '"
+                            data-endtime="' . date("g:i a", strtotime($c->reopenTime)) . '"
+                            data-startdate="' . date("m/d/Y", strtotime($c->closureTime)) . '"
+                            data-enddate="' . date("m/d/Y", strtotime($c->reopenTime)) . '"
+                            data-restaurants="' . implode(",", array_keys(json_decode($c->restaurantID, true))) . '"
+                    >Edit</button>
+                    <button type="button" class="btn outline-danger deleteSchedule" id="delete-' . $c->id . '" data-closureID="' . $c->id . '" >Delete</button>
+                '
+            );
         }
     }
-    return $restClose;
+    header('Content-Type: application/json');
+    echo json_encode($restClose);
+    wp_die();
 }
 
-function addClosure($r){
-    $mysqli = new mysqli(DB_HOST, DB_USER, DB_PASSWORD, DB_NAME);
-    $tasks=new task_engine($mysqli);
-    $startDate=date("Y-m-d",strtotime($_POST["startDate"]));
-    $startTime=date("H:i:s",strtotime($_POST["startTime"]));
-    $tasks->add_task(['what'=>'execBackground',
-        'target'=>"/home/jewmanfoo/levelup-website-bot/change.sh ",
-        'files' => json_encode($_POST['change']),
-        'dueDate' => $startDate . " " . $startTime]);
+function deleteClosure(){
+    if (!isset($_REQUEST['nonce']) || !wp_verify_nonce( $_REQUEST['nonce'], "remove_closure_nonce")) {
+        echo 1;
+        exit();
+    }
+    global $wpdb;
 
+    if($taskID = $wpdb->get_var("SELECT taskID FROM pbc_pbr_closures WHERE id = '" . $_REQUEST['closureID'] ."' ")){
+        $taskIDs = explode("::",$taskID);
+        $mysqli = new mysqli(DB_HOST, DB_USER, DB_PASSWORD, DB_NAME);
+        $tasks = new task_engine($mysqli);
+        $tasks->delete_task($taskIDs[0]);
+        $tasks->delete_task($taskIDs[1]);
+        $wpdb->update('pbc_pbr_closures',array('isDeleted' => '1'),array( 'id' => $_REQUEST['closureID'] ),array('%s'),array( '%s' ));
+    }else{
+        echo "Record Not Found";
+    }
+    wp_die();
+}
+
+function addClosure(){
+    if (!isset($_REQUEST['nonce']) || !wp_verify_nonce( $_REQUEST['nonce'], "add_closure_nonce")) {
+        echo 1;
+        exit();
+    }
+    global $wpdb;
+    $mysqli = new mysqli(DB_HOST, DB_USER, DB_PASSWORD, DB_NAME);
+    $tasks = new task_engine($mysqli);
+    $r = array();
+    foreach($_REQUEST['restaurants'] as $restaurant){
+        $r[$restaurant] = $wpdb->get_var("SELECT restaurantName FROM pbc_pbrestaurants WHERE restaurantID = '" . $restaurant ."' ");
+    }
+
+    $startDate = date("Y-m-d", strtotime($_REQUEST["startDate"]));
+    $startTime = date("H:i:s", strtotime($_REQUEST["startTime"]));
+    $endDate = date("Y-m-d", strtotime($_REQUEST["endDate"]));
+    $endTime = date("H:i:s", strtotime($_REQUEST["endTime"]));
+
+    $close = $startDate . " " . $startTime;
+    $reopen =  $endDate . " " . $endTime;
+    if($_REQUEST['closureID'] === "new") {
+        $startTask = $tasks->add_task(['what' => 'execBackground',
+            'target' => "/home/jewmanfoo/levelup-website-bot/change.sh ",
+            'files' => json_encode(['restaurants'=> $_REQUEST['restaurants'], 'action' => 'false']),
+            'dueDate' => $close]);
+
+        $endTask = $tasks->add_task(['what' => 'execBackground',
+            'target' => "/home/jewmanfoo/levelup-website-bot/change.sh ",
+            'files' => json_encode(['restaurants'=> $_REQUEST['restaurants'], 'action' => 'true']),
+            'dueDate' => $reopen]);
+        if(empty($startTask)){
+            echo "Failed to create Start Task";
+            wp_die();
+        }
+        if(empty($endTask)){
+            echo "Failed to create End Task";
+            wp_die();
+        }
+        $tasks = $startTask . "::" . $endTask;
+        $r = json_encode($r);
+        $wpdb->query(
+            $wpdb->prepare("INSERT INTO pbc_pbr_closures (restaurantID, closureTime, reopenTime, taskID)VALUES (%s, %s, %s, %s)",
+                $r, $close, $reopen,$tasks
+            ));
+        if($error = $wpdb->last_error){
+            $tasks->delete_task($startTask);
+            $tasks->delete_task($endTask);
+            echo $error;
+        }else{
+            echo "1";
+        }
+    }else{
+        if($taskID = $wpdb->get_var("SELECT taskID FROM pbc_pbr_closures WHERE id = '" . $_REQUEST['closureID'] ."' ")){
+            $taskIDs = explode("::",$taskID);
+            $tasks->update_task ($taskIDs[0], array('files' => json_encode(['restaurants'=> $_REQUEST['restaurants'], 'action' => 'false']),'dueDate' => $close));
+            $tasks->update_task ($taskIDs[1], array('files' => json_encode(['restaurants'=> $_REQUEST['restaurants'], 'action' => 'true']),'dueDate' => $reopen));
+            echo "1";
+        }else{
+            echo "Record Not Found";
+        }
+    }
+    wp_die();
 }
