@@ -1129,6 +1129,9 @@ from pbc2.kds_detail WHERE sent_time BETWEEN  ? AND ? AND station='' and restaur
 		$mail->Username = $this->config->SMTP_USERNAME;
 		$mail->Password = $this->config->SMTP_PASSWORD;
 		$mail->setFrom('otrs@theproteinbar.com', 'Protein Bar & Kitchen');
+		if(isset($this->config->debug) && (string)$this->config->debug === "true"){
+            $to="jon@theproteinbar.com";
+        }
 		$addresses=explode(",",$to);
 		foreach($addresses as $address){
 		  $mail->addAddress($address);

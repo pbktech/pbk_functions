@@ -20,13 +20,13 @@ class Restaurant {
 	public $violationType=array('Safety', 'PBK Look', 'Tardy', 'Accuracy','Cash Mishandling / Theft', 'Absent', 'Speed', 'Gross Misconduct', 'No Call / No Show', 'Connection', 'Leadership', 'Other');
 	public $violationSupport=array('Policy', 'The Blend', 'Recipes', 'The 4 Keys', 'Station Aids', 'Other');
 	public $deviceType=array();
-	public $orderTypes=array("LightBulb"=>"Light Bulbs","KeyRelease"=>"Key Release");
+	public $orderTypes=array("LightBulb"=>"Supply","KeyRelease"=>"Key Release");
 	public $deviceStatus=array('Active', 'B-Stock', 'Retired', 'Returned');
-	private $bulbs=array(1=>"Nucleus Large", 2=>"Nucleus Small", 3=>"Overhead Lighting", 4=>"Refrigeration Lighting", 5=>"Other");
+	private $bulbs=array("Light Bulbs" => [1=>"Nucleus Large", 2=>"Nucleus Small", 3=>"Overhead Lighting", 4=>"Refrigeration Lighting", 5=>"Other"], "Boosts" => [6=>"CBD",7=>"Ashwagandha" ]);
 	public $incidentTypes=array(
-		"foodborneIllness"=>array("Name"=>"Foodborne Illness/Foreign Object","sendTo"=>array("lcominsky@theproteinbar.com","vwillis@theproteinbar.com")),
-		"injury"=>array("Name"=>"Injury","sendTo"=>array("lcominsky@theproteinbar.com","hr@theproteinbar.com")),
-		"lostStolenProperty"=>array("Name"=>"Lost or Stolen Property","sendTo"=>array("lcominsky@theproteinbar.com","hr@theproteinbar.com","jarbitman@theproteinbar.com"))
+		"foodborneIllness"=>array("Name"=>"Foodborne Illness/Foreign Object","sendTo"=>array("mcrawford@theproteinbar.com")),
+		"injury"=>array("Name"=>"Injury","sendTo"=>array("mcrawford@theproteinbar.com")),
+		"lostStolenProperty"=>array("Name"=>"Lost or Stolen Property","sendTo"=>array("mcrawford@theproteinbar.com","hr@theproteinbar.com","jarbitman@theproteinbar.com"))
 	);
 	public $myRestaurants=array();
 	public $nhoSatus=array(
@@ -1266,40 +1266,51 @@ AND pbc_users.id=nhoHost AND pbc_pbrestaurants.restaurantID=nhoLocation");
 	public function showOrderInfo($id,$pdfOnly=0){
 		global $wpdb;
 		$d=$wpdb->get_row( "SELECT * FROM pbc_pbk_orders,pbc_pbrestaurants WHERE idpbc_pbk_orders = $id AND pbc_pbk_orders.restaurantID=pbc_pbrestaurants.restaurantID" );
-		$i=json_decode($d->orderData);
+        $i=json_decode($d->orderData);
 		if(isset($i->files) && count($i->files)!=0){
+            $files = array();
 			foreach($i->files as $file){
 				$files[]="<a href='".home_url( "wp-content/uploads/".$file )."' target='_blank'>".$file."</file>";
 			}
 			$files=implode("<br>",$files);
-		}else {
-			$files="None Added";
 		}
 		$return= "
 		<div class='container-fluid' id='queryResults'>
 		    <div class='row'>
 		      <div class='col'><label for='reporterName'><strong>Name</strong><br><div class='alert alert-secondary'>".$i->reporterName."</div></div>
 		      <div class='col'><label for='restaurantID'><strong>Restaurant</strong><br><div class='alert alert-secondary'>".$d->restaurantName."</div></div>
+		    </div>";
+		foreach($i->items as $name => $quantity) {
+            $return.="		    <div class='row'>
+		      <div class='col'><label for='quantity'><strong>".$name."</strong><br><div class='alert alert-secondary'>".$quantity."</div></div>
 		    </div>
+";
+        }
+		if(!empty($i->other)) {
+            $return .= "
 		    <div class='row'>
-		      <div class='col'><label for='bulbs'><strong>Bulb Type</strong><br><div class='alert alert-secondary'>".$this->bulbs[$i->bulbs]."</div></div>
-		      <div class='col'><label for='quantity'><strong>Quantity</strong><br><div class='alert alert-secondary'>".$i->quantity."</div></div>
-		    </div>
+		      <div class='col'><label for='other'><strong>Additional Comments</strong><div class='alert alert-secondary'>" . $i->other . "</div></div>
+		     </div> ";
+        }
+        if(isset($files)) {
+            $return .= "
 		    <div class='row'>
-		      <div class='col'><label for='other'><strong>Additional Comments</strong><div class='alert alert-secondary'>".$i->other."</div></div>
 		      <div class='col' id='file_area'><label for='pictures'><strong>Images</strong><br><div class='alert alert-secondary'>$files</div></div>
 		    </div>
+		    ";
+        }
+        $return .= "
 		</div>
 		  ";
 		$content['format']='A4-P';
-		$content['title']=$d->restaurantName . " Light Bulb Order for " . date("m/d/y",strtotime($d->orderDate));
+		$content['title']=$d->restaurantName . " " . $d->orderType . " Order for " . date("m/d/y",strtotime($d->orderDate));
 		$content['html']=$this->docHeader($this->orderTypes[$d->orderType]." Order").$return;
 		if($file=$this->buildHTMLPDF(json_encode($content))){
-			if($pdfOnly==1){return $file['Local'];}
+			if($pdfOnly==1){return array("pdf" => $file['Local'], "html" => $content['html']);}
 			$return.="<div class='container-fluid' id='queryResults'><div class='row'><div class='col'><a href='".$file['Link']."' target='_blank'>Printable PDF</a></div></div></div>";
 		}
 		if($d->orderStatus=="Pending"){
-			$returnB="
+			echo "
 			<h4>Update the Order Status</h4>
 			<form method=\"post\" action=\"admin-post.php\">
 				<input type=\"hidden\" name=\"action\" value=\"pbk-update-order\" />
@@ -1314,7 +1325,7 @@ AND pbc_users.id=nhoHost AND pbc_pbrestaurants.restaurantID=nhoLocation");
 			</form>
 			" . $this->pbk_form_processing();
 		}else{
-			$returnB="
+			echo "
 				<div class='container-fluid' id='queryResults'>
 					<div class='row'>
 						<div class='col'><label for='bulbs'><strong>Bulb Type</strong></label><br><div class='alert alert-secondary'>".$d->orderStatus."</div></div>
@@ -1323,7 +1334,7 @@ AND pbc_users.id=nhoHost AND pbc_pbrestaurants.restaurantID=nhoLocation");
 				</div>
 			";
 		}
-			return $return . $returnB;
+			return $return;
 	}
 	public function getPBKOrderinfo($data){
 		global $wpdb;

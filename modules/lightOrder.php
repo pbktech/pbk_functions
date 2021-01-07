@@ -35,10 +35,10 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
   );
   if($wpdb->last_error==''){
     $report=New ToastReport;
-    $html="<div>There has been a new light bulb order placed for ".$r->getRestaurantField("restaurantName").".";
+    $html="<div>There has been a new supply order placed for ".$r->getRestaurantField("restaurantName").".";
     $current_user = wp_get_current_user();
     $attach=$r->showOrderInfo($wpdb->insert_id,1);
-    $report->reportEmail($current_user->user_email.",laura@theproteinbar.com",$html,"Light Bulb Order",$attach);
+    $report->reportEmail($current_user->user_email.",laura@theproteinbar.com",$attach['html'],"Supply Order",$attach['pdf']);
     switchpbrMessages(6);
   }
 }
@@ -48,11 +48,21 @@ $ret.=$r->pbk_form_processing()."
     <div class='row'>
       <div class='col'><label for='reporterName'>Your Name</label>".$r->buildLoggedInName()."</div>
       <div class='col'><label for='restaurantID'>Restaurant</label>".$r->buildRestaurantSelector()."</div>
-    </div>
-    <div class='row'>
-      <div class='col'><label for='bulbs'>Bulb Type</label>".$r->buildSelectBox(array("Options"=>$r->getBulbs(),"Field"=>"orderData[bulbs]","Multiple"=>"","ID"=>"bulbs"))."</div>
-      <div class='col'><label for='quantity'>Quantity</label><br><input type='text' class='form-control' name='orderData[quantity]' id='quantity' required /></div>
-    </div>
+    </div>";
+    foreach($r->getBulbs() as $header =>$items){
+        $ret.="<h3>" . $header . "</h3>
+<div class='row'>";
+        $count = 0;
+        foreach($items as $id =>$name) {
+            $ret .= "
+      <div class='col'><label for='bulb" . $id . "'>" . $name . "</label><input type='text' class='form-control' name='orderData[items][$name]' id='bulb" . $id . "' /></div>
+        ";
+            ($count % 2 ) ? $ret.="</div><div class='row'>" : $ret.="";
+            $count++;
+        }
+        $ret.="</div>";
+    }
+$ret.="
     <div class='row'>
       <div class='col'><label for='other'>Additional Comments</label><textarea class=\"form-control\" rows=\"5\" id=\"other\" name='orderData[other]' placeholder='Please include any other necessary detail, such as specs on current light bulb, location of lighting, etc'></textarea></div>
       <div class='col' id='file_area'><label for='pictures'>Images</label><br><input type='file' name='orderDataFiles[]' id='files' multiple /></div>
