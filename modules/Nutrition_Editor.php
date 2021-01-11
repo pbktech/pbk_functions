@@ -2,16 +2,11 @@
 global $wp;
 global $wpdb;
 global $ret;
-$groups[1] = "BREAKFAST SCRAMBLES";
-$groups[8] = "BREAKFAST OATMEAL";
-$groups[2] = "SHAKES";
-$groups[9] = "SUPER BLENDS";
-$groups[3] = "BOWLS/BAR-RITOS";
-$groups[9] = "BOWLS with RICED CAULIFLOWER";
-$groups[4] = "CHILIS/SOUPS";
-$groups[5] = "SALADS/WRAPS";
-$groups[6] = "KIDS MENU";
-$groups[7] = "COFFEE";
+$groups = array();
+$sections = $wpdb->get_results("SELECT * FROM pbc_public_nutritional_sections ORDER BY viewOrder");
+foreach($sections as $section){
+    $groups[$section->sectionID] = $section->section;
+}
 $allergens = array("Wheat/Gluten", "Egg", "Peanut", "Tree Nuts", "Dairy", "Soy Protein", "Sesame", "Fish/Shellfish");
 $preferences = array("Vegetarian", "Vegan", "Keto", "Paleo");
 $page = home_url(add_query_arg(array(), $wp->request));
