@@ -542,7 +542,7 @@ pbc2.pbc_ToastCheckHeaders.ToastOrderID=pbc2.pbc_ToastOrderHeaders.GUID";
 	}
 	function getAssignedTips($guid) {
 		$q="SELECT * FROM pbc2.pbc_TipDistribution WHERE orderGUID='$guid'";
-		$stmt = $this->mysqli->prepare($q);      echo $compStatus. " " . $d['Start'] . " " . $d['End'] . "\n";
+		$stmt = $this->mysqli->prepare($q);
 		$stmt->execute();
 		$result = $stmt->get_result();
 		while($row=$result->fetch_object()){$r[$row->employeeGUID]=$row;}
