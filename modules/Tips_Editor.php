@@ -56,8 +56,9 @@ if(isset($_REQUEST['order']) && $_REQUEST['order']!='') {
 	$payment=$toast->getPaymentInfo($_REQUEST['order']);
 	$toast->setBusinessDate($order->modifiedDate);
 	$employees=$toast->getClockedInEmployees("Team Member");
+    $tips["a0"] = (object)["tipAmount" =>0];
 	foreach($employees as $employee){
-        $tips[$employee->GUID] = 0;
+        $tips[$employee->GUID] = (object)["tipAmount" =>0];
     }
 	$assignedTips=$toast->getAssignedTips($_REQUEST['order']);
 	foreach ($assignedTips as $tip){
@@ -65,7 +66,7 @@ if(isset($_REQUEST['order']) && $_REQUEST['order']!='') {
     }
 	$disabled="";
 	foreach($tips as $tip){
-			if($tip->sentToPayroll==1) {$disabled=" disabled ";break;}
+			if(isset($tip->sentToPayroll) && $tip->sentToPayroll===1) {$disabled=" disabled ";break;}
 	}
 	$ret.="
 	<script type=\"text/javascript\">
