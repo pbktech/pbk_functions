@@ -56,7 +56,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' && $_POST['restaurant']=='') {
 }
 if(isset($_GET['i'])){
 	$checkRestaurant=$wpdb->get_var("SELECT restaurantID FROM pbc_ToastOrderPayment WHERE ToastCheckID='".$_GET['i']."'");
-	if (in_array($checkRestaurant,$rests) || in_array("administrator", $cu->roles) || in_array("editor", $cu->roles)) {
+	if (in_array($checkRestaurant,$rests) || in_array("administrator", $cu->roles) || in_array("editor", $cu->roles)  || in_array("author", $cu->roles)) {
 		$_REQUEST['rid']=$checkRestaurant;
 	}else {
 		echo "<div class='alert alert-danger'>You do not have access to this location.</div>";

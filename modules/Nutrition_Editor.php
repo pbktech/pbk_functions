@@ -88,7 +88,7 @@ $ret .= "\n
   </script>
 	<div>
 		<form method='get' action='" . $page . "'  name='itemSelector'>
-			<select name='item' onchange=\"this.form.submit()\" id='itemSelector' class='form-control js-example-basic-single'>
+			<select name='item' onchange=\"this.form.submit()\" id='itemSelector' class='js-example-basic-single' style='width: 100%;'>
       <option value=''>Choose an Item</option>
       <option value='_NEW'>Add a New Item</option>";
 foreach ($listItems as $section => $items) {
@@ -158,8 +158,8 @@ if (isset($_REQUEST['item'])) {
       <select class='form-control' name='itemSection' id='itemSection' >
         <option value=''>Choose One</option>";
     foreach ($groups as $id => $name) {
-        if ($item->itemSection === $id) {
-            $sel = "selected='selected'";
+        if ((int)$item->itemSection === (int)$id) {
+            $sel = "selected='' ";
         } else {
             $sel = "";
         }
@@ -233,7 +233,7 @@ if (isset($_REQUEST['item'])) {
         $ret .= "
               <div class='form-check'>
                 <input class='form-check-input' type='checkbox' name='preferences[]' value='" . $preference . "' id='id" . $idNum . "' " . $check . " />
-                <label class='form-check-label'for='id" . $idNum . "' >" . $preference . "</label>
+                <label class='form-check-label' for='id" . $idNum . "' >" . $preference . "</label>
               </div>
                 ";
         $idNum++;

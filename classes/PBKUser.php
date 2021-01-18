@@ -121,8 +121,8 @@ final class PBKUser
                     "addresses" => $addresses,
                     "phone" => $this->userDetails->phone_number,
                     "email" => $this->userDetails->email_address,
-                    "orders" => $orders,
-                    "groupOrders" => $groupOrders,
+                    "orders" => [],
+                    "groupOrders" => [],
                     "grouplinks" => $grouplinks,
                     "houseAccounts" => $houseaccounts
                 );
@@ -157,11 +157,52 @@ final class PBKUser
     }
 
 
+    public function getHouseOutstandingAccountBalances(): array{
+        $balance = 0;
+        $orders = array();
+        $stmt = $this->mysqli->prepare("SELECT company, DATE_FORMAT(dateDue,'%c/%d/%Y %l:%i %p') as 'dateDue', DATE_FORMAT(dateOrdered,'%c/%d/%Y %l:%i %p') as 'dateOrdered', SUM(subtotal + tax) as 'total', UuidFromBin(pmoh.publicUnique) as 'link' FROM pbc_minibar_order_payment pmop2,pbc_minibar_order_header pmoh, pbc_minibar_order_check pmoc, pbc_minibar pm WHERE 
+pmop2.paymentID = pmoh.defaultPayment AND pmoc.mbOrderID = pmoh.headerID AND pm.idpbc_minibar = pmoh.minibarID 
+AND cardNum IN
+(SELECT houseAccountID FROM pbc_minibar_ha_users pmhu, pbc_minibar_user pmu, pbc_minibar_order_payment pmop 
+WHERE pmhu.userID = pmu.id AND pmhu.userID = ? GROUP BY houseAccountID ) AND pmoh.headerID NOT IN (SELECT headerID FROM pbc_minibar_ha_payments)
+GROUP BY pmoh.publicUnique");
+        $stmt->bind_param("s", $this->userID);
+        $stmt->execute();
+        if($result = $stmt->get_result()) {
+            while ($rows = $result->fetch_object()) {
+                $orders[] = $rows;
+                $balance += $rows->total;
+            }
+        }
+        return ["orders" => $orders, "balance" => round($balance,2)];
+    }
+
+
     private function getGroupLinks(): array{
         $orders = array();
         $stmt = $this->mysqli->prepare("SELECT linkHEX,DATE_FORMAT(linkExpires, '%M %d %Y') as 'orderDate',mbService, linkSlug FROM pbc_minibar_users_links pmul,pbc_minibar_order_header pmoh, pbc_minibar pm  WHERE 
            pmul.mbUserID =? AND linkExpires >= NOW() AND pmul.orderHeaderID = pmoh.headerID AND pmoh.minibarID = pm.idpbc_minibar AND linkPurpose = 'group_order'");
         $stmt->bind_param("s", $this->userID);
+        $stmt->execute();
+        if($result = $stmt->get_result()) {
+            while ($rows = $result->fetch_object()) {
+                $orders[] = $rows;
+            }
+        }
+        return $orders;
+    }
+
+    public function getUserOrdersByDate(string $type, string $startDate, string $endDate): array{
+        $orders = array();
+        $startDate = date('Y-m-d', strtotime($startDate));
+        $endDate = date('Y-m-d', strtotime($endDate));
+
+        if($type ==='group'){
+            $stmt = $this->mysqli->prepare("SELECT UuidFromBin(pbc_minibar_order_header.publicUnique) as 'checkGUID', company, DATE_FORMAT(dateDue,'%c/%d/%Y %l:%i %p') as 'dateDue', DATE_FORMAT(dateOrdered,'%c/%d/%Y %l:%i %p') as 'orderDate' FROM pbc_minibar_order_header, pbc_minibar pm WHERE pbc_minibar_order_header.mbUserID = ? AND pm.idpbc_minibar = minibarID AND orderType='minibar' and isGroup=1 AND dateDue BETWEEN ? AND ?");
+        }else {
+            $stmt = $this->mysqli->prepare("SELECT UuidFromBin(pbc_minibar_order_check.publicUnique) as 'checkGUID', company, DATE_FORMAT(dateDue,'%c/%d/%Y %l:%i %p') as 'dateDue', DATE_FORMAT(checkAdded,'%c/%d/%Y %l:%i %p') as 'orderDate' FROM pbc_minibar_order_check,pbc_minibar_order_header, pbc_minibar pm WHERE mbOrderID = headerID AND pbc_minibar_order_check.mbUserID = ? AND pm.idpbc_minibar = minibarID AND orderType='minibar' and isGroup=0 AND dateDue BETWEEN ? AND ?");
+        }
+        $stmt->bind_param("sss", $this->userID, $startDate, $endDate);
         $stmt->execute();
         if($result = $stmt->get_result()) {
             while ($rows = $result->fetch_object()) {
