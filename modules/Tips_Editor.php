@@ -50,12 +50,19 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
 	}
 }
 if(isset($_REQUEST['order']) && $_REQUEST['order']!='') {
+    $tips = array();
 	$toast = new ToastReport($_REQUEST['rid']);
 	$order=$toast->getCheckInfo($_REQUEST['order']);
 	$payment=$toast->getPaymentInfo($_REQUEST['order']);
 	$toast->setBusinessDate($order->modifiedDate);
 	$employees=$toast->getClockedInEmployees("Team Member");
-	$tips=$toast->getAssignedTips($_REQUEST['order']);
+	foreach($employees as $employee){
+        $tips[$employee->GUID] = 0;
+    }
+	$assignedTips=$toast->getAssignedTips($_REQUEST['order']);
+	foreach ($assignedTips as $tip){
+        $tips[$tip->employeeGUID] = $tip;
+    }
 	$disabled="";
 	foreach($tips as $tip){
 			if($tip->sentToPayroll==1) {$disabled=" disabled ";break;}
