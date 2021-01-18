@@ -530,17 +530,18 @@ pbc2.pbc_ToastCheckHeaders.ToastOrderID=pbc2.pbc_ToastOrderHeaders.GUID";
 		$row=$result->fetch_object();
 		return $row;
 	}
-	final public function getClockedInEmployees($jc=null): array {
+	final public function getClockedInEmployees(string $jc=null): ?array {
 		if(isset($jc)) {$add="AND jobCode LIKE '".$jc."%'";}else {$add="";}
 		$q="SELECT GUID,employeeName FROM pbc2.pbc_ToastEmployeeInfo WHERE GUID IN (SELECT employeeGUID FROM pbc2.pbc_ToastTimeEntries WHERE inDate BETWEEN '".$this->startTime."' AND '".$this->endTime."' AND restaurantID='".$this->restaurantID."' ".$add.")";
 		$stmt = $this->mysqli->prepare($q);
 		$stmt->execute();
 		$result = $stmt->get_result();
-		if($result->num_rows==0){return;}
+		if($result->num_rows===0){return null;}
 		while($row=$result->fetch_object()){$r[]=$row;}
 		return $r;
 	}
-    final public function getAssignedTips($guid): array {
+    final public function getAssignedTips(string $guid): array {
+	    $r=array();
 		$q="SELECT * FROM pbc2.pbc_TipDistribution WHERE orderGUID='$guid'";
 		$stmt = $this->mysqli->prepare($q);
 		$stmt->execute();
