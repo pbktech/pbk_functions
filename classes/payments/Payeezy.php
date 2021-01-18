@@ -7,6 +7,7 @@ class Payeezy extends PBKPayment {
     private string $transaction_id;
     private string $transaction_tag;
     private array $token;
+    private $merchantRef;
 
     public function __construct($mysqli) {
         parent::__construct($mysqli);
@@ -73,7 +74,7 @@ class Payeezy extends PBKPayment {
             array(
                 "amount" => round($this->billAmount * 100),
                 "transaction_tag" => $this->transaction_tag,
-                "merchant_ref" => "PBKMinibar-" . $this->checkGUID,
+                "merchant_ref" => $this->merchantRef,
                 "currency_code" => "USD",
             )
         );
@@ -92,6 +93,57 @@ class Payeezy extends PBKPayment {
         $stmt->bind_param("ss", $r, $this->paymentID);
         $stmt->execute();
         return $reponse;
+    }
+
+    final public function haAuthCapture(): array{
+        $this->client->setUrl($this->config->Payeezy->URL . "v1/transactions");
+        $authorize_card_transaction = new Payeezy_CreditCard($this->client);
+        $this->merchantRef = "PBK House Account Payment " . date("m/d/Y");
+        $expDate = preg_replace('/\D/', '', $this->card->expiryDate);
+        $authorize_response = $authorize_card_transaction->authorize(
+            [
+                "merchant_ref" => $this->merchantRef,
+                "amount" => round($this->billAmount * 100),
+                "currency_code" => "USD",
+                "credit_card" => array(
+                    "type" => $this->getCCType($this->card->cardNumber),
+                    "cardholder_name" => $this->card->billingName,
+                    "card_number" => $this->card->cardNumber,
+                    "exp_date" => $expDate,
+                    "cvv" => $this->card->cvc
+                )
+            ]
+        );
+        $paymentType = 'HousePayment';
+        $paymentDate = date('Y-m-d H:i:s');
+        if ($authorize_response->transaction_status !== 'approved') {
+            $paymentStatus = 'declined';
+            $auth = json_encode(array("bank_resp_code" => $authorize_response->bank_resp_code, "bank_message" => $authorize_response->bank_message, "gateway_resp_code" => $authorize_response->gateway_resp_code, "gateway_message" => $authorize_response->gateway_message), JSON_THROW_ON_ERROR);
+            $stmt = $this->mysqli->prepare("INSERT INTO  pbc_minibar_order_payment (mbUserID, paymentType, paymentDate, paymentAmount, paymentStatus, authorization, cardNum, expDate) VALUES (?,?,?,?,?,?,?,?)");
+            $stmt->bind_param("ssssssss", $this->userID, $paymentType,$paymentDate,$this->billAmount,$paymentStatus,$auth,$authorize_response->card->card_number,$expDate);
+            $stmt->execute();
+            return ["status" => 401, "response" => "Payment failed", "reason" => $authorize_response];
+        }
+        $this->setTransactionID($authorize_response->transaction_id);
+        $this->setTransactionTag($authorize_response->transaction_tag);
+        $fdsToken = json_encode(array(
+            "token_type" => $authorize_response->token->token_type,
+            "token_data" => [
+                "type" => $this->getCCType($this->card->cardNumber),
+                "value" => $authorize_response->token->token_data->value,
+                "cardholder_name" => $this->billingName,
+                "exp_date" => preg_replace('/\D/', '', $this->card->expiryDate)], JSON_THROW_ON_ERROR));
+        $paymentStatus = 'approved';
+        $auth = json_encode(array("bank_resp_code" => $authorize_response->bank_resp_code, "bank_message" => $authorize_response->bank_message, "gateway_resp_code" => $authorize_response->gateway_resp_code, "gateway_message" => $authorize_response->gateway_message), JSON_THROW_ON_ERROR);
+        $stmt = $this->mysqli->prepare("INSERT INTO  pbc_minibar_order_payment (mbUserID, paymentType, paymentDate, paymentAmount, paymentStatus, authorization, fdsToken, cardNum, expDate) VALUES (?,?,?,?,?,?,?,?,?)");
+        $stmt->bind_param("sssssssss", $this->userID, $paymentType,$paymentDate,$this->billAmount,$paymentStatus,$auth,$fdsToken,$authorize_response->card->card_number,$expDate);
+        $stmt->execute();
+        if(isset($stmt->error)){
+            echo $stmt->error;
+        }
+        $this->setPaymentID($stmt->insert_id);
+        $capture = $this->captureCard();
+        return ["status" => 200, "reason" => $capture, "paymentID" => $stmt->insert_id];
     }
 
     public function captureTokenSale() {

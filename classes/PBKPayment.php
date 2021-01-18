@@ -34,7 +34,7 @@ class PBKPayment {
 
     final private function setConfig(): void {
         if (!defined('ABSPATH')) {
-                define('ABSPATH', '/var/www/html/c2.theproteinbar.com/');
+            define('ABSPATH', '/var/www/html/c2.theproteinbar.com/');
         }
         $default = dirname(ABSPATH) . '/config.json';
         $this->config = json_decode(file_get_contents($default));
@@ -43,7 +43,7 @@ class PBKPayment {
         $this->url = $this->config->sbToastURL;
     }
 
-    final public function setCard( $card): void {
+    final public function setCard($card): void {
         $this->card = $card;
     }
 
