@@ -40,20 +40,20 @@ function pbk_scripts(){
   wp_enqueue_style('bootstrap_style', 'https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css');
 //  wp_enqueue_style( 'bootstrap_style',  PBKF_URL . '/assets/css/bootstrap-grid.css');
 //  wp_enqueue_style( 'bootstrap_style',  PBKF_URL . '/assets/css/bootstrap.css');
-  wp_enqueue_style( 'sort_tables_style', '//cdn.datatables.net/1.10.22/css/jquery.dataTables.min.css');
+  wp_enqueue_style( 'sort_tables_style', '//v/bs4/jszip-2.5.0/dt-1.10.23/b-1.6.5/b-html5-1.6.5/b-print-1.6.5/fh-3.1.7/sp-1.2.2/datatables.min.css');
   wp_enqueue_style( 'screen_signature_style', PBKF_URL . '/assets/css/signature.css');
   wp_enqueue_script( 'select_script', 'https://cdn.jsdelivr.net/npm/select2@4.0.12/dist/js/select2.min.js');
   wp_enqueue_script( 'timepicker_script', '//cdnjs.cloudflare.com/ajax/libs/timepicker/1.3.5/jquery.timepicker.min.js');
   wp_enqueue_script( 'jquery-ui_script', 'https://code.jquery.com/ui/1.12.1/jquery-ui.js');
   wp_enqueue_script( 'popper_script', 'https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js');
   wp_enqueue_script( 'bootstrap_script', 'https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js');
-  wp_enqueue_script( 'sort_tables_script', '//cdn.datatables.net/1.10.22/js/jquery.dataTables.min.js');
-    wp_enqueue_script( 'sort_tables_script_bs', 'https://cdn.datatables.net/1.10.22/js/dataTables.bootstrap4.min.js');
+  wp_enqueue_script( 'sort_tables_script_print', '//cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.36/pdfmake.min.js');
+  wp_enqueue_script( 'sort_tables_script_print_fonts', '//cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.36/vfs_fonts.js');
+    wp_enqueue_script( 'sort_tables_script', 'https://cdn.datatables.net/v/bs4/jszip-2.5.0/dt-1.10.23/b-1.6.5/b-html5-1.6.5/b-print-1.6.5/fh-3.1.7/sp-1.2.2/datatables.min.js');
     wp_enqueue_script( 'screen_signature_script', PBKF_URL . '/assets/js/app.js', array(), false, true);
   wp_enqueue_script( 'screen_signature_script', PBKF_URL . '/assets/js/jquery.signaturepad.min.js', array(), false, true);
 }
 add_action( 'wp_enqueue_scripts', 'pbk_scripts' );
-
 
 /*Classes*/
 use PHPMailer\PHPMailer\PHPMailer;

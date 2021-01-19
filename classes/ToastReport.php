@@ -1175,11 +1175,10 @@ from pbc2.kds_detail WHERE sent_time BETWEEN  ? AND ? AND station='' and restaur
 	}
 	function showResultsTable($data=array(),$tableName="myTable"){
 		if(isset($data['Results']) && count($data['Results'])!=0){
-			if(isset($data['File'])){$data['File']=$this->genGUID($data['File']);}else{$data['File']=$this->genGUID(md5(time()));}
+            $data['Options'][]="\"lengthMenu\": [ [25, 50, -1], [25, 50, \"All\"] ]";
+            $data['Options'][] = "'dom': '<\"top\"if>rt<\"bottom\"lpB><\"clear\">'";
+            $data['Options'][] = "'buttons': ['print','excelHtml5','csvHtml5','pdfHtml5']";
 			if(isset($data['Options']) && is_array($data['Options'])){$options="{\n					".implode(",\n					",$data['Options'])."}\n				";}else{$options='';}
-			if(file_exists($this->docSaveLocation.$data['File'].date("Ymd").'.csv')) {unlink($this->docSaveLocation.$data['File'].date("Ymd").'.csv');}
-			$file = fopen($this->docSaveLocation.$data['File'].date("Ymd").'.csv', 'w');
-			fputcsv($file,$data['Headers']);
 			$return="
 		<script>
 		jQuery(document).ready( function () {
@@ -1193,33 +1192,11 @@ from pbc2.kds_detail WHERE sent_time BETWEEN  ? AND ? AND station='' and restaur
 		          </th></tr>
 		        </thead>";
 			foreach($data['Results'] as $row=>$col){
-				fputcsv($file,$col);
 				$return.=	"<tr><td>" . implode("</td><td>",$col) . "</td></tr>";
 			}
 			$return.=	"
 			</table>
 			</div>";
-			if(file_exists($this->docSaveLocation.$data['File'].date("Ymd").'.csv')) {
-				$return.="
-				<script>
-				jQuery(document).ready( function () {
-					setTimeout(function(){
-						jQuery(\"#downloadButton\").hide();
-						jQuery(\"#reloadButton\").show();
-					}, 1800000);
-				} );
-				</script>
-				<div id='reloadButton' style='display:none;'>
-					<div class='alert alert-warning'>The download file has expired</div>
-				";
-				if(isset($data['AllowReload']) && $data['AllowReload']=='yes'){
-					$return.="<br><a class='btn btn-success' >Reload the page</a>					";
-				}
-				$return.="</div>
-				<div id='downloadButton'>
-					<a class='btn btn-success' href='".$this->docDownloadLocation.$data['File'].date("Ymd").".csv' target='_blank'>Download the file</a> This download is only valid for 30 minutes.
-				</div>";
-			}
 
 		}else {
 			$return = "<div class='alert alert-warning'>No Results Found</div>";
