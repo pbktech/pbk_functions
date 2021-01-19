@@ -267,7 +267,7 @@ GROUP BY pmoh.publicUnique");
             $request->isDeleted
         );
         $stmt->execute();
-        if (isset($stmt->error) && $stmt->error!='') {
+        if (isset($stmt->error) && $stmt->error !== '') {
             $report=new ToastReport;
             $m="User (".$this->userID.") failed to insert new address.<br><br>LP: ".print_r($request,true)."<br><br>DB Error: " . $stmt->error . "<br><br>Request: " . print_r($request, true);
             $report->reportEmail("errors@theproteinbar.com", $m, "User error");
