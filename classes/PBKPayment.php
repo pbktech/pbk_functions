@@ -15,6 +15,7 @@ class PBKPayment {
     protected $checkGUID;
     private $paymentType;
     private $guid;
+    public const TODAY_FORMAT = "Y-m-d G:i:s";
 
     public function __construct($mysql) {
         if (!isset($mysql)) {

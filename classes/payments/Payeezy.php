@@ -26,7 +26,7 @@ class Payeezy extends PBKPayment {
         } else {
             $merchant_ref = "Protein Bar Pre-auth";
         }
-        $authorize_response = $authorize_card_transaction->authorize(
+        return $authorize_card_transaction->authorize(
             [
                 "merchant_ref" => $merchant_ref,
                 "amount" => round($this->billAmount * 100),
@@ -40,6 +40,9 @@ class Payeezy extends PBKPayment {
                 )
             ]
         );
+    }
+
+    public function storePaymentTable($authorize_response): object{
         $args = [
             'mbCheckID' => $this->checkID,
             'mbUserID' => $this->userID,
@@ -62,8 +65,7 @@ class Payeezy extends PBKPayment {
             'addressID' => $this->billingID,
             'expDate' => preg_replace('/\D/', '', $this->card->expiryDate)
         ];
-        $info = $this->addPaymentToTable($args);
-        return (object)["response" => $authorize_response, "info" => $info];
+        return $this->addPaymentToTable($args);
     }
 
     public function captureCard() {
@@ -146,13 +148,13 @@ class Payeezy extends PBKPayment {
         return ["status" => 200, "reason" => $capture, "paymentID" => $stmt->insert_id];
     }
 
-    public function captureTokenSale() {
+    public function captureToken(): object {
         $this->client->setUrl($this->config->Payeezy->URL . "v1/transactions");
 
         $authorize_card_transaction = new Payeezy_Token($this->client);
         return $authorize_card_transaction->authorize(
             [
-                "merchant_ref" => "PBKMinibar-" . $this->checkGUID,
+                "merchant_ref" => $this->merchantRef,
                 "transaction_type" => "purchase",
                 "method" => "token",
                 "amount" => round($this->billAmount * 100),
@@ -160,6 +162,48 @@ class Payeezy extends PBKPayment {
                 "token" => $this->token
             ]
         );
+    }
+
+    public function authorizeToken(): object{
+        $authorize_card_transaction = new Payeezy_Token($this->client);
+
+        return $authorize_card_transaction->authorize(
+            [
+                "merchant_ref" => "Astonishing-Sale",
+                "transaction_type" => "authorize",
+                "method" => "token",
+                "amount" => "200",
+                "currency_code" => "USD",
+                "token" => array(
+                    "token_type" => "FDToken",
+                    "token_data" => array(
+                        "type" => "visa",
+                        "value" => "2537446225198291",
+                        "cardholder_name" => "JohnSmith",
+                        "exp_date" => "1030"
+                    )
+                )
+            ]
+        );
+    }
+
+    public function voidSale(): object {
+        $this->client->setUrl($this->config->Payeezy->URL . "v1/transactions");
+
+        $authorize_card_transaction = new Payeezy_CreditCard($this->client);
+        return $authorize_card_transaction->void($this->transaction_id,
+            [
+                "transaction_type" => "void",
+                "transaction_tag" => $this->transaction_tag,
+                "amount" => round($this->billAmount * 100),
+                "currency_code" => "USD"
+            ]
+        );
+    }
+    public function subscribe(){
+        $stmt = $this->mysqli->prepare("INSERT INTO pbc_subscriptions (emailAddress, subPlan, dateStarted, firstData)VALUES(?,?,?,?) ");
+        $stmt->bind_param('ssss',);
+
     }
 
     public function setTransactionID(string $id): void {
@@ -172,5 +216,9 @@ class Payeezy extends PBKPayment {
 
     public function setTransactionTag(string $tag): void {
         $this->transaction_tag = $tag;
+    }
+
+    public function setMerchantRef(string $ref): void{
+        $this->merchantRef = $ref;
     }
 }
