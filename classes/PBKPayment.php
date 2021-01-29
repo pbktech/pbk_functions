@@ -5,6 +5,8 @@ class PBKPayment {
     protected $card;
     protected $billing;
     protected $billingID;
+    protected $subTotal;
+    protected $taxAmount;
     protected $paymentID;
     protected $checkID;
     protected $mysqli;
@@ -143,6 +145,14 @@ class PBKPayment {
 
     final public function setBillAmount(float $var): void {
         $this->billAmount = $var;
+    }
+
+    final public function setSubTotal(float $var): void {
+        $this->subTotal = $var;
+    }
+
+    final public function setTaxAmount(float $var): void {
+        $this->taxAmount = $var;
     }
 
     final protected function getCCType(string $cardNumber): string {

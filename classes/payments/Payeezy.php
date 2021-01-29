@@ -150,39 +150,32 @@ class Payeezy extends PBKPayment {
 
     public function captureToken(): object {
         $this->client->setUrl($this->config->Payeezy->URL . "v1/transactions");
-
-        $authorize_card_transaction = new Payeezy_Token($this->client);
-        return $authorize_card_transaction->authorize(
-            [
-                "merchant_ref" => $this->merchantRef,
-                "transaction_type" => "purchase",
-                "method" => "token",
+        $capture_card_transaction = new Payeezy_Token($this->client);
+        return $capture_card_transaction->capture(
+            $this->transaction_id,
+            array(
                 "amount" => round($this->billAmount * 100),
+                "transaction_tag" => $this->transaction_tag,
+                "merchant_ref" => $this->merchantRef,
                 "currency_code" => "USD",
+                "order_data" => array("subtotal" => $this->subTotal, "local_tax_amount" => $this->taxAmount),
                 "token" => $this->token
-            ]
+            )
         );
     }
 
-    public function authorizeToken(): object{
-        $authorize_card_transaction = new Payeezy_Token($this->client);
+    public function purchaseToken(): ?object{
+        $this->client->setUrl($this->config->Payeezy->URL . "v1/transactions");
 
-        return $authorize_card_transaction->authorize(
+        $authorize_card_transaction = new Payeezy_Token($this->client);
+         return $authorize_card_transaction->authorize(
             [
-                "merchant_ref" => "Astonishing-Sale",
-                "transaction_type" => "authorize",
+                "merchant_ref" => $this->merchantRef,
                 "method" => "token",
-                "amount" => "200",
+                "amount" => round($this->billAmount * 100),
                 "currency_code" => "USD",
-                "token" => array(
-                    "token_type" => "FDToken",
-                    "token_data" => array(
-                        "type" => "visa",
-                        "value" => "2537446225198291",
-                        "cardholder_name" => "JohnSmith",
-                        "exp_date" => "1030"
-                    )
-                )
+                "order_data" => array("subtotal" => $this->subTotal, "local_tax_amount" => $this->taxAmount),
+                "token" => $this->token
             ]
         );
     }
