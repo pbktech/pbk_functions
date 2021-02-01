@@ -1176,9 +1176,9 @@ from pbc2.kds_detail WHERE sent_time BETWEEN  ? AND ? AND station='' and restaur
 	function showResultsTable($data=array(),$tableName="myTable"){
 		if(isset($data['Results']) && count($data['Results'])!=0){
             $data['Options'][]="\"lengthMenu\": [ [25, 50, -1], [25, 50, \"All\"] ]";
-            $data['Options'][] = "'dom': \"<'row'<'col-sm-12 col-md-6'l><'col-sm-12 col-md-6'f>>\" +
+            $data['Options'][] = "'dom': \"<'row'<'col-sm-12 col-md-4'l><'col-sm-12 col-md-4'B><'col-sm-12 col-md-4'f>>\" +
 \"<'row'<'col-sm-12'tr>>\" +
-\"<'row'<'col-sm-12 col-md-4'i><'col-sm-12 col-md-4'B><'col-sm-12 col-md-4'p>>\"";
+\"<'row'<'col-sm-12 col-md-4'i><'col-sm-12 col-md-8'p>>\"";
             $data['Options'][] = "'buttons': ['print','excelHtml5','csvHtml5','pdfHtml5']";
 			if(isset($data['Options']) && is_array($data['Options'])){$options="{\n					".implode(",\n					",$data['Options'])."}\n				";}else{$options='';}
 			$return="
@@ -1188,7 +1188,7 @@ from pbc2.kds_detail WHERE sent_time BETWEEN  ? AND ? AND station='' and restaur
 		} );
 		</script>
 		<div id='queryResults'>
-	      <table id='myTable' class=\"table table-striped table-hover\" style='width:100%;'>
+	      <table id='myTable' class=\"table table-striped table-hover table-bordered\" style='width:100%;'>
 		        <thead style='background-color:#0e2244; color: #ffffff; text-align: center;font-weight:bold;'>
 		          <tr><th>".implode("</th><th>",$data['Headers']) . "
 		          </th></tr>
