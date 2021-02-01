@@ -25,8 +25,23 @@ if(isset($_REQUEST['cancel']) &&
 if(isset($_REQUEST['active']) &&
     $_REQUEST['active'] === "0"){
     $isActive = 0;
+    ?>
+    <div>
+        <form method="get" action="<?php echo $page;?>">
+            <button class="btn btn-brand" type="submit">View Users</button>
+        </form>
+    </div>
+    <?php
 }else{
     $isActive = 1;
+?>
+    <div>
+        <form method="get" action="<?php echo $page;?>">
+            <input type="hidden" name="active" value="0" />
+            <button class="btn btn-brand" type="submit">View Inactive Users</button>
+        </form>
+    </div>
+<?php
 }
 $result = $wpdb->get_results("SELECT guestName,phoneNumber,emailAddress,planName,DATE_FORMAT(dateStarted, '%c/%d/%Y') as 'signedUp', userID FROM pbc_subscriptions ps, pbc_subscriptions_plans psp WHERE isActive = " . $isActive . " AND firstData is not null AND ps.subPlan = psp.planID ");
 if($result){
@@ -54,13 +69,7 @@ if($result){
     ?>
     <div class="alert alert-warning" role="alert">
         There were no subscribers found.
-    </div>;
+    </div>
 <?php
 }
 ?>
-<div>
-    <form method="get" action="<?php echo $page;?>">
-        <input type="hidden" name="active" value="0" />
-        <button class="brand" type="submit">View Inactive Users</button>
-    </form>
-</div>
