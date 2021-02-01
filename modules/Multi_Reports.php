@@ -101,7 +101,7 @@ if(isset($_REQUEST['endDate']) && isset($_REQUEST['startDate']) && (isset($_REQU
 	}
 	$result = $wpdb->get_results($reports[$_REQUEST['rpt']]['SQL']);
     if($result){
-        $ret.="<hr /><h4>".$reports[$_REQUEST['rpt']]['Title']."</h4><br />";
+        $ret.="<hr /><h4>".$reports[$_REQUEST['rpt']]['Title']." : " . $_REQUEST['startDate'] . " - " . $_REQUEST['endDate'] . "</h4><br />";
         $fmt = new NumberFormatter( 'en_US', NumberFormatter::CURRENCY );
         $D['Options'][]="\"order\": [ 1, 'asc' ]";
         $D['Options'][]="\"lengthMenu\": [ [10, 20, -1], [10, 20, \"All\"] ]";
