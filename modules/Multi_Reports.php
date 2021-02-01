@@ -112,7 +112,7 @@ if(isset($_REQUEST['endDate']) && isset($_REQUEST['startDate']) && (isset($_REQU
                     $r->Name,
                     $r->Weekday,
                     $r->Sales_Hour,
-                    round($r->Average_Wait,2),
+                    $r->Average_Wait,
                     $r->Max_Wait,
                     $r->Customer_Count
                 );
