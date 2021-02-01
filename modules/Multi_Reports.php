@@ -7,7 +7,7 @@ if(isset($_REQUEST['startDate']) && isset($_REQUEST['endDate'])) {
     $startDate = '';
     $endDate = '';
 }
-    $reports[1] = array("Title" => "Ticket Times", "SQL" => "SELECT restaurantName as 'Name', date_format(sent_time,'%c/%e/%Y') as Weekday,time_format(sent_time,'%h %p') as Sales_Hour , time_format(SEC_TO_TIME(avg(duration)),'%h:%i:%s') as Average_Wait,
+    $reports[1] = array("Title" => "Ticket Times", "SQL" => "SELECT restaurantName as 'Name', date_format(sent_time,'%c/%e/%Y') as Weekday,time_format(sent_time,'%h %p') as Sales_Hour , SEC_TO_TIME(avg(duration)) as Average_Wait,
 SEC_TO_TIME(MAX(duration)) as Max_Wait, COUNT(*) as Customer_Count FROM `kds_detail`,`pbc_pbrestaurants`
 WHERE `kds_detail`.`restaurantID` = `pbc_pbrestaurants`.`restaurantID` AND sent_time BETWEEN '" . $startDate . "' AND '" . $endDate . " 23:59:59' GROUP BY `kds_detail`.restaurantID,date_format(sent_time,'%c%e%Y'),hour(sent_time) ORDER BY `kds_detail`.restaurantID,date_format(sent_time,'%c%e%Y'),hour(sent_time) ",
         "Headers" => array("Name", "Weekday", "Sales_Hour", "Average_Wait", "Max_Wait", "Customer_Count"), "FN" => "tt"
@@ -112,7 +112,7 @@ if(isset($_REQUEST['endDate']) && isset($_REQUEST['startDate']) && (isset($_REQU
                     $r->Name,
                     $r->Weekday,
                     $r->Sales_Hour,
-                    $r->Average_Wait,
+                    round($r->Average_Wait,2),
                     $r->Max_Wait,
                     $r->Customer_Count
                 );
