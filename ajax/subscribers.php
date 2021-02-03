@@ -11,7 +11,7 @@ function subscribers_get_trans() {
     if(wp_verify_nonce( $_REQUEST['nonce'], '_get_trans_'.$_REQUEST['uis'] )) {
         global $wpdb;
         $results = $wpdb->get_results(
-            "SELECT transactionType, transactionStatus, DATE_FORMAT(transactionTime, '%m/%d/%Y %r') as 'datetime' FROM pbc_subscriptions_transactions WHERE subscriptionID  = '" . $_REQUEST['uis'] . "'", ARRAY_A
+            "SELECT concat('$', format(amount, 2)) as 'price',transactionType, transactionStatus, DATE_FORMAT(transactionTime, '%m/%d/%Y %r') as 'datetime' FROM pbc_subscriptions_transactions WHERE subscriptionID  = '" . $_REQUEST['uis'] . "'", ARRAY_A
         );
         if($results){
           foreach($results as $r) {

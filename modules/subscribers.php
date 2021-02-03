@@ -101,6 +101,7 @@ function subscribersAJAX() { ?>
               }
             ],
             columns: [
+              { data: "price"},
               { data: "transactionType" },
               { data: "transactionStatus" },
               { data: "datetime" }],
@@ -132,6 +133,7 @@ function subscribersAJAX() { ?>
                     <table id='modalTable' class="display table table-striped table-hover table-bordered" style="width:100%;">
                         <thead>
                         <tr>
+                            <th>Amount</th>
                             <th>Type</th>
                             <th>Status</th>
                             <th>Date</th>
