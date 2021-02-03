@@ -51,7 +51,7 @@ if ($result) {
     foreach ($result as $r) {
         $D['Results'][] = array(
             '<a href="#" class="showModal" data-nonce="' . wp_create_nonce( '_get_trans_'.$r->userID) . '" data-uid="' . $r->userID . '" data-guest="' . $r->guestName . '" >' . $r->guestName . '</a>',
-            $r->phoneNumber,
+            preg_replace("/^1?(\d{3})(\d{3})(\d{4})$/", "($1) $2-$3", str_replace("+","",$r->phoneNumber)),
             $r->emailAddress,
             $r->planName,
             $r->signedUp,
