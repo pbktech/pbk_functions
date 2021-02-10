@@ -498,7 +498,11 @@ class Toast {
                     }
                     $m = "Thanks for ordering Curbside from $pbkName 🚗 \nClick the link to let us know you’re here! https://pbkcurbside.com/" . $row->linkHEX;
                     $text = new ToastReport();
-                    $text->sendText($row->phone, $m);
+                    $message = $text->sendText(8473319968, $m);
+                    $m = $message->sid;
+                    $update = $this->mysqli->prepare("UPDATE pbc_curbside_link SET messageID = ? WHERE linkID = ?");
+                    $update->bind_param('ss', $m,$id);
+                    $update->execute();
                 }
             }
         }

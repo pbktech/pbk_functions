@@ -504,14 +504,15 @@ AND pbc_ToastOrderHeaders.restaurantID = pbc_pbrestaurants.restaurantID ";
 		$row=$result->fetch_object();
 		return $row->Amount;
 	}
-	function sendText($n,$m) {
+	function sendText(string $n,string $m): object{
 		$client = new Client($this->config->account_sid, $this->config->auth_token);
-		$client->messages->create(
+		$msg = $client->messages->create(
 		$n,
 		array(
 		'from' => $this->config->twilio_number,
 		 'body' => $m . "\n\nReply STOP to STOP. Msg&Data Rates May Apply."
 		));
+		return $msg;
 	}
 	function getCheckInfo($guid) {
 		$q="SELECT * FROM pbc2.pbc_ToastCheckHeaders WHERE pbc2.pbc_ToastCheckHeaders.GUID='$guid'";
