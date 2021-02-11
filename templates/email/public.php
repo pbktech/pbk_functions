@@ -134,3 +134,18 @@ function getFooter(){
 </div>
 ';
 }
+function getSubscribeText(){
+    return "    <div style='margin-top:1rem;font-style: italic; color: rgb(172, 174, 176); font-size: 10px;'>
+        <p>Subscription Plans: PBK Power Plan is an automatically renewing subscription requiring recurring payments. A Power Plan subscription grants you access to discounted menu prices for eligible restaurants (excluding taxes and tips) (&quot;Redemptions&quot;). Redemptions may be redeemed only at eligible restaurants, as indicated. PB Restaurants, LLC reserves the right to change whether a restaurant is eligible at any time with or without notice. Power Plan orders are subject availability, and taxes may apply to the cost of the items you order. You may provide an optional gratuity. Depending on the conditions as stated when you sign up other fees may apply. We reserve the right to add and modify fees as discussed in this Section.</p>
+
+        <p>Power Plans are offered for a monthly or yearly fee payable at the start of the relevant period. By signing up for a Power Plan and providing PB Restaurants, LLC with your payment account information, you agree that: (a) you will be charged your first subscription fee and any applicable taxes on the date you purchase your Power Plan; (b) you authorize PB Restaurants, LLC and its service providers to store your payment method for the purpose of executing future auto-renewal transactions; (c) UNLESS YOU CANCEL, BY DEFAULT (AND WITH PRIOR NOTICE ONLY TO THE EXTENT REQUIRED BY APPLICABLE LAW), YOUR POWER PLAN SUBSCRIPTION WILL AUTOMATICALLY RENEW AT THE END OF THE THEN-CURRENT SUBSCRIPTION PERIOD, and (d) AT THE TIME OF RENEWAL, PB RESTAURANTS, LLC WILL AUTOMATICALLY CHARGE THE THEN-CURRENT FEE AND ANY APPLICABLE TAXES TO AN ELIGIBLE PAYMENT METHOD THAT WE HAVE ON FILE FOR YOU. If your payment details change, your card provider may provide us with updated card details. We may use these new details or details from other cards on file in order to help prevent any interruption to your Power Plan subscription. If you would like to use a different payment method or if there is a change in payment method, please update your billing information</p>
+
+        <p>Cancellations: You can cancel your subscription at any time via e-mail to HQ@theproteinbar.com. You must cancel at least one (1) day before the next-scheduled subscription renewal date to avoid being charged for the next subscription period (e.g., if renewal date is January 10, you must cancel by 11:59:59 pm PT on January 9).</p>
+
+        <p>For monthly subscribers, if you cancel your subscription within the first 48 hours and have not placed an eligible order during that period, PB Restaurants, LLC may, in its sole discretion, refund your Power Plan fee.</p>
+
+        <p>If you cancel your Power Plan subscription at any other time, you will not receive a refund, but you can continue to enjoy the redemptions through the end of your then-current subscription period.</p>
+        <p>This email receipt has been sent from Protein Bar & Kitchen, 235 S Franklin Street Chicago, IL 60606</p>
+    </div>
+";
+}
