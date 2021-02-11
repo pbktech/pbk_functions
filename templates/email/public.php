@@ -26,11 +26,11 @@ function getHeader(){
                     <h3 style="Margin-top:0;Margin-bottom:12px;font-style:normal;font-weight:normal;color:#000;font-size:17px;line-height:26px;font-family:oswald,avenir next condensed,arial narrow,ms ui gothic,sans-serif;text-align:center"
                       lang="x-size-18">
                       <span><span style="color:#ffffff">
-                          <a style="text-decoration:none;color:#fff" href="https://www.theproteinbar.com/restaurants/" target="_blank">LOCATIONS</a>&nbsp; &nbsp; &nbsp;◦&nbsp; &nbsp; &nbsp;
-                          <a style="text-decoration:none;color:#fff" href="https://www.theproteinbar.com/menu/" target="_blank">MENUS</a>&nbsp; &nbsp; &nbsp;◦&nbsp;&nbsp; &nbsp; &nbsp;
+                          <a style="text-decoration:none;color:#fff" href="https://www.theproteinbar.com/restaurants/" target="_blank">LOCATIONS</a>&nbsp; &nbsp; &nbsp;&deg;&nbsp; &nbsp; &nbsp;
+                          <a style="text-decoration:none;color:#fff" href="https://www.theproteinbar.com/menu/" target="_blank">MENUS</a>&nbsp; &nbsp; &nbsp;&deg;&nbsp;&nbsp; &nbsp; &nbsp;
                           <a style="text-decoration:none;color:#fff" href="https://catering.theproteinbar.com/index.cfm?fuseaction=order&action=menu-categories&channel-id=2&_ga=2.140483831.557655290.1533063020-502668083.1502994418"
-                            target="_blank">CATERING</a>&nbsp; &nbsp; &nbsp;◦&nbsp; &nbsp; &nbsp;
-                          <a style="text-decoration:none;color:#fff" href="https://www.theproteinbar.com/rewards/" target="_blank">REWARDS</a>&nbsp; &nbsp; &nbsp;◦&nbsp; &nbsp; &nbsp;
+                            target="_blank">CATERING</a>&nbsp; &nbsp; &nbsp;&deg;&nbsp; &nbsp; &nbsp;
+                          <a style="text-decoration:none;color:#fff" href="https://www.theproteinbar.com/rewards/" target="_blank">REWARDS</a>&nbsp; &nbsp; &nbsp;&deg;&nbsp; &nbsp; &nbsp;
                           <a style="text-decoration:none;color:#fff" href="https://proteinbar.thelevelup.com/?fulfillment=pickup" target="_blank">ORDER ONLINE</a>
                         </span></span>
                     </h3>
