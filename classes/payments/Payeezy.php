@@ -31,6 +31,7 @@ class Payeezy extends PBKPayment {
                 "merchant_ref" => $merchant_ref,
                 "amount" => round($this->billAmount * 100),
                 "currency_code" => "USD",
+                "TA_TOKEN" => $this->config->Payeezy->TA_TOKEN,
                 "credit_card" => array(
                     "type" => $this->getCCType($this->card->cardNumber),
                     "cardholder_name" => $this->billingName,
@@ -158,6 +159,7 @@ class Payeezy extends PBKPayment {
                 "transaction_tag" => $this->transaction_tag,
                 "merchant_ref" => $this->merchantRef,
                 "currency_code" => "USD",
+                "TA_TOKEN" => $this->config->Payeezy->TA_TOKEN,
                 "order_data" => array("subtotal" => $this->subTotal, "local_tax_amount" => $this->taxAmount),
                 "token" => $this->token
             )
@@ -174,6 +176,7 @@ class Payeezy extends PBKPayment {
                 "method" => "token",
                 "amount" => round($this->billAmount * 100),
                 "currency_code" => "USD",
+                "TA_TOKEN" => $this->config->Payeezy->TA_TOKEN,
                 "order_data" => array("subtotal" => $this->subTotal, "local_tax_amount" => $this->taxAmount),
                 "token" => $this->token
             ]
