@@ -109,7 +109,7 @@ function getFooter(){
         Chicago, IL 60606</div>
     </div>
     <div style="font-size:12px;line-height:19px;Margin-top:18px">
-      <div>You’re receiving this email because you’re a valued&nbsp;customer.</div>
+      <div>You\'re receiving this email because you\'re a valued customer.</div>
     </div>
 
   </div>
