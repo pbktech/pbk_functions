@@ -10,12 +10,17 @@ if(isset($_REQUEST['startDate']) && isset($_REQUEST['endDate'])) {
     $reports[1] = array("Title" => "Ticket Times", "SQL" => "SELECT restaurantName as 'Name', date_format(sent_time,'%c/%e/%Y') as Weekday,time_format(sent_time,'%h %p') as Sales_Hour , SEC_TO_TIME(avg(duration)) as Average_Wait,
 SEC_TO_TIME(MAX(duration)) as Max_Wait, COUNT(*) as Customer_Count FROM `kds_detail`,`pbc_pbrestaurants`
 WHERE `kds_detail`.`restaurantID` = `pbc_pbrestaurants`.`restaurantID` AND sent_time BETWEEN '" . $startDate . "' AND '" . $endDate . " 23:59:59' GROUP BY `kds_detail`.restaurantID,date_format(sent_time,'%c%e%Y'),hour(sent_time) ORDER BY `kds_detail`.restaurantID,date_format(sent_time,'%c%e%Y'),hour(sent_time) ",
-        "Headers" => array("Name", "Weekday", "Sales_Hour", "Average_Wait", "Max_Wait", "Customer_Count"), "FN" => "tt"
+        "Headers" => array("Name", "Weekday", "Sales Hour", "Average Wait", "Max Wait", "Customer Count"), "FN" => "tt"
     );
-    $reports[2] = array("Title" => "Tenders", "SQL" => "SELECT restaurantName as 'Name', BusinessDate as 'Date_of_Business', Tender, Count, Total FROM v_R_TendersFromArchive,pbc_pbrestaurants WHERE v_R_TendersFromArchive.restaurantID=pbc_pbrestaurants.restaurantID
+$reports[2] = array("Title" => "Tenders", "SQL" => "SELECT restaurantName as 'Name', BusinessDate as 'Date_of_Business', Tender, Count, Total FROM v_R_TendersFromArchive,pbc_pbrestaurants WHERE v_R_TendersFromArchive.restaurantID=pbc_pbrestaurants.restaurantID
 AND BusinessDate BETWEEN '" . $startDate . "' AND '" . $endDate . "';",
-        "Headers" => array("Name", "Date_of_Business", "Tender", "Count", "Total"), "FN" => "tenders"
-    );
+    "Headers" => array("Name", "Date of Business", "Tender", "Count", "Total"), "FN" => "tenders"
+);
+$reports[3] = array("Title" => "Curbside", "SQL" => "SELECT restaurantName, CONCAT(firstName, ' ', lastName) as 'Name', ptoh.businessDate as 'Date_of_Business', DATE_FORMAT(arrivedTime,'%h:%i %p') as 'Arrived', checkNumber as 'Check', concat('$', format(amount, 2)) as 'Amount', DATE_FORMAT(ptch.openedDate,'%h:%i %p') as 'Ordered' from 
+pbc_curbside_link pcl, pbc_ToastOrderHeaders ptoh, pbc_ToastCheckHeaders ptch, pbc_ToastContactInfo ptci, pbc_pbrestaurants ppr
+WHERE ptch.ToastOrderID = ptoh.GUID AND pcl.toastCheckID = ptch.GUID AND ptci.ToastCheckID = ptch.GUID AND ptoh.restaurantID = ppr.restaurantID AND ptoh.businessDate BETWEEN '" . $startDate . "' AND '" . $endDate . "';",
+    "Headers" => array("Restaurant", "Name", "Date of Business", "Check", "Amount", "Ordered", "Arrived"), "FN" => "curbside"
+);
 
 
 		$ret.="
@@ -102,6 +107,10 @@ if(isset($_REQUEST['endDate']) && isset($_REQUEST['startDate']) && (isset($_REQU
 	$result = $wpdb->get_results($reports[$_REQUEST['rpt']]['SQL']);
     if($result){
         $ret.="<hr /><h4>".$reports[$_REQUEST['rpt']]['Title']." : " . $_REQUEST['startDate'] . " - " . $_REQUEST['endDate'] . "</h4><br />";
+        add_filter('the_title','updateReportTitle');
+        function updateReportTitle($data){
+            return $reports[$_REQUEST['rpt']]['Title']." : " . $_REQUEST['startDate'] . " - " . $_REQUEST['endDate'] ;
+        }
         $fmt = new NumberFormatter( 'en_US', NumberFormatter::CURRENCY );
         $D['Options'][]="\"order\": [ 1, 'asc' ]";
         $D['Options'][]="\"lengthMenu\": [ [10, 20, -1], [10, 20, \"All\"] ]";
@@ -119,6 +128,9 @@ if(isset($_REQUEST['endDate']) && isset($_REQUEST['startDate']) && (isset($_REQU
             }
             if($_REQUEST['rpt']==2) {
                 $D['Results'][]=array($r->Name, $r->Date_of_Business, $r->Tender, $r->Count, $r->Total);
+            }
+            if($_REQUEST['rpt']==3) {
+                $D['Results'][]=array($r->restaurantName, ucwords($r->Name), $r->Date_of_Business, $r->Check, $r->Amount, $r->Ordered, $r->Arrived);
             }
         }
         $ret.= $toast->showResultsTable($D);
