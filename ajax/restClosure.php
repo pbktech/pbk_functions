@@ -41,7 +41,7 @@ function closureList(){
     global $wpdb;
     $restClose=array("data" => array());
 
-    $closures = $wpdb->get_results("SELECT * FROM pbc_pbr_closures ppc WHERE isDeleted = 0 AND closureTime >= CURRENT_DATE() ");
+    $closures = $wpdb->get_results("SELECT * FROM pbc_pbr_closures ppc WHERE isDeleted = 0 AND closureTime >= NOW() ");
     if($closures) {
         foreach ($closures as $c) {
             $restaurants = array();
