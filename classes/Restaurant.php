@@ -387,7 +387,7 @@ class Restaurant {
 		'market' => $this->rinfo->market,
         'ipAddress' => $this->rinfo->ipAddress
 	),
-	array('%d','%d','%s','%s','%d','%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%d', '%s', '%s', '%s', '%s' )
+	array('%d','%d','%s','%s','%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%d', '%s', '%s', '%s', '%s' )
 		)){
 			$wpdb->replace('pbc_pbr_managers',array( 'restaurantID'=> $this->rinfo->restaurantID, 'managerID'=> $this->rinfo->am, 'mgrType' => 'AM'), array('%d','%s','%s'));
 			$wpdb->replace('pbc_pbr_managers',array( 'restaurantID'=> $this->rinfo->restaurantID, 'managerID'=> $this->rinfo->gm, 'mgrType' => 'GM'), array('%d','%s','%s'));
