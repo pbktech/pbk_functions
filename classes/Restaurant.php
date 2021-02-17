@@ -370,7 +370,6 @@ class Restaurant {
 		'toastID' => $this->rinfo->toastID,
 		'GUID' => $this->rinfo->GUID,
 		'levelUpID' => $this->rinfo->levelUpID,
-		'microsID' => $this->rinfo->microsID,
 		'restaurantName' => $this->rinfo->restaurantName,
 		'restaurantCode' => $this->rinfo->restaurantCode,
 		'openingDate' => date("Y-m-d",strtotime($this->rinfo->openingDate)),
