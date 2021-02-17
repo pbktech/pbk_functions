@@ -29,5 +29,28 @@ add_action( 'wp_enqueue_scripts', 'pbk_scripts' );
 		}
 	}
 	$return.="</tbody></table></div>";
+    $r=new Restaurant;
+    $content['format']='A4-P';
+    $content['title']="Restaurant Hours";
+    $content['html']=$r->docHeader("Restaurant Hours").$return;
+    if($file=$r->buildHTMLPDF(json_encode($content))) {
+        $return .= "
+		<script type=\"text/javascript\">
+			jQuery(document).ready(function(){
+				setTimeout(function(){
+					jQuery(\"#downloadButton\").hide();
+					jQuery(\"#expiredLink\").show();
+				}, 1800000);
+			});
+		</script>
+		<div class='container-fluid' id=''>
+			<div class='row' id='downloadButton'>
+				<div class='col'><a href='" . $file['Link'] . "' target='_blank' class='btn btn-primary'>Printable PDF</a></div>
+			</div>
+			<div class='row' id='expiredLink' style='display:none;'>
+				<div class='col'>Download link has expired. Please <a href=\"javascript:history.go(0)\">refresh</a> to regenerate.</div>
+			</div>
+		</div>";
+    }
 	return $return;
 }
