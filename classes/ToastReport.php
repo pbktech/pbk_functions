@@ -1174,6 +1174,16 @@ from pbc2.kds_detail WHERE sent_time BETWEEN  ? AND ? AND station='' and restaur
 		curl_close($ch);
 		return json_decode($result);
 	}
+	public function calculateDistance(array $coords): string{
+		$url="https://maps.googleapis.com/maps/api/distancematrix/json?units=imperial&origins=" . $coords['o'] . "&destinations=" . $coords['d'] . "&key=" . $this->config->geocodeAPI;
+		$ch = curl_init();
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+		curl_setopt($ch, CURLOPT_URL,$url);
+		$result=curl_exec($ch);
+		curl_close($ch);
+		$r = json_decode($result, true);
+		return $r['rows'][0]['elements'][0]['distance']['text'];
+    }
 	function showResultsTable($data=array(),$tableName="myTable"){
 		if(isset($data['Results']) && count($data['Results'])!=0){
             $data['Options'][]="\"lengthMenu\": [ [25, 50, -1], [25, 50, \"All\"] ]";
