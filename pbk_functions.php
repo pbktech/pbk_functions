@@ -26,7 +26,8 @@ function pbk_check_privledge(){
   }
   return $aboveStore;
 }
-define( "PBKF_URL", WP_PLUGIN_URL . '/' . plugin_basename( dirname( __FILE__ ) ) );
+define( "PBKF_URL", WP_PLUGIN_URL . '/' . plugin_basename(__DIR__) );
+    define('DOC_IMG',base64_encode(file_get_contents(PBKF_URL . '/assets/images/PBK-Logo_Primary_Full-Color_doc.png')));
 add_action('init','pbk_check_privledge');
 function pbk_load_wp_media_files() {
   wp_enqueue_media();

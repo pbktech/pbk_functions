@@ -12,6 +12,7 @@
         </tr>
     </thead>
 </table>
+
 <?php
 add_action('wp_footer', 'subscribersAJAX');
 
@@ -34,7 +35,25 @@ function subscribersAJAX() { ?>
             { data: "signedUp" },
             { data: "actions", orderable: false }
             ],
-          buttons: ['print','excelHtml5','csvHtml5','pdfHtml5']
+          buttons: ['print','excelHtml5','csvHtml5',
+            {
+              extend: 'pdfHtml5',
+              pageSize: 'Letter',
+              exportOptions: {
+                columns: [1, 2, 3, 4, 5]
+              },
+              customize: function ( doc ) {
+                doc.content[1].table.widths = [ '20%',  '20%', '30%', '20%',
+                  '10%', '14%', '14%', '14%'];
+                doc.content.splice( 0, 1, {
+                  margin: [ 0, 0, 0, 12 ],
+                  alignment: 'center',
+                  image: 'data:image/png;base64,<?php echo DOC_IMG;?>',
+                  fit: [400, 103]
+                } );
+              }
+            }
+          ]
         });
 
         $('#myTable tbody').on( 'click', '.cancelUser', function (e) {
@@ -72,15 +91,25 @@ function subscribersAJAX() { ?>
                 'copy',
                 {
                   extend: 'excel',
-                  messageTop: guestName
+                  messageTop: guestName + ' transaction record'
                 },
                 {
-                  extend: 'pdf',
-                  messageTop: guestName
+                  extend: 'pdfHtml5',
+                  messageTop: guestName + ' transaction record',
+                  customize: function ( doc ) {
+                    doc.content[2].table.widths =
+                      Array(doc.content[2].table.body[0].length + 1).join('*').split('');
+                    doc.content.splice( 0, 1, {
+                      margin: [ 0, 0, 0, 12 ],
+                      alignment: 'center',
+                      image: 'data:image/png;base64,<?php echo DOC_IMG;?>',
+                      fit: [400, 103]
+                    } );
+                  }
                 },
                 {
                   extend: 'print',
-                  messageTop: guestName
+                  messageTop: guestName + ' transaction record'
                 }
               ],
               columns: [

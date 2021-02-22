@@ -1190,7 +1190,22 @@ from pbc2.kds_detail WHERE sent_time BETWEEN  ? AND ? AND station='' and restaur
             $data['Options'][] = "'dom': \"<'row'<'col-sm-12 col-md-4'l><'col-sm-12 col-md-4'B><'col-sm-12 col-md-4'f>>\" +
 \"<'row'<'col-sm-12'tr>>\" +
 \"<'row'<'col-sm-12 col-md-4'i><'col-sm-12 col-md-8'p>>\"";
-            $data['Options'][] = "'buttons': ['print','excelHtml5','csvHtml5','pdfHtml5']";
+            $data['Options'][] = "'buttons': [
+            'print',
+            'excelHtml5',
+            'csvHtml5',
+            {extend: 'pdfHtml5',
+                messageTop: '" . $data['Message'] . "',
+                customize: function ( doc ) {
+                    doc.content.splice( 0, 1, {
+                      margin: [ 0, 0, 0, 12 ],
+                      alignment: 'center',
+                      image: 'data:image/png;base64," . DOC_IMG . "',
+                      fit: [400, 103]
+                    } );
+                }
+            }
+            ]";
 			if(isset($data['Options']) && is_array($data['Options'])){$options="{\n					".implode(",\n					",$data['Options'])."}\n				";}else{$options='';}
 			$return="
 		<script>

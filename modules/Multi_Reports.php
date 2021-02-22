@@ -111,11 +111,8 @@ if (isset($_REQUEST['endDate']) && isset($_REQUEST['startDate']) && (isset($_REQ
     }
     $result = $wpdb->get_results($reports[$_REQUEST['rpt']]['SQL']);
     if ($result) {
+        $D['Message'] = $reports[$_REQUEST['rpt']]['Title'] . " : " . $_REQUEST['startDate'] . " - " . $_REQUEST['endDate'];
         $ret .= "<hr /><h4>" . $reports[$_REQUEST['rpt']]['Title'] . " : " . $_REQUEST['startDate'] . " - " . $_REQUEST['endDate'] . "</h4><br />";
-        add_filter('the_title', 'updateReportTitle');
-        function updateReportTitle($data) {
-            return $reports[$_REQUEST['rpt']]['Title'] . " : " . $_REQUEST['startDate'] . " - " . $_REQUEST['endDate'];
-        }
 
         $fmt = new NumberFormatter('en_US', NumberFormatter::CURRENCY);
         $D['Options'][] = "\"order\": [ 1, 'asc' ]";
