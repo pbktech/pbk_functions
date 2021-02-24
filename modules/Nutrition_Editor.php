@@ -1,250 +1,329 @@
 <?php
-global $wp;
 global $wpdb;
 global $ret;
 $groups = array();
 $sections = $wpdb->get_results("SELECT * FROM pbc_public_nutritional_sections ORDER BY viewOrder");
-foreach($sections as $section){
+foreach ($sections as $section) {
     $groups[$section->sectionID] = $section->section;
 }
 $allergens = array("Wheat/Gluten", "Egg", "Peanut", "Tree Nuts", "Dairy", "Soy Protein", "Sesame", "Fish/Shellfish");
 $preferences = array("Vegetarian", "Vegan", "Keto", "Paleo");
-$page = home_url(add_query_arg(array(), $wp->request));
-if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $itemInfo = $_POST['itemInfo'];
-    if (isset($_POST['allergens'])) {
-        $itemInfo['allergens'] = implode(", ", $_POST['allergens']);
-    } else {
-        $itemInfo['allergens'] = "";
-    }
-    if (isset($_POST['preferences'])) {
-        $itemInfo['preferences'] = implode(", ", $_POST['preferences']);
-    } else {
-        $itemInfo['preferences'] = "";
-    }
-    $itemInfo = json_encode($itemInfo);
-    if ($_REQUEST['item'] == '_NEW') {
-        $wpdb->query($wpdb->prepare(
-            "
-      INSERT INTO pbc_public_nutritional (itemName,itemSection,published,itemInfo,toastGUID)VALUES(%s,%s,%s,%s,%s)
-      ",
-            $_POST['itemName'],
-            $_POST['itemSection'],
-            $_POST['published'],
-            $itemInfo,
-            $_POST['toastGUID']
-        ));
-        $_REQUEST['item'] = $wpdb->insert_id;
-    } else {
-        $wpdb->query($wpdb->prepare(
-            "
-      REPLACE INTO pbc_public_nutritional (idpbc_public_nutritional,itemName,itemSection,published,itemInfo,toastGUID)VALUES(%s,%s,%s,%s,%s,%s)
-      ",
-            $_POST['item'],
-            $_POST['itemName'],
-            $_POST['itemSection'],
-            $_POST['published'],
-            $itemInfo,
-            $_POST['toastGUID']
-        ));
-    }
-    if ($wpdb->last_error !== '') {
-        require_once("/var/www/html/c2.theproteinbar.com/wp-content/plugins/pbr_finance/includes/ToastFunctions/classes/ToastReport.php");
-        $rpt = new ToastReport();
-        $rpt->reportEmail("jon@theproteinbar.com", "SQL Error \n" . $wpdb->print_error() . "\n\nPosted Data \n" . print_r($_POST, true), "Nutrition_Guide Save Error");
-        $message = "<div class='alert alert-danger' id='message' style='text-align:center;'><p style='padding:3px;'>There was an error saving. This error has been reported.</p></div>";
-    } else {
-        $message = "<div class='alert alert-success' id='message' style='text-align:center;'><p style='padding:3px;'>" . $_POST['itemName'] . " has been saved.</p></div>";
-    }
-    $ret .= "<script src=\"https://code.jquery.com/jquery-1.10.1.min.js\"></script>
-      " . $message . "
-      <script type=\"text/javascript\">
-        $(document).ready(function(){
-          setTimeout(function(){
-          $(\"#message\").hide(\"20000\")
-        }, 30000);
+?>
+<div id="message" style="text-align: center;"></div>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-3">
+                <button class="btn btn-outline-info" id="newItem">Add a New Item</button>
+            </div>
+            <div class="col-9">
+                <select style="width: 100%" class="js-data-example-ajax form-control"></select>
+            </div>
+        </div>
+    </div>
+    <div class="container-fluid" id="nutritional" style="display: none;">
+        <form class="needs-validation" id="nutrition_form" method="post" action="<?php echo home_url(add_query_arg(array(), $wp->request));?>" novalidate>
+        <div class="row">
+            <h2 id="title"></h2>
+            <input type="hidden" name="itemID" id="itemID" value="" />
+        </div>
+        <div class='row'>
+            <div class='col'><label for='itemName'>Item Name</label><br><input class='form-control' required type='text' name='itemName' value='' id='itemName' />
+            </div>
+            <div class='col'><label for='itemSection'>Category</label><br>
+                <select class='form-control' name='itemSection' required id='itemSection'>
+                    <option value=''>Choose One</option>
+                    <?php
+                    foreach ($groups as $id => $name) {
+                        echo "<option value='" . $id . "'>" . $name . "</option>";
+                    }
+                    ?>
+                    ?>
+                </select>
+            </div>
+            <div class='col'><label for=''></label><br>
+                <div class="custom-control custom-switch">
+                    <input type="checkbox" class="custom-control-input" id="published">
+                    <label class="custom-control-label" for="published">Published?</label>
+                </div>
+            </div>
+        </div>
+        <div class='row'>
+            <div class='col'><label for='PR'>Protein</label><br><input class='form-control' required type='text'
+                                                                       name='itemInfo[PR]' value='' id='PR'/></div>
+            <div class='col'><label for='Cal'>Calories</label><br><input class='form-control' required type='text'
+                                                                         name='itemInfo[Cal]' value='' id='Cal'/></div>
+            <div class='col'><label for='TF'>Total Fat</label><br><input class='form-control' required type='text'
+                                                                         name='itemInfo[TF]' value='' id='TF'/></div>
+        </div>
+        <div class='row'>
+            <div class='col'><label for='SF'>Saturated Fat</label><br><input class='form-control' required type='text'
+                                                                             name='itemInfo[SF]' value='' id='SF'/>
+            </div>
+            <div class='col'><label for='TRF'>Trans Fat</label><br><input class='form-control' required type='text'
+                                                                          name='itemInfo[TRF]' value='' id='TRF'/></div>
+            <div class='col'><label for='CHO'>Cholesterol</label><br><input class='form-control' required type='text'
+                                                                            name='itemInfo[CHO]' value='' id='CHO'/>
+            </div>
+        </div>
+        <div class='row'>
+            <div class='col'><label for='SOD'>Sodium</label><br><input class='form-control' required type='text'
+                                                                       name='itemInfo[SOD]' value='' id='SOD'/></div>
+            <div class='col'><label for='NC'>Net Carbs</label><br><input class='form-control' required type='text'
+                                                                         name='itemInfo[NC]'  value='' id='NC'/></div>
+            <div class='col'><label for='TC'>Total Carbs</label><br><input class='form-control' required type='text'
+                                                                           name='itemInfo[TC]' value='' id='TC'/></div>
+        </div>
+        <div class='row'>
+            <div class='col'><label for='DF'>Dietary Fiber</label><br><input class='form-control' required type='text'
+                                                                             name='itemInfo[DF]' value='' id='DF'/>
+            </div>
+            <div class='col'><label for='SG'>Sugars</label><br><input class='form-control' required type='text'
+                                                                      name='itemInfo[SG]' value='' id='SG'/></div>
+            <div class='col'><label for='toastGUID'>Toast GUID</label><br><input class='form-control' type='text'
+                                                                                 name='toastGUID' value=''
+                                                                                 id='toastGUID'/></div>
+        </div>
+        <div class='row'>
+            <div class='col'>
+                <div class='form-group'>
+                    <h4>Allergens</h4>
+                    <?php
+                    $id = 0;
+                    foreach ($allergens as $allergen) {
+                        ?>
+                        <div class="custom-control custom-switch">
+                            <input type="checkbox" class="custom-control-input" name='allergens[]'
+                                   value='<?php echo $allergen; ?>' id="allergen_<?php echo $id; ?>">
+                            <label class="custom-control-label"
+                                   for="allergen_<?php echo $id; ?>"><?php echo $allergen; ?></label>
+                        </div>
+                        <?php
+                        $id++;
+                    }
+                    ?>
+                </div>
+            </div>
+            <div class='col'>
+                <div class='form-group'>
+                    <h4>Dietary Preferences</h4>
+                    <?php
+                    $id = 0;
+                    foreach ($preferences as $preference) {
+                        ?>
+                        <div class="custom-control custom-switch">
+                            <input type="checkbox" class="custom-control-input" name='$preferences[]'
+                                   value='<?php echo $preference; ?>' id="preference_<?php echo $id; ?>">
+                            <label class="custom-control-label"
+                                   for="preference_<?php echo $id; ?>"><?php echo $preference; ?></label>
+                        </div>
+                        <?php
+                        $id++;
+                    }
+                    ?>
+                </div>
+            </div>
+        </div>
+        </form>
+        <div>
+            <div class="text-center" id='spinner' style='display: none;'>
+                <div class="spinner-border" role="status">
+                    <span class="sr-only">Loading...</span>
+                </div>
+            </div>
+            <button id="saveItem" class='btn btn-primary'>Save</button>
+        </div>
+    </div>
+<?php
+add_action('wp_footer', 'nutritionAJAX');
+
+function nutritionAJAX() { ?>
+
+    <script>
+      jQuery(document).ready(function($) {
+        const allergen = ['Wheat/Gluten', 'Egg', 'Peanut', 'Tree Nuts', 'Dairy', 'Soy Protein', 'Sesame', 'Fish/Shellfish'];
+        const preference = ['Vegetarian', 'Vegan', 'Keto', 'Paleo'];
+        let i;
+        $('#saveItem').click(function(event) {
+          let forms = document.getElementsByClassName('needs-validation');
+          let isValid = 1;
+          let validation = Array.prototype.filter.call(forms, function(form) {
+              if (form.checkValidity() === false) {
+                event.preventDefault();
+                event.stopPropagation();
+                isValid =0;
+              }
+            form.classList.add('was-validated');
+
+          }, false);
+          if (isValid === 1) {
+            const allergens = [];
+            const preferences = [];
+            for (i = 0; i < preference.length; i++) {
+              if ($('#preference_' + i).prop('checked') === true){
+                preferences.push($('#preference_' + i).val());
+              }
+            }
+            for (i = 0; i < allergen.length; i++) {
+              if ($('#allergen_' + i).prop('checked') === true){
+                allergens.push($('#allergen_' + i).val());
+              }
+            }
+            const itemInfo = {
+              PR: $('#PR').val(),
+              Cal: $('#Cal').val(),
+              TF: $('#TF').val(),
+              SF: $('#SF').val(),
+              TRF: $('#TRF').val(),
+              CHO: $('#CHO').val(),
+              SOD: $('#SOD').val(),
+              NC: $('#NC').val(),
+              TC: $('#TC').val(),
+              DF: $('#DF').val(),
+              SG: $('#SG').val()
+            };
+            $('#saveItem').hide();
+            $('#spinner').show();
+            $.ajax({
+              url: '<?php echo admin_url('admin-ajax.php');?>',
+              type: 'post',
+              data: {
+                action: 'add_item_nutritional',
+                itemInfo: itemInfo,
+                itemID: $('#itemID').val(),
+                itemName: $('#itemName').val(),
+                itemSection: $('#itemSection').val(),
+                published: $('#published').prop('checked'),
+                toastGUID: $('#toastGUID').val(),
+                allergens: allergens,
+                preferences: preferences,
+                nonce: '<?php echo wp_create_nonce("add_closure_nonce");?>'
+              },
+              success: function(response) {
+                if (response.status === 200) {
+                  $('#message').addClass("alert alert-success");
+                } else {
+                  $('#message').addClass("alert alert-danger");
+                }
+                $('#message').html(response.message);
+                $('#message').scrollTop();
+                $('#saveItem').show();
+                $('#spinner').hide();
+                setTimeout(function(){
+                  $("#message").hide("20000")
+                }, 30000);
+                $('#nutritional').hide();
+                $('.js-data-example-ajax').val(null).trigger('change');
+                $('#title').html('Add A New Item');
+                $('#itemID').val('');
+                $('#itemName').val('');
+                $('#itemSection').val('');
+                $('#published').prop('checked', false);
+                $('#PR').val('');
+                $('#Cal').val('');
+                $('#TF').val('');
+                $('#SF').val('');
+                $('#TRF').val('');
+                $('#CHO').val('');
+                $('#SOD').val('');
+                $('#NC').val('');
+                $('#TC').val('');
+                $('#DF').val('');
+                $('#SG').val('');
+                $('#toastGUID').val('');
+                for (i = 0; i < preference.length; i++) {
+                  $('#preference_' + i).prop('checked', false);
+                }
+                for (i = 0; i < allergen.length; i++) {
+                  $('#allergen_' + i).prop('checked', false);
+                }
+              }
+            });
+          }
         });
-      </script>
-";
-}
-if (isset($_REQUEST['archived']) && $_REQUEST['archived'] == "yes") {
-    $published = 0;
-    $checked = "checked='checked'";
-} else {
-    $published = 1;
-    $checked = "";
-}
-$items = $wpdb->get_results("SELECT itemName,idpbc_public_nutritional,itemSection FROM pbc_public_nutritional  WHERE published='" . $published . "' order by itemSection,itemName");
-foreach ($items as $item) {
-    $listItems[$item->itemSection][$item->idpbc_public_nutritional] = $item->itemName;
-}
-$ret .= "\n
-  <script>
-  jQuery( function() {
-    jQuery('.js-example-basic-single').select2({
-      theme: \"classic\"
-    });
-  } );
-  </script>
-	<div>
-		<form method='get' action='" . $page . "'  name='itemSelector'>
-			<select name='item' onchange=\"this.form.submit()\" id='itemSelector' class='js-example-basic-single' style='width: 100%;'>
-      <option value=''>Choose an Item</option>
-      <option value='_NEW'>Add a New Item</option>";
-foreach ($listItems as $section => $items) {
-    $ret .= "<optgroup label='" . $groups[$section] . "'>";
-    foreach ($items as $id => $item) {
-        if (isset($_REQUEST['item']) && $_REQUEST['item'] === $id) {
-            $sel = "selected='selected'";
-        } else {
-            $sel = "";
-        }
-        $ret .= "\n<option value='" . $id . "' $sel>" . stripslashes($item) . "</option>";
-    }
-    $ret .= "</optgroup>";
-}
-$ret .= "</select></form></div>
-  <div>
-    <form method='get' action='" . $page . "'  name='showPublished'>
-      <div class='form-group'>
-        <div class='form-check'>
-          <input class='form-check-input' type='checkbox' name='archived' onchange=\"this.form.submit()\" id='archived' value='yes' $checked/>
-          <label class='form-check-label' for='gridCheck'>
-            View Archived Items?
-          </label>
-        </div>
-      </div>
-    </form>
-  </div>
-  ";
-if (isset($_REQUEST['item'])) {
-    if($_REQUEST['item'] !== '_NEW') {
-        $item = $wpdb->get_row("SELECT * FROM pbc_public_nutritional  WHERE idpbc_public_nutritional='" . $_REQUEST['item'] . "'");
-        if ((!isset($item->itemName) || $item->itemName == '') && $_REQUEST['item'] != '_NEW') {
-            echo "<div class='alert' id='message' style='text-align:center;'><p style='padding:3px;'>ITEM NOT FOUND</p></div>";
-            exit;
-        }
-        try {
-            $itemInfo = json_decode($item->itemInfo);
-        } catch (JsonException $e) {
-        }
-    }else{
-        $item = (object)["itemName"=>"", "published" =>0, "itemSection"=>"", "toastGUID"=>""];
-        $itemInfo = (object)["PR"=>"", "Cal" =>"", "TF"=>"", "SF"=>"", "TRF"=>"", "CHO"=>"", "SOD"=>"", "NC"=>"", "TC"=>"", "DF"=>"", "SG"=>""];
-    }
-    $ret .= "
-  <div style='width:100%;'>
-    <h3>" . stripslashes($item->itemName) . "</h3>
-    <form method='post' action='" . $page . "'>
-      <input class='form-control' type='hidden' name='item' value='" . $_REQUEST['item'] . "' />
-    <div class='container-fluid'>
-    <div class='row'>
-      <div class='col'><label for='itemName'>Item Name</label><br><input class='form-control' required type='text' name='itemName' value='" . stripslashes($item->itemName) . "' id='itemName' /></div>
-      <div class='col'><label for='published'>Published?</label><br>
-      <select class='form-control' name='published' id='published' >
-        <option value='1' ";
-    if ($item->published === 1) {
-        $ret .= "selected='selected'";
-    }
-    $ret .= ">Yes</option>
-        <option value='0' ";
-    if ($item->published === 0) {
-        $ret .= "selected='selected'";
-    }
-    $ret .= ">No</option>
-      </select>
-      </div>
-      <div class='col'><label for='itemSection'>Category</label><br>
-      <select class='form-control' name='itemSection' id='itemSection' >
-        <option value=''>Choose One</option>";
-    foreach ($groups as $id => $name) {
-        if ((int)$item->itemSection === (int)$id) {
-            $sel = "selected='' ";
-        } else {
-            $sel = "";
-        }
-        $ret .= "<option value='" . $id . "' " . $sel . ">" . $name . "</option>";
-    }
-    $ret .= "
-      </select>
-      </div>
-    </div>
-      <div class='row'>
-        <div class='col'><label for='PR'>Protein</label><br><input class='form-control' type='text' name='itemInfo[PR]' value='" . $itemInfo->PR . "' id='PR' /></div>
-        <div class='col'><label for='Cal'>Calories</label><br><input class='form-control' type='text' name='itemInfo[Cal]' value='" . $itemInfo->Cal . "' id='Cal' /></div>
-        <div class='col'><label for='TF'>Total Fat</label><br><input class='form-control' type='text' name='itemInfo[TF]' value='" . $itemInfo->TF . "' id='TF' /></div>
-      </div>
-      <div class='row'>
-        <div class='col'><label for='SF'>Saturated Fat</label><br><input class='form-control' type='text' name='itemInfo[SF]' value='" . $itemInfo->SF . "' id='SF' /></div>
-        <div class='col'><label for='TRF'>Trans Fat</label><br><input class='form-control' type='text' name='itemInfo[TRF]' value='" . $itemInfo->TRF . "' id='TRF' /></div>
-        <div class='col'><label for='CHO'>Cholesterol</label><br><input class='form-control' type='text' name='itemInfo[CHO]' value='" . $itemInfo->CHO . "' id='CHO' /></div>
-      </div>
-      <div class='row'>
-        <div class='col'><label for='SOD'>Sodium</label><br><input class='form-control' type='text' name='itemInfo[SOD]' value='" . $itemInfo->SOD . "' id='SOD' /></div>
-        <div class='col'><label for='NC'>Net Carbs</label><br><input class='form-control' type='text' name='itemInfo[NC]' value='" . $itemInfo->NC . "' id='NC' /></div>
-        <div class='col'><label for='TC'>Total Carbs</label><br><input class='form-control' type='text' name='itemInfo[TC]' value='" . $itemInfo->TC . "' id='TC' /></div>
-      </div>
-      <div class='row'>
-        <div class='col'><label for='DF'>Dietary Fiber</label><br><input class='form-control' type='text' name='itemInfo[DF]' value='" . $itemInfo->DF . "' id='DF' /></div>
-        <div class='col'><label for='SG'>Sugars</label><br><input class='form-control' type='text' name='itemInfo[SG]' value='" . $itemInfo->SG . "' id='SG' /></div>
-        <div class='col'><label for='guid'>Toast GUID</label><br><input class='form-control' type='text' name='toastGUID' value='" . $item->toastGUID . "' id='toastGUID' /></div>
-      </div>
-      <div class='row'>
-        <div class='col'>
-          <div class='form-group'>
-            <h4>Allergens</h4>";
-    if (isset($itemInfo->allergens)) {
-        $allergy = explode(", ", $itemInfo->allergens);
-    } else {
-        $allergy = array();
-    }
-    $idNum = 0;
-    foreach ($allergens as $allergen) {
-        if (in_array($allergen, $allergy)) {
-            $check = "checked='checked'";
-        } else {
-            $check = "";
-        }
-        $ret .= "
-              <div class='form-check'>
-                <input class='form-check-input' type='checkbox' name='allergens[]' value='" . $allergen . "' id='id" . $idNum . "' " . $check . " />
-                <label class='form-check-label'for='id" . $idNum . "' >" . $allergen . "</label>
-              </div>
-                ";
-        $idNum++;
-    }
-    $ret .= "
-          </div>
-        </div>
-        <div class='col'>
-          <div class='form-group'>
-            <h4>Dietary Preferences</h4>";
-    if (isset($itemInfo->preferences)) {
-        $dietary = explode(", ", $itemInfo->preferences);
-    } else {
-        $dietary = array();
-    }
-    foreach ($preferences as $preference) {
-        if (in_array($preference, $dietary)) {
-            $check = "checked='checked'";
-        } else {
-            $check = "";
-        }
-        $ret .= "
-              <div class='form-check'>
-                <input class='form-check-input' type='checkbox' name='preferences[]' value='" . $preference . "' id='id" . $idNum . "' " . $check . " />
-                <label class='form-check-label' for='id" . $idNum . "' >" . $preference . "</label>
-              </div>
-                ";
-        $idNum++;
-    }
-    $ret .= "
-          </div>
-          </div>
-        </div>
-      </div>
-      <div><button type='submit' class='btn btn-primary'>Save</button></div>
-    </form>
-    </div>
-    ";
+        $('.js-data-example-ajax').select2({
+          placeholder: 'Start typing an item name to edit',
+          ajax: {
+            url: '<?php echo admin_url('admin-ajax.php') ?>?action=get_nutrition_list',
+            dataType: 'json',
+            data: function(params) {
+              var query = {
+                item: params.term,
+                type: 'public'
+              };
+              return query;
+            }
+          }
+        });
+        $('.js-data-example-ajax').on('select2:select', function(e) {
+          const data = e.params.data;
+
+          $.ajax({
+            url: "<?php echo admin_url('admin-ajax.php') ?>?action=get_nutrition_info&item=" + data.id,
+            success: function(result) {
+              $('#nutritional').show();
+              const itemInfo = JSON.parse(result.itemInfo);
+              if (itemInfo.allergens) {
+                const allergens = itemInfo.allergens.split(', ');
+                for (i = 0; i < allergen.length; i++) {
+                  $('#allergen_' + i).prop('checked', allergens.includes(allergen[i]));
+                }
+              }
+              if (itemInfo.preferences) {
+                const preferences = itemInfo.preferences.split(', ');
+                let i;
+                for (i = 0; i < preference.length; i++) {
+                  $('#preference_' + i).prop('checked', preferences.includes(preference[i]));
+                }
+              }
+              $('#itemName').val(result.itemName);
+              $('#itemID').val(result.idpbc_public_nutritional);
+              $('#title').html(result.itemName);
+              $('#itemSection').val(result.itemSection);
+              $('#published').prop('checked', result.published === '1');
+              $('#PR').val(itemInfo.PR);
+              $('#Cal').val(itemInfo.Cal);
+              $('#TF').val(itemInfo.TF);
+              $('#SF').val(itemInfo.SF);
+              $('#TRF').val(itemInfo.TRF);
+              $('#CHO').val(itemInfo.CHO);
+              $('#SOD').val(itemInfo.SOD);
+              $('#NC').val(itemInfo.NC);
+              $('#TC').val(itemInfo.TC);
+              $('#DF').val(itemInfo.DF);
+              $('#SG').val(itemInfo.SG);
+              $('#toastGUID').val(result.toastGUID);
+            }
+          });
+        });
+        $('#newItem').click(function() {
+          $('#nutritional').show();
+          $('.js-data-example-ajax').val(null).trigger('change');
+          $('#title').html('Add A New Item');
+          $('#itemID').val('');
+          $('#itemName').val('');
+          $('#itemSection').val('');
+          $('#published').prop('checked', false);
+          $('#PR').val('');
+          $('#Cal').val('');
+          $('#TF').val('');
+          $('#SF').val('');
+          $('#TRF').val('');
+          $('#CHO').val('');
+          $('#SOD').val('');
+          $('#NC').val('');
+          $('#TC').val('');
+          $('#DF').val('');
+          $('#SG').val('');
+          $('#toastGUID').val('');
+          for (i = 0; i < preference.length; i++) {
+            $('#preference_' + i).prop('checked', false);
+          }
+          for (i = 0; i < allergen.length; i++) {
+            $('#allergen_' + i).prop('checked', false);
+          }
+        });
+      });
+    </script>
+
+    <?php
 }

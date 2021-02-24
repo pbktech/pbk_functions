@@ -82,6 +82,7 @@ include('shortcodes/pbk_checkTips.php');
 /*AJAX*/
 include('ajax/restClosure.php');
 include('ajax/subscribers.php');
+include('ajax/Nutritional.php');
 
 /*Admin Pages*/
 include('admin-page.php'); // the plugin options page HTML and save functions
