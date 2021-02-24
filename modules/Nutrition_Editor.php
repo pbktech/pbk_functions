@@ -19,6 +19,27 @@ $preferences = array("Vegetarian", "Vegan", "Keto", "Paleo");
                 <select style="width: 100%" class="js-data-example-ajax form-control"></select>
             </div>
         </div>
+        <div class="row" style="padding-top: .5rem">
+            <div class="col-3">
+                <button class="btn btn-outline-secondary" id="downloadList">Export All Items</button>
+            </div>
+            <div class="col-9">
+                <div class="form-group row" id="uploadArea">
+                    <label for="uploadSCV">Bulk Upload</label>
+                    <div class="col-6">
+                        <input type="file" class="form-control-file" id="uploadSCV" name="csv" accept="text/csv">
+                    </div>
+                    <div class="col-3">
+                        <button class="btn btn-outline-success" style="display: none;" disabled id="processUpload"><i class="fas fa-upload"></i></button>
+                    </div>
+                </div>
+                <div id="uploadSpinner" style="display: none;">
+                    <div class="spinner-border" role="status">
+                        <span class="sr-only">Loading...</span>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
     <div class="container-fluid" id="nutritional" style="display: none;">
         <form class="needs-validation" id="nutrition_form" method="post" action="<?php echo home_url(add_query_arg(array(), $wp->request));?>" novalidate>
@@ -143,6 +164,35 @@ function nutritionAJAX() { ?>
         const allergen = ['Wheat/Gluten', 'Egg', 'Peanut', 'Tree Nuts', 'Dairy', 'Soy Protein', 'Sesame', 'Fish/Shellfish'];
         const preference = ['Vegetarian', 'Vegan', 'Keto', 'Paleo'];
         let i;
+        $('#uploadSCV').change(function() {
+          //on change event
+          $('#processUpload').show();
+          $('#processUpload').prop('disabled', false);
+        });
+        $('#processUpload').click(function(){
+          $('#uploadArea').hide();
+          $('#uploadSpinner').show();
+          let fd = new FormData();
+          let files = $('#uploadSCV')[0].files;
+          if(files.length > 0 ) {
+            fd.append('file', files[0]);
+            fd.append('action', 'import_nutritional');
+          $.ajax({
+              url: '<?php echo admin_url('admin-ajax.php');?>',
+              type: "POST",
+              data: fd,
+              processData: false,
+              contentType: false,
+              success: function (result) {
+                $('#message').addClass("alert alert-info");
+                $('#message').html(result.records + " items have been updated.");
+                $('#uploadArea').show();
+                $('#uploadSpinner').hide();
+              }
+            });
+          }
+        });
+
         $('#saveItem').click(function(event) {
           let forms = document.getElementsByClassName('needs-validation');
           let isValid = 1;
@@ -254,6 +304,16 @@ function nutritionAJAX() { ?>
             }
           }
         });
+        $('#downloadList').click(function(){
+          $.ajax({
+            url: "<?php echo admin_url('admin-ajax.php') ?>?action=export_nutritional",
+            dataType: 'text',
+            success: function(result) {
+              var uri = 'data:application/csv;charset=UTF-8,' + encodeURIComponent(result);
+              window.open(uri, 'full_nutritional_info.csv');
+            }
+          });
+        })
         $('.js-data-example-ajax').on('select2:select', function(e) {
           const data = e.params.data;
 
