@@ -166,6 +166,23 @@ class Payeezy extends PBKPayment {
         );
     }
 
+    public function tokenSale(): ?object{
+        $this->client->setUrl($this->config->Payeezy->URL . "v1/transactions");
+
+        $authorize_card_transaction = new Payeezy_Token($this->client);
+        return $authorize_card_transaction->purchase(
+            [
+                "merchant_ref" => $this->merchantRef,
+                "method" => "token",
+                "amount" => round($this->billAmount * 100),
+                "currency_code" => "USD",
+                "TA_TOKEN" => $this->config->Payeezy->TA_TOKEN,
+                "order_data" => array("subtotal" => $this->subTotal, "local_tax_amount" => $this->taxAmount),
+                "token" => $this->token
+            ]
+        );
+    }
+
     public function purchaseToken(): ?object{
         $this->client->setUrl($this->config->Payeezy->URL . "v1/transactions");
 
