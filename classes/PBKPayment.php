@@ -50,7 +50,7 @@ class PBKPayment {
         $this->card = $card;
     }
 
-    public final function addPaymentToTable(array $args): array {
+    final public function addPaymentToTable(array $args): array {
         $stmt = $this->mysqli->prepare("INSERT INTO pbc_minibar_order_payment (mbCheckID, mbUserID, paymentType, paymentDate, paymentAmount, paymentStatus, authorization, fdsToken, cardNum, transactionID, addressID, expDate) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)");
         $stmt->bind_param('ssssssssssss',
             $args['mbCheckID'],
@@ -68,14 +68,10 @@ class PBKPayment {
         );
         $stmt->execute();
 
-        if (isset($stmt->error) && $stmt->error !== '') {
-            return [$stmt->error];
-        }
-
         if (!empty($stmt->insert_id)) {
             return ['status' => 200, "id" => $stmt->insert_id];
         }
-        return ["status" => 400, "msg" => "Insert Failure", "request" => $args];
+        return ["status" => 400, "msg" => "Insert Failure", "request" => $args, "error" => $stmt->error];
     }
 
     final public function setBilling(int $billingID): void {
