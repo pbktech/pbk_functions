@@ -43,7 +43,7 @@ class Payeezy extends PBKPayment {
         );
     }
 
-    public function storePaymentTable($authorize_response): object{
+    final public function storePaymentTable(object $authorize_response): array{
         $args = [
             'mbCheckID' => $this->checkID,
             'mbUserID' => $this->userID,

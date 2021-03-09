@@ -413,7 +413,8 @@ function pbr_update_nho() {
 }
 function pbk_saveMinibar() {
   $restaurant = new Restaurant();
-  $restaurant->pbkSaveMinibar($_POST);
+  $mb = $restaurant->pbkSaveMinibar($_POST);
+  wp_redirect(  admin_url( 'admin.php?page=pbr-edit-minibar&id='.$mb.'&m=1' ));
 }
 function pbr_nho_attendance(){
   $restaurant = new Restaurant();

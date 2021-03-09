@@ -850,7 +850,7 @@ if($_GET['nhoDate']!="_new"){
 	function showMiniBarBuilder($info=array("idpbc_minibar"=>"_NEW","company"=>"","restaurantID"=>"","outpostIdentifier"=>"","imageFile"=>"","services"=>"","isActive"=>0)){
 		require dirname(dirname(__FILE__)) . "/admin_mods/showMiniBarBuilder.php";
 	}
-	function pbkSaveMinibar($info){
+	final public function pbkSaveMinibar(array $info, int $isPrivate = 0): int{
 		global $wpdb;
 		$newGeocode=0;
 		if($info["idpbc_minibar"]!="_NEW"){
@@ -863,7 +863,7 @@ if($_GET['nhoDate']!="_new"){
 				if($info["imageFile"]["zip"]!=$json->zip){$newGeocode=1;}
 			}
 		}
-		if($info["idpbc_minibar"]=="_NEW" || $newGeocode==1){
+		if($info["idpbc_minibar"] === "_NEW" || $newGeocode===1){
 			$report=new ToastReport();
 			$geo=$report->getGeoCode($info["imageFile"]["addressa"] . " " . $info["imageFile"]["city"] . ", " . $info["imageFile"]["state"] . " " . $info["imageFile"]["zip"]);
 			$info["imageFile"]["lat"]=$geo->results[0]->geometry->location->lat;
@@ -874,8 +874,8 @@ if($_GET['nhoDate']!="_new"){
 		if(isset($info["idpbc_minibar"]) && $info["idpbc_minibar"]=="_NEW"){
 			$wpdb->query(
 				$wpdb->prepare( "
-					INSERT INTO pbc_minibar (restaurantID,company,outpostIdentifier,imageFile,linkSlug,services,isActive)VALUES(%s,%s,%s,%s,%s,%s,%s)",
-					$info['restaurantID'],$info['company'],$info['outpostIdentifier'],$imageFile,$info['linkSlug'],$services,$info['isActive']));
+					INSERT INTO pbc_minibar (restaurantID,company,outpostIdentifier,imageFile,linkSlug,services,isActive,isPrivate)VALUES(%s,%s,%s,%s,%s,%s,%s,%s)",
+					$info['restaurantID'],$info['company'],$info['outpostIdentifier'],$imageFile,$info['linkSlug'],$services,$info['isActive'],$isPrivate));
 				if(isset($wpdb->insert_id)){$info["idpbc_minibar"]=$wpdb->insert_id;}else{die("ID ERROR");}
 		}else {
 			$wpdb->query(
@@ -883,7 +883,7 @@ if($_GET['nhoDate']!="_new"){
 					REPLACE INTO pbc_minibar (idpbc_minibar,restaurantID,company,outpostIdentifier,imageFile,linkSlug,services,isActive)VALUES(%s,%s,%s,%s,%s,%s,%s,%s)",
 					$info['idpbc_minibar'],$info['restaurantID'],$info['company'],$info['outpostIdentifier'],$imageFile,$info['linkSlug'],$services,$info['isActive']));
 		}
-		wp_redirect(  admin_url( 'admin.php?page=pbr-edit-minibar&id='.$info["idpbc_minibar"].'&m=1' ));
+		return $info["idpbc_minibar"];
 	}
 	function updateNHO($nho){
 		global $wpdb;

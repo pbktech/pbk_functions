@@ -393,7 +393,7 @@ GROUP BY pmoh.publicUnique");
         }
         return array("message"=>"Thank you for your request. If we find an account associated with your email address, we will email you instructions to reset your password.","Variant"=>"success");
     }
-    private function addNewUser($request)
+    private function addNewUser(object $request): ?int
     {
         $phone=$this->cleanPhone($request->phone);
         $emailConsent=$this->switchEmailConsent($request->emailConsent);

@@ -79,9 +79,17 @@ class ToastOrder extends Toast {
         $appliedDiscounts = array();
         if ($discounts) {
             foreach ($discounts as $d) {
-                $appliedDiscounts[] = (object)[
-                    "discount" => (object)["guid" => $d->discountGUID]
-                ];
+                if($d->discountType === 'system') {
+                    $appliedDiscounts[] = (object)[
+                        "discount" => (object)["guid" => $d->discountGUID],
+                        "discountAmount" => $d->discountAmount
+                    ];
+                }else{
+                    $appliedDiscounts[] = (object)[
+                        "discount" => (object)["guid" => $d->discountGUID]
+                    ];
+
+                }
             }
         }
         return $appliedDiscounts;
