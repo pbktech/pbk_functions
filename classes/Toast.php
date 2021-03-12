@@ -455,7 +455,7 @@ class Toast {
         }
     }
 
-    function storeSelectionInfo($s, $ToastCheckID, $stmt, $sendSMS=null): void {
+    function storeSelectionInfo($s, $ToastCheckID, $stmt, $sendSMS=null, $duedate = null): void {
         $createdDate = date("Y-m-d G:i:s", strtotime($s->createdDate));
         $voidBusinessDate = date("Y-m-d G:i:s", strtotime($s->voidBusinessDate));
         if (isset($s->salesCategory->guid) && $s->salesCategory->guid != "") {
@@ -497,12 +497,19 @@ class Toast {
                         $pbkName = "PBK " . $this->restaurantName . "!";
                     }
                     $m = "Thanks for ordering Curbside from $pbkName 🚗 \nClick the link to let us know you’re here! https://pbkcurbside.com/" . $row->linkHEX;
-                    $text = new ToastReport();
-                    $message = $text->sendText($row->phone, $m);
-                    $m = $message->sid;
-                    $update = $this->mysqli->prepare("UPDATE pbc_curbside_link SET messageID = ? WHERE linkID = ?");
-                    $update->bind_param('ss', $m,$id);
-                    $update->execute();
+                    $tenBefore = strtotime($duedate) - 600;
+                    if($tenBefore > time()){
+                        $tasks = new task_engine($this->mysqli);
+                        $tasks->add_task(['what' => 'sendText',
+                            'target' => $row->phone,
+                            'text' => $m,
+                            'subject' => json_encode(["type" => "curbside", "id" => $id]),
+                            'dueDate' => date('Y-m-d H:i:s', strtotime($duedate) - 600)]);
+                    }else {
+                        $text = new ToastReport();
+                        $message = $text->sendText($row->phone, $m);
+                        $text->updateCurbsideText($message->sid, $id);
+                    }
                 }
             }
         }

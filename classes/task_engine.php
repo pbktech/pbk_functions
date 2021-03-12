@@ -18,7 +18,23 @@ function task_dispatch($task, $log) {
         foreach ($recip as $r) {
             $email->reportEmail($r, $task['text'], $task['subject']);
         }
-    } elseif ($task['what'] === 'exec') {
+    } elseif($task['what'] === 'sendText'){
+        $log->info("Dispatch: Run Command - Sending Text");
+        $text = new ToastReport();
+        $recip = explode(',', $task['target']);
+        foreach ($recip as $r) {
+            $message = $text->sendText($r, $task['text']);
+            try {
+                $subject = json_decode($task['subject'], true, 512, JSON_THROW_ON_ERROR);
+                if($subject['type'] === 'curbside') {
+                    $text->updateCurbsideText($message->sid, $subject['id']);
+                }
+            } catch (JsonException $e) {
+                $log->info(print_r($e,true));
+            }
+        }
+    }
+    elseif ($task['what'] === 'exec') {
         $log->info("Dispatch: Run Command - cd " . $dir . "; " . $task['target'] . " " . $task['id']);
         return system("cd " . $dir . "; " . $task['target'] . " " . $task['id']);
     } elseif ($task['what'] === 'execBackground') {

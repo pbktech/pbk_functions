@@ -514,6 +514,11 @@ AND pbc_ToastOrderHeaders.restaurantID = pbc_pbrestaurants.restaurantID ";
 		));
 		return $msg;
 	}
+	final public function updateCurbsideText(string $m, int $id): void{
+        $update = $this->mysqli->prepare("UPDATE pbc_curbside_link SET messageID = ? WHERE linkID = ?");
+        $update->bind_param('ss', $m, $id);
+        $update->execute();
+    }
 	function getCheckInfo($guid) {
 		$q="SELECT * FROM pbc2.pbc_ToastCheckHeaders WHERE pbc2.pbc_ToastCheckHeaders.GUID='$guid'";
 		$stmt = $this->mysqli->prepare($q);
