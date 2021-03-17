@@ -20,6 +20,8 @@ function subscribersAJAX() { ?>
 
     <script type="text/javascript">
       var guestName;
+      var planName;
+      var planCost;
 
       jQuery(document).ready(function($) {
        var myTable = $('#myTable').DataTable({
@@ -58,7 +60,7 @@ function subscribersAJAX() { ?>
 
         $('#myTable tbody').on( 'click', '.cancelUser', function (e) {
           if(confirm('Are you sure you want to cancel this ' + e.target.dataset.subname + ' subscription for ' + e.target.dataset.guest + '?')) {
-            var data = {
+            const data = {
               'action': 'subscribers_cancel',
               'uid': e.target.dataset.uid,
               'guest': e.target.dataset.guest,
@@ -129,6 +131,72 @@ function subscribersAJAX() { ?>
             $("#modalTable").DataTable().clear().destroy();
           });
         });
+        $('#myTable tbody').on( 'click', '.newCharge', function (event) {
+          const data = event.target.dataset;
+          const taxAmount = parseFloat(data.cost) * <?php echo CHICAGO_TAX;?>;
+          const totalAmount = parseFloat(data.cost) + parseFloat(taxAmount);
+          $('#planCost').val(data.cost);
+          $('#uid').val(data.uid);
+          $('#pid').val(data.pid);
+          $('#guest').val(data.guest);
+          $('#nonce').val(data.nonce);
+          $('#planName').html(data.subname);
+          $('#taxAmount').html(taxAmount.toFixed(2));
+          $('#totalBill').html(totalAmount.toFixed(2));
+          $('#chargeModal').modal('show');
+
+        });
+        $('#planCost').blur(function(){
+          const cost = $('#planCost').val();
+          const taxAmount = parseFloat(cost) * <?php echo CHICAGO_TAX;?>;
+          const totalAmount = parseFloat(cost) + parseFloat(taxAmount);
+          $('#taxAmount').html(taxAmount.toFixed(2));
+          $('#totalBill').html(totalAmount.toFixed(2));
+          if(isNaN($('#planCost').val())){
+            $('#chargeMessage').addClass('alert alert-danger').html("Plan cost must be a number.");
+            $('#planCost').focus();
+          }else{
+            $('#chargeMessage').removeClass('alert alert-danger').html("");
+          }
+        });
+        $('.chargeCard').click(function(e){
+          $('#chargeInfo').hide();
+          $('#chargeSpinner').show();
+          if(isNaN($('#planCost').val())){
+            $('#chargeMessage').addClass('alert alert-danger').html("Plan cost must be a number.");
+            $('#planCost').focus();
+            $('#chargeInfo').show();
+            $('#chargeSpinner').hide();
+            $('.chargeCard').prop("disabled",true);
+            e.preventDefault();
+            return;
+          }
+          const data = {
+            'action': 'subscribers_charge',
+            'uid': $('#uid').val(),
+            'pid': $('#pid').val(),
+            'guest': $('#guest').val(),
+            'chargeAmount': $('#planCost').val(),
+            'nonce': $('#nonce').val()
+          }
+          jQuery.ajax({
+            url: '<?php echo admin_url('admin-ajax.php') ?>',
+            type: 'POST',
+            data: data,
+            success: function(response) {
+              if (response.status !== 200 ) {
+                $('#chargeMessage').addClass('alert ' + response.class).html(response.message);
+              }else{
+                $('#chargeMessage').removeClass('alert alert-danger').html("");
+                $('#chargeModal').modal('hide');
+                $('#message').addClass( "alert " + response.class ).html(response.message);
+              }
+              $('#chargeInfo').show();
+              $('.chargeCard').prop("disabled",false);
+              $('#chargeSpinner').hide();
+            }
+          });
+        });
           $('#txnModal').on('shown.bs.modal', function (modalEvent) {
             var modal = $(this);
             modal.find('.modal-title').text(guestName);
@@ -140,8 +208,63 @@ function subscribersAJAX() { ?>
         $('#txnModal').on('hidden.bs.modal', function (e) {
           $("#modalTable").DataTable().clear().destroy();
         });
+        $('#chargeModal').on('hidden.bs.modal', function (e) {
+          $('#chargeInfo').show();
+          $('.chargeCard').prop("disabled",false);
+          $('#chargeSpinner').hide();
+          $('#chargeMessage').removeClass('alert alert-danger').html("");
+        });
       });
     </script>
+    <div class="modal fade" id="chargeModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="">New Credit Card Charge</h5>
+                    <button type="button" class="close hideModal" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="container" id="chargeInfo">
+                        <div class="row" id="chargeMessage"></div>
+                        <div class="row">
+                            <div class="col-9" id="planName"></div>
+                                 <div class="col-3"><div class="input-group mb-3">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">$</span>
+                                    </div>
+                                    <input class="form-control" type="text" id="planCost" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-9" style="text-align: right">Tax (11.75%)</div>
+                            <div class="col-3" id="taxAmount"></div>
+                        </div>
+                        <div class="row">
+                            <div class="col-9" style="text-align: right">Total</div>
+                            <div class="col-3" id="totalBill"></div>
+                        </div>
+                    </div>
+                    <div id="chargeSpinner" class="modal-content text-center" style="text-align: center; display: none;">
+                        <div class="spinner-border text-center" role="status">
+                            <span class="sr-only">Loading...</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <input type="hidden" id="uid" name="uid" value="" />
+                    <input type="hidden" id="pid" name="pid" value="" />
+                    <input type="hidden" id="guest" name="guest" value="" />
+                    <input type="hidden" id="nonce" name="nonce" value="" />
+                    <button type="button" class="btn btn-secondary hideModal" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-success chargeCard">Process Charge</button>
+                </div>
+            </div>
+        </div>
+    </div>
     <div class="modal fade" id="txnModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
          aria-hidden="true">
         <div class="modal-dialog modal-lg" role="document">

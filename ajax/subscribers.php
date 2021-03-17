@@ -5,6 +5,7 @@ error_reporting(E_ALL);
 add_action("wp_ajax_subscribers_get_trans", "subscribers_get_trans");
 add_action("wp_ajax_subscribers_get_users", "subscribers_get_users");
 add_action("wp_ajax_subscribers_cancel", "subscribers_cancel");
+add_action("wp_ajax_subscribers_charge", "subscribers_new_charge");
 
 function subscribers_get_trans() {
     $data = array("data" => array());
@@ -28,13 +29,19 @@ function subscribers_get_users() {
     global $wpdb;
     $data = array("data" => array());
     $results = $wpdb->get_results(
-        "SELECT guestName,phoneNumber,emailAddress,planName,DATE_FORMAT(dateStarted, '%c/%d/%Y') as 'signedUp', userID,isActive, DATE_FORMAT(dateEnded, '%c/%d/%Y') as 'ended' FROM pbc_subscriptions ps, pbc_subscriptions_plans psp WHERE firstData is not null AND ps.subPlan = psp.planID"
+        "SELECT guestName,phoneNumber,emailAddress,planName,DATE_FORMAT(dateStarted, '%c/%d/%Y') as 'signedUp', userID,isActive, DATE_FORMAT(dateEnded, '%c/%d/%Y') as 'ended', recurringCost, subPlan FROM pbc_subscriptions ps, pbc_subscriptions_plans psp WHERE firstData is not null AND ps.subPlan = psp.planID"
     );
     if ($results) {
         foreach ($results as $r) {
-            $showDelete = '<button disabled title="Canceled on ' . $r->ended . '" class="btn btn-outline-dark"><i class="fas fa-skull-crossbones"></i></button>';
+            $showDelete = '<div style="text-align: left;padding-left: 5px;"><a href="#" disabled title="Canceled on ' . $r->ended . '" class="text-dark"><i class="fas fa-skull-crossbones"></i> Canceled on ' . $r->ended . '</a></div>';
             if ($r->isActive == 1) {
-                $showDelete = '<button title="Cancel" data-toggle="tooltip" data-subname="' . $r->planName . '" data-placement="bottom" data-nonce="' . wp_create_nonce('_cancel_' . $r->userID) . '" data-uid="' . $r->userID . '" data-guest="' . $r->guestName . '" class="btn btn-outline-danger cancelUser"><i class="far fa-trash-alt" data-nonce="' . wp_create_nonce('_cancel_' . $r->userID) . '" data-subname="' . $r->planName . '" data-uid="' . $r->userID . '" data-guest="' . $r->guestName . '"></i></button>';
+                $showDelete = '
+<div style="text-align: left;padding-left: 5px;">
+    <a href="#" class="text-success newCharge" data-pid="' . $r->subPlan . '" data-nonce="' . wp_create_nonce('_charge_' . $r->userID) . '" data-guest="' . $r->guestName . '" data-subname="' . $r->planName . '" data-cost="' . $r->recurringCost . '" data-uid="' . $r->userID . '" ><i data-subname="' . $r->planName . '" data-cost="' . $r->recurringCost . '" data-uid="' . $r->userID . '" class="far fa-credit-card"></i> New Charge</a>
+</div>
+<div style="text-align: left;padding-left: 5px;">
+    <a href="#" title="Cancel" data-toggle="tooltip" data-subname="' . $r->planName . '" data-placement="bottom" data-nonce="' . wp_create_nonce('_cancel_' . $r->userID) . '" data-uid="' . $r->userID . '" data-guest="' . $r->guestName . '" class="text-danger cancelUser"><i class="far fa-trash-alt" data-nonce="' . wp_create_nonce('_cancel_' . $r->userID) . '" data-subname="' . $r->planName . '" data-uid="' . $r->userID . '" data-guest="' . $r->guestName . '"></i> Cancel</a>
+</div>';
             }
             $data['data'][] = [
                 "guestName" => $r->guestName,
@@ -43,7 +50,16 @@ function subscribers_get_users() {
                 "emailAddress" => $r->emailAddress,
                 "planName" => $r->planName,
                 "signedUp" => $r->signedUp,
-                "actions" => $showDelete . '&nbsp;<button title="View Transactions" id="" class="btn btn-outline-primary showModal" data-toggle="tooltip" data-placement="bottom" data-nonce="' . wp_create_nonce('_get_trans_' . $r->userID) . '" data-uid="' . $r->userID . '" data-guest="' . $r->guestName . '"><i data-nonce="' . wp_create_nonce('_get_trans_' . $r->userID) . '" data-uid="' . $r->userID . '" data-guest="' . $r->guestName . '" class="fas fa-list showModal"></i></button>',
+                "actions" => '
+                <div class="btn-group">
+                    <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Actions
+                    </button>
+                     <div class="dropdown-menu">
+                     '. $showDelete .'<div style="text-align: left;padding-left: 5px;"><a  href="#" title="View Transactions" id="" class="text-info showModal" data-toggle="tooltip" data-placement="bottom" data-nonce="' . wp_create_nonce('_get_trans_' . $r->userID) . '" data-uid="' . $r->userID . '" data-guest="' . $r->guestName . '"><i data-nonce="' . wp_create_nonce('_get_trans_' . $r->userID) . '" data-uid="' . $r->userID . '" data-guest="' . $r->guestName . '" class="fas fa-list showModal"></i> History</a></div>
+                     </div>
+                 </div>
+                ',
             ];
         }
     }
@@ -84,5 +100,17 @@ function subscribers_cancel() {
     }
     header('Content-Type: application/json');
     echo json_encode(["status" => $status, "class" => $class, "message" => $message]);
+    wp_die();
+}
+
+function subscribers_new_charge(){
+    $pay = new PBKSubscription();
+    $pay->setUID($_REQUEST['uid'], $_REQUEST['pid']);
+
+    header('Content-Type: application/json');
+    $answer = $pay->billSubscriber([
+        'cost' => $_REQUEST['chargeAmount']
+    ]);
+    echo json_encode($answer);
     wp_die();
 }

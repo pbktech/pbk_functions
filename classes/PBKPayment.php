@@ -27,7 +27,7 @@ class PBKPayment {
             exit;
         }
         $this->setMysqli($mysql);
-        $this->setToday(date(TODAY_FORMAT));
+        $this->setToday(date(self::TODAY_FORMAT));
         $this->setConfig();
     }
 

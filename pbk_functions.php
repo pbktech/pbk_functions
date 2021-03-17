@@ -17,6 +17,7 @@ error_reporting(E_ALL);
 $latLong["Chicago"]=array("Lat"=>41.885858,"Long"=>-87.632561);
 $latLong["District of Columbia"]=array("Lat"=>38.893481,"Long"=>-77.022022);
 $latLong["Colorado"]=array("Lat"=>39.752327,"Long"=>-105.001158);
+define("CHICAGO_TAX", .1175);
 /*Checking Above Store*/
 function pbk_check_privledge(){
   $aboveStore=0;
@@ -69,6 +70,7 @@ include('classes/Toast.php');
 include('classes/ToastReport.php');
 include('classes/task_engine.php');
 include('classes/Restaurant.php');
+include('classes/PBKSubscription.php');
 
 /*Shortcodes*/
 include('shortcodes/pbrf_showToastFunctions.php');
