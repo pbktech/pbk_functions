@@ -144,7 +144,7 @@ class ToastOrder extends Toast {
         preg_match( '/^\+\d(\d{3})(\d{3})(\d{4})$/', $phone,  $matches );
         return $matches[1] . '-' .$matches[2] . '-' . $matches[3];
     }
-    final public function returnOrderHeader(): string {
+    final public function returnDiningOption(): string {
         if(!empty($this->orderHeader->outpostIdentifier) && !empty($this->orderHeader->restaurantID)) {
             $q = "SELECT * FROM pbc2.pbc_ToastGUIDOptions WHERE optionName = '" . $this->orderHeader->outpostIdentifier . "' AND restaurantID = '" . $this->orderHeader->restaurantID . "'";
             $stmt = $this->mysqli->prepare($q);
