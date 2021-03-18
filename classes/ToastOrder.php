@@ -145,15 +145,16 @@ class ToastOrder extends Toast {
         return $matches[1] . '-' .$matches[2] . '-' . $matches[3];
     }
     final public function returnOrderHeader(): string {
-        $q = "SELECT * FROM pbc2.pbc_ToastGUIDOptions WHERE optionName = '" . $this->orderHeader->outpostIdentifier . "'";
-        $stmt = $this->mysqli->prepare($q);
-        $stmt->execute();
-        $result = $stmt->get_result();
-        if ($row = $result->fetch_object()) {
-            return $row->GUID;
-        } else {
-            return self::DINING_OPTION;
+        if(!empty($this->orderHeader->outpostIdentifier) && !empty($this->orderHeader->restaurantID)) {
+            $q = "SELECT * FROM pbc2.pbc_ToastGUIDOptions WHERE optionName = '" . $this->orderHeader->outpostIdentifier . "' AND restaurantID = '" . $this->orderHeader->restaurantID . "'";
+            $stmt = $this->mysqli->prepare($q);
+            $stmt->execute();
+            $result = $stmt->get_result();
+            if ($row = $result->fetch_object()) {
+                return $row->GUID;
+            }
         }
+        return self::DINING_OPTION;
     }
 
     private function orderHeader(): object{
