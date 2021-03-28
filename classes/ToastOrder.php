@@ -16,6 +16,7 @@ class ToastOrder extends Toast {
         $check->setOrderID($this->orderHeader->headerID);
         $grandTotal = 0;
         $orderChecks = $check->returnChecks();
+        $count = 1;
         $checks = array();
         foreach ($orderChecks as $orderCheck) {
             $check->setCheckID($orderCheck->checkID);
@@ -38,6 +39,19 @@ class ToastOrder extends Toast {
                     "modifiers" => $modifiers
                 ];
             }
+            $selections[] = (object)[
+                "entityType" => "MenuItemSelection",
+                "itemGroup" => array("guid" => "1c998f25-3c27-41c1-b05f-d7b4c9cf0e5a", "entityType" => "MenuGroup"),
+                "item" => array("guid" => "7a6cf320-4afa-4f84-97a9-a37b3a287aca", "entityType" => "MenuItem"),
+                "quantity" => 1,
+                "modifiers" => [(object)[
+                    "displayName" => $this->orderHeader->company,
+                    "selectionType" => "SPECIAL_REQUEST"
+                ],(object)[
+                    "displayName" => $count . " of " . count($orderChecks),
+                    "selectionType" => "SPECIAL_REQUEST"
+                ]]
+            ];
             $p = $this->buildPayments($check->returnPayments());
             $grandTotal += $p->grandTotal;
             $checks[] = (object)[
@@ -48,6 +62,7 @@ class ToastOrder extends Toast {
                 "payments" => $p->payments,
                 "tabName" => $orderCheck->tabName
             ];
+            $count++;
         }
         return (object)["order" => $checks, "grandTotal" => $grandTotal];
     }

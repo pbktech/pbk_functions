@@ -58,6 +58,12 @@ final class PBKOrder {
         $this->orderID = $orderID;
     }
 
+    public function updateOrderField(string $field, string $value): void{
+        $q = $this->mysqli->prepare("UPDATE pbc_minibar_order_header SET " . $field . "=? WHERE headerID = ? ");
+        $q->bind_param("ss", $value, $this->orderID);
+        $q->execute();
+    }
+
     public function getGUID(): string {
         $stmt = $this->mysqli->prepare("SELECT UuidFromBin(publicUnique) as 'orderGUID' FROM pbc_minibar_order_header WHERE headerID = ?");
         $stmt->bind_param("s", $this->orderID);
