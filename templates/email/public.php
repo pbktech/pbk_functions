@@ -1,10 +1,17 @@
 <?php
-function getHeader(){
+function getHeader($type = "pbk"): string{
+    if($type==="minibar"){
+        $image = "https://www.pbkminibar.com/assets/images/MiniBarLogo_bluewhite.png";
+        $alt = "PBK Minibar";
+    }else{
+        $image = "https://images.getbento.com/accounts/79416dac6744e5896d428cd16e2e574c/media/images/79704PBK-Logo_Primary_Full-Color_email.png?w=1800&fit=max&auto=compress,format&h=1800";
+        $alt = "Protein Bar &amp; Kitchen";
+    }
     return '      <div>
         <div style="Margin:0 auto;max-width:600px;min-width:320px;width:320px;width:calc(28000% - 167400px)">
 
           <div style="font-size:26px;line-height:32px;Margin-top:30px;Margin-bottom:30px;color:#2f353e;font-family:PT Sans,Trebuchet MS,sans-serif;Margin-left:20px;Margin-right:20px" align="center">
-            <div id="m_1428688053685981531m_-1170683036063149700emb-email-header" align="center"><img style="display:block;height:auto;width:100%;border:0;max-width:425px" src="https://images.getbento.com/accounts/79416dac6744e5896d428cd16e2e574c/media/images/79704PBK-Logo_Primary_Full-Color_email.png?w=1800&fit=max&auto=compress,format&h=1800" alt="Protein Bar &amp; Kitchen"
+            <div id="m_1428688053685981531m_-1170683036063149700emb-email-header" align="center"><img style="display:block;height:auto;width:100%;border:0;max-width:425px" src="'.$image.'" alt="'.$alt.'"
                 class="CToWUd" width="425"></div>
           </div>
 
@@ -55,7 +62,7 @@ function getHeader(){
 ';
 }
 
-function getFooter(){
+function getFooter(): string{
     return '</div>
 
 </div>
@@ -134,7 +141,7 @@ function getFooter(){
 </div>
 ';
 }
-function getSubscribeText(){
+function getSubscribeText(): string{
     return "    <div style='margin-top:1rem;font-style: italic; color: rgb(172, 174, 176); font-size: 10px;'>
         <p>Subscription Plans: PBK Power Plan is an automatically renewing subscription requiring recurring payments. A Power Plan subscription grants you access to discounted menu prices for eligible restaurants (excluding taxes and tips) (&quot;Redemptions&quot;). Redemptions may be redeemed only at eligible restaurants, as indicated. PB Restaurants, LLC reserves the right to change whether a restaurant is eligible at any time with or without notice. Power Plan orders are subject availability, and taxes may apply to the cost of the items you order. You may provide an optional gratuity. Depending on the conditions as stated when you sign up other fees may apply. We reserve the right to add and modify fees as discussed in this Section.</p>
 
