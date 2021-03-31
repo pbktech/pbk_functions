@@ -173,7 +173,7 @@ class ToastOrder extends Toast {
     }
 
     private function orderHeader(): object{
-        $q="SELECT * FROM pbc_minibar_order_header WHERE headerID = ?";
+        $q="SELECT * FROM pbc_minibar_order_header pmoh, pbc_minibar pm WHERE headerID = ? AND pm.idpbc_minibar = pmoh.minibarID";
         $stmt = $this->mysqli->prepare($q);
         $stmt->bind_param('s',$this->orderID);
         $stmt->execute();
