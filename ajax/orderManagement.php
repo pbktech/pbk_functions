@@ -181,7 +181,7 @@ function om_duplicate(){
             }
         }
     }else{
-        $data = ["status" => 200, "msg" => "The order for " . $q->company . " has been duplicated."];
+        $data = ["status" => 400, "msg" => "There were no checks found"];
         returnAJAXData($data);
     }
     $tasks = new task_engine($mysqli);
@@ -189,7 +189,8 @@ function om_duplicate(){
         'target'=>"/home/jewmanfoo/toast-api/postMinibar.sh ",
         'files' => $orderID,
         'dueDate' => date('Y-m-d H:i:s',$cutoff)]);
-    
+
+    $data = ["status" => 200, "msg" => "The order for " . $q->company . " has been duplicated."];
     returnAJAXData($data);
 }
 
