@@ -10,6 +10,7 @@ final class PBKCheck
     private $checkID;
     private $orderID;
     public $today;
+    public const TODAY_FORMAT = "Y-m-d G:i:s";
 
     public function __construct($mysql){
         if (!isset($mysql)) {
@@ -17,7 +18,7 @@ final class PBKCheck
             exit;
         }
         $this->setMysqli($mysql);
-        $this->setToday(date(TODAY_FORMAT));
+        $this->setToday(date(self::TODAY_FORMAT));
     }
 
     public function createCheckHeader(array $h): ?int{

@@ -1191,6 +1191,7 @@ from pbc2.kds_detail WHERE sent_time BETWEEN  ? AND ? AND station='' and restaur
     }
 	function showResultsTable($data=array(),$tableName="myTable"){
 		if(isset($data['Results']) && count($data['Results'])!=0){
+            $data['Message'] = empty($data['Message']) ? "" : $data['Message'];
             $data['Options'][]="\"lengthMenu\": [ [25, 50, -1], [25, 50, \"All\"] ]";
             $data['Options'][] = "'dom': \"<'row'<'col-sm-12 col-md-4'l><'col-sm-12 col-md-4'B><'col-sm-12 col-md-4'f>>\" +
 \"<'row'<'col-sm-12'tr>>\" +

@@ -36,12 +36,13 @@ function pbk_load_wp_media_files() {
 add_action( 'admin_enqueue_scripts', 'pbk_load_wp_media_files' );
 /*Scripts and CSS*/
 function pbk_scripts(){
-  wp_enqueue_style( 'select_style', 'https://cdn.jsdelivr.net/npm/select2@4.0.12/dist/css/select2.min.css');
-  wp_enqueue_style( 'timepicker_style', '//cdnjs.cloudflare.com/ajax/libs/timepicker/1.3.5/jquery.timepicker.min.css');
+    wp_enqueue_style( 'select_style', 'https://cdn.jsdelivr.net/npm/select2@4.0.12/dist/css/select2.min.css');
+    wp_enqueue_style( 'timepicker_style', '//cdnjs.cloudflare.com/ajax/libs/timepicker/1.3.5/jquery.timepicker.min.css');
   wp_enqueue_style( 'jquery-ui_style', '//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css');
   wp_enqueue_style('bootstrap_style', 'https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css');
   wp_enqueue_style( 'datatables_bootstrap_style',  'https://cdn.datatables.net/1.10.23/css/dataTables.bootstrap4.min.css');
-//  wp_enqueue_style( 'bootstrap_style',  PBKF_URL . '/assets/css/bootstrap.css');
+    wp_enqueue_style( 'clockpicker_style',  PBKF_URL . '/assets/css/clockpicker.css');
+    wp_enqueue_style( 'clockpicker_standalone_style',  PBKF_URL . '/assets/css/standalone.css');
   wp_enqueue_style( 'sort_tables_style', '//v/bs4/jszip-2.5.0/dt-1.10.23/b-1.6.5/b-html5-1.6.5/b-print-1.6.5/fh-3.1.7/sp-1.2.2/datatables.min.css');
   wp_enqueue_style( 'screen_signature_style', PBKF_URL . '/assets/css/signature.css');
   wp_enqueue_script( 'select_script', 'https://cdn.jsdelivr.net/npm/select2@4.0.12/dist/js/select2.min.js');
@@ -53,6 +54,7 @@ function pbk_scripts(){
   wp_enqueue_script( 'sort_tables_script_print_fonts', '//cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.36/vfs_fonts.js');
     wp_enqueue_script( 'sort_tables_script', 'https://cdn.datatables.net/v/bs4/jszip-2.5.0/dt-1.10.23/b-1.6.5/b-html5-1.6.5/b-print-1.6.5/fh-3.1.7/sp-1.2.2/datatables.js');
     wp_enqueue_script( 'screen_signature_script', PBKF_URL . '/assets/js/app.js', array(), false, true);
+    wp_enqueue_script( 'clockpicker_script', PBKF_URL . '/assets/js/clockpicker.js', array(), false, true);
   wp_enqueue_script( 'screen_signature_script', PBKF_URL . '/assets/js/jquery.signaturepad.min.js', array(), false, true);
 }
 add_action( 'wp_enqueue_scripts', 'pbk_scripts' );
@@ -65,12 +67,17 @@ use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 require __DIR__ . '/vendor/autoload.php';
 
-include('classes/Finance.php');
-include('classes/Toast.php');
-include('classes/ToastReport.php');
-include('classes/task_engine.php');
-include('classes/Restaurant.php');
-include('classes/PBKSubscription.php');
+include __DIR__ . '/classes/Finance.php';
+include __DIR__ . '/classes/Toast.php';
+include __DIR__ . '/classes/ToastReport.php';
+include __DIR__ . '/classes/ToastOrder.php';
+include __DIR__ . '/classes/task_engine.php';
+include __DIR__ . '/classes/Restaurant.php';
+include __DIR__ . '/classes/PBKSubscription.php';
+include __DIR__ . '/classes/PBKOrder.php';
+include __DIR__ . '/classes/PBKItem.php';
+include __DIR__ . '/classes/PBKCheck.php';
+include __DIR__ . '/classes/PBKPayment.php';
 
 /*Shortcodes*/
 include('shortcodes/pbrf_showToastFunctions.php');
@@ -85,6 +92,7 @@ include('shortcodes/pbk_checkTips.php');
 include('ajax/restClosure.php');
 include('ajax/subscribers.php');
 include('ajax/Nutritional.php');
+include 'ajax/orderManagement.php';
 
 /*Admin Pages*/
 include('admin-page.php'); // the plugin options page HTML and save functions
@@ -179,6 +187,11 @@ function get_the_user_ip() {
     $ip = $_SERVER['REMOTE_ADDR'];
   }
   return apply_filters( 'wpb_get_ip', $ip );
+}
+function returnAJAXData($data){
+    header('Content-Type: application/json');
+    echo json_encode($data);
+    wp_die();
 }
 add_filter( 'login_headertext', 'acme_login_logo_image' );
 function acme_login_logo_image( $login_header_text ) {

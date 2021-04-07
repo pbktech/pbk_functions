@@ -5,12 +5,12 @@ global $ret;
 $cu = wp_get_current_user();
 $page = home_url(add_query_arg(array(), $wp->request));
 wp_localize_script('closure-script', 'closure_ajax', array('ajax_url' => admin_url('admin-ajax.php')));
-$query = "SELECT restaurantID,restaurantName FROM pbc2.pbc_pbrestaurants WHERE levelUpID is not null AND isOpen =1";
+$query = "SELECT levelUpID,restaurantName FROM pbc2.pbc_pbrestaurants WHERE levelUpID is not null AND isOpen =1";
 $records = $wpdb->get_results($query);
 $restaurants = '';
 if (!empty($records)) {
     foreach ($records as $rec) {
-        $restaurants .= "\n<option value='" . $rec->restaurantID . "'>" . $rec->restaurantName . "</option>";
+        $restaurants .= "\n<option value='" . $rec->levelUpID . "'>" . $rec->restaurantName . "</option>";
     }
 }
 ?>

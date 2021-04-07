@@ -6,6 +6,7 @@ class ToastOrder extends Toast {
     private int $orderID;
     private int $userID;
     private object $orderHeader;
+    public const TODAY_FORMAT = "Y-m-d G:i:s";
 
     public function __construct($guid){
         parent::__construct($guid);
@@ -134,7 +135,7 @@ class ToastOrder extends Toast {
             }
 
             $appliedPayments[] = (object)[
-                "paidDate" => $this->toastDate(date(TODAY_FORMAT)),
+                "paidDate" => $this->toastDate(date(self::TODAY_FORMAT)),
                 "type" => "OTHER",
                 "amount" => $amount,
                 "otherPayment" => (object)["guid" => self::PAYMENT],

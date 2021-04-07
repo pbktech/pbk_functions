@@ -7,6 +7,7 @@ final class PBKOrder {
     private $payment;
     private $contact;
     private $orderID;
+    public const TODAY_FORMAT = "Y-m-d G:i:s";
 
     public function __construct($mysql) {
         if (!isset($mysql)) {
@@ -16,7 +17,7 @@ final class PBKOrder {
             exit;
         }
         $this->setMysqli($mysql);
-        $this->setToday(date(TODAY_FORMAT));
+        $this->setToday(date(self::TODAY_FORMAT));
     }
 
     public function setMysqli(mysqli $mysql): void {
