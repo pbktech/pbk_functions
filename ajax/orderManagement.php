@@ -132,11 +132,12 @@ function om_duplicate(){
                         );
                         $insertItem->execute();
                         $mods = $wpdb->get_results("SELECT * FROM pbc_minibar_order_mods WHERE itemID = '" . $i->itemID . "'");
+                        $newItemID = $insertItem->insert_id;
                         if($mods){
                             $insertMod = $mysqli->prepare("INSERT INTO pbc2 . pbc_minibar_order_mods(itemID, modName, modPrice, modGUID) VALUES (?,?,?,?)");
                             foreach($mods as $m){
                                 $insertMod->bind_param('ssss',
-                                    $insertItem->insert_id,
+                                    $newItemID,
                                     $m->modName,
                                     $m->modPrice,
                                     $m->modGUID
