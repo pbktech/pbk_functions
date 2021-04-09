@@ -2,9 +2,17 @@
     .ui-timepicker-container{
         z-index:99999 !important;
     }
+    .red {
+        background-color: #f8d7da !important;
+    }
 </style>
 <div class="container">
     <div class="row" id="message"></div>
+    <div class="row" id="processing" style="display: none;">
+        <div class="spinner-border text-center" role="status">
+            <span class="sr-only">Processing...</span>
+        </div>
+    </div>
     <div class="row">
         <div class="col-4">
             <label for='name'>Guest Name</label>
@@ -150,6 +158,14 @@ function omAJAX() { ?>
             { data: "orderType" },
             { data: "actions", orderable: false }
           ],
+          "createdRow": function( row, data, dataIndex ) {
+            if (data.deleted === "1") {
+              $(row).addClass('alert-danger');
+            }
+            if (new Date() < data.microTime) {
+              $(row).addClass('alert-warning');
+            }
+          },
           buttons: ['print','excelHtml5','csvHtml5',
             {
               extend: 'pdfHtml5',
@@ -227,6 +243,32 @@ function omAJAX() { ?>
             }
           });
         });
+        $('#dataTable tbody').on( 'click', '.cancelOrder', function (event) {
+          const data = event.target.dataset;
+          let msgClass = 'alert-danger';
+          $('#processing').show();
+          $("html, body").animate({ scrollTop: 0 }, "slow");
+          const confirm = {
+            'action': 'om_cancel',
+            'headerID': data.orderid
+          };
+          jQuery.ajax({
+            url: '<?php echo admin_url('admin-ajax.php') ?>',
+            type: 'POST',
+            data: confirm,
+            success: function(response) {
+              if (response.status === 200){
+                msgClass = 'alert-success';
+              }
+              $('#processing').hide();
+              $('#message').addClass("alert " + msgClass).html(response.msg);
+              setTimeout(function(){
+                $('#message').removeClass("alert " + msgClass).html("");
+              }, 30000);
+              myTable.ajax.reload();
+            }
+          });
+        });
         $('#dataTable tbody').on( 'click', '.duplicateOrder', function (event) {
           const data = event.target.dataset;
           $('#headerID').val(data.orderid);
@@ -257,8 +299,7 @@ function omAJAX() { ?>
               type: 'POST',
               data: confirm,
               success: function(response) {
-                $('#duplicateBody').show();
-                $('#duplicateProcessing').hide();
+                console.log(response)
                 if (response.status === 200){
                   $('#message').addClass("alert alert-success").html(response.msg);
                   setTimeout(function(){
@@ -268,7 +309,8 @@ function omAJAX() { ?>
                 }else{
                   $('#message').addClass("alert alert-danger").html(response.msg);
                 }
-                console.log(response);
+                $('#duplicateBody').show();
+                $('#duplicateProcessing').hide();
               }
             });
           }
@@ -277,6 +319,12 @@ function omAJAX() { ?>
           myTable.ajax.reload();
           $('#results').show();
         });
+        $('#duplicateModal').on('hidden.bs.modal', function (event) {
+          $('#headerID').val("");
+          $('#newTime').val("");
+          $('#newDate').val("");
+          myTable.ajax.reload();
+        })
       });
     </script>
     <?php

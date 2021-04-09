@@ -2,6 +2,7 @@
 add_action("wp_ajax_om_get_orders", "om_get_orders");
 add_action("wp_ajax_om_get_payments", "om_get_payments");
 add_action("wp_ajax_om_duplicate", "om_duplicate");
+add_action("wp_ajax_om_cancel", "om_cancel");
 
 function om_get_orders(){
     global $wpdb;
@@ -22,7 +23,7 @@ function om_get_orders(){
         $conditions = "";
     }
 
-   $results = $wpdb->get_results("SELECT real_name1, companyName, dateOrdered, dateDue, headerID, UuidFromBin(pmoh.publicUnique) as 'guid', orderType FROM pbc_minibar_user pmu, pbc_minibar_order_header pmoh WHERE pmu.id = pmoh.mbUserID" . $conditions);
+   $results = $wpdb->get_results("SELECT real_name1, companyName, dateOrdered, dateDue, headerID, UuidFromBin(pmoh.publicUnique) as 'guid', orderType, isDeleted FROM pbc_minibar_user pmu, pbc_minibar_order_header pmoh WHERE pmu.id = pmoh.mbUserID" . $conditions);
     if ($results) {
         foreach ($results as $r) {
             switch ($r->orderType){
@@ -31,6 +32,15 @@ function om_get_orders(){
                     break;
                 default:
                     $url = "https://www.pbkgrouporder.com";
+            }
+            if($r->isDeleted === '0') {
+                if (time() < strtotime($r->dateDue)) {
+                    $cancel = '<a href="#" title="Refund" data-toggle="tooltip" class="text-danger cancelOrder" data-orderid="' . $r->headerID . '"><i data-orderid="' . $r->headerID . '" class="far fa-trash-alt"></i> Cancel</a>';
+                } else {
+                    $cancel = '<a href="#" title="Refund" data-toggle="tooltip" class="text-danger refundOrder" data-orderid="' . $r->headerID . '"><i data-orderid="' . $r->headerID . '" class="fas fa-money-bill"></i> Refund</a>';
+                }
+            }else{
+                $cancel = 'CANCELED';
             }
             $data['data'][] = [
                 "name" => $r->real_name1,
@@ -47,14 +57,14 @@ function om_get_orders(){
                         <div style="text-align: left;padding-left: 5px;">
                             <a href="#" data-receiptLink="' . $url . '/receipt/' . $r->guid . '" title="Receipt" class="text-info showReceipt" data-toggle="tooltip" data-placement="bottom" ><i data-receiptLink="' . $url . '/receipt/' . $r->guid . '" class="fas fa-receipt"></i> Receipt</a>
                         </div>
-                        <div style="text-align: left;padding-left: 5px;">
-                            <a href="#" title="Refund" data-toggle="tooltip" class="text-danger refundOrder" data-orderid="' . $r->headerID .'"><i data-orderid="' . $r->headerID .'" class="fas fa-money-bill"></i> Refund</a>
-                        </div>
+                        <div style="text-align: left;padding-left: 5px;">' . $cancel . '</div>
                         <div style="text-align: left;padding-left: 5px;">
                             <a href="#" title="Reorder" data-toggle="tooltip" class="text-success duplicateOrder" data-orderID="' . $r->headerID .'" ><i class="fas fa-clone"></i> Duplicate</a>
                         </div>
                      </div>
-                 </div>'
+                 </div>',
+                "deleted" => $r->isDeleted,
+                "microTime" => strtotime($r->dateDue) * 1000
             ];
         }
     }
@@ -160,11 +170,11 @@ function om_duplicate(){
                                 $insertDiscount->execute();
                             }
                         }
-                        $payments = $wpdb->get_results("SELECT * FROM pbc_minibar_order_payment WHERE mbCheckID = '" . $c->checkID . "' AND appliesTo !='Header'");
+                        $payments = $wpdb->get_results("SELECT * FROM pbc_minibar_order_payment WHERE mbCheckID = '" . $c->checkID . "' AND (appliesTo is null OR appliesTo ='Check')");
                         if($payments){
                             $insertPayment = $mysqli->prepare("INSERT INTO pbc_minibar_order_payment (mbCheckID, mbUserID, paymentType, paymentDate, paymentAmount, paymentStatus, cardNum, appliesTo) VALUES (?,?,?,?,?,?,?,?)");
                             foreach($payments as $p){
-                                $insertPayment->bind_param('sssssss',
+                                $insertPayment->bind_param('ssssssss',
                                     $orderCheckID,
                                     $p->mbUserID,
                                     $p->paymentType,
@@ -175,6 +185,7 @@ function om_duplicate(){
                                     $p->appliesTo
                                 );
                                 $insertPayment->execute();
+                                echo $insertPayment->error;
                             }
                         }
                     }
@@ -191,11 +202,25 @@ function om_duplicate(){
         'files' => $orderID,
         'dueDate' => date('Y-m-d H:i:s',$cutoff)]);
 
-    $data = ["status" => 200, "msg" => "The order for " . $q->company . " has been duplicated."];
+    $data = ["status" => 200, "msg" => "The order for " . $q->company . " has been duplicated and scheduled for " . date("m/d/Y h:i a", $delDay) . "."];
     returnAJAXData($data);
 }
 
 function om_get_payments(){
     global $wpdb;
+
+}
+
+function om_cancel(){
+    global $wpdb;
+    $mysqli = new mysqli(DB_HOST,DB_USER, DB_PASSWORD, DB_NAME);
+    $wpdb->update("pbc_minibar_order_header",array("isDeleted" => 1),array("headerID" => $_REQUEST['headerID']));
+    if(!empty($wpdb->last_error)){
+        returnAJAXData(['status' => 400, 'msg' => 'Removing order failed: ' . $wpdb->last_error]);
+    }
+    $taskID = $wpdb->get_var("SELECT id from pbc_tasks WHERE files = '".$_REQUEST['headerID']."' AND target = '/home/jewmanfoo/toast-api/postMinibar.sh '");
+    $tasks = new task_engine($mysqli);
+    $tasks->delete_task($taskID);
+    returnAJAXData(['status' => 200, 'msg' => 'The order has been canceled.']);
 
 }
