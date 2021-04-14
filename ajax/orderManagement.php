@@ -157,6 +157,8 @@ function om_duplicate(){
                         }
                         $discounts = $wpdb->get_results("SELECT * FROM pbc_minibar_order_discount WHERE checkID = '" . $c->checkID . "'");
                         if($discounts) {
+                            print_r($discounts);
+                            wp_die();
                             $insertDiscount = $mysqli->prepare("INSERT INTO pbc2 . pbc_minibar_order_discount (checkID, discountName, discountGUID, discountAmount, promoCode, discountType) VALUES (?,?,?,?,?,?)");
                             foreach ($discounts as $d) {
                                 $insertDiscount->bind_param('ssssss',
