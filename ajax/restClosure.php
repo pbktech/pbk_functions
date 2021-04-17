@@ -113,7 +113,7 @@ function addClosure(){
     $tasks = new task_engine($mysqli);
     $r = array();
     foreach($_REQUEST['restaurants'] as $restaurant){
-        $r[$restaurant] = $wpdb->get_var("SELECT restaurantName FROM pbc_pbrestaurants WHERE restaurantID = '" . $restaurant ."' ");
+        $r[$restaurant] = $wpdb->get_var("SELECT restaurantName FROM pbc_pbrestaurants WHERE levelUpID = '" . $restaurant ."' ");
     }
     $r = json_encode($r);
 
