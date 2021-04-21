@@ -2,21 +2,22 @@
 
 
 class PBKPayment {
-    protected $card;
+    protected object $card;
     protected $billing;
-    protected $billingID;
-    protected $subTotal;
-    protected $taxAmount;
-    protected $paymentID;
-    protected $checkID;
+    protected int $billingID;
+    protected float $subTotal;
+    protected float $taxAmount;
+    protected int $paymentID;
+    protected int $checkID;
     protected $mysqli;
     protected $config;
-    protected $billAmount;
-    protected $billingName;
-    protected $userID;
-    protected $checkGUID;
-    private $paymentType;
-    private $guid;
+    protected float $billAmount;
+    protected string $billingName;
+    protected int $userID;
+    protected float $tipAmount = 0.00;
+    protected string $checkGUID;
+    private string $paymentType;
+    private string $guid;
     public const TODAY_FORMAT = "Y-m-d G:i:s";
 
     public function __construct($mysql) {
@@ -51,8 +52,8 @@ class PBKPayment {
     }
 
     final public function addPaymentToTable(array $args): array {
-        $stmt = $this->mysqli->prepare("INSERT INTO pbc_minibar_order_payment (mbCheckID, mbUserID, paymentType, paymentDate, paymentAmount, paymentStatus, authorization, fdsToken, cardNum, transactionID, addressID, expDate) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)");
-        $stmt->bind_param('ssssssssssss',
+        $stmt = $this->mysqli->prepare("INSERT INTO pbc_minibar_order_payment (mbCheckID, mbUserID, paymentType, paymentDate, paymentAmount, paymentStatus, authorization, fdsToken, cardNum, transactionID, addressID, expDate, tipAmount) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)");
+        $stmt->bind_param('sssssssssssss',
             $args['mbCheckID'],
             $args['mbUserID'],
             $args['paymentType'],
@@ -64,7 +65,8 @@ class PBKPayment {
             $args['cardNum'],
             $args['transactionID'],
             $args['addressID'],
-            $args['expDate']
+            $args['expDate'],
+            $args['tipAmount']
         );
         $stmt->execute();
 
@@ -149,6 +151,10 @@ class PBKPayment {
 
     final public function setTaxAmount(float $var): void {
         $this->taxAmount = $var;
+    }
+
+    final public function setTipAmount(float $var): void {
+        $this->tipAmount = $var;
     }
 
     final protected function getCCType(string $cardNumber): string {

@@ -22,7 +22,7 @@ class Payeezy extends PBKPayment {
         $this->client->setUrl($this->config->Payeezy->URL . "v1/transactions");
         $authorize_card_transaction = new Payeezy_CreditCard($this->client);
         if (isset($this->checkID)) {
-            $merchant_ref = "PBKMinibar-" . $this->checkGUID;
+            $merchant_ref = "PBK-" . $this->checkGUID;
         } else {
             $merchant_ref = "Protein Bar Pre-auth";
         }
@@ -64,7 +64,8 @@ class Payeezy extends PBKPayment {
             'cardNum' => $authorize_response->card->card_number,
             'transactionID' => json_encode(array("transaction_id" => $authorize_response->transaction_id, "transaction_tag" => $authorize_response->transaction_tag)),
             'addressID' => $this->billingID,
-            'expDate' => preg_replace('/\D/', '', $this->card->expiryDate)
+            'expDate' => preg_replace('/\D/', '', $this->card->expiryDate),
+            'tipAmount' => $this->tipAmount
         ];
         return $this->addPaymentToTable($args);
     }

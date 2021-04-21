@@ -114,15 +114,17 @@ class ToastOrder extends Toast {
         $appliedPayments = array();
         $grandTotal = 0;
         $amount = 0;
+        $tipAmount = 0;
         if ($payments) {
             foreach ($payments as $p) {
                 if ($p->paymentStatus === 'approved') {
                     $amount += $p->paymentAmount;
+                    $tipAmount += $p->tipAmount;
                     if (in_array($p->paymentType, array('Visa', 'Mastercard', 'American Express', 'Diners Club', 'Discover', 'JCB'))) {
                         $txn = json_decode($p->transactionID);
                         $payeezy = new Payeezy($this->mysqli);
                         $payeezy->setPaymentID($p->paymentID);
-                        $payeezy->setBillAmount($p->paymentAmount);
+                        $payeezy->setBillAmount($p->paymentAmount + $p->tipAmount);
                         $payeezy->setTransactionID($txn->transaction_id);
                         $payeezy->setTransactionTag($txn->transaction_tag);
                         $payeezy->captureCard();
@@ -139,7 +141,7 @@ class ToastOrder extends Toast {
                 "type" => "OTHER",
                 "amount" => $amount,
                 "otherPayment" => (object)["guid" => self::PAYMENT],
-                "tipAmount" => 0.00,
+                "tipAmount" => $tipAmount,
                 "amountTendered" => $amount
             ];
         }
