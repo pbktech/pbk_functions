@@ -213,8 +213,14 @@ function omAJAX() { ?>
                   receiptBody = receiptBody + '<div><div class="row"><div class="col-12" style="font-weight: bold;">' + check.tab + '</div></div>';
                   for (let ia = 0; ia < check.items.length; ia = ia + 1){
                     const item = check.items[ia];
+                    let modPrice = 0;
 
-                    subtotal = subtotal + (item.quantity * (item.price));
+                    if (item.mods.length) {
+                      item.mods.filter((mod) => mod.guid === 'FOR').map((mod) => {
+                        modPrice = modPrice + mod.price;
+                      });
+                    }
+                    subtotal = subtotal + (item.quantity * (item.price + modPrice));
                     receiptBody = receiptBody + '<div class="row"><div class="col-2">' + item.quantity + '</div><div class="col-8">' + item.name + '</div><div class="col-2" style="text-align: right">$' + item.price +  '</div></div>';
                   }
                   receiptBody = receiptBody + '<div class="row"><div class="col-10" style="text-align: right">Subtotal</div><div class="col-2" style="text-align: right">$' + subtotal.toFixed(2) + '</div></div>' ;
