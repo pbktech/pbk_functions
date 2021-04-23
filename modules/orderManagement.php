@@ -205,15 +205,16 @@ function omAJAX() { ?>
               let grandTotal = 0;
               $('#receiptHeader').html(response.minibar + ' : ' + response.delivery);
               for(let i=0; i < response.checks.length; i = i + 1){
+                let subtotal = 0.00;
                 if (response.checks[i]) {
                   const check = response.checks[i];
-                  const subtotal = parseFloat(check.totals.subtotal);
                   const tax = parseFloat(check.totals.tax);
                   let discounts = 0;
                   receiptBody = receiptBody + '<div><div class="row"><div class="col-12" style="font-weight: bold;">' + check.tab + '</div></div>';
                   for (let ia = 0; ia < check.items.length; ia = ia + 1){
                     const item = check.items[ia];
 
+                    subtotal = subtotal + (item.quantity * (item.price));
                     receiptBody = receiptBody + '<div class="row"><div class="col-2">' + item.quantity + '</div><div class="col-8">' + item.name + '</div><div class="col-2" style="text-align: right">$' + item.price +  '</div></div>';
                   }
                   receiptBody = receiptBody + '<div class="row"><div class="col-10" style="text-align: right">Subtotal</div><div class="col-2" style="text-align: right">$' + subtotal.toFixed(2) + '</div></div>' ;
