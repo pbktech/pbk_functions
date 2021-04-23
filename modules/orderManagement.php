@@ -222,7 +222,7 @@ function omAJAX() { ?>
                     receiptBody = receiptBody + '<div class="row" style="color: #dc3545;  font-style: italic;"><div class="col-10" style="text-align: right;">' + discount.discountName + ' (' + discount.promoCode + ')</div><div class="col-2" style="text-align: right">$' + discountAmount.toFixed(2) + '</div></div>' ;
                     discounts = discounts + parseFloat(discount.discountAmount);
                   });
-                  const total = subtotal + tax - discounts;
+                  const total = subtotal + tax;
                   grandTotal = grandTotal + total;
                   receiptBody = receiptBody + '<div class="row"><div class="col-10" style="text-align: right">Tax</div><div class="col-2" style="text-align: right">$' + tax.toFixed(2) + '</div></div>' ;
                   receiptBody = receiptBody + '<div class="row"><div class="col-10" style="text-align: right">Total</div><div class="col-2" style="text-align: right">$' + total.toFixed(2) + '</div></div>' ;
