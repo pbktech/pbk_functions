@@ -184,7 +184,7 @@ final class PBKCheck
             $stmt1->execute();
             $result1 = $stmt1->get_result();
             while($row1 = $result1->fetch_object()){
-                $mods[] = (object)["guid"=>$row1->modGUID, "name"=>$row1->modName, "price"=>$row1->modPrice];
+                $mods[] = (object)["guid"=>$row1->modGUID, "modName"=>$row1->modName, "price"=>$row1->modPrice];
             }
             $items[] = (object)["mods"=>$mods, "guid"=>$row->itemGUID, 'name'=>$row->itemName, "price" => $row->itemPrice, "quantity"=>$row->quantity];
         }
