@@ -155,8 +155,8 @@ class ToastOrder extends Toast {
         $result = $stmt->get_result();
         $row = $result->fetch_object();
         $name = explode(" ", $row->real_name1);
-
-        return (object)["entityType" => "Customer", "firstName" => $name[0], "lastName" => $name[1], "phone" => $this->parsePhoneToast($row->phone_number), "email" => $row->email_address];
+        $lastName = empty($name[1]) ? "Unknown" : $name[1];
+        return (object)["entityType" => "Customer", "firstName" => $name[0], "lastName" => $lastName, "phone" => $this->parsePhoneToast($row->phone_number), "email" => $row->email_address];
     }
     private function parsePhoneToast(string $phone): string{
         preg_match( '/^\+\d(\d{3})(\d{3})(\d{4})$/', $phone,  $matches );
