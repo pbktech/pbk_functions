@@ -16,6 +16,7 @@ class ToastOrder extends Toast {
         $check = new PBKCheck($this->mysqli);
         $check->setOrderID($this->orderHeader->headerID);
         $grandTotal = 0;
+        $subTotal = 0;
         $orderChecks = $check->returnChecks();
         $count = 1;
         $checks = array();
@@ -65,7 +66,7 @@ class ToastOrder extends Toast {
             ];
             $count++;
         }
-        return (object)["order" => $checks, "grandTotal" => $grandTotal];
+        return (object)["order" => $checks, "grandTotal" => $grandTotal, "subTotal" => $subTotal];
     }
     private function buildMods(object $mod, int $quantity): object{
         if ($mod->guid === "SPECIAL_REQUEST" || $mod->guid === "FOR") {
