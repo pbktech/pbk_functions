@@ -391,7 +391,7 @@ function pbr_nho_setup(){
 
   echo "<div class=\"wrap\">
           <div id=\"icon-users\" class=\"icon32\"></div>
-            <h2>NHO Events <a href=\"?page=pbr-nho&amp;nhoDate=_new\" class=\"add-new-h2\">Add New</a>
+            <h2>NHO Events <a href=\"?page=pbr-npbr-edit-restaurantho&amp;nhoDate=_new\" class=\"add-new-h2\">Add New</a>
            </h2>
            ";
   $restaurant = new Restaurant();
