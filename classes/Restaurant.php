@@ -892,7 +892,7 @@ if($_GET['nhoDate']!="_new"){
 		$wpdb->query(
 			$wpdb->prepare( "
 				REPLACE INTO pbc_NHOSchedule (nhoDate,nhoHost,nhoLocation,maxParticipants,nhoID,nhoTime)VALUES(%s,%s,%s,%s,%s,%s)",$nho['nhoDate'],$nho['nhoHost'],$nho['nhoLocation'],$nho['maxParticipants'],$nho['nhoID'],$nhoTime));
-			wp_redirect(  admin_url( 'admin.php?page=pbr-nho' ) );
+			wp_redirect(  admin_url( 'admin.php?page=pbr-npbr-edit-restaurantho' ) );
 	}
 	function updateNHOAttendee($nhos){
 		global $wpdb;
