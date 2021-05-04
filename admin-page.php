@@ -17,7 +17,7 @@ add_action('admin_post_pbr_nho_attendance_update','pbr_nho_attendance');
 add_action('admin_post_pbk_save_minibar','pbk_saveMinibar');
 add_action('admin_post_pbk-update-order','pbr_orders');
 $pbkAdminPages[]=array("Name"=>"Manage Restaurants","Access"=>"manage_options","Slug"=>"pbr-edit-restaurant","Function"=>"pbr_edit_restaurant");
-$pbkAdminPages[]=array("Name"=>"Manage NHO Events","Access"=>"manage_options","Slug"=>"pbr-npbr-edit-restaurantho","Function"=>"pbr_nho_setup");
+$pbkAdminPages[]=array("Name"=>"Manage NHO Events","Access"=>"manage_options","Slug"=>"pbr-nho","Function"=>"pbr_nho_setup");
 $pbkAdminPages[]=array("Name"=>"NHO Archive","Access"=>"delete_posts","Slug"=>"pbr-nho-archive","Function"=>"pbr_nho_history");
 $pbkAdminPages[]=array("Name"=>"Incident Archive","Access"=>"upload_files","Slug"=>"pbr-incident-history","Function"=>"pbr_search_incident");
 $pbkAdminPages[]=array("Name"=>"Manage MiniBar","Access"=>"manage_options","Slug"=>"pbr-edit-minibar","Function"=>"pbr_edit_minibar");
@@ -391,7 +391,7 @@ function pbr_nho_setup(){
 
   echo "<div class=\"wrap\">
           <div id=\"icon-users\" class=\"icon32\"></div>
-            <h2>NHO Events <a href=\"?page=pbr-npbr-edit-restaurantho&amp;nhoDate=_new\" class=\"add-new-h2\">Add New</a>
+            <h2>NHO Events <a href=\"?page=pbr-nho&amp;nhoDate=_new\" class=\"add-new-h2\">Add New</a>
            </h2>
            ";
   $restaurant = new Restaurant();
