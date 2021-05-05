@@ -5,6 +5,7 @@ jQuery(document).ready(function($) {
     });
     $('.submit').click(function() {
       $('.processing').show();
+      $('#queryResults').hide();
     });
 });
 </script>
