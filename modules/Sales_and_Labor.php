@@ -3,6 +3,9 @@ jQuery(document).ready(function($) {
     $('.datePicker').datepicker({
         dateFormat : 'mm/dd/yy'
     });
+    $('.submit').click(function() {
+      $('.processing').show();
+    });
 });
 </script>
 <div class="container">
@@ -13,9 +16,12 @@ jQuery(document).ready(function($) {
             <div class="col"><label for='endDate'>End Date</label><br /><input type="text" class="form-control datePicker" id="endDate" name="endDate" value=""/></div>
         </div>
         <div class="row">
-            <input type='submit' value='SEARCH' />
+            <input type='submit' class="submit" value='SEARCH' />
         </div>
     </form>
+    <div class="row processing" style="display: none; text-align: center;">
+        <img src='<?php echo PBKF_URL; ?>/assets/images/processing.gif' style='height:92px;width:92px;' />
+    </div>
 </div>
 <?php
 $fmt = new NumberFormatter( 'en_US', NumberFormatter::CURRENCY );
