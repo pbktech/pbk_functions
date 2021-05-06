@@ -234,7 +234,7 @@ $currency = [100 => 100, 50 => 50, 20 => 20, 10 => 10, 5 => 5, 1 => 1, "Quarters
     </table>
 </div>
 <div class="modal fade" id="viewModal" tabindex="-1" role="dialog" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="receiptHeader"></h5>
