@@ -93,6 +93,7 @@ include('ajax/restClosure.php');
 include('ajax/subscribers.php');
 include('ajax/Nutritional.php');
 include 'ajax/orderManagement.php';
+include 'ajax/general.php';
 
 /*Admin Pages*/
 include('admin-page.php'); // the plugin options page HTML and save functions
