@@ -1,5 +1,7 @@
 <?php
-$currency = [100 => 100, 50 => 50, 20 => 20, 10 => 10, 5 => 5, 1 => 1, "Quarters" => .25, "Dimes" => .1, "Nickels" => .05, "Pennies" => .01];
+
+$currency = [100 => 100, 50 => 50, 20 => 20, 10 => 10, 5 => 5, 1 => 1, "Quarters" => .25, "Dimes" => .1, "Nickels" => .05, "Pennies" => .01,
+    "Rolled Quarters" => 10, "Rolled Dimes" => 5, "Rolled Nickels" => 2, "Rolled Pennies" => .5];
 ?>
 <script>
   jQuery(document).ready(function($) {
@@ -9,44 +11,163 @@ $currency = [100 => 100, 50 => 50, 20 => 20, 10 => 10, 5 => 5, 1 => 1, "Quarters
         dataType: 'json'
       }
     });
-    $('.changeCurrency').change(function(e){
-      const item = e.target;
-      const itemID = item.id.split('-');
+    $('.changeCurrency').change(function() {
       let value = parseInt($(this).val());
       let totalValue = 0.00;
 
-      if(isNaN(value)){
+      if (isNaN(value)) {
         value = 0;
       }
       $(this).val(value);
-  //    $('#currency-' + itemID[1] + '-hidden').val(value * item.dataset.denomination)
       $('.changeCurrency').each(function() {
         const denom = parseFloat($(this)[0].dataset.denomination);
-        console.log(totalValue)
-        totalValue += parseFloat($(this).val()) * denom;
+        if ($(this).val()) {
+          totalValue += parseFloat($(this).val()) * denom;
+        }
       });
-      $('#totalField').addClass('h1').html("$" + totalValue.toFixed(2));
+      $('#totalField').html('<h2>$' + totalValue.toFixed(2) + '</h2>');
+    });
+    $('#saveForm').click(function() {
+      let letsGo = false;
+      if (!$('#firstName').val() || !$('#lastName').val() || !$('#restaurantPicker').val() || !$('#countType').val()) {
+        return;
+      }
+      if (confirm('Are you sure you want to save this count?')) {
+        letsGo = true;
+      }
+      if (letsGo) {
+        const cash = [];
+        $('.changeCurrency').each(function() {
+          const keyName = $(this)[0].id;
+          const denom = parseFloat($(this)[0].dataset.denomination);
+
+          cash.push({
+            keyName,
+            calc: parseFloat($(this).val()) * denom,
+            denom,
+            val: $(this).val()
+          });
+        });
+
+        confirm = {
+          action: 'addCashLog',
+          cash: cash,
+          firstName: $('#firstName').val(),
+          lastName: $('#lastName').val(),
+          countType: $('#countType').val(),
+          restaurant: $('#restaurantPicker').val()
+        };
+        jQuery.ajax({
+          url: '<?php echo admin_url('admin-ajax.php');?>',
+          type: 'POST',
+          data: confirm,
+          success: function(response) {
+            if (response.status === 200) {
+              $('.changeCurrency').each(function() {
+                $(this).val(0);
+              });
+              $('#firstName').val('');
+              $('#lastName').val('');
+              $('#countType').val('');
+              $('#restaurantPicker').val('');
+              $('#totalField').html('<h2>$0.00</h2>');
+              myTable.ajax.reload();
+            } else {
+
+            }
+          }
+        });
+      }
+    });
+    let myTable = $('#dataTable').DataTable({
+      lengthMenu: [[25, 50, -1], [25, 50, 'All']],
+      ajax: '<?php echo admin_url('admin-ajax.php') ?>?action=getCashLogs',
+      dom: '<\'row\'<\'col-sm-12 col-md-4\'l><\'col-sm-12 col-md-4\'B><\'col-sm-12 col-md-4\'f>><\'row\'<\'col-sm-12\'tr>><\'row\'<\'col-sm-12 col-md-4\'i><\'col-sm-12 col-md-8\'p>>',
+      columns: [
+        { data: 'restaurant' },
+        { data: 'countType' },
+        { data: 'dateTime' },
+        { data: 'view', orderable: false }
+      ],
+      buttons: ['print', 'excelHtml5', 'csvHtml5',
+        {
+          extend: 'pdfHtml5',
+          pageSize: 'Letter',
+          exportOptions: {
+            columns: [0, 1, 2, 3, 4]
+          },
+          customize: function(doc) {
+            doc.content[1].table.widths = ['20%', '20%', '30%', '20%',
+              '10%', '14%', '14%', '14%'];
+            doc.content.splice(0, 1, {
+              margin: [0, 0, 0, 12],
+              alignment: 'center',
+              image: 'data:image/png;base64,<?php echo DOC_IMG;?>',
+              fit: [400, 103]
+            });
+          }
+        }
+      ]
+    });
+    $('#dataTable tbody').on('click', '.viewEntry', function(event) {
+      const item = event.target.dataset;
+
+      jQuery.ajax({
+        url: '<?php echo admin_url('admin-ajax.php');?>',
+        type: 'POST',
+        data: {
+          action: 'getCashLog',
+          logID: item.log,
+        },
+        success: function(r) {
+          const countType = r.countType.split('_');
+          let cType = '';
+          if(countType[1]){
+            cType = countType[0].toUpperCase()  + ' ' + countType[1];
+          }else {
+            cType = countType[0].toUpperCase();
+          }
+          const d = new Date(r.timeStamp);
+
+          $('#receiptHeader').html('<h3>' + r.employeeName + ': ' + cType + '</h3><br><div style="text-muted">' + d.toLocaleString() + '</div>');
+          let totalAmount = 0.00;
+          let body = '<div class="row"><table class="table"><thead><tr><th>Denomination</th><th>Amount</th></tr></thead>';
+          const data = JSON.parse(r.cashCount);
+          data.map(function(item) {
+            const name=item.keyName.split('-');
+            totalAmount = totalAmount + parseFloat(item.calc);
+            body = body +
+              '<tr><td>' + name[1] + '</td><td>$' + parseFloat(item.calc).toFixed(2) + '</td></tr>';
+          });
+          body = body + '<tr><td>Total</td><td>$' + parseFloat(totalAmount).toFixed(2) + '</td></tr></table></div>';
+          $('#receiptBody').html(body);
+
+        }
+      });
+      $('#viewModal').modal('show');
     });
   });
 </script>
 <div class="container">
     <div class="row">
         <div class="col">
-            <label for="firstName">First Name</label><input id="firstName" class="form-control" tabindex="1" />
+            <label for="firstName">First Name</label><input id="firstName" class="form-control" tabindex="1" required/>
         </div>
         <div class="col">
-            <label for="lastName">Last Name</label><input id="lastName" class="form-control" tabindex="2" />
+            <label for="lastName">Last Name</label><input id="lastName" class="form-control" tabindex="2" required/>
         </div>
     </div>
     <div class="row">
         <div class="col">
-            <label for="restaurantPicker">Restaurant</label><select class="form-control"  tabindex="3" id="restaurantPicker"></select>
+            <label for="restaurantPicker">Restaurant</label><select class="custom-select" tabindex="3"
+                                                                    id="restaurantPicker" required></select>
         </div>
         <div class="col">
-            <label for="date">Today's Date</label><input id="date" class="form-control" disabled value="<?php echo date('m/d/Y');?>" />
+            <label for="date">Today's Date</label><input id="date" class="form-control" disabled
+                                                         value="<?php echo date('m/d/Y'); ?>"/>
         </div>
     </div>
-    <hr />
+    <hr/>
     <div class="row" style="text-align: center;">
         <div class="col-3 align-self-start">&nbsp;</div>
         <div class="col-6 align-self-center">
@@ -55,40 +176,75 @@ $currency = [100 => 100, 50 => 50, 20 => 20, 10 => 10, 5 => 5, 1 => 1, "Quarters
                 <div class="input-group-prepend">
                     <div class="input-group-text">Counted Item</div>
                 </div>
-                <select class="form-control" id="countType"  tabindex="4">
+                <select class="custom-select" id="countType" tabindex="4" required>
                     <option value="">Choose One</option>
                     <option value="safe">Safe</option>
-                    <option value="drawer1">Drawer 1</option>
-                    <option value="drawer2">Drawer 2</option>
-                    <option value="drawer3">Drawer 3</option>
+                    <option value="drawer_1">Drawer 1</option>
+                    <option value="drawer_2">Drawer 2</option>
+                    <option value="drawer_3">Drawer 3</option>
+                    <option value="deposit">Deposit</option>
                 </select>
             </div>
         </div>
         <div class="col-3 align-self-end">&nbsp;</div>
     </div>
-    <div class="row row-cols-2" style="text-align: center;">
-    <?php
-    $tab = 4;
-        foreach ($currency as $c => $d){
-            $tab++;
-    ?>
-        <div class="col">
-            <label class="sr-only" for="currency-<?php echo $c;?>"><?php echo $c;?></label>
-            <div class="input-group mb-2">
-                <div class="input-group-prepend" style="text-align: right;">
-                    <div class="input-group-text" style="width: 100px; text-align: right;"><?php echo $c;?></div>
-                </div>
-                <input class="form-control changeCurrency" data-denomination="<?php echo $d;?>" id="currency-<?php echo $c;?>" type="text"  tabindex="<?php echo $tab;?>" />
-            </div>
-        </div>
-<?php
-}
-?>
-    </div>
     <div class="row">
         <div class="col-3 align-self-start">&nbsp;</div>
-        <div class="col-6 align-self-center" id="totalField" style="text-align: center;">
+        <div class="col-6 align-self-center" id="totalField" style="text-align: center;"><h2>$0.00</h2>
         </div>
         <div class="col-3 align-self-end">&nbsp;</div>
+    </div>
+    <div class="row row-cols-2" style="text-align: center;">
+        <?php
+        $tab = 4;
+        foreach ($currency as $c => $d) {
+            $tab++;
+            ?>
+            <div class="col">
+                <label class="sr-only" for="currency-<?php echo $c; ?>"><?php echo $c; ?></label>
+                <div class="input-group mb-2">
+                    <div class="input-group-prepend" style="text-align: right;">
+                        <div class="input-group-text" style="width: 200px; text-align: right;"><?php echo $c; ?></div>
+                    </div>
+                    <input class="form-control changeCurrency" data-denomination="<?php echo $d; ?>"
+                           id="currency-<?php echo $c; ?>" type="number" tabindex="<?php echo $tab; ?>"/>
+                </div>
+            </div>
+            <?php
+        }
+        ?>
+    </div>
+    <div class="row">
+        <div class="col">
+            <button id="saveForm">Save</button>
+        </div>
+    </div>
+</div>
+<div class="container d-none d-lg-block" style="padding-top: 1.5em;">
+    <h2>Today's Entries</h2>
+    <table id="dataTable" style="width: 100%;">
+        <thead style='background-color:#0e2244; color: #ffffff; text-align: center;font-weight:bold;'>
+        <tr>
+            <th>Restaurant</th>
+            <th>Counted Item</th>
+            <th>Time</th>
+            <th></th>
+        </tr>
+        </thead>
+    </table>
+</div>
+<div class="modal fade" id="viewModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="receiptHeader"></h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="container" id="receiptBody"></div>
+            </div>
+        </div>
     </div>
 </div>

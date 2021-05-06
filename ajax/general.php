@@ -9,7 +9,7 @@ function availableRestaurants(){
     if (in_array("administrator", $cu->roles) || in_array("editor", $cu->roles)  || in_array("author", $cu->roles)) {
         $result = $wpdb->get_results("SELECT restaurantName, restaurantID FROM pbc_pbrestaurants where isOpen = 1 AND restaurantCode!='SSC'");
     }else{
-        $result = $wpdb->get_results("");
+        $result = $wpdb->get_results("SELECT restaurantID,restaurantName FROM  pbc_pbrestaurants WHERE restaurantID IN (SELECT restaurantID  FROM pbc_pbr_managers WHERE pbc_pbr_managers.managerID='".$cu->ID."')");
     }
     foreach($result as $r){
         $restaurants[] = (object)["id" => $r->restaurantID, "text" => $r->restaurantName];

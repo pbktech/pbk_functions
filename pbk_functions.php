@@ -94,6 +94,7 @@ include('ajax/subscribers.php');
 include('ajax/Nutritional.php');
 include 'ajax/orderManagement.php';
 include 'ajax/general.php';
+include 'ajax/cashCount.php';
 
 /*Admin Pages*/
 include('admin-page.php'); // the plugin options page HTML and save functions
