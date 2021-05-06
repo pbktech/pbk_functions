@@ -46,7 +46,7 @@ if(isset($_REQUEST['endDate'], $_REQUEST['startDate'])) {
         $D['Options'][] = "\"lengthMenu\": [ [10, 20, -1], [10, 20, \"All\"] ]";
         $D['Headers'] = array("Restaurant","Date", "Sales Hour", "Total Hourly Sales", "Average Hourly Sales", "Labor Cost", "People Clocked-In");
         foreach($result as $row){
-            for($i=strtotime($_REQUEST['startDate']);$i<strtotime($_REQUEST['endDate']);$i+=86400){
+            for($i=strtotime($_REQUEST['startDate']);$i<=strtotime($_REQUEST['endDate']);$i+=86400){
                 for ($SalesHour=6; $SalesHour < 21; $SalesHour++) {
                     $salesInfo=getSalesInfoOld($row->Restaurant,date("Y-m-d",$i),$SalesHour);
                     $laborInfo=getLaborInfoOld($row->Restaurant,date("Y-m-d",$i),$SalesHour);
