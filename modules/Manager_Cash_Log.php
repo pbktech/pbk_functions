@@ -40,12 +40,13 @@ $currency = [100 => 100, 50 => 50, 20 => 20, 10 => 10, 5 => 5, 1 => 1, "Quarters
         $('.changeCurrency').each(function() {
           const keyName = $(this)[0].id;
           const denom = parseFloat($(this)[0].dataset.denomination);
+          const val = parseInt($(this).val());
 
           cash.push({
             keyName,
-            calc: parseFloat($(this).val()) * denom,
+            calc: val * denom,
             denom,
-            val: parseInt($(this).val())
+            val,
           });
         });
 
