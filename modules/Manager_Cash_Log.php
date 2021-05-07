@@ -138,9 +138,9 @@ $currency = [100 => 100, 50 => 50, 20 => 20, 10 => 10, 5 => 5, 1 => 1, "Quarters
             const name=item.keyName.split('-');
             totalAmount = totalAmount + parseFloat(item.calc);
             body = body +
-              '<tr><td>' + name[1] + '</td><td>$' + parseFloat(item.calc).toFixed(2) + '</td></tr>';
+              '<tr><td>' + name[1] + '</td><td>$' + parseFloat(item.calc).toFixed(2) + ' (' + r.val + ')</td></tr>';
           });
-          body = body + '<tr><td>Total</td><td>$' + parseFloat(totalAmount).toFixed(2) + ' (' + r.val + ')</td></tr></table></div>';
+          body = body + '<tr><td>Total</td><td>$' + parseFloat(totalAmount).toFixed(2) + '</td></tr></table></div>';
           $('#receiptBody').html(body);
 
         }
