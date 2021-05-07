@@ -45,7 +45,7 @@ $currency = [100 => 100, 50 => 50, 20 => 20, 10 => 10, 5 => 5, 1 => 1, "Quarters
             keyName,
             calc: parseFloat($(this).val()) * denom,
             denom,
-            val: $(this).val()
+            val: parseInt($(this).val())
           });
         });
 
