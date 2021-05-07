@@ -184,6 +184,28 @@ class ToastOrder extends Toast {
         $result = $stmt->get_result();
         return $result->fetch_object();
     }
+    final public function deliveryObject(): ?object{
+        $q="SELECT * FROM pbc_minibar_users_address,pbc_minibar_order_header WHERE addressID= deliveryAddress AND headerID = ? ";
+        $stmt = $this->mysqli->prepare($q);
+        $stmt->bind_param('s',$this->orderID);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        if($row = $result->fetch_object()){
+            $notes = implode(" :: ", array($row->businessName, $row->deliveryInstructions));
+            return (object)[
+                "address1" => $row->street,
+                "address2" => $row->addStreet,
+                "city" => $row->city,
+                "state" => $row->state,
+                "zipCode" =>  $row->zip,
+                "latitude" =>  $row->latitude,
+                "longitude" =>  $row->longitude,
+                "notes" => $notes
+            ];
+        }
+        return null;
+    }
+
     final public function setOrderID(int $orderID): void{
         $this->orderID = $orderID;
         $this->orderHeader = $this->orderHeader();
