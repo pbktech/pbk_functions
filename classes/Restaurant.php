@@ -137,6 +137,11 @@ class Restaurant {
 	public function restaurantEditBox(){
 		global $wpdb;
 		$r_info= (array) $this->rinfo;
+		if(!empty($this->rinfo->options)){
+		    $options = json_decode($this->rinfo->options);
+        }else{
+		    $options = (object) ["cash" => array("number_of_drawers" => 0, "safe_amount" => 0, "drawer_amount" => 0)];
+        }
 		$allUsers=$this->getUserNames();
 		$colOne=array("restaurantName"=>"Restaurant Name","restaurantID"=>"Restaurant ID","restaurantCode"=>"Restaurant Code","toastID"=>"Toast ID",
 	"GUID"=>"Toast GUID","mnkyID"=>"Monkey ID","levelUpID"=>"LevelUp ID","openingDate"=>"Opening Date","ipAddress"=>"IP Address");
@@ -186,6 +191,7 @@ class Restaurant {
 						<li class=\"nav-item\"><a href='#ids'>Base Information</a></li>
 						<li class=\"nav-item\"><a href='#demographics'>Location</a></li>
 						<li class=\"nav-item\"><a href='#hours'>Hours</a></li>
+						<li class=\"nav-item\"><a href='#options'>Options</a></li>
 						<li class=\"nav-item\"><a href='#roster'>Roster</a></li>
 					</ul>
 					<div id=\"ids\">
@@ -330,6 +336,20 @@ class Restaurant {
 			<div id='roster'>
 			".$this->restaurantRoster($this->rinfo->restaurantID)."
 			</div>
+        	<div id='options'>
+	            <div class='form-group'>
+	            ";
+		    foreach ($options as $o => $fields){
+                $return.='<div style="container-fluid"> <div class="row"><h3>' . ucwords($o) . '</h3></div><div class="row row-cols-3" style="text-align: center;">';
+                foreach ($fields as $f => $value){
+                    $label = ucwords(str_replace("_", " ", $f));
+                    $return.= "<div class='col' style='width: 100%;'><label style='text-align: left; width: 100%;' for='" . $f . "'><strong>" . $label ."</strong></label><br /><input style='width: 100%;' type='text' id='" . $f . "' name='options[" . $o . "][" . $f . "]' value='" . $value . "'/></div>";
+                }
+                $return.='</div></div>';
+            }
+		$return.= "
+	            </div>
+	        </div>
 			<div class='form-group'>
 				<div class='row' style='padding-left:15px;'>
 					<div class='col'>
@@ -362,6 +382,7 @@ class Restaurant {
       return $return;
 	}
 	public function insertUpdateRestaurantInfo() {
+       $options = json_encode($this->rinfo->options);
 		global $wpdb;
 		if($wpdb->replace(
 	'pbc_pbrestaurants',
@@ -385,9 +406,10 @@ class Restaurant {
 		'mnkyID' => $this->rinfo->mnkyID,
 		'latLong' => $this->rinfo->latLong,
 		'market' => $this->rinfo->market,
-        'ipAddress' => $this->rinfo->ipAddress
+        'ipAddress' => $this->rinfo->ipAddress,
+        'options' => $options
 	),
-	array('%d','%d','%s','%s','%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%d', '%s', '%s', '%s', '%s' )
+	array('%d','%d','%s','%s','%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%d', '%s', '%s', '%s', '%s', '%s' )
 		)){
 			$wpdb->replace('pbc_pbr_managers',array( 'restaurantID'=> $this->rinfo->restaurantID, 'managerID'=> $this->rinfo->am, 'mgrType' => 'AM'), array('%d','%s','%s'));
 			$wpdb->replace('pbc_pbr_managers',array( 'restaurantID'=> $this->rinfo->restaurantID, 'managerID'=> $this->rinfo->gm, 'mgrType' => 'GM'), array('%d','%s','%s'));

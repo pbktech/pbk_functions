@@ -263,10 +263,10 @@ function pbr_edit_minibar(){
       exit;
     }
     $restaurant = new Restaurant();
-    include dirname(__FILE__) . '/modules/forms/incident_header.php';
-    include dirname(__FILE__) . '/modules/forms/foodborneIllness.php';
-    include dirname(__FILE__) . '/modules/forms/injury.php';
-    include dirname(__FILE__) . '/modules/forms/lostStolenProperty.php';
+    include __DIR__ . '/modules/forms/incident_header.php';
+    include __DIR__ . '/modules/forms/foodborneIllness.php';
+    include __DIR__ . '/modules/forms/injury.php';
+    include __DIR__ . '/modules/forms/lostStolenProperty.php';
     $ih["reporterName"]=$r->reporterName;
     $ih["startDate"]=$r->dateOfIncident;
     $ih["timeOfIncident"]=$r->dateOfIncident;

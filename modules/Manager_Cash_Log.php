@@ -11,6 +11,26 @@ $currency = [100 => 100, 50 => 50, 20 => 20, 10 => 10, 5 => 5, 1 => 1, "Quarters
         dataType: 'json'
       }
     });
+    $('#restaurantPicker').change(function(){
+      confirm = {
+        action: 'get_restaurantOptions',
+        restaurantID: $('#restaurantPicker').val()
+      };
+      jQuery.ajax({
+        url: '<?php echo admin_url('admin-ajax.php');?>',
+        type: 'POST',
+        data: confirm,
+        success: function(response) {
+          if(response.options !== null) {
+            const result = JSON.parse(response.options);
+            const drawers = parseInt(result.cash.number_of_drawers);
+            for (let i = 1; i <= drawers; i = i + 1) {
+              $('#countType').append(new Option('Drawer ' + i, 'drawer_' + i));
+            }
+          }
+        }
+      });
+    });
     $('.changeCurrency').change(function() {
       let value = parseInt($(this).val());
       let totalValue = 0.00;
@@ -30,6 +50,8 @@ $currency = [100 => 100, 50 => 50, 20 => 20, 10 => 10, 5 => 5, 1 => 1, "Quarters
     $('#saveForm').click(function() {
       let letsGo = false;
       if (!$('#firstName').val() || !$('#lastName').val() || !$('#restaurantPicker').val() || !$('#countType').val()) {
+        $('#message').addClass('alert alert-danger').html('Please make sure all header information is complete.');
+        $("html, body").animate({ scrollTop: 0 }, "slow");
         return;
       }
       if (confirm('Are you sure you want to save this count?')) {
@@ -71,6 +93,7 @@ $currency = [100 => 100, 50 => 50, 20 => 20, 10 => 10, 5 => 5, 1 => 1, "Quarters
               $('#lastName').val('');
               $('#countType').val('');
               $('#restaurantPicker').val('');
+              $('#message').removeClass('alert alert-danger').html('');
               $('#totalField').html('<h2>$0.00</h2>');
               myTable.ajax.reload();
             } else {
@@ -150,6 +173,7 @@ $currency = [100 => 100, 50 => 50, 20 => 20, 10 => 10, 5 => 5, 1 => 1, "Quarters
   });
 </script>
 <div class="container">
+    <div class="row" id="message"></div>
     <div class="row">
         <div class="col">
             <label for="firstName">First Name</label><input id="firstName" class="form-control" tabindex="1" required/>
@@ -180,9 +204,6 @@ $currency = [100 => 100, 50 => 50, 20 => 20, 10 => 10, 5 => 5, 1 => 1, "Quarters
                 <select class="custom-select" id="countType" tabindex="4" required>
                     <option value="">Choose One</option>
                     <option value="safe">Safe</option>
-                    <option value="drawer_1">Drawer 1</option>
-                    <option value="drawer_2">Drawer 2</option>
-                    <option value="drawer_3">Drawer 3</option>
                     <option value="deposit">Deposit</option>
                 </select>
             </div>
