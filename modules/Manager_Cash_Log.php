@@ -113,25 +113,39 @@ $currency = [100 => 100, 50 => 50, 20 => 20, 10 => 10, 5 => 5, 1 => 1, "Quarters
         { data: 'dateTime' },
         { data: 'view', orderable: false }
       ],
-      buttons: ['print', 'excelHtml5', 'csvHtml5',
+      buttons: [
         {
-          extend: 'pdfHtml5',
-          pageSize: 'Letter',
+          extend: 'print',
           exportOptions: {
-            columns: [0, 1, 2, 3, 4]
+            columns: [0, 1, 2]
+          }
+        },
+        {
+          extend: 'excelHtml5',
+          exportOptions: {
+            columns: [0, 1, 2]
+          }
+        },
+        {
+          extend: 'csvHtml5',
+          exportOptions: {
+            columns: [0, 1, 2]
+          }
+        },
+        {extend: 'pdfHtml5',
+          exportOptions: {
+            columns: [ 0, 1, 2]
           },
-          customize: function(doc) {
-            doc.content[1].table.widths = ['20%', '20%', '30%', '20%',
-              '10%', '14%', '14%', '14%'];
-            doc.content.splice(0, 1, {
-              margin: [0, 0, 0, 12],
+          messageTop: 'Manager Cash Log: <?php echo date("m/d/Y", strtotime($_REQUEST['startDate']));?> - <?php echo date("m/d/Y", strtotime($_REQUEST['endDate']));?>',
+          customize: function ( doc ) {
+            doc.content.splice( 0, 1, {
+              margin: [ 0, 0, 0, 12 ],
               alignment: 'center',
               image: 'data:image/png;base64,<?php echo DOC_IMG;?>',
               fit: [400, 103]
-            });
+            } );
           }
-        }
-      ]
+        }],
     });
     $('#dataTable tbody').on('click', '.viewEntry', function(event) {
       const item = event.target.dataset;
