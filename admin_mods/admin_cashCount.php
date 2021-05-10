@@ -27,7 +27,7 @@
                 </div>
             </div>
             <div class="form-group">
-                <input id='submit' type='submit' value='SEARCH'/>
+                <input id='submit' type='submit' class="btn btn-primary" value='SEARCH'/>
             </div>
         </form>
         <div class="row processing" style="display: none; text-align: center;">
