@@ -47,6 +47,7 @@ if(!empty($_REQUEST['startDate']) && !empty($_REQUEST['endDate'])){
               { data: 'restaurant' },
               { data: 'countType' },
               { data: 'dateTime' },
+              { data: 'total' },
               { data: 'view', orderable: false }
             ],
             buttons: ['print', 'excelHtml5', 'csvHtml5',
@@ -114,6 +115,7 @@ if(!empty($_REQUEST['startDate']) && !empty($_REQUEST['endDate'])){
             <th>Restaurant</th>
             <th>Counted Item</th>
             <th>Date/Time</th>
+            <th>Total Counted</th>
             <th></th>
         </tr>
         </thead>

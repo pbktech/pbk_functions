@@ -69,19 +69,26 @@ function getCashLog(){
 }
 
 function adminGetCashLogs(){
+    $fmt = new NumberFormatter( 'en_US', NumberFormatter::CURRENCY );
     global $wpdb;
     $data = array("data" => array());
     $cu = wp_get_current_user();
     if (in_array("administrator", $cu->roles) || in_array("editor", $cu->roles)  || in_array("author", $cu->roles)) {
-        $result = $wpdb->get_results("SELECT restaurantName,countType,timeStamp,logID  FROM pbc_pbrestaurants pp, 
+        $result = $wpdb->get_results("SELECT restaurantName,countType,timeStamp,logID,cashCount  FROM pbc_pbrestaurants pp, 
          pbc_cash_log pcl where isOpen = 1 AND restaurantCode!='SSC' AND  pp.restaurantID = pcl.restaurantID AND 
          timeStamp BETWEEN '" . date("Y-m-d", strtotime($_REQUEST['startDate'])) . " 00:00:00' AND '" . date("Y-m-d", strtotime($_REQUEST['endDate'])) . " 23:59:59'");
         if ($result) {
             foreach ($result as $r) {
+                $total = 0;
+                $cash = json_decode($r->cashCount);
+                foreach($cash as $c){
+                    $total += $c->calc;
+                }
                 $data['data'][] = [
                     "restaurant" => $r->restaurantName,
                     "countType" => ucwords(str_replace("_", " ", $r->countType)),
                     "dateTime" => date("m/d/Y g:i a", strtotime($r->timeStamp)),
+                    "total" => $fmt->formatCurrency($total, 'USD'),
                     "view" => '
                 <div class="btn-group">
                     <a href="#" title="View" data-toggle="tooltip" class="text-success viewEntry" data-log="' . $r->logID . '" >
