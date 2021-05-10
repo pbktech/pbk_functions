@@ -136,7 +136,7 @@ $currency = [100 => 100, 50 => 50, 20 => 20, 10 => 10, 5 => 5, 1 => 1, "Quarters
           exportOptions: {
             columns: [ 0, 1, 2]
           },
-          messageTop: 'Manager Cash Log: <?php echo date("m/d/Y", strtotime($_REQUEST['startDate']));?> - <?php echo date("m/d/Y", strtotime($_REQUEST['endDate']));?>',
+          messageTop: 'Manager Cash Log: <?php echo date("m/d/Y");?>',
           customize: function ( doc ) {
             doc.content.splice( 0, 1, {
               margin: [ 0, 0, 0, 12 ],
