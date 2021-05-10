@@ -159,6 +159,12 @@ $currency = [100 => 100, 50 => 50, 20 => 20, 10 => 10, 5 => 5, 1 => 1, "Quarters
           const data = JSON.parse(r.cashCount);
           data.map(function(item) {
             const name=item.keyName.split('-');
+            if(isNaN(item.calc)){
+              item.calc = 0.00;
+            }
+            if(isNaN(item.val)){
+              item.val = 0;
+            }
             totalAmount = totalAmount + parseFloat(item.calc);
             body = body +
               '<tr><td>' + name[1] + '</td><td>$' + parseFloat(item.calc).toFixed(2) + ' (' + item.val + ')</td></tr>';
