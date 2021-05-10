@@ -244,7 +244,7 @@ $currency = [100 => 100, 50 => 50, 20 => 20, 10 => 10, 5 => 5, 1 => 1, "Quarters
 </div>
 <div class="container d-none d-lg-block" style="padding-top: 1.5em;">
     <h2>Today's Entries</h2>
-    <table id="dataTable" style="width: 100%;">
+    <table id="dataTable" class="table table-striped" style="width: 100%;">
         <thead style='background-color:#0e2244; color: #ffffff; text-align: center;font-weight:bold;'>
         <tr>
             <th>Restaurant</th>
@@ -255,18 +255,5 @@ $currency = [100 => 100, 50 => 50, 20 => 20, 10 => 10, 5 => 5, 1 => 1, "Quarters
         </thead>
     </table>
 </div>
-<div class="modal fade" id="viewModal" tabindex="-1" role="dialog" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="receiptHeader"></h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <div class="container" id="receiptBody"></div>
-            </div>
-        </div>
-    </div>
-</div>
+<?php
+echo ccModal();

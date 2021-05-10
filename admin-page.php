@@ -24,6 +24,7 @@ $pbkAdminPages[]=array("Name"=>"Manage MiniBar","Access"=>"manage_options","Slug
 $pbkAdminPages[]=array("Name"=>"Manage Devices","Access"=>"manage_options","Slug"=>"pbr-edit-devices","Function"=>"pbr_edit_devices");
 $pbkAdminPages[]=array("Name"=>"Restaurant Orders","Access"=>"upload_files","Slug"=>"pbr-orders","Function"=>"pbr_orders");
 $pbkAdminPages[]=array("Name"=>"Health Screen Archive","Access"=>"upload_files","Slug"=>"pbr-hs-archive","Function"=>"pbr_hs_archive");
+$pbkAdminPages[]=array("Name"=>"Cash Log Archive","Access"=>"delete_posts","Slug"=>"pbk-cs-archive","Function"=>"pbk_cs_archive");
 function pbr_setup_menu(){
   global $pbkAdminPages;
   add_menu_page( 'PBK Functions', 'PBK Functions', 'delete_posts', 'Manage-PBK', 'pbr_show_admin_functions',PBKF_URL . '/assets/images/PBK-Logo-ONLY-LG-2018_White_new.png');
@@ -143,7 +144,10 @@ function pbr_orders(){
   echo "</div>";
 }
 function pbr_hs_archive(){
-  require "admin_mods/pbr_hs_archive.php";
+    require "admin_mods/pbr_hs_archive.php";
+}
+function pbk_cs_archive(){
+    require "admin_mods/admin_cashCount.php";
 }
 add_action( 'wp_ajax_hs_send', 'pbk_hs_send' );
 //add_action( 'wp_ajax_nopriv_hs_send', 'pbk_hs_send' );
