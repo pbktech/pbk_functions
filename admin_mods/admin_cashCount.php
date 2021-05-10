@@ -10,7 +10,7 @@
 </script>
 <div class='wrap'>
     <h2>PBK Manager Cash Log Archive</h2>
-    <h3>Please Select Dates:</h3>
+    <h4>Please Select Dates:</h4>
     <div class='container'>
         <form method='get' action='<?php echo admin_url('admin.php'); ?>'>
             <input type='hidden' name='page' value='pbk-cs-archive'/>
@@ -129,6 +129,7 @@ if(!empty($_REQUEST['startDate']) && !empty($_REQUEST['endDate'])){
           });        })
     </script>
     <hr />
+    <h4><?php echo date("m/d/Y", strtotime($_REQUEST['startDate']));?> - <?php echo date("m/d/Y", strtotime($_REQUEST['endDate']));?></h4>
     <table id="dataTable" class="table table-striped" style="width: 100%;padding-top: 1em;">
         <thead style='background-color:#0e2244; color: #ffffff; text-align: center;font-weight:bold;'>
         <tr>
