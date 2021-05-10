@@ -96,6 +96,12 @@ if(!empty($_REQUEST['startDate']) && !empty($_REQUEST['endDate'])){
                 const data = JSON.parse(r.cashCount);
                 data.map(function(item) {
                   const name=item.keyName.split('-');
+                  if(isNaN(item.calc)){
+                    item.calc = 0.00;
+                  }
+                  if(isNaN(item.val)){
+                    item.val = 0;
+                  }
                   totalAmount = totalAmount + parseFloat(item.calc);
                   body = body +
                     '<tr><td>' + name[1] + '</td><td>$' + parseFloat(item.calc).toFixed(2) + ' (' + item.val + ')</td></tr>';
