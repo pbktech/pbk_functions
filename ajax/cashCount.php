@@ -79,10 +79,10 @@ function adminGetCashLogs(){
          timeStamp BETWEEN '" . date("Y-m-d", strtotime($_REQUEST['startDate'])) . " 00:00:00' AND '" . date("Y-m-d", strtotime($_REQUEST['endDate'])) . " 23:59:59'");
         if ($result) {
             foreach ($result as $r) {
-                $total = 0;
+                $total = 0.00;
                 $cash = json_decode($r->cashCount);
                 foreach($cash as $c){
-                    $total += $c->calc;
+                    $total += (float)$c->calc;
                 }
                 $data['data'][] = [
                     "restaurant" => $r->restaurantName,
