@@ -58,7 +58,10 @@ $currency = [100 => 100, 50 => 50, 20 => 20, 10 => 10, 5 => 5, 1 => 1, "Quarters
         if(countType[1]){
             cType = cType + ' ' + countType[1];
         }
-      const letsGo = window.confirm('Are you sure you want to save this ' + cType + ' count?')
+        let letsGo = false;
+        confirm(function(){
+            letsGo = true;
+        });
       if (letsGo) {
         const cash = [];
         $('.changeCurrency').each(function() {
