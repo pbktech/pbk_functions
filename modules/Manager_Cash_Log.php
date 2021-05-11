@@ -59,8 +59,12 @@ $currency = [100 => 100, 50 => 50, 20 => 20, 10 => 10, 5 => 5, 1 => 1, "Quarters
             cType = cType + ' ' + countType[1];
         }
         let letsGo = false;
-        confirm(function(){
-            letsGo = true;
+        $.jAlert({
+            'content': 'Are you sure you want to save this ' + cType + ' count?',
+            confirm(function(){
+                letsGo = true;            }, function(){
+                console.log('denied');
+            });
         });
       if (letsGo) {
         const cash = [];
