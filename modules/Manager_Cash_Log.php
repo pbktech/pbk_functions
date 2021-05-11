@@ -48,7 +48,6 @@ $currency = [100 => 100, 50 => 50, 20 => 20, 10 => 10, 5 => 5, 1 => 1, "Quarters
       $('#totalField').html('<h2>$' + totalValue.toFixed(2) + '</h2>');
     });
     $('#saveForm').click(function() {
-      let letsGo = false;
       if (!$('#firstName').val() || !$('#lastName').val() || !$('#restaurantPicker').val() || !$('#countType').val()) {
         $('#message').addClass('alert alert-danger').html('Please make sure all header information is complete.');
         $("html, body").animate({ scrollTop: 0 }, "slow");
@@ -59,9 +58,7 @@ $currency = [100 => 100, 50 => 50, 20 => 20, 10 => 10, 5 => 5, 1 => 1, "Quarters
         if(countType[1]){
             cType = cType + ' ' + countType[1];
         }
-      if (window.confirm('Are you sure you want to save this ' + cType + ' count?')) {
-        letsGo = true;
-      }
+      const letsGo = window.confirm('Are you sure you want to save this ' + cType + ' count?')
       if (letsGo) {
         const cash = [];
         $('.changeCurrency').each(function() {
