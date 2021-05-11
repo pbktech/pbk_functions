@@ -54,7 +54,12 @@ $currency = [100 => 100, 50 => 50, 20 => 20, 10 => 10, 5 => 5, 1 => 1, "Quarters
         $("html, body").animate({ scrollTop: 0 }, "slow");
         return;
       }
-      if (confirm('Are you sure you want to save this count?')) {
+        const countType = $('#countType').val().split('_');
+        let cType = countType[0];
+        if(countType[1]){
+            cType = cType + ' ' + countType[1];
+        }
+      if (confirm('Are you sure you want to save this ' + cType + ' count?')) {
         letsGo = true;
       }
       if (letsGo) {
@@ -72,7 +77,7 @@ $currency = [100 => 100, 50 => 50, 20 => 20, 10 => 10, 5 => 5, 1 => 1, "Quarters
           });
         });
 
-        confirm = {
+        const confirmObj = {
           action: 'addCashLog',
           cash: cash,
           firstName: $('#firstName').val(),
@@ -83,7 +88,7 @@ $currency = [100 => 100, 50 => 50, 20 => 20, 10 => 10, 5 => 5, 1 => 1, "Quarters
         jQuery.ajax({
           url: '<?php echo admin_url('admin-ajax.php');?>',
           type: 'POST',
-          data: confirm,
+          data: confirmObj,
           success: function(response) {
             if (response.status === 200) {
               $('.changeCurrency').each(function() {
@@ -95,6 +100,10 @@ $currency = [100 => 100, 50 => 50, 20 => 20, 10 => 10, 5 => 5, 1 => 1, "Quarters
               $('#restaurantPicker').val('');
               $('#message').removeClass('alert alert-danger').html('');
               $('#totalField').html('<h2>$0.00</h2>');
+              $('#message').addClass('alert alert-success').html('The count for ' + cType + ' has been saved');
+              setTimeout(function(){
+                  $('#message').removeClass('alert alert-danger').removeClass('alert alert-success').html('');
+                  }, 60000);
               myTable.ajax.reload();
             } else {
 
