@@ -59,7 +59,7 @@ $currency = [100 => 100, 50 => 50, 20 => 20, 10 => 10, 5 => 5, 1 => 1, "Quarters
         if(countType[1]){
             cType = cType + ' ' + countType[1];
         }
-      if (confirm('Are you sure you want to save this ' + cType + ' count?')) {
+      if (window.confirm('Are you sure you want to save this ' + cType + ' count?')) {
         letsGo = true;
       }
       if (letsGo) {
