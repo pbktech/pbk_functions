@@ -48,7 +48,7 @@ function pbk_scripts()
     wp_enqueue_style('datatables_bootstrap_style', 'https://cdn.datatables.net/1.10.23/css/dataTables.bootstrap4.min.css');
     wp_enqueue_style('clockpicker_style', PBKF_URL . '/assets/css/clockpicker.css');
     wp_enqueue_style('clockpicker_standalone_style', PBKF_URL . '/assets/css/standalone.css');
-    wp_enqueue_style('jAlert_style', PBKF_URL . '/assets/css/jAlert.css');
+//    wp_enqueue_style('jAlert_style', PBKF_URL . '/assets/css/jAlert.css');
     wp_enqueue_style('sort_tables_style', '//v/bs4/jszip-2.5.0/dt-1.10.23/b-1.6.5/b-html5-1.6.5/b-print-1.6.5/fh-3.1.7/sp-1.2.2/datatables.min.css');
     wp_enqueue_style('screen_signature_style', PBKF_URL . '/assets/css/signature.css');
     wp_enqueue_script('select_script', 'https://cdn.jsdelivr.net/npm/select2@4.0.12/dist/js/select2.min.js');
@@ -61,8 +61,8 @@ function pbk_scripts()
     wp_enqueue_script('sort_tables_script', 'https://cdn.datatables.net/v/bs4/jszip-2.5.0/dt-1.10.23/b-1.6.5/b-html5-1.6.5/b-print-1.6.5/fh-3.1.7/sp-1.2.2/datatables.js');
     wp_enqueue_script('screen_signature_script', PBKF_URL . '/assets/js/app.js', array(), false, true);
     wp_enqueue_script('clockpicker_script', PBKF_URL . '/assets/js/clockpicker.js', array(), false, true);
-    wp_enqueue_script('jAlert_script', PBKF_URL . '/assets/js/jAlert.min.js', array(), false, true);
-    wp_enqueue_script('jAlert_functions_script', PBKF_URL . '/assets/js/jAlert-functions.min.js', array(), false, true);
+//    wp_enqueue_script('jAlert_script', PBKF_URL . '/assets/js/jAlert.min.js', array(), false, true);
+//    wp_enqueue_script('jAlert_functions_script', PBKF_URL . '/assets/js/jAlert-functions.min.js', array(), false, true);
     wp_enqueue_script('screen_signature_script', PBKF_URL . '/assets/js/jquery.signaturepad.min.js', array(), false, true);
 }
 
