@@ -1,7 +1,8 @@
 <?php
 
-$currency = [100 => 100, 50 => 50, 20 => 20, 10 => 10, 5 => 5, 1 => 1, "Quarters" => .25, "Dimes" => .1, "Nickels" => .05, "Pennies" => .01,
-    "Rolled Quarters" => 10, "Rolled Dimes" => 5, "Rolled Nickels" => 2, "Rolled Pennies" => .5];
+$currency = ["Quarters" => .25, "Dimes" => .1, "Nickels" => .05, "Pennies" => .01,
+    "Rolled Quarters" => 10, "Rolled Dimes" => 5, "Rolled Nickels" => 2, "Rolled Pennies" => .5,
+    100 => 100, 50 => 50, 20 => 20, 10 => 10, 5 => 5, 1 => 1];
 ?>
 <script>
   jQuery(document).ready(function($) {
@@ -26,6 +27,7 @@ $currency = [100 => 100, 50 => 50, 20 => 20, 10 => 10, 5 => 5, 1 => 1, "Quarters
             const drawers = parseInt(result.cash.number_of_drawers);
             for (let i = 1; i <= drawers; i = i + 1) {
               $('#countType').append(new Option('Drawer ' + i, 'drawer_' + i));
+              $('#countType').append(new Option('Drawer ' + i + ' Drop', 'drawer_' + i + '_drop'));
             }
           }
         }
