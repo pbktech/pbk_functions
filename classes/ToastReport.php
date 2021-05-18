@@ -213,16 +213,17 @@ AND ToastOrderID IN (SELECT GUID FROM pbc_ToastOrderHeaders WHERE restaurantID=?
 		return $result->fetch_object();
 	}
 	function switchNegNumber($num,$dec=0){
+        $fmt = new NumberFormatter( 'en_US', NumberFormatter::CURRENCY );
 		if(is_numeric($num)){
 			switch($num){
 				case 0:
-					return "-";
+					return " - ";
 					break;
 					case $num < 0:
 					return "(".abs($num).")";
 					break;
 					case $num > 0:
-					return number_format($num,$dec);
+					return $fmt->formatCurrency($num,"USD");
 					break;
 				}
 			}
@@ -298,44 +299,44 @@ AND ToastOrderID IN (SELECT GUID FROM pbc_ToastOrderHeaders WHERE restaurantID=?
 				<td style=\"border-right:1px solid #e3e6ea;width:10%;\">".$data['restaurantName']."</td>
 
 			  <td style=\"text-align:center;\">".$data['inStoreOrders']['Count']."</td>
-			  <td style=\"text-align:center;\">$".$this->switchNegNumber($data['inStoreOrders']['Total'],0)."</td>
+			  <td style=\"text-align:center;\">".$this->switchNegNumber($data['inStoreOrders']['Total'],0)."</td>
 			  <td style=\"text-align:center;\">".$data['lyinStoreOrders']['Count']."</td>
-			  <td style=\"border-right:1px solid #e3e6ea;text-align:center;\">$".$this->switchNegNumber($data['lyinStoreOrders']['Total'],0)."</td>
+			  <td style=\"border-right:1px solid #e3e6ea;text-align:center;\">".$this->switchNegNumber($data['lyinStoreOrders']['Total'],0)."</td>
 
 			  <td style=\"text-align:center;\">".$data['onlineOrders']['Count']."</td>
-			  <td style=\"text-align:center;\">$".$this->switchNegNumber($data['onlineOrders']['Total'],0)."</td>
+			  <td style=\"text-align:center;\">".$this->switchNegNumber($data['onlineOrders']['Total'],0)."</td>
 			  <td style=\"text-align:center;\">".$data['lyonlineOrders']['Count']."</td>
-			  <td style=\"border-right:1px solid #e3e6ea;text-align:center;\">$".$this->switchNegNumber($data['lyonlineOrders']['Total'],0)."</td>
+			  <td style=\"border-right:1px solid #e3e6ea;text-align:center;\">".$this->switchNegNumber($data['lyonlineOrders']['Total'],0)."</td>
 
 			  <td style=\"text-align:center;\">".$data['appOrders']['Count']."</td>
-			  <td style=\"text-align:center;\">$".$this->switchNegNumber($data['appOrders']['Total'],0)."</td>
+			  <td style=\"text-align:center;\">".$this->switchNegNumber($data['appOrders']['Total'],0)."</td>
 			  <td style=\"text-align:center;\">".$data['lyappOrders']['Count']."</td>
-			  <td style=\"border-right:1px solid #e3e6ea;text-align:center;\">$".$this->switchNegNumber($data['lyappOrders']['Total'],0)."</td>
+			  <td style=\"border-right:1px solid #e3e6ea;text-align:center;\">".$this->switchNegNumber($data['lyappOrders']['Total'],0)."</td>
 
 			  <td style=\"text-align:center;\">".$data['ritualOrders']['Count']."</td>
-			  <td style=\"text-align:center;\">$".$this->switchNegNumber($data['ritualOrders']['Total'],0)."</td>
+			  <td style=\"text-align:center;\">".$this->switchNegNumber($data['ritualOrders']['Total'],0)."</td>
 			  <td style=\"text-align:center;\">".$data['lyritualOrders']['Count']."</td>
-			  <td style=\"border-right:1px solid #e3e6ea;text-align:center;\">$".$this->switchNegNumber($data['lyritualOrders']['Total'],0)."</td>
+			  <td style=\"border-right:1px solid #e3e6ea;text-align:center;\">".$this->switchNegNumber($data['lyritualOrders']['Total'],0)."</td>
 
 			  <td style=\"text-align:center;\">".$data['levelUpOrders']['Count']."</td>
-			  <td style=\"text-align:center;\">$".$this->switchNegNumber($data['levelUpOrders']['Total'],0)."</td>
+			  <td style=\"text-align:center;\">".$this->switchNegNumber($data['levelUpOrders']['Total'],0)."</td>
 			  <td style=\"text-align:right;\">".trim($data['lylevelUpOrders']['Count'])."</td>
-			  <td style=\"border-right:1px solid #e3e6ea;text-align:center;\">$".$this->switchNegNumber($data['lylevelUpOrders']['Total'],0)."</td>
+			  <td style=\"border-right:1px solid #e3e6ea;text-align:center;\">".$this->switchNegNumber($data['lylevelUpOrders']['Total'],0)."</td>
 
 			  <td style=\"text-align:center;\">".$data['monkeyCount']['Count']."</td>
-			  <td style=\"text-align:center;\">$".$this->switchNegNumber($data['monkeyTotal']['Total'],0)."</td>
+			  <td style=\"text-align:center;\">".$this->switchNegNumber($data['monkeyTotal']['Total'],0)."</td>
 			  <td style=\"text-align:center;\">".$data['lymonkeyCount']['Count']."</td>
-			  <td style=\"border-right:1px solid #e3e6ea;text-align:center;\">$".$this->switchNegNumber($data['lymonkeyTotal']['Total'],0)."</td>
+			  <td style=\"border-right:1px solid #e3e6ea;text-align:center;\">".$this->switchNegNumber($data['lymonkeyTotal']['Total'],0)."</td>
 
 			  <td style=\"text-align:center;\">".$data['thirdParty']['Count']."</td>
-			  <td style=\"text-align:center;\">$".$this->switchNegNumber($data['thirdParty']['Total'],0)."</td>
+			  <td style=\"text-align:center;\">".$this->switchNegNumber($data['thirdParty']['Total'],0)."</td>
 			  <td style=\"text-align:center;\">".$data['lythirdParty']['Count']."</td>
-			  <td style=\"border-right:1px solid #e3e6ea;text-align:center;\">$".$this->switchNegNumber($data['lythirdParty']['Total'],0)."</td>
+			  <td style=\"border-right:1px solid #e3e6ea;text-align:center;\">".$this->switchNegNumber($data['lythirdParty']['Total'],0)."</td>
 
 			  <td style=\"text-align:center;padding:3px;\">".$data['totalChecks']."</td>
-			  <td style=\"text-align:center;padding:3px;\">$".$this->switchNegNumber($data['totalSales'],0)."</td>
+			  <td style=\"text-align:center;padding:3px;\">".$this->switchNegNumber($data['totalSales'],0)."</td>
 			  <td style=\"text-align:center;padding:3px;\">".$data['lytotalChecks']."</td>
-			  <td style=\"text-align:center;padding:3px;\">$".$this->switchNegNumber($data['lytotalSales'],0)."</td>
+			  <td style=\"text-align:center;padding:3px;\">".$this->switchNegNumber($data['lytotalSales'],0)."</td>
 				</tr>
 				";
 				return $return;
@@ -1069,23 +1070,34 @@ from pbc2.kds_detail WHERE sent_time BETWEEN  ? AND ? AND station='' and restaur
         return $r;
     }
 
-	function sameDayLastYear($d) {
-		/*
-		$d=date('Y-m-d', strtotime('-1 year', strtotime($d)));
-		if(date("L")==1 && (date("n")>2 || (date("n")==2 && date("d")==29))){$addDays=2;}else{$addDays=1;}
-		if(date("L")==1 && date("n",strtotime($d))<=2 && date("L",strtotime($d))==0){$addDays=1;}
-		return date('Y-m-d', strtotime('+' . $addDays . ' days', strtotime($d)));
-		*/
-		$today = new \DateTime($d);
-		$year  = (int) $today->format('Y');
-		$week  = (int) $today->format('W'); // Week of the year
-		$day   = (int) $today->format('w'); // Day of the week (0 = sunday)
-		if($day==0){$week++;}
-		$sameDayLastYear = new \DateTime();
-		$sameDayLastYear->setISODate($year - 1, $week, $day);
-		if($d=="2019-12-30"){return "2018-12-31";}
-		return $sameDayLastYear->format('Y-m-d');
-	}
+    function sameDayLastYear($d) {
+        /*
+        $d=date('Y-m-d', strtotime('-1 year', strtotime($d)));
+        if(date("L")==1 && (date("n")>2 || (date("n")==2 && date("d")==29))){$addDays=2;}else{$addDays=1;}
+        if(date("L")==1 && date("n",strtotime($d))<=2 && date("L",strtotime($d))==0){$addDays=1;}
+        return date('Y-m-d', strtotime('+' . $addDays . ' days', strtotime($d)));
+        */
+        $today = new \DateTime($d);
+        $year  = (int) $today->format('Y');
+        $week  = (int) $today->format('W'); // Week of the year
+        $day   = (int) $today->format('w'); // Day of the week (0 = sunday)
+        if($day==0){$week++;}
+        $sameDayLastYear = new \DateTime();
+        $sameDayLastYear->setISODate($year - 1, $week, $day);
+        if($d=="2019-12-30"){return "2018-12-31";}
+        return $sameDayLastYear->format('Y-m-d');
+    }
+    function sameDayLastWeek($d) {
+        $today = new \DateTime($d);
+        $year  = (int) $today->format('Y');
+        $week  = (int) $today->format('W'); // Week of the year
+        $day   = (int) $today->format('w'); // Day of the week (0 = sunday)
+        if($day==0){$week++;}
+        $sameDayLastYear = new \DateTime();
+        $sameDayLastYear->setISODate($year, $week - 1, $day);
+        if($d=="2019-12-30"){return "2018-12-31";}
+        return $sameDayLastYear->format('Y-m-d');
+    }
 	function buildPDF($content, $save=1){
         $content=json_decode($content);
         if(isset($content->Save) && $content->Save!=''){$docSaveLocation=$content->Save;}else{$docSaveLocation=$this->docSaveLocation;}
