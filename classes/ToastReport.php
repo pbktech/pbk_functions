@@ -573,7 +573,7 @@ pbc2.pbc_ToastCheckHeaders.ToastOrderID=pbc2.pbc_ToastOrderHeaders.GUID";
 		return $r;
 	}
 	function getTotalLaborDollars() {
-		$q="SELECT SUM((regularHours*hourlyWage)+(overtimeHours*(hourlyWage*1.5))) as 'Total' FROM pbc2.pbc_ToastTimeEntries WHERE inDate BETWEEN '".$this->startTime."' AND '".$this->endTime."' AND restaurantID='".$this->restaurantID."'";
+		$q="SELECT SUM((regularHours*hourlyWage)+(overtimeHours*(hourlyWage*1.5))) as 'Total' FROM pbc2.pbc_ToastTimeEntries WHERE businessDate BETWEEN '".$this->startTime."' AND '".$this->endTime."' AND restaurantID='".$this->restaurantID."'";
 		$stmt = $this->mysqli->prepare($q);
 		$stmt->execute();
 		$result = $stmt->get_result();
@@ -671,7 +671,7 @@ pbc2.pbc_ToastCheckHeaders.ToastOrderID=pbc2.pbc_ToastOrderHeaders.GUID";
 	}
 	function getShifts($db) {
 		$r=array();
-		$q="SELECT restaurantID, SEC_TO_TIME(SUM(time_to_sec((TIMEDIFF(outDate,inDate))))) as 'Total' FROM pbc2.$db WHERE inDate LIKE '".$this->businessDate."%' AND jobCode!='GM/AGM' GROUP BY restaurantID";
+		$q="SELECT restaurantID, SEC_TO_TIME(SUM(time_to_sec((TIMEDIFF(outDate,inDate))))) as 'Total' FROM pbc2.$db WHERE inDate LIKE '".$this->businessDate."%' GROUP BY restaurantID";
 		$stmt = $this->mysqli->prepare($q);
 		$stmt->execute();
 		$result = $stmt->get_result();
