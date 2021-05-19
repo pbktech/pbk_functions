@@ -213,7 +213,6 @@ AND ToastOrderID IN (SELECT GUID FROM pbc_ToastOrderHeaders WHERE restaurantID=?
 		return $result->fetch_object();
 	}
 	function switchNegNumber($num,$dec=0){
-        $fmt = new NumberFormatter( 'en_US', NumberFormatter::CURRENCY );
 		if(is_numeric($num)){
 			switch($num){
 				case 0:
@@ -223,7 +222,7 @@ AND ToastOrderID IN (SELECT GUID FROM pbc_ToastOrderHeaders WHERE restaurantID=?
 					return "(".abs($num).")";
 					break;
 					case $num > 0:
-					return $fmt->formatCurrency($num,"USD");
+					return round($num,$dec);
 					break;
 				}
 			}
@@ -257,12 +256,13 @@ AND ToastOrderID IN (SELECT GUID FROM pbc_ToastOrderHeaders WHERE restaurantID=?
 		$dsrData["scheduledLabor"]=;
 		$dsrData["throughput"]=;
 		*/
-		$return="";
+        $fmt = new NumberFormatter( 'en_US', NumberFormatter::CURRENCY );
+        $return="";
 		$return.=  "  <tr style=\"border-bottom:1px solid #e3e6ea;background:".$dsrData['bgcolor'].";\">";
 		$return.=  "  <td style=\"border-right:1px solid #e3e6ea;width:15%;\">".$dsrData['rowTitle']."</td>";
-		$return.=  "  <td style=\"text-align:right;padding: 0 5px 0 5px;\">".$this->switchNegNumber($dsrData["Sales"],0)."</td>";
-		$return.=  "  <td style=\"text-align:right;padding: 0 5px 0 5px;\">".$this->switchNegNumber($dsrData["salesPlan"],0)."</td>";
-		$return.=  "  <td style=\"text-align:right;padding: 0 5px 0 5px;\">".$this->switchNegNumber($dsrData["lySales"],0)."</td>";
+		$return.=  "  <td style=\"text-align:right;padding: 0 5px 0 5px;\">".$fmt->formatCurrency($this->switchNegNumber($dsrData["Sales"],0),"USD")."</td>";
+		$return.=  "  <td style=\"text-align:right;padding: 0 5px 0 5px;\">".$fmt->formatCurrency($this->switchNegNumber($dsrData["salesPlan"],0),"USD")."</td>";
+		$return.=  "  <td style=\"text-align:right;padding: 0 5px 0 5px;\">".$fmt->formatCurrency($this->switchNegNumber($dsrData["lySales"],0),"USD")."</td>";
 		$return.=  "  <td style=\"text-align:right;padding: 0 5px 0 5px;\">".$this->switchNegNumber($dsrData['salesPlanDiff'],1)."</td>";
 		$return.=  "  <td style=\"border-right:1px solid #e3e6ea;text-align:right;padding: 0 5px 0 5px;\">".$this->switchNegNumber($dsrData['tySalesvlySales'],1)."</td>";
 		$return.=  "  <td style='text-transform: uppercase;'>".$dsrData['shortTitle']."</td>";
@@ -270,12 +270,12 @@ AND ToastOrderID IN (SELECT GUID FROM pbc_ToastOrderHeaders WHERE restaurantID=?
 		$return.=  "  <td style=\"text-align:right;padding: 0 5px 0 5px;\">".$this->switchNegNumber($dsrData["lyChecks"])."</td>";
 		$return.=  "  <td style=\"border-right:1px solid #e3e6ea;text-align:right;padding: 0 5px 0 5px;\">".$this->switchNegNumber($dsrData['tyChecksvlyChecks'],1)."</td>";
 		$return.=  "  <td style='text-transform: uppercase;'>".$dsrData['shortTitle']."</td>";
-		$return.=  "  <td style=\"text-align:right;padding: 0 5px 0 5px;padding: 0 5px 0 5px;\">".$this->switchNegNumber($dsrData['tyAveCheck'],2)."</td>";
-		$return.=  "  <td style=\"text-align:right;padding: 0 5px 0 5px;padding: 0 5px 0 5px;\">".$this->switchNegNumber($dsrData['lyAveCheck'],2)."</td>";
+		$return.=  "  <td style=\"text-align:right;padding: 0 5px 0 5px;padding: 0 5px 0 5px;\">".$fmt->formatCurrency($this->switchNegNumber($dsrData['tyAveCheck'],2),"USD")."</td>";
+		$return.=  "  <td style=\"text-align:right;padding: 0 5px 0 5px;padding: 0 5px 0 5px;\">".$fmt->formatCurrency($this->switchNegNumber($dsrData['lyAveCheck'],2),"USD")."</td>";
 		$return.=  "  <td style=\"border-right:1px solid #e3e6ea;text-align:right;padding: 0 5px 0 5px;padding: 0 5px 0 5px;\">".$this->switchNegNumber($dsrData['checkAveDiff'],1)."</td>";
 		$return.=  "  <td style='text-transform: uppercase;'>".$dsrData['shortTitle']."</td>";
-		$return.=  "  <td style=\"text-align:right;padding: 0 5px 0 5px;\">".$this->switchNegNumber($dsrData['monkeyToday'])."</td>";
-		$return.=  "  <td style=\"text-align:right;padding: 0 5px 0 5px;\">".$this->switchNegNumber($dsrData["lyCatering"])."</td>";
+		$return.=  "  <td style=\"text-align:right;padding: 0 5px 0 5px;\">".$fmt->formatCurrency($this->switchNegNumber($dsrData['monkeyToday']),"USD")."</td>";
+		$return.=  "  <td style=\"text-align:right;padding: 0 5px 0 5px;\">".$fmt->formatCurrency($this->switchNegNumber($dsrData["lyCatering"]),"USD")."</td>";
 		$return.=  "  <td style=\"border-right:1px solid #e3e6ea;text-align:right;padding: 0 5px 0 5px;\">".$this->switchNegNumber($dsrData['cateringDiff'],1)."</td>";
 		$return.=  "  <td style=\"text-transform: uppercase;\">".$dsrData['shortTitle']."</td>";
 		$return.=  "  <td style=\"text-align:right;padding: 0 5px 0 5px;\">".$this->switchNegNumber($dsrData['laborPercent'],1)."%</td>";
@@ -1094,7 +1094,7 @@ from pbc2.kds_detail WHERE sent_time BETWEEN  ? AND ? AND station='' and restaur
         $day   = (int) $today->format('w'); // Day of the week (0 = sunday)
         if($day==0){$week++;}
         $sameDayLastYear = new \DateTime();
-        $sameDayLastYear->setISODate($year, $week - 1, $day);
+        $sameDayLastYear->setISODate($year, $week - 1, $day + 1);
         if($d=="2019-12-30"){return "2018-12-31";}
         return $sameDayLastYear->format('Y-m-d');
     }
