@@ -293,6 +293,9 @@ AND ToastOrderID IN (SELECT GUID FROM pbc_ToastOrderHeaders WHERE restaurantID=?
 		return $return;
 	}
 	function buildSBSLine($data){
+	    if($data['restaurantName'] === "Clybourn"){
+	        print_r($data);
+        }
 		$return="
 				<tr style=\"border:1px solid #000000;background:".$data['bgcolor'].";\">
 				<td style=\"border-right:1px solid #e3e6ea;width:10%;\">".$data['restaurantName']."</td>
