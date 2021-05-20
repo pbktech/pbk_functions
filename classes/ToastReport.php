@@ -152,12 +152,16 @@ AND ToastOrderID IN (SELECT GUID FROM pbc_ToastOrderHeaders WHERE restaurantID=?
 		$row=$result->fetch_object();
 		return $row->Total;
 	}
-	final public function getSumSalesBySource(): ?object{
+	final public function getSumSalesBySource(): array{
+	    $array = array();
 		$stmt = $this->mysqli->prepare("SELECT salesBySource FROM pbc2.pbc_sum_DailySales where dateOfBusiness BETWEEN  ? AND ? AND restaurantID =?");
 		$stmt->bind_param('sss',$this->startTime,$this->endTime,$this->restaurantID);
 		$stmt->execute();
 		$result = $stmt->get_result();
-		return $result->fetch_object();
+		while($row = $result->fetch_object()){
+            $array[] = $row;
+        }
+		return $array;
 	}
 	function getOrderCountsbySource($source) {
 		$stmt = $this->mysqli->prepare("SELECT COUNT(*) as 'Count',SUM(amount) as 'Total' FROM pbc_ToastCheckHeaders WHERE ToastOrderID IN(SELECT GUID FROM pbc2.pbc_ToastOrderHeaders WHERE source=? AND businessDate=? AND restaurantID=?)");
