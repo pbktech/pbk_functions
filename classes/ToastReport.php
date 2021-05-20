@@ -260,35 +260,35 @@ AND ToastOrderID IN (SELECT GUID FROM pbc_ToastOrderHeaders WHERE restaurantID=?
         $return="";
 		$return.=  "  <tr style=\"border-bottom:1px solid #e3e6ea;background:".$dsrData['bgcolor'].";\">";
 		$return.=  "  <td style=\"border-right:1px solid #e3e6ea;width:15%;\">".$dsrData['rowTitle']."</td>";
-		$return.=  "  <td style=\"text-align:right;padding: 0 5px 0 5px;\">".$this->switchNegNumber($dsrData["Sales"],0)."</td>";
-		$return.=  "  <td style=\"text-align:right;padding: 0 5px 0 5px;\">".$this->switchNegNumber($dsrData["salesPlan"],0)."</td>";
-		$return.=  "  <td style=\"text-align:right;padding: 0 5px 0 5px;\">".$this->switchNegNumber($dsrData["lySales"],0)."</td>";
-		$return.=  "  <td style=\"text-align:right;padding: 0 5px 0 5px;\">".$this->switchNegNumber($dsrData['salesPlanDiff'],1)."</td>";
-		$return.=  "  <td style=\"border-right:1px solid #e3e6ea;text-align:right;padding: 0 5px 0 5px;\">".$this->switchNegNumber($dsrData['tySalesvlySales'],1)."</td>";
+		$return.=  "  <td style=\"text-align:right;padding: 8px;\">".$this->switchNegNumber($dsrData["Sales"],0)."</td>";
+		$return.=  "  <td style=\"text-align:right;padding: 8px;\">".$this->switchNegNumber($dsrData["salesPlan"],0)."</td>";
+		$return.=  "  <td style=\"text-align:right;padding: 8px;\">".$this->switchNegNumber($dsrData["lySales"],0)."</td>";
+		$return.=  "  <td style=\"text-align:right;padding: 8px;\">".$this->switchNegNumber($dsrData['salesPlanDiff'],1)."</td>";
+		$return.=  "  <td style=\"border-right:1px solid #e3e6ea;text-align:right;padding: 8px;\">".$this->switchNegNumber($dsrData['tySalesvlySales'],1)."</td>";
 		$return.=  "  <td style='text-transform: uppercase;'>".$dsrData['shortTitle']."</td>";
-		$return.=  "  <td style=\"text-align:right;padding: 0 5px 0 5px;\">".$this->switchNegNumber($dsrData["Checks"])."</td>";
-		$return.=  "  <td style=\"text-align:right;padding: 0 5px 0 5px;\">".$this->switchNegNumber($dsrData["lyChecks"])."</td>";
-		$return.=  "  <td style=\"border-right:1px solid #e3e6ea;text-align:right;padding: 0 5px 0 5px;\">".$this->switchNegNumber($dsrData['tyChecksvlyChecks'],1)."</td>";
+		$return.=  "  <td style=\"text-align:right;padding: 8px;\">".$this->switchNegNumber($dsrData["Checks"])."</td>";
+		$return.=  "  <td style=\"text-align:right;padding: 8px;\">".$this->switchNegNumber($dsrData["lyChecks"])."</td>";
+		$return.=  "  <td style=\"border-right:1px solid #e3e6ea;text-align:right;padding: 8px;\">".$this->switchNegNumber($dsrData['tyChecksvlyChecks'],1)."</td>";
 		$return.=  "  <td style='text-transform: uppercase;'>".$dsrData['shortTitle']."</td>";
-		$return.=  "  <td style=\"text-align:right;padding: 0 5px 0 5px;padding: 0 5px 0 5px;\">".$this->switchNegNumber($dsrData['tyAveCheck'],2)."</td>";
-		$return.=  "  <td style=\"text-align:right;padding: 0 5px 0 5px;padding: 0 5px 0 5px;\">".$this->switchNegNumber($dsrData['lyAveCheck'],2)."</td>";
-		$return.=  "  <td style=\"border-right:1px solid #e3e6ea;text-align:right;padding: 0 5px 0 5px;padding: 0 5px 0 5px;\">".$this->switchNegNumber($dsrData['checkAveDiff'],1)."</td>";
+		$return.=  "  <td style=\"text-align:right;padding: 8px;padding: 8px;\">".$this->switchNegNumber($dsrData['tyAveCheck'],2)."</td>";
+		$return.=  "  <td style=\"text-align:right;padding: 8px;padding: 8px;\">".$this->switchNegNumber($dsrData['lyAveCheck'],2)."</td>";
+		$return.=  "  <td style=\"border-right:1px solid #e3e6ea;text-align:right;padding: 8px;padding: 8px;\">".$this->switchNegNumber($dsrData['checkAveDiff'],1)."</td>";
 		$return.=  "  <td style='text-transform: uppercase;'>".$dsrData['shortTitle']."</td>";
-		$return.=  "  <td style=\"text-align:right;padding: 0 5px 0 5px;\">".$this->switchNegNumber($dsrData['monkeyToday'])."</td>";
-		$return.=  "  <td style=\"text-align:right;padding: 0 5px 0 5px;\">".$this->switchNegNumber($dsrData["lyCatering"])."</td>";
-		$return.=  "  <td style=\"border-right:1px solid #e3e6ea;text-align:right;padding: 0 5px 0 5px;\">".$this->switchNegNumber($dsrData['cateringDiff'],1)."</td>";
+		$return.=  "  <td style=\"text-align:right;padding: 8px;\">".$this->switchNegNumber($dsrData['monkeyToday'])."</td>";
+		$return.=  "  <td style=\"text-align:right;padding: 8px;\">".$this->switchNegNumber($dsrData["lyCatering"])."</td>";
+		$return.=  "  <td style=\"border-right:1px solid #e3e6ea;text-align:right;padding: 8px;\">".$this->switchNegNumber($dsrData['cateringDiff'],1)."</td>";
 		$return.=  "  <td style=\"text-transform: uppercase;\">".$dsrData['shortTitle']."</td>";
-		$return.=  "  <td style=\"text-align:right;padding: 0 5px 0 5px;\">".$this->switchNegNumber($dsrData['laborPercent'],1)."%</td>";
-		$return.=  "  <td style=\"text-align:right;padding: 0 5px 0 5px;\">".$this->switchNegNumber(round($dsrData['laborPlan']*100,1),1)."%</td>";
-		$return.=  "  <td style=\"border-right:1px solid #e3e6ea;text-align:right;padding: 0 5px 0 5px;\">".$this->switchNegNumber($dsrData['lylaborPercent'],1)."%</td>";
+		$return.=  "  <td style=\"text-align:right;padding: 8px;\">".$this->switchNegNumber($dsrData['laborPercent'],1)."%</td>";
+		$return.=  "  <td style=\"text-align:right;padding: 8px;\">".$this->switchNegNumber(round($dsrData['laborPlan']*100,1),1)."%</td>";
+		$return.=  "  <td style=\"border-right:1px solid #e3e6ea;text-align:right;padding: 8px;\">".$this->switchNegNumber($dsrData['lylaborPercent'],1)."%</td>";
 		  if($dsrData['dateTitle']=="YESTERDAY"){
 		  $return.=  "
-		  <td style=\"text-transform: uppercase;padding: 0 5px 0 5px;\">".$dsrData['shortTitle']."</td>
-		  <td style='text-transform: uppercase;padding: 0 5px 0 5px;'>".$dsrData['actualLabor']."</td>
-		  <td style=\"border-right:1px solid #e3e6ea;text-align:right;padding: 0 5px 0 5px;\">".$dsrData['scheduledLabor']."</td>";
+		  <td style=\"text-transform: uppercase;padding: 8px;\">".$dsrData['shortTitle']."</td>
+		  <td style='text-transform: uppercase;padding: 8px;'>".$dsrData['actualLabor']."</td>
+		  <td style=\"border-right:1px solid #e3e6ea;text-align:right;padding: 8px;\">".$dsrData['scheduledLabor']."</td>";
 		}
 		    $return.="
-		  <td style=\"text-align:right;padding: 0 5px 0 5px;\">".$this->switchNegNumber($dsrData["throughput"])."</td>
+		  <td style=\"text-align:right;padding: 8px;\">".$this->switchNegNumber($dsrData["throughput"])."</td>
 		</tr>
 		";
 		return $return;
