@@ -259,22 +259,22 @@ AND ToastOrderID IN (SELECT GUID FROM pbc_ToastOrderHeaders WHERE restaurantID=?
         $return="";
 		$return.=  "  <tr style=\"border-bottom:1px solid #e3e6ea;background:".$dsrData['bgcolor'].";\">";
 		$return.=  "  <td style=\"border-right:1px solid #e3e6ea;width:15%;\">".$dsrData['rowTitle']."</td>";
-		$return.=  "  <td style=\"text-align:right;padding: 8px;\">".$this->switchNegNumber($dsrData["Sales"],0)."</td>";
-		$return.=  "  <td style=\"text-align:right;padding: 8px;\">".$this->switchNegNumber($dsrData["salesPlan"],0)."</td>";
-		$return.=  "  <td style=\"text-align:right;padding: 8px;\">".$this->switchNegNumber($dsrData["lySales"],0)."</td>";
-		$return.=  "  <td style=\"text-align:right;padding: 8px;\">".$this->switchNegNumber($dsrData['salesPlanDiff'],1)."</td>";
+		$return.=  "  <td style=\"text-align:right;padding: 8px;\">$".$this->switchNegNumber($dsrData["Sales"],0)."</td>";
+		$return.=  "  <td style=\"text-align:right;padding: 8px;\">$".$this->switchNegNumber($dsrData["salesPlan"],0)."</td>";
+		$return.=  "  <td style=\"text-align:right;padding: 8px;\">$".$this->switchNegNumber($dsrData["lySales"],0)."</td>";
+		$return.=  "  <td style=\"text-align:right;padding: 8px;\">$".$this->switchNegNumber($dsrData['salesPlanDiff'],1)."</td>";
 		$return.=  "  <td style=\"border-right:1px solid #e3e6ea;text-align:right;padding: 8px;\">".$this->switchNegNumber($dsrData['tySalesvlySales'],1)."</td>";
 		$return.=  "  <td style='text-transform: uppercase;'>".$dsrData['shortTitle']."</td>";
 		$return.=  "  <td style=\"text-align:right;padding: 8px;\">".$this->switchNegNumber($dsrData["Checks"])."</td>";
 		$return.=  "  <td style=\"text-align:right;padding: 8px;\">".$this->switchNegNumber($dsrData["lyChecks"])."</td>";
 		$return.=  "  <td style=\"border-right:1px solid #e3e6ea;text-align:right;padding: 8px;\">".$this->switchNegNumber($dsrData['tyChecksvlyChecks'],1)."</td>";
 		$return.=  "  <td style='text-transform: uppercase;'>".$dsrData['shortTitle']."</td>";
-		$return.=  "  <td style=\"text-align:right;padding: 8px;padding: 8px;\">".$this->switchNegNumber($dsrData['tyAveCheck'],2)."</td>";
-		$return.=  "  <td style=\"text-align:right;padding: 8px;padding: 8px;\">".$this->switchNegNumber($dsrData['lyAveCheck'],2)."</td>";
-		$return.=  "  <td style=\"border-right:1px solid #e3e6ea;text-align:right;padding: 8px;padding: 8px;\">".$this->switchNegNumber($dsrData['checkAveDiff'],1)."</td>";
+		$return.=  "  <td style=\"text-align:right;padding: 8px;padding: 8px;\">$".$this->switchNegNumber($dsrData['tyAveCheck'],2)."</td>";
+		$return.=  "  <td style=\"text-align:right;padding: 8px;padding: 8px;\">$".$this->switchNegNumber($dsrData['lyAveCheck'],2)."</td>";
+		$return.=  "  <td style=\"border-right:1px solid #e3e6ea;text-align:right;padding: 8px;padding: 8px;\">$".$this->switchNegNumber($dsrData['checkAveDiff'],1)."</td>";
 		$return.=  "  <td style='text-transform: uppercase;'>".$dsrData['shortTitle']."</td>";
-		$return.=  "  <td style=\"text-align:right;padding: 8px;\">".$this->switchNegNumber($dsrData['monkeyToday'])."</td>";
-		$return.=  "  <td style=\"text-align:right;padding: 8px;\">".$this->switchNegNumber($dsrData["lyCatering"])."</td>";
+		$return.=  "  <td style=\"text-align:right;padding: 8px;\">$".$this->switchNegNumber($dsrData['monkeyToday'])."</td>";
+		$return.=  "  <td style=\"text-align:right;padding: 8px;\">$".$this->switchNegNumber($dsrData["lyCatering"])."</td>";
 		$return.=  "  <td style=\"border-right:1px solid #e3e6ea;text-align:right;padding: 8px;\">".$this->switchNegNumber($dsrData['cateringDiff'],1)."</td>";
 		$return.=  "  <td style=\"text-transform: uppercase;\">".$dsrData['shortTitle']."</td>";
 		$return.=  "  <td style=\"text-align:right;padding: 8px;\">".$this->switchNegNumber($dsrData['laborPercent'],1)."%</td>";
@@ -300,42 +300,42 @@ AND ToastOrderID IN (SELECT GUID FROM pbc_ToastOrderHeaders WHERE restaurantID=?
 			  <td style=\"text-align:center;\">".$data['inStoreOrders']['Count']."</td>
 			  <td style=\"text-align:center;\">".$this->switchNegNumber($data['inStoreOrders']['Total'],0)."</td>
 			  <td style=\"text-align:center;\">".$data['lyinStoreOrders']['Count']."</td>
-			  <td style=\"border-right:1px solid #e3e6ea;text-align:center;\">".$this->switchNegNumber($data['lyinStoreOrders']['Total'],0)."</td>
+			  <td style=\"border-right:1px solid #e3e6ea;text-align:center;\">$".$this->switchNegNumber($data['lyinStoreOrders']['Total'],0)."</td>
 
 			  <td style=\"text-align:center;\">".$data['onlineOrders']['Count']."</td>
 			  <td style=\"text-align:center;\">".$this->switchNegNumber($data['onlineOrders']['Total'],0)."</td>
 			  <td style=\"text-align:center;\">".$data['lyonlineOrders']['Count']."</td>
-			  <td style=\"border-right:1px solid #e3e6ea;text-align:center;\">".$this->switchNegNumber($data['lyonlineOrders']['Total'],0)."</td>
+			  <td style=\"border-right:1px solid #e3e6ea;text-align:center;\">$".$this->switchNegNumber($data['lyonlineOrders']['Total'],0)."</td>
 
 			  <td style=\"text-align:center;\">".$data['appOrders']['Count']."</td>
 			  <td style=\"text-align:center;\">".$this->switchNegNumber($data['appOrders']['Total'],0)."</td>
 			  <td style=\"text-align:center;\">".$data['lyappOrders']['Count']."</td>
-			  <td style=\"border-right:1px solid #e3e6ea;text-align:center;\">".$this->switchNegNumber($data['lyappOrders']['Total'],0)."</td>
+			  <td style=\"border-right:1px solid #e3e6ea;text-align:center;\">$".$this->switchNegNumber($data['lyappOrders']['Total'],0)."</td>
 
 			  <td style=\"text-align:center;\">".$data['ritualOrders']['Count']."</td>
 			  <td style=\"text-align:center;\">".$this->switchNegNumber($data['ritualOrders']['Total'],0)."</td>
 			  <td style=\"text-align:center;\">".$data['lyritualOrders']['Count']."</td>
-			  <td style=\"border-right:1px solid #e3e6ea;text-align:center;\">".$this->switchNegNumber($data['lyritualOrders']['Total'],0)."</td>
-
-			  <td style=\"text-align:center;\">".$data['levelUpOrders']['Count']."</td>
-			  <td style=\"text-align:center;\">".$this->switchNegNumber($data['levelUpOrders']['Total'],0)."</td>
-			  <td style=\"text-align:right;\">".trim($data['lylevelUpOrders']['Count'])."</td>
-			  <td style=\"border-right:1px solid #e3e6ea;text-align:center;\">".$this->switchNegNumber($data['lylevelUpOrders']['Total'],0)."</td>
+			  <td style=\"border-right:1px solid #e3e6ea;text-align:center;\">$".$this->switchNegNumber($data['lyritualOrders']['Total'],0)."</td>
 
 			  <td style=\"text-align:center;\">".$data['monkeyCount']['Count']."</td>
 			  <td style=\"text-align:center;\">".$this->switchNegNumber($data['monkeyTotal']['Total'],0)."</td>
 			  <td style=\"text-align:center;\">".$data['lymonkeyCount']['Count']."</td>
-			  <td style=\"border-right:1px solid #e3e6ea;text-align:center;\">".$this->switchNegNumber($data['lymonkeyTotal']['Total'],0)."</td>
+			  <td style=\"border-right:1px solid #e3e6ea;text-align:center;\">$".$this->switchNegNumber($data['lymonkeyTotal']['Total'],0)."</td>
+
+			  <td style=\"text-align:center;\">".$data['fooda']['Count']."</td>
+			  <td style=\"text-align:center;\">".$this->switchNegNumber($data['fooda']['Total'],0)."</td>
+			  <td style=\"text-align:right;\">".trim($data['lyfooda']['Count'])."</td>
+			  <td style=\"border-right:1px solid #e3e6ea;text-align:center;\">$".$this->switchNegNumber($data['lyfooda']['Total'],0)."</td>
 
 			  <td style=\"text-align:center;\">".$data['thirdParty']['Count']."</td>
 			  <td style=\"text-align:center;\">".$this->switchNegNumber($data['thirdParty']['Total'],0)."</td>
 			  <td style=\"text-align:center;\">".$data['lythirdParty']['Count']."</td>
-			  <td style=\"border-right:1px solid #e3e6ea;text-align:center;\">".$this->switchNegNumber($data['lythirdParty']['Total'],0)."</td>
+			  <td style=\"border-right:1px solid #e3e6ea;text-align:center;\">$".$this->switchNegNumber($data['lythirdParty']['Total'],0)."</td>
 
 			  <td style=\"text-align:center;padding:3px;\">".$data['totalChecks']."</td>
-			  <td style=\"text-align:center;padding:3px;\">".$this->switchNegNumber($data['totalSales'],0)."</td>
+			  <td style=\"text-align:center;padding:3px;\">$".$this->switchNegNumber($data['totalSales'],0)."</td>
 			  <td style=\"text-align:center;padding:3px;\">".$data['lytotalChecks']."</td>
-			  <td style=\"text-align:center;padding:3px;\">".$this->switchNegNumber($data['lytotalSales'],0)."</td>
+			  <td style=\"text-align:center;padding:3px;\">$".$this->switchNegNumber($data['lytotalSales'],0)."</td>
 				</tr>
 				";
 				return $return;
