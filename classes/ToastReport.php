@@ -1075,16 +1075,23 @@ from pbc2.kds_detail WHERE sent_time BETWEEN  ? AND ? AND station='' and restaur
         if(date("L")==1 && (date("n")>2 || (date("n")==2 && date("d")==29))){$addDays=2;}else{$addDays=1;}
         if(date("L")==1 && date("n",strtotime($d))<=2 && date("L",strtotime($d))==0){$addDays=1;}
         return date('Y-m-d', strtotime('+' . $addDays . ' days', strtotime($d)));
-        */
         $today = new \DateTime($d);
         $year  = (int) $today->format('Y');
         $week  = (int) $today->format('W'); // Week of the year
         $day   = (int) $today->format('w'); // Day of the week (0 = sunday)
         if($day==0){$week++;}
         $sameDayLastYear = new \DateTime();
-        $sameDayLastYear->setISODate($year - 1, $week, $day);
+        $sameDayLastYear->setISODate($year - 1, $week, $day + 1);
         if($d=="2019-12-30"){return "2018-12-31";}
         return $sameDayLastYear->format('Y-m-d');
+        */
+        $date = new DateTime($d);  // make a new DateTime instance with the starting date
+
+        $day = $date->format('l');           // get the name of the day we want
+
+        $date->sub(new DateInterval('P1Y')); // go back a year
+        $date->modify('next ' . $day);       // from this point, go to the next $day
+        return $date->format('Y-m-d');
     }
     function sameDayLastWeek($d) {
         $today = new \DateTime($d);
