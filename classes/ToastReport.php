@@ -1093,7 +1093,7 @@ from pbc2.kds_detail WHERE sent_time BETWEEN  ? AND ? AND station='' and restaur
         $day   = (int) $today->format('w'); // Day of the week (0 = sunday)
         if($day==0){$week++;}
         $sameDayLastYear = new \DateTime();
-        $sameDayLastYear->setISODate($year, $week - 1, $day + 1);
+        $sameDayLastYear->setISODate($year, $week - 1, $day);
         if($d=="2019-12-30"){return "2018-12-31";}
         return $sameDayLastYear->format('Y-m-d');
     }
