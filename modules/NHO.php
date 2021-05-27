@@ -79,7 +79,7 @@ if (!isset($_REQUEST['event']) || !isset($event->nhoID) || $event->nhoID=="") {
     </div>
     <div style='text-align:center;'>
     <h3>Updates can be made until ".date("m/d/Y g:i a",$cutOffTime)." </h3><br>
-    <h1 style='color:#d61111;'><strong>Verfy the date, time and location</strong></h1><br>
+    <h1 style='color:#d61111;'><strong>Verify the date, time and location</strong></h1><br>
     </div>
     ";
 }
