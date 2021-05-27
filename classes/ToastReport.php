@@ -262,7 +262,7 @@ AND ToastOrderID IN (SELECT GUID FROM pbc_ToastOrderHeaders WHERE restaurantID=?
 		$return.=  "  <td style=\"text-align:right;padding: 8px;\">$".$this->switchNegNumber($dsrData["Sales"],0)."</td>";
 		$return.=  "  <td style=\"text-align:right;padding: 8px;\">$".$this->switchNegNumber($dsrData["salesPlan"],0)."</td>";
 		$return.=  "  <td style=\"text-align:right;padding: 8px;\">$".$this->switchNegNumber($dsrData["lySales"],0)."</td>";
-		$return.=  "  <td style=\"text-align:right;padding: 8px;\">$".$this->switchNegNumber($dsrData['salesPlanDiff'],1)."</td>";
+		$return.=  "  <td style=\"text-align:right;padding: 8px;\">".$this->switchNegNumber($dsrData['salesPlanDiff'],1)."</td>";
 		$return.=  "  <td style=\"border-right:1px solid #e3e6ea;text-align:right;padding: 8px;\">".$this->switchNegNumber($dsrData['tySalesvlySales'],1)."</td>";
 		$return.=  "  <td style='text-transform: uppercase;'>".$dsrData['shortTitle']."</td>";
 		$return.=  "  <td style=\"text-align:right;padding: 8px;\">".$this->switchNegNumber($dsrData["Checks"])."</td>";
