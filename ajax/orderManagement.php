@@ -192,7 +192,7 @@ function om_duplicate() {
     }
     $tasks = new task_engine($mysqli);
     $tasks->add_task(['what' => 'execBackground',
-        'target' => "/home/jewmanfoo/toast-api/postMinibar.sh ",
+        'target' => "sh /home/jewmanfoo/toast-api/postMinibar.sh ",
         'files' => $orderID,
         'dueDate' => date('Y-m-d H:i:s', $cutoff)]);
 
