@@ -120,14 +120,16 @@
 add_action('wp_footer', 'omAJAX');
 function omAJAX() { ?>
     <script type="text/javascript">
-      jQuery(document).ready(function($) {
+      jQuery(document).ready(function() {
         let guestName = $('#guestName').val();
         let startDate = $('#startDate').val();
         let endDate = $('#endDate').val();
         $('.datePicker').datepicker({
           dateFormat: 'mm/dd/yy'
         });
-        $('.timepickerol').clockpicker();
+        if ($('.timepickerol').length) {
+          $('.timepickerol').clockpicker();
+        }
         $('.timepicker').timepicker({
           timeFormat: 'h:mm p',
           interval: 15,
