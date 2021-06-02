@@ -17,7 +17,7 @@ error_reporting(E_ALL);
 $latLong["Chicago"] = array("Lat" => 41.885858, "Long" => -87.632561);
 $latLong["District of Columbia"] = array("Lat" => 38.893481, "Long" => -77.022022);
 $latLong["Colorado"] = array("Lat" => 39.752327, "Long" => -105.001158);
-define("CHICAGO_TAX", .1175);
+const CHICAGO_TAX = .1175;
 /*Checking Above Store*/
 function pbk_check_privledge()
 {
@@ -49,7 +49,7 @@ function pbk_scripts()
     wp_enqueue_style('clockpicker_style', PBKF_URL . '/assets/css/clockpicker.css');
     wp_enqueue_style('clockpicker_standalone_style', PBKF_URL . '/assets/css/standalone.css');
 //    wp_enqueue_style('jAlert_style', PBKF_URL . '/assets/css/jAlert.css');
-    wp_enqueue_style('sort_tables_style', '//cdn.datatables.net/1.10.24/css/jquery.dataTables.min.css');
+//    wp_enqueue_style('sort_tables_style', '//cdn.datatables.net/1.10.24/css/jquery.dataTables.min.css');
     wp_enqueue_style('screen_signature_style', PBKF_URL . '/assets/css/signature.css');
     wp_enqueue_script('pbk_jquery_3x','//ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js');
     wp_enqueue_script('select_script', '//cdn.jsdelivr.net/npm/select2@4.0.12/dist/js/select2.min.js');
