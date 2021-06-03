@@ -22,7 +22,7 @@ class Restaurant {
 	public $deviceType=array();
 	public $orderTypes=array("LightBulb"=>"Supply","KeyRelease"=>"Key Release");
 	public $deviceStatus=array('Active', 'B-Stock', 'Retired', 'Returned');
-	private $bulbs=array("Light Bulbs" => [1=>"Nucleus Large", 2=>"Nucleus Small", 3=>"Overhead Lighting", 4=>"Refrigeration Lighting", 5=>"Other"], "Boosts" => [6=>"CBD",7=>"Ashwagandha" ]);
+	private $bulbs=array("Light Bulbs" => [1=>"Nucleus Large", 2=>"Nucleus Small", 3=>"Overhead Lighting", 4=>"Refrigeration Lighting", 5=>"Other"], "Boosts" => [6=>"CBD", 8=>"Electrolyte Powder", 9=>"Elderberry Tincture" ]);
 	public $incidentTypes=array(
 		"foodborneIllness"=>array("Name"=>"Foodborne Illness/Foreign Object","sendTo"=>array("mcrawford@theproteinbar.com")),
 		"injury"=>array("Name"=>"Injury","sendTo"=>array("mcrawford@theproteinbar.com")),
