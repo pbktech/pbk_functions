@@ -26,7 +26,7 @@ class Restaurant {
 	public $incidentTypes=array(
 		"foodborneIllness"=>array("Name"=>"Foodborne Illness/Foreign Object","sendTo"=>array("mcrawford@theproteinbar.com")),
 		"injury"=>array("Name"=>"Injury","sendTo"=>array("mcrawford@theproteinbar.com")),
-		"lostStolenProperty"=>array("Name"=>"Lost or Stolen Property","sendTo"=>array("mcrawford@theproteinbar.com","hr@theproteinbar.com","jarbitman@theproteinbar.com"))
+		"lostStolenProperty"=>array("Name"=>"Lost or Stolen Property","sendTo"=>array("mcrawford@theproteinbar.com","hrgroup@theproteinbar.com","jarbitman@theproteinbar.com"))
 	);
 	public $myRestaurants=array();
 	public $nhoSatus=array(
@@ -546,7 +546,7 @@ class Restaurant {
 		$email.="</table>";
 		$cu = wp_get_current_user();
 		$report=new ToastReport();
-		$report->reportEmail($cu->user_email.",hr@theproteinbar.com",$email,"NHO Attendance Report for ".date("m/d/Y", strtotime($atts['nhoDate'])));
+		$report->reportEmail($cu->user_email.",hrgroup@theproteinbar.com",$email,"NHO Attendance Report for ".date("m/d/Y", strtotime($atts['nhoDate'])));
 	}
 	function nho_build_roster($atts){
 		global $wpdb;

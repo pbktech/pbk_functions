@@ -250,12 +250,19 @@ function returnAJAXData($data)
 }
 
 add_filter('login_headertext', 'acme_login_logo_image');
-function acme_login_logo_image($login_header_text)
-{
+function acme_login_logo_image(): string{
     $logo_url = 'https://c2.theproteinbar.com/wp-content/uploads/2018/04/PBK-Logo_Secondary_Full-Color-pbc2.png';
-    $login_header_text = ''; // clears default output.
-    $login_header_text = '<img src="' . $logo_url . '" alt="' . get_bloginfo('title') . '" />';
-    return $login_header_text;
+    return '<img src="' . $logo_url . '" alt="' . get_bloginfo('title') . '" />';
+}
+function randomPassword(): string{
+    $alphabet = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890!@#$%^&*()';
+    $pass = array(); //remember to declare $pass as an array
+    $alphaLength = strlen($alphabet) - 1; //put the length -1 in cache
+    for ($i = 0; $i < 16; $i++) {
+        $n = rand(0, $alphaLength);
+        $pass[] = $alphabet[$n];
+    }
+    return implode($pass); //turn the array into a string
 }
 
 function acme_login_logo_image_styles()

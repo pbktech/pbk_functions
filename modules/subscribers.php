@@ -23,7 +23,7 @@ function subscribersAJAX() { ?>
       var planName;
       var planCost;
 
-      jQuery(document).ready(function($) {
+      jQuery(document).ready(function() {
        var myTable = $('#myTable').DataTable({
           lengthMenu: [[25, 50, -1], [25, 50, 'All']],
           ajax: '<?php echo admin_url('admin-ajax.php') ?>?action=subscribers_get_users',
