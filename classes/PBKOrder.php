@@ -91,7 +91,7 @@ final class PBKOrder {
     }
 
     public function returnHeaderInfo(): ?object {
-        $stmt = $this->mysqli->prepare("SELECT GUID, headerID, mbUserID, defaultPayment, email_address, UuidFromBin(publicUnique) as 'publicUnique' FROM pbc_minibar_order_header pmoh,pbc_pbrestaurants pbr, pbc_minibar pm, pbc_minibar_user pmu WHERE pm.restaurantID = pbr.restaurantID AND pm.idpbc_minibar = pmoh.minibarID AND pmoh.mbUserID = pmu.id AND headerID=?");
+        $stmt = $this->mysqli->prepare("SELECT GUID, headerID, mbUserID, defaultPayment, email_address, payerType, UuidFromBin(publicUnique) as 'publicUnique' FROM pbc_minibar_order_header pmoh,pbc_pbrestaurants pbr, pbc_minibar pm, pbc_minibar_user pmu WHERE pm.restaurantID = pbr.restaurantID AND pm.idpbc_minibar = pmoh.minibarID AND pmoh.mbUserID = pmu.id AND headerID=?");
         $stmt->bind_param("s", $this->orderID);
         $stmt->execute();
         $result = $stmt->get_result();
