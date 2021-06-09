@@ -203,52 +203,7 @@ function omAJAX() { ?>
             dataType: "json",
             data: JSON.stringify(confirm),
             success: function(response) {
-              let receiptBody = '';
-              let grandTotal = 0;
-              $('#receiptHeader').html(response.minibar + ' : ' + response.delivery);
-              for(let i=0; i < response.checks.length; i = i + 1){
-                let subtotal = 0.00;
-                if (response.checks[i]) {
-                  const check = response.checks[i];
-                  const tax = parseFloat(check.totals.tax);
-                  let discounts = 0;
-                  receiptBody = receiptBody + '<div><div class="row"><div class="col-12" style="font-weight: bold;">' + check.tab + '</div></div>';
-                  for (let ia = 0; ia < check.items.length; ia = ia + 1){
-                    const item = check.items[ia];
-                    let modPrice = 0;
-
-                    if (item.mods.length) {
-                      item.mods.filter((mod) => mod.guid === 'FOR').map((mod) => {
-                        modPrice = modPrice + mod.price;
-                      });
-                    }
-                    subtotal = subtotal + (item.quantity * (item.price + modPrice));
-                    receiptBody = receiptBody + '<div class="row"><div class="col-2">' + item.quantity + '</div><div class="col-8">' + item.name + '</div><div class="col-2" style="text-align: right">$' + item.price +  '</div></div>';
-                  }
-                  receiptBody = receiptBody + '<div class="row"><div class="col-10" style="text-align: right">Subtotal</div><div class="col-2" style="text-align: right">$' + subtotal.toFixed(2) + '</div></div>' ;
-                  check.discounts.length && check.discounts.map((discount) => {
-                    const discountAmount = parseFloat(discount.discountAmount);
-                    receiptBody = receiptBody + '<div class="row" style="color: #dc3545;  font-style: italic;"><div class="col-10" style="text-align: right;">' + discount.discountName + ' (' + discount.promoCode + ')</div><div class="col-2" style="text-align: right">$' + discountAmount.toFixed(2) + '</div></div>' ;
-                    discounts = discounts + parseFloat(discount.discountAmount);
-                  });
-                  const total = subtotal + tax;
-                  grandTotal = grandTotal + total;
-                  receiptBody = receiptBody + '<div class="row"><div class="col-10" style="text-align: right">Tax</div><div class="col-2" style="text-align: right">$' + tax.toFixed(2) + '</div></div>' ;
-                  receiptBody = receiptBody + '<div class="row"><div class="col-10" style="text-align: right">Total</div><div class="col-2" style="text-align: right">$' + total.toFixed(2) + '</div></div>' ;
-                  check.payments && check.payments.map((payment) => {
-                    receiptBody = receiptBody + '<div class="row"><div class="col-10" style="text-align: right">' + payment.paymentType + ' - ' + payment.cardNum.substring(payment.cardNum.length - 4) + '</div><div class="col-2" style="text-align: right">$' + payment.paymentAmount + '</div></div>' ;
-                  });
-                  receiptBody = receiptBody + '</div>';
-                }
-              }
-              response.payment.length && response.payment.map((payment) => {
-                receiptBody = receiptBody + '<div class="row">Amount applied to ' + payment.paymentType + ' ending in ' + payment.cardNum + ': $' + grandTotal + '</div>';
-              });
-              receiptBody = receiptBody + '<div class="row" style="font-size: 10px;padding-top: 1em;">' + data.receiptlink + '</div>';
-              $('#receiptLink').attr("href", data.receiptlink + '?print=yes');
-              $('#receiptURL').html(data.receiptlink);
-              $('#receiptBody').html(receiptBody)
-              $('#receiptModal').modal('show');
+              $('#receiptHeader').html(response);
             }
           });
         });

@@ -184,10 +184,10 @@ function addGoogleUser(){
             }
         }
         require_once dirname(__DIR__) . "/templates/email/public.php";
-        $m = getHeader() . "
-Hi " . $name[0] . ",
-Welcome to Protein Bar & Kitchen! This email has your PBK Email (powered by Gmail) and Compeat setup and credentials.<br>
-PBK Email<br><br>
+        $m = getHeader() . "<br><br>
+Hi " . $name[0] . ",<br><br>
+Welcome to Protein Bar & Kitchen! This email has your PBK Email (powered by Gmail) and Compeat setup and credentials.<br><br>
+<strong>PBK Email</strong><br>
 Go to https://mail.google.com. Sign in with the credentials below and accept the terms of Gmail. Gmail will require you to change your password when you first login. After signing in for the first time, you can add your email to your phone. <br>
 <a href='https://support.apple.com/en-us/HT201320'>How to Add PBK Email To iPhone</a><br>
 <a href='https://gsuitetips.com/tips/more/android/android-gmail-setup-instructions/'>How to Add PBK Email to Android</a><br>
@@ -195,10 +195,10 @@ Go to https://mail.google.com. Sign in with the credentials below and accept the
 U: " . $email . "<br>
 P: " . $password . "<br>
 <br><br>
-Compeat<br><br>
-Compeat will require you to change your password when you first login.<br>
-U: " . $password . "<br>
-P: " . $data['email'] . "<br>";
+<strong>Compeat</strong><br>
+Compeat will require you to change your password when you first login.<br><br>
+U: " . $data['email'] . "<br>
+P: " . $password . "<br>";
         $wpdb->insert(
             "pbc_tasks",
             array(
@@ -217,6 +217,7 @@ P: " . $data['email'] . "<br>";
             )
         );
         setSignatureTask(["name" => $data['name'], "title" => $title, "address" => $restaurant->address, "phone" => $restaurant->phone, "email" => $email]);
+        $message[]= $data['name'] . " has been setup";
     }
     catch (Google_IO_Exception $gioe){
         $message[]= "Error in connection: ".$gioe->getMessage();
