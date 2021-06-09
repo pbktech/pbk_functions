@@ -128,6 +128,7 @@ final class PBKReceipt {
     padding: 10px;
     background-color: #FFFFFF;
     max-width: 500px;
+    margin: auto;    
 }
 .receipt-footer {
     height: 4px;
