@@ -190,7 +190,7 @@ final class PBKReceipt {
             <div class='container-fluid'>
                 <div class='receipt-header' >&nbsp;</div>
                 <div class='receipt-body'>
-                    <div style='text-align: left; font-weight: bold'>" . $check['tab'] ." : " . $check['ordered'] ."<hr /></div>
+                    <div style='text-align: left; font-weight: bold; width: 500px;margin: auto;'>" . $check['tab'] ." : " . $check['ordered'] ."<hr /></div>
                 </div>
                 <div class='receipt-body'>
                     <table style='width: 500px;margin: auto;'>";
@@ -219,8 +219,8 @@ final class PBKReceipt {
                     </table>                
                 </div>
                 <div class='receipt-body' style='font-size: 85%; text-align: right;'>
-                    <table style='width: 500px;margin: auto;'>
                         <hr />
+                    <table style='width: 500px;margin: auto;'>
                         <tr>
                             <td style='text-align: right; width: 80%;'>Subtotal:</td>
                             <td style='text-align: right;'>".$fmt->formatCurrency($checkTotal,"USD")."</td>
