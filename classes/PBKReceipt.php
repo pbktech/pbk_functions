@@ -169,8 +169,8 @@ final class PBKReceipt {
                 foreach ($check['payments'] as $payment){
                     $paymentTotal += $payment->paymentAmount;
                     $payments .= "
-                        <tr class='row' style='color: #dc3545; font-style: italic;'>
-                            <td style='text-align: left; width: 80%;'>" . $payment->paymentType . " - " . substr($payment->cardNum, -4) . ")</td>
+                        <tr class='row' style=''>
+                            <td style='text-align: right; width: 80%;'>" . $payment->paymentType . " - " . substr($payment->cardNum, -4) . "</td>
                             <td style='text-align: right;'>" . $fmt->formatCurrency($payment->paymentAmount, "USD") . "</td>
                         </tr>";
                     if(!empty($payment->tipAmount) && is_numeric($payment->tipAmount)){
@@ -194,21 +194,21 @@ final class PBKReceipt {
                 $modPrice = 0;
                 $checkTotal = 0;
                 if(!empty($item['mods'])){
-                    $modLines.= "<ul style='list-style-type: none; font-size: 75%; font-style: italic; color: #9d9d9d'>";
+                    $modLines.= "<tr><td colspan='2'><ul style='list-style-type: none; font-size: 75%; font-style: italic; color: #9d9d9d'>";
                     foreach($item['mods'] as $mod){
                         $modPrice += $mod['price'];
                         $modLines.="<li>" . $mod['name'] . "</li>";
                     }
-                    $modLines.= "</ul>";
+                    $modLines.= "</ul></td> </tr>";
                 }
                 $linePrice = round($item['price'] + $modPrice, 2);
                 $checkTotal+=$linePrice;
                 $receiptBody.="
-                    <td>
-                        <td style='text-align: left; width: 80%;'>" . $item['quantity'] . " <span style='color: #F36C21; font-weight: bold;'>" . $item['name'] . "</span>$modLines</td>
+                    <tr>
+                        <td style='text-align: left; width: 80%;'>" . $item['quantity'] . " <span style='color: #F36C21; font-weight: bold;'>" . $item['name'] . "</span></td>
                         <td style='text-align: right;'>".$fmt->formatCurrency($linePrice,"USD")."</td>
                     </tr>
-                ";
+                " . $modLines;
             }
             $receiptBody.="
                     </table>                
