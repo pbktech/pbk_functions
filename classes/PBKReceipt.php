@@ -219,8 +219,9 @@ final class PBKReceipt {
                     </table>                
                 </div>
                 <div class='receipt-body' style='font-size: 85%; text-align: right;'>
-                        <hr />
+                        
                     <table style='width: 500px;margin: auto;'>
+                        <tr><td colspan='2'><hr /></td></tr>
                         <tr>
                             <td style='text-align: right; width: 80%;'>Subtotal:</td>
                             <td style='text-align: right;'>".$fmt->formatCurrency($checkTotal,"USD")."</td>
@@ -242,7 +243,7 @@ final class PBKReceipt {
         }
         if($grandTotal !==0 && !empty($d['payment'])){
                 $receiptBody .= "
-            <div class='row'>
+            <div class='row' style='padding-top: 1em;'>
                 <div class='col'>Amount applied to " . $d['payment'][0]->paymentType . " ending in " . $d['payment'][0]->cardNum . ": ".$fmt->formatCurrency($grandTotal,"USD")."</div>
 </div>
             ";
