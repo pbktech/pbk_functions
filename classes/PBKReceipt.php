@@ -192,7 +192,7 @@ final class PBKReceipt {
                     <div style='text-align: left; font-weight: bold'>" . $check['tab'] ." : " . $check['ordered'] ."<hr /></div>
                 </div>
                 <div class='receipt-body'>
-                    <table style='width: 100%;'>";
+                    <table style='width: 500px;'>";
             foreach ($check['items'] as $item){
                 $modLines = "";
                 $modPrice = 0;
@@ -218,7 +218,7 @@ final class PBKReceipt {
                     </table>                
                 </div>
                 <div class='receipt-body' style='font-size: 85%; text-align: right;'>
-                    <table style='width: 100%;'>
+                    <table style='width: 500px;'>
                         <hr />
                         <tr>
                             <td style='text-align: right; width: 80%;'>Subtotal:</td>
