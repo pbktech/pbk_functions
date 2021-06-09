@@ -29,7 +29,7 @@ final class PBKReceipt {
     }
 
     public function getReceiptItems(string $guid): array {
-        $stmt = $this->mysqli->prepare("SELECT * FROM pbc2.pbc_minibar_order_header WHERE publicUnique = pbc2.UuidToBin(?)");
+        $stmt = $this->mysqli->prepare("SELECT * FROM pbc2.pbc_minibar_order_header WHERE publicUnique = UuidToBin(?)");
         $stmt->bind_param("s", $guid);
         $stmt->execute();
         $result = $stmt->get_result();
