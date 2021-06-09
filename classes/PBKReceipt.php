@@ -4,8 +4,7 @@
 final class PBKReceipt {
 
     private $config;
-    var $mysqli = null;
-    private $localDB;
+    private $mysqli;
 
     function __construct() {
         $this->setConfig();
@@ -22,7 +21,6 @@ final class PBKReceipt {
         }
         $default = dirname(ABSPATH) . '/config.json';
         $this->config = json_decode(file_get_contents($default));
-        $this->localDB = $this->config->dBase;
     }
 
     function connectDB() {
@@ -31,7 +29,7 @@ final class PBKReceipt {
     }
 
     public function getReceiptItems(string $guid): array {
-        $stmt = $this->mysqli->prepare("SELECT * FROM pbc_minibar_order_header WHERE publicUnique = UuidToBin(?)");
+        $stmt = $this->mysqli->prepare("SELECT * FROM pbc2.pbc_minibar_order_header WHERE publicUnique = pbc2.UuidToBin(?)");
         $stmt->bind_param("s", $guid);
         $stmt->execute();
         $result = $stmt->get_result();
@@ -116,7 +114,6 @@ final class PBKReceipt {
     public function buildPBKReceipt(array $d): string {
         $fmt = new NumberFormatter( 'en_US', NumberFormatter::CURRENCY );
         $receiptBody = "";
-        $checkTotal = 0;
         $receiptHeader = "
 <style>
       .receipt {
@@ -160,27 +157,27 @@ final class PBKReceipt {
             $tipTotal = 0;
             if(!empty($check['discounts'])){
                 foreach($check['discounts'] as $discount) {
-                    $discountTotal+= $discount['discountAmount'];
+                    $discountTotal+= $discount->discountAmount;
                     $discounts .= "
                         <div class='row' style='color: #dc3545; font-style: italic;'>
-                            <div class='col-sm-9'>" . $discount['discountName'] . " (" . $discount['promoCode'] . ")</div>
-                            <div class='col-sm-3' style='text-align: right;'>" . $fmt->formatCurrency($discount['discountAmount'], "USD") . "</div>
+                            <div class='col-sm-9'>" . $discount->discountName . " (" . $discount->promoCode . ")</div>
+                            <div class='col-sm-3' style='text-align: right;'>" . $fmt->formatCurrency($discount->discountAmount, "USD") . "</div>
                         </div>";
                 }
             }
             if(!empty($check['payments'])){
                 foreach ($check['payments'] as $payment){
-                    $paymentTotal += $payment['paymentAmount'];
+                    $paymentTotal += $payment->paymentAmount;
                     $payments .= "
                         <div class='row' style='color: #dc3545; font-style: italic;'>
-                            <div class='col-sm-9'>" . $payment['paymentType'] . " - " . substr($payment['cardNum'], -4) . ")</div>
-                            <div class='col-sm-3' style='text-align: right;'>" . $fmt->formatCurrency($payment['paymentAmount'], "USD") . "</div>
+                            <div class='col-sm-9'>" . $payment->paymentType . " - " . substr($payment->cardNum, -4) . ")</div>
+                            <div class='col-sm-3' style='text-align: right;'>" . $fmt->formatCurrency($payment->paymentAmount, "USD") . "</div>
                         </div>";
-                    if(!empty($payment['tipAmount']) && is_numeric($payment['tipAmount'])){
-                        $tipTotal+=$payment['tipAmount'];
+                    if(!empty($payment->tipAmount) && is_numeric($payment->tipAmount)){
+                        $tipTotal+=$payment->tipAmount;
                     }
-                    if($payment['paymentType'] === "Prepay"){
-                        $grandTotal += $payment['paymentAmount'];
+                    if($payment->paymentType === "Prepay"){
+                        $grandTotal += $payment->paymentAmount;
                     }
                 }
             }
@@ -188,13 +185,14 @@ final class PBKReceipt {
             <div class='container-fluid'>
                 <div class='receipt-header' >&nbsp;</div>
                 <div class='row receipt-body'>
-                    <div class='col' style='text-align: left; font-weight: bold'>" . $check->tab ." : " . $check->ordered ."<hr /></div>
+                    <div class='col' style='text-align: left; font-weight: bold'>" . $check['tab'] ." : " . $check['ordered'] ."<hr /></div>
                 </div>
                 <div class='row receipt-body'>
                     <div class='col'>";
             foreach ($check['items'] as $item){
                 $modLines = "";
                 $modPrice = 0;
+                $checkTotal = 0;
                 if(!empty($item['mods'])){
                     $modLines.= "<ul style='list-style-type: none; font-size: 75%; font-style: italic;'>";
                     foreach($item['mods'] as $mod){
@@ -240,7 +238,7 @@ final class PBKReceipt {
         if($grandTotal !==0 && !empty($d['payment'])){
                 $receiptBody .= "
             <div class='row'>
-                <div class='col'>Amount applied to " . $d['payment']['paymentType'] . " ending in " . $d['payment']['cardNum'] . ": ".$fmt->formatCurrency($grandTotal,"USD")."</div>
+                <div class='col'>Amount applied to " . $d['payment'][0]->paymentType . " ending in " . $d['payment'][0]->cardNum . ": ".$fmt->formatCurrency($grandTotal,"USD")."</div>
 </div>
             ";
         }

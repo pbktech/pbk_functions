@@ -47,7 +47,7 @@
         </thead>
     </table>
 </div>
-<div class="modal fade" id="receiptModal" tabindex="-1" role="dialog" aria-hidden="true">
+<div class="modal fade modal-lg" id="receiptModal" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
@@ -203,7 +203,10 @@ function omAJAX() { ?>
             dataType: "json",
             data: JSON.stringify(confirm),
             success: function(response) {
-              $('#receiptHeader').html(response);
+              $('#receiptLink').attr("href", data.receiptlink + '?print=yes');
+              $('#receiptURL').html(data.receiptlink);
+              $('#receiptBody').html(response.html);
+              $('#receiptModal').modal('show');
             }
           });
         });
