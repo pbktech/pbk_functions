@@ -144,7 +144,7 @@ final class PBKReceipt {
         <div class='row' style='padding-bottom: 1em;'>
             <div class='col'>
                 <div><img src='https://www.pbkgrouporder.com/assets/images/receipt-logo_1519923720_400.png' alt='Protein Bar & Kitchen' /></div>
-                <div style=' padding: '1em;'>Due on " . $d['delivery'] . "<br /><strong>" . $d['minibar'] . "</strong></div>
+                <div style=' padding: 1em;'>Due on " . $d['delivery'] . "<br /><strong>" . $d['minibar'] . "</strong></div>
             </div>
         </div>";
     if(!empty($d['checks'])){
@@ -160,7 +160,7 @@ final class PBKReceipt {
                     $discountTotal+= $discount->discountAmount;
                     $discounts .= "
                         <tr style='color: #dc3545; font-style: italic;'>
-                            <td style='text-align: left; width: 80%;'>" . $discount->discountName . " (" . $discount->promoCode . ")</td>
+                            <td style='text-align: right; width: 80%;'>" . $discount->discountName . " (" . $discount->promoCode . ")</td>
                             <td style='text-align: right;'>" . $fmt->formatCurrency($discount->discountAmount, "USD") . "</td>
                         </tr>";
                 }
@@ -217,13 +217,13 @@ final class PBKReceipt {
                     <table style='width: 100%;'>
                         <hr />
                         <tr>
-                            <td style='text-align: left; width: 80%;'>Subtotal:</td>
+                            <td style='text-align: right; width: 80%;'>Subtotal:</td>
                             <td style='text-align: right;'>".$fmt->formatCurrency($checkTotal,"USD")."</td>
                         </tr>" . $discounts;
             if($tipTotal > 0){
                 $receiptBody.="
                 <tr>
-                            <td style='text-align: left; width: 80%;'>Tip:</td>
+                            <td style='text-align: right; width: 80%;'>Tip:</td>
                             <td style='text-align: right;'>".$fmt->formatCurrency($tipTotal,"USD")."</td>
                         </tr>
                 ";
