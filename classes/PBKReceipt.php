@@ -116,11 +116,11 @@ final class PBKReceipt {
         $receiptBody = "";
         $receiptHeader = "
 <style>
-      .receipt {
-        adding: 8px 10px;
-        width: 500px;
-        }
-      .receipt-header {
+.receipt {
+    padding: 8px 10px;
+    max-width: 500px;
+}
+.receipt-header {
     height: 4px;
 }
 .receipt-body {
@@ -159,20 +159,20 @@ final class PBKReceipt {
                 foreach($check['discounts'] as $discount) {
                     $discountTotal+= $discount->discountAmount;
                     $discounts .= "
-                        <div class='row' style='color: #dc3545; font-style: italic;'>
-                            <div class='col-sm-9'>" . $discount->discountName . " (" . $discount->promoCode . ")</div>
-                            <div class='col-sm-3' style='text-align: right;'>" . $fmt->formatCurrency($discount->discountAmount, "USD") . "</div>
-                        </div>";
+                        <tr style='color: #dc3545; font-style: italic;'>
+                            <td style='text-align: left; width: 80%;'>" . $discount->discountName . " (" . $discount->promoCode . ")</td>
+                            <td style='text-align: right;'>" . $fmt->formatCurrency($discount->discountAmount, "USD") . "</td>
+                        </tr>";
                 }
             }
             if(!empty($check['payments'])){
                 foreach ($check['payments'] as $payment){
                     $paymentTotal += $payment->paymentAmount;
                     $payments .= "
-                        <div class='row' style='color: #dc3545; font-style: italic;'>
-                            <div class='col-sm-9'>" . $payment->paymentType . " - " . substr($payment->cardNum, -4) . ")</div>
-                            <div class='col-sm-3' style='text-align: right;'>" . $fmt->formatCurrency($payment->paymentAmount, "USD") . "</div>
-                        </div>";
+                        <tr class='row' style='color: #dc3545; font-style: italic;'>
+                            <td style='text-align: left; width: 80%;'>" . $payment->paymentType . " - " . substr($payment->cardNum, -4) . ")</td>
+                            <td style='text-align: right;'>" . $fmt->formatCurrency($payment->paymentAmount, "USD") . "</td>
+                        </tr>";
                     if(!empty($payment->tipAmount) && is_numeric($payment->tipAmount)){
                         $tipTotal+=$payment->tipAmount;
                     }
@@ -184,52 +184,52 @@ final class PBKReceipt {
             $receiptBody.="
             <div class='container-fluid'>
                 <div class='receipt-header' >&nbsp;</div>
-                <div class='row receipt-body'>
-                    <div class='col' style='text-align: left; font-weight: bold'>" . $check['tab'] ." : " . $check['ordered'] ."<hr /></div>
+                <div class='receipt-body'>
+                    <div style='text-align: left; font-weight: bold'>" . $check['tab'] ." : " . $check['ordered'] ."<hr /></div>
                 </div>
-                <div class='row receipt-body'>
-                    <div class='col'>";
+                <div class='receipt-body'>
+                    <table style='width: 100%;'>";
             foreach ($check['items'] as $item){
                 $modLines = "";
                 $modPrice = 0;
                 $checkTotal = 0;
                 if(!empty($item['mods'])){
-                    $modLines.= "<ul style='list-style-type: none; font-size: 75%; font-style: italic;'>";
+                    $modLines.= "<ul style='list-style-type: none; font-size: 75%; font-style: italic; color: #9d9d9d'>";
                     foreach($item['mods'] as $mod){
                         $modPrice += $mod['price'];
-                        $modLines.="<li class=\"text-muted\">" . $mod['name'] . "</li>";
+                        $modLines.="<li>" . $mod['name'] . "</li>";
                     }
                     $modLines.= "</ul>";
                 }
                 $linePrice = round($item['price'] + $modPrice, 2);
                 $checkTotal+=$linePrice;
                 $receiptBody.="
-                    <div class='row'>
-                        <div class='col-sm-9'>" . $item['quantity'] . " <span style='color: #F36C21; font-weight: bold;'>" . $item['name'] . "</span>$modLines</div>
-                        <div class='col-sm-3' style='text-align: right;'>".$fmt->formatCurrency($linePrice,"USD")."</div>
-                    </div>
+                    <td>
+                        <td style='text-align: left; width: 80%;'>" . $item['quantity'] . " <span style='color: #F36C21; font-weight: bold;'>" . $item['name'] . "</span>$modLines</td>
+                        <td style='text-align: right;'>".$fmt->formatCurrency($linePrice,"USD")."</td>
+                    </tr>
                 ";
             }
             $receiptBody.="
-                    </div>                
+                    </table>                
                 </div>
-                <div class='row receipt-body' style='font-size: 85%; text-align: right;'>
-                    <div class='col'>
+                <div class='receipt-body' style='font-size: 85%; text-align: right;'>
+                    <table style='width: 100%;'>
                         <hr />
-                        <div class='row'>
-                            <div class='col-sm-9'>Subtotal:</div>
-                            <div class='col-sm-3' style='text-align: right;'>".$fmt->formatCurrency($checkTotal,"USD")."</div>
-                        </div>" . $discounts;
-            if($tipTotal !== 0){
+                        <tr>
+                            <td style='text-align: left; width: 80%;'>Subtotal:</td>
+                            <td style='text-align: right;'>".$fmt->formatCurrency($checkTotal,"USD")."</td>
+                        </tr>" . $discounts;
+            if($tipTotal > 0){
                 $receiptBody.="
-                <div class='row'>
-                            <div class='col-sm-9'>Tip:</div>
-                            <div class='col-sm-3' style='text-align: right;'>".$fmt->formatCurrency($tipTotal,"USD")."</div>
-                        </div>
+                <tr>
+                            <td style='text-align: left; width: 80%;'>Tip:</td>
+                            <td style='text-align: right;'>".$fmt->formatCurrency($tipTotal,"USD")."</td>
+                        </tr>
                 ";
             }
             $receiptBody.=$payments . "
-                    </div>                
+                    </table>                
                 </div>
             </div>
             ";
