@@ -122,13 +122,16 @@ final class PBKReceipt {
 }
 .receipt-header {
     height: 4px;
+    max-width: 500px;
 }
 .receipt-body {
     padding: 10px;
     background-color: #FFFFFF;
+    max-width: 500px;
 }
 .receipt-footer {
     height: 4px;
+    max-width: 500px;
 }
 .receipt-body hr {
     margin: 5px 0;
@@ -136,6 +139,7 @@ final class PBKReceipt {
 .receipt table td {
     border:none;
     padding:0;
+    max-width: 500px;
 }
 </style>
 <div class='container' style='text-align: center; padding-top: 1em; font-family: Lora; padding-bottom: 2em; overflow-y: auto; overflow-x: hidden;'>
