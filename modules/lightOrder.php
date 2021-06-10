@@ -52,13 +52,18 @@ $ret.=$r->pbk_form_processing()."
     foreach($r->getBulbs() as $header =>$items){
         $ret.="<h3>" . $header . "</h3>
 <div class='row'>";
-        $count = 0;
         foreach($items as $id =>$name) {
             $ret .= "
-      <div class='col'><label for='bulb" . $id . "'>" . $name . "</label><input type='text' class='form-control' name='orderData[items][$name]' id='bulb" . $id . "' /></div>
+      <div class='col-auto'>
+        <label class=\"sr-only\" for=\"bulb" . $id . "\">" . $name . "</label>
+            <div class=\"input-group mb-2\">
+                <div class=\"input-group-prepend\">
+                    <div class=\"input-group-text\">" . $name . "</div>
+                </div>
+                <input type=\"number\" class=\"form-control\" style='width: 100px;' id=\"bulb" . $id . "\" name='orderData[items][$name]' />
+            </div>
+      </div>
         ";
-            ($count % 2 ) ? $ret.="</div><div class='row'>" : $ret.="";
-            $count++;
         }
         $ret.="</div>";
     }

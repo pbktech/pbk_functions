@@ -10,26 +10,26 @@
 */
 class Restaurant {
 
-	public $allRestaurants=array();
-	public $rinfo=array();
-	public $restaurantID=null;
-	public $isAboveStore=0;
-	public $timeZones=array("America/Chicago"=>"Central","America/New_York"=>"Eastern","America/Denver"=>"Mountain");
-	public $ownershipType=array('Owned', 'Leased', 'Financed');
-	public $violationLevel=array('Verbal', 'Written', 'Final Written', 'Termination');
-	public $violationType=array('Safety', 'PBK Look', 'Tardy', 'Accuracy','Cash Mishandling / Theft', 'Absent', 'Speed', 'Gross Misconduct', 'No Call / No Show', 'Connection', 'Leadership', 'Other');
-	public $violationSupport=array('Policy', 'The Blend', 'Recipes', 'The 4 Keys', 'Station Aids', 'Other');
-	public $deviceType=array();
-	public $orderTypes=array("LightBulb"=>"Supply","KeyRelease"=>"Key Release");
-	public $deviceStatus=array('Active', 'B-Stock', 'Retired', 'Returned');
-	private $bulbs=array("Light Bulbs" => [1=>"Nucleus Large", 2=>"Nucleus Small", 3=>"Overhead Lighting", 4=>"Refrigeration Lighting", 5=>"Other"], "Boosts" => [6=>"CBD", 8=>"Electrolyte Powder", 9=>"Elderberry Tincture" ]);
-	public $incidentTypes=array(
+	public array $allRestaurants=array();
+	public array $rinfo=array();
+	public int $restaurantID;
+	public int $isAboveStore=0;
+	public array $timeZones=array("America/Chicago"=>"Central","America/New_York"=>"Eastern","America/Denver"=>"Mountain");
+	public array $ownershipType=array('Owned', 'Leased', 'Financed');
+	public array $violationLevel=array('Verbal', 'Written', 'Final Written', 'Termination');
+	public array $violationType=array('Safety', 'PBK Look', 'Tardy', 'Accuracy','Cash Mishandling / Theft', 'Absent', 'Speed', 'Gross Misconduct', 'No Call / No Show', 'Connection', 'Leadership', 'Other');
+	public array $violationSupport=array('Policy', 'The Blend', 'Recipes', 'The 4 Keys', 'Station Aids', 'Other');
+	public array $deviceType=array();
+	public array $orderTypes=array("LightBulb"=>"Supply","KeyRelease"=>"Key Release");
+	public array $deviceStatus=array('Active', 'B-Stock', 'Retired', 'Returned');
+	private array $bulbs=array("Light Bulbs" => [], "Boosts" => [], "Uniform Shirts" => []);
+	public array $incidentTypes=array(
 		"foodborneIllness"=>array("Name"=>"Foodborne Illness/Foreign Object","sendTo"=>array("mcrawford@theproteinbar.com")),
 		"injury"=>array("Name"=>"Injury","sendTo"=>array("mcrawford@theproteinbar.com")),
 		"lostStolenProperty"=>array("Name"=>"Lost or Stolen Property","sendTo"=>array("mcrawford@theproteinbar.com","hrgroup@theproteinbar.com","jarbitman@theproteinbar.com"))
 	);
-	public $myRestaurants=array();
-	public $nhoSatus=array(
+	public array $myRestaurants=array();
+	public array $nhoSatus=array(
 	"Position"=>array(1=>"TM",2=>"TLIT",3=>"MIT"),
 	"Uniform"=>array(1=>"In Progress",2=>"Completed"),
 	"FHR Onboarding"=>array(1=>"In Progress",2=>"Completed"),
@@ -38,10 +38,15 @@ class Restaurant {
 	"Section"=>array(1=>"FOH",2=>"BOH"),
 	"Attendance"=>array(1=>"On Time",2=>"Late",3=>"No Show"),
 	);
-	public $Markets=array("Chicago","District of Columbia","Colorado");
+	public array $Markets=array("Chicago","District of Columbia","Colorado");
 	private $daysOfWeek=array("","","","","","","");
 
    public function __construct($restID=null) {
+       global $wpdb;
+           $options = $wpdb->get_results("SELECT supplyName, supplyID, supplySection FROM pbc_supply_definitions WHERE isActive = 1 ");
+        foreach($options as $o){
+            $this->bulbs[$o->supplySection][$o->supplyID]=$o->supplyName;
+       }
 	 	$this->checkAboveStore();
    	if(isset($restID) && is_numeric($restID)) {
    		$this->restaurantID=$restID;

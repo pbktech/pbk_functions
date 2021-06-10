@@ -193,7 +193,7 @@ final class PBKReceipt {
                     <div style='text-align: left; font-weight: bold; width: 500px;margin: auto;'>" . $check['tab'] ." : " . $check['ordered'] ."<hr /></div>
                 </div>
                 <div class='receipt-body'>
-                    <table style='width: 500px;margin: auto;'>";
+                    <table style='width: 500px;margin: auto;border: none;'>";
             foreach ($check['items'] as $item){
                 $modLines = "";
                 $modPrice = 0;
@@ -220,11 +220,14 @@ final class PBKReceipt {
                 </div>
                 <div class='receipt-body' style='font-size: 85%; text-align: right;'>
                         
-                    <table style='width: 500px;margin: auto;'>
+                    <table style='width: 500px;margin: auto;border: none;'>
                         <tr><td colspan='2'><hr /></td></tr>
                         <tr>
                             <td style='text-align: right; width: 80%;'>Subtotal:</td>
                             <td style='text-align: right;'>".$fmt->formatCurrency($checkTotal,"USD")."</td>
+                        </tr><tr>
+                            <td style='text-align: right; width: 80%;'>Tax:</td>
+                            <td style='text-align: right;'>".$fmt->formatCurrency($check['totals']['tax'],"USD")."</td>
                         </tr>" . $discounts;
             if($tipTotal > 0){
                 $receiptBody.="
