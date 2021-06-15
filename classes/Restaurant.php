@@ -1308,7 +1308,7 @@ AND pbc_users.id=nhoHost AND pbc_pbrestaurants.restaurantID=nhoLocation");
 		foreach($i->items as $name => $quantity) {
 		    if(!empty($quantity)) {
                 $return .= "		    <div class='row'>
-		      <div class='col'><label for='quantity'><strong>" . $name . "</strong><br><div class='alert alert-secondary'>" . $quantity . "</div></div>
+		      <div class='col'><label for='quantity'><strong>" . $name . "</strong><br><br><div class='alert alert-secondary'>" . $quantity . "</div></div>
 		    </div>
 ";
             }
