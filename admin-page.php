@@ -131,7 +131,7 @@ function pbr_orders() {
                 break;
         }
         $email = $wpdb->get_var("SELECT email FROM pbc_pbk_orders,pbc_pbrestaurants WHERE idpbc_pbk_orders = '" . $_POST['id'] . "' AND pbc_pbk_orders.restaurantID=pbc_pbrestaurants.restaurantID");
-        $report->reportEmail($email . ",laura@theproteinbar.com", $body, "Order Updated", $attach);
+        $report->reportEmail($email . ",supplies@theproteinbar.com", $body, "Order Updated", $attach);
         wp_redirect(admin_url('admin.php?page=pbr-orders&type=' . $_POST['type'] . '&m=7'));
     }
     if (isset($_GET['type']) && array_key_exists($_GET['type'], $restaurant->orderTypes)) {

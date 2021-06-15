@@ -38,7 +38,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
     $html="<div>There has been a new supply order placed for ".$r->getRestaurantField("restaurantName").".";
     $current_user = wp_get_current_user();
     $attach=$r->showOrderInfo($wpdb->insert_id,1);
-    $report->reportEmail($current_user->user_email.",laura@theproteinbar.com",$attach['html'],"Supply Order",$attach['pdf']);
+    $report->reportEmail($current_user->user_email.",supplies@theproteinbar.com",$attach['html'],"Supply Order",$attach['pdf']);
     switchpbrMessages(6);
   }
 }
