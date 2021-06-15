@@ -813,14 +813,14 @@ if($_GET['nhoDate']!="_new"){
 	  	'margin_footer' => 0,
 			'CSSselectMedia' => 'Screen'
 	  ]);
-		$stylesheet=file_get_contents(dirname(dirname(__FILE__)) . "/assets/css/mpdf-bootstrap.css");
+	//	$stylesheet=file_get_contents(dirname(dirname(__FILE__)) . "/assets/css/mpdf-bootstrap.css");
 	  $mpdf->SetTitle($content->title);
 	  $mpdf->SetAuthor("Protein Bar & Kitchen");
 		if(isset($content->watermark)){
 			$mpdf->SetWatermarkText($content->watermark);
 			$mpdf->showWatermarkText = true;
 		}
-		$mpdf->WriteHTML($stylesheet,\Mpdf\HTMLParserMode::HEADER_CSS);
+	//	$mpdf->WriteHTML($stylesheet,\Mpdf\HTMLParserMode::HEADER_CSS);
 	  $mpdf->WriteHTML(utf8_encode($content->html),\Mpdf\HTMLParserMode::HTML_BODY);
 		if(isset($content->fileName)){
 			$filename=$content->fileName . ".pdf";
