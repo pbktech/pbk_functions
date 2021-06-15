@@ -1304,12 +1304,12 @@ AND pbc_users.id=nhoHost AND pbc_pbrestaurants.restaurantID=nhoLocation");
 		    <div class='row'>
 		      <div class='col'><label for='reporterName'><strong>Name</strong><br><div class='alert alert-secondary'>".$i->reporterName."</div></div>
 		      <div class='col'><label for='restaurantID'><strong>Restaurant</strong><br><div class='alert alert-secondary'>".$d->restaurantName."</div></div>
-		    </div>";
+		    </div><br><br>";
 		foreach($i->items as $name => $quantity) {
 		    if(!empty($quantity)) {
                 $return .= "		    <div class='row'>
-		      <div class='col'><label for='quantity'><strong>" . $name . "</strong><br><br><div class='alert alert-secondary'>" . $quantity . "</div></div>
-		    </div>
+		      <div class='col'><label for='quantity'><strong>" . $name . "</strong><br><div class='alert alert-secondary'>" . $quantity . "</div></div>
+		    </div><br><br>
 ";
             }
         }
