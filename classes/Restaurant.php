@@ -1306,10 +1306,12 @@ AND pbc_users.id=nhoHost AND pbc_pbrestaurants.restaurantID=nhoLocation");
 		      <div class='col'><label for='restaurantID'><strong>Restaurant</strong><br><div class='alert alert-secondary'>".$d->restaurantName."</div></div>
 		    </div>";
 		foreach($i->items as $name => $quantity) {
-            $return.="		    <div class='row'>
-		      <div class='col'><label for='quantity'><strong>".$name."</strong><br><div class='alert alert-secondary'>".$quantity."</div></div>
+		    if(!empty($quantity)) {
+                $return .= "		    <div class='row'>
+		      <div class='col'><label for='quantity'><strong>" . $name . "</strong><br><div class='alert alert-secondary'>" . $quantity . "</div></div>
 		    </div>
 ";
+            }
         }
 		if(!empty($i->other)) {
             $return .= "
