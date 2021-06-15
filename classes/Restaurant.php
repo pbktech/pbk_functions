@@ -11,7 +11,7 @@
 class Restaurant {
 
 	public array $allRestaurants=array();
-	public array $rinfo=array();
+	public $rinfo=array();
 	public int $restaurantID;
 	public int $isAboveStore=0;
 	public array $timeZones=array("America/Chicago"=>"Central","America/New_York"=>"Eastern","America/Denver"=>"Mountain");

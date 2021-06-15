@@ -204,15 +204,15 @@ $currency = ["Quarters" => .25, "Dimes" => .1, "Nickels" => .05, "Pennies" => .0
     <div class="row" id="message"></div>
     <div class="row">
         <div class="col">
-            <label for="firstName">First Name</label><input id="firstName" class="form-control" tabindex="1" required/>
+            <label for="firstName">First Name</label><input id="firstName" class="form-control" tabindex="0" required/>
         </div>
         <div class="col">
-            <label for="lastName">Last Name</label><input id="lastName" class="form-control" tabindex="2" required/>
+            <label for="lastName">Last Name</label><input id="lastName" class="form-control" tabindex="1" required/>
         </div>
     </div>
     <div class="row">
         <div class="col">
-            <label for="restaurantPicker">Restaurant</label><select class="custom-select" tabindex="3"
+            <label for="restaurantPicker">Restaurant</label><select class="custom-select" tabindex="2"
                                                                     id="restaurantPicker" required></select>
         </div>
         <div class="col">
@@ -246,7 +246,7 @@ $currency = ["Quarters" => .25, "Dimes" => .1, "Nickels" => .05, "Pennies" => .0
     </div>
     <div class="row row-cols-2" style="text-align: center;">
         <?php
-        $tab = 4;
+        $tab = 3;
         foreach ($currency as $c => $d) {
             $tab++;
             ?>
