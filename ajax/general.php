@@ -4,6 +4,7 @@ add_action( 'wp_ajax_get_restaurantOptions', 'restaurantOptions' );
 add_action( 'wp_ajax_set_signature', 'updateSignature' );
 add_action( 'wp_ajax_add_google_user', 'addGoogleUser' );
 add_action( 'wp_ajax_get_support_contacts', 'supportContacts' );
+add_action( 'wp_ajax_get_ssc_contacts', 'sscContacts' );
 
 function availableRestaurants(){
     $restaurants = array();
@@ -25,6 +26,14 @@ function availableRestaurants(){
 function supportContacts(){
     global $wpdb;
     $contacts = $wpdb->get_results("SELECT category, platform, services, contact, pbk_contact FROM pbc_support_contacts WHERE isActive=1");
+    header('Content-Type: application/json');
+    echo json_encode((object)["data" => $contacts]);
+    wp_die();
+}
+
+function sscContacts(){
+    global $wpdb;
+    $contacts = $wpdb->get_results("select position, support_provided, phone, display_name, user_email FROM pbc_ssc_contacts psc, pbc_users pu WHERE pu.ID = psc.userID ORDER BY display_name");
     header('Content-Type: application/json');
     echo json_encode((object)["data" => $contacts]);
     wp_die();
