@@ -99,6 +99,7 @@ include('shortcodes/pbr_show_restaurants.php');
 include('shortcodes/pbr_show_restaurant_hours.php');
 include('shortcodes/pbk_showChildPages.php');
 include('shortcodes/pbk_checkTips.php');
+include('shortcodes/pbk_directoryServices.php');
 
 /*AJAX*/
 include('ajax/restClosure.php');

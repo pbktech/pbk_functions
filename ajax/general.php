@@ -3,6 +3,7 @@ add_action( 'wp_ajax_get_availableRestaurants', 'availableRestaurants' );
 add_action( 'wp_ajax_get_restaurantOptions', 'restaurantOptions' );
 add_action( 'wp_ajax_set_signature', 'updateSignature' );
 add_action( 'wp_ajax_add_google_user', 'addGoogleUser' );
+add_action( 'wp_ajax_get_support_contacts', 'supportContacts' );
 
 function availableRestaurants(){
     $restaurants = array();
@@ -18,6 +19,14 @@ function availableRestaurants(){
     }
     header('Content-Type: application/json');
     echo json_encode((object)["results" => $restaurants, "pagination" => (object)["more" => true]]);
+    wp_die();
+}
+
+function supportContacts(){
+    global $wpdb;
+    $contacts = $wpdb->get_results("SELECT category, platform, services, contact, pbk_contact FROM pbc_support_contacts WHERE isActive=1");
+    header('Content-Type: application/json');
+    echo json_encode((object)["data" => $contacts]);
     wp_die();
 }
 
