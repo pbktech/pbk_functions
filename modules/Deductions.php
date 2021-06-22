@@ -30,6 +30,7 @@ $products["Hats"]["Visor"]=9.4;
 $products["Other"]["Name Tag"]=3.21;
 if ($_SERVER['REQUEST_METHOD'] == 'POST'){
   $total=0;
+  $count = 0;
   $output="<table>
   <tr><td>Entered By:</td><td>".$_POST['data']['name']."</td></tr>
   <tr><td>Employee:</td><td>".$_POST['data']['employee']."</td></tr>
@@ -48,7 +49,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST'){
   $output.="<tr><td><strong>Total Deduction:</strong></td><td>".$toast->switchNegNumber($total,2)."</td></tr>";
   $_POST['data']['total']=$total;
   $json=json_encode($_POST['data']);
-  $toast->reportEmail("mcrawford@theproteinbar.com,briana@theproteinbar.com",$output,"New Deduction Request");
+  $toast->reportEmail("mcrawford@theproteinbar.com,hrgroup@theproteinbar.com",$output,"New Deduction Request");
   $category="Deductions";
   $stmt = $toast->mysqli->prepare("INSERT INTO pbc2.pbc_miscData (category,jsonData)VALUES(?,?)");
   $stmt->bind_param('ss',$category,$json);
@@ -98,7 +99,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST'){
          $count++;
        }
      }
-     $ret.="</table></div><input type='hidden' name='rid' value='".$_REQUEST['rid']."' /><input type='hidden' name='data[items][restaurant]' value='".$restaurant->restaurantName."' /><input type='submit' value='Submit' />
+     $ret.="</table></div><input type='hidden' name='rid' value='".$_REQUEST['rid']."' /><input type='hidden' name='data[restaurant]' value='".$restaurant->restaurantName."' /><input type='submit' value='Submit' />
      </form>
     </div>
     ";
