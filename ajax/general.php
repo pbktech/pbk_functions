@@ -5,6 +5,54 @@ add_action( 'wp_ajax_set_signature', 'updateSignature' );
 add_action( 'wp_ajax_add_google_user', 'addGoogleUser' );
 add_action( 'wp_ajax_get_support_contacts', 'supportContacts' );
 add_action( 'wp_ajax_get_ssc_contacts', 'sscContacts' );
+add_action( 'wp_ajax_get_directory', 'get_directory' );
+add_action( 'wp_ajax_get_ticket_list', 'get_ticket_list' );
+
+function get_ticket_list(){
+    global $wpdb;
+    $return = array();
+    $cu = wp_get_current_user();
+    $query = "SELECT * FROM pbc_support_ticket pst, pbc_support_items psi, pbc_pbrestaurants pp WHERE pst.itemID = psi.itemID AND pst.restaurantID = pp.restaurantID AND ticketStatus != 'Closed'";
+    if (!in_array("administrator", $cu->roles) && !in_array("editor", $cu->roles)  && !in_array("author", $cu->roles)) {
+        $query.= " AND pp.restaurantID IN (SELECT restaurantID FROM pbc_pbr_managers WHERE managerID = '" . $cu->ID . "')";
+    }
+    $result = $wpdb->get_results($query);
+    if ($result){
+        foreach ($result as $r){
+            $return[] = [
+                "date" => date("m/d/Y g:i a", strtotime($r->openedTime)),
+                "restaurant" => $r->restaurantName,
+                "item" => $r->itemName,
+                "status" => $r->tiketStatus,
+                "actions" => ""
+            ];
+        }
+    }
+    header('Content-Type: application/json');
+    echo json_encode((object)["data" => $return]);
+    wp_die();
+}
+
+function get_directory(){
+    $return = array();
+    global $wpdb;
+    $restaurants = $wpdb->get_results("SELECT * FROM pbc_pbrestaurants where isOpen=1 order by restaurantID");
+    foreach($restaurants as $restaurant){
+        $r = new Restaurant($restaurant->restaurantID);
+        $return[] = [
+            "restaurantID" => $restaurant->restaurantID,
+            "restaurant" => "<a title=\"Restaurant Hours\" href=\"restaurant-hours/#".$restaurant->restaurantCode."\">#".$restaurant->restaurantID." ".$restaurant->restaurantName."</a><br />" .date("m/d/Y",strtotime($restaurant->openingDate)),
+            "email" => "<a href=\"mailto:".$restaurant->email."\" target=\"_blank\">".str_replace("theproteinbar.com","", $restaurant->email)."</a>",
+            "phone" => "<a href=\"tel:+1".str_replace(".", '', $restaurant->phone)."\">".$restaurant->phone."</a>",
+            "address" => "<a href=\"https://maps.google.com/maps?q=Protein+Bar+".str_replace(" ", "+", $restaurant->address1). "+" . $restaurant->city."+".$restaurant->state."+".$restaurant->zip."\" target='_blank'>" . $restaurant->address1 . "<br />". $restaurant->city.", ".$restaurant->state." ".$restaurant->zip."</a>",
+            "gmagm" => "<a href=\"mailto:".$r->getManagerEmail("GM")."\" target=\"_blank\">" .$r->getManagerName("GM"). "</a><br /><a href=\"mailto:".$r->getManagerEmail("AGM")."\" target=\"_blank\">" .$r->getManagerName("AGM"). "</a>",
+            "am" => "<a href=\"mailto:".$r->getManagerEmail("AM")."\" target=\"_blank\">" .$r->getManagerName("AM"). "</a>"
+        ];
+    }
+    header('Content-Type: application/json');
+    echo json_encode((object)["data" => $return]);
+    wp_die();
+}
 
 function availableRestaurants(){
     $restaurants = array();

@@ -90,6 +90,8 @@ include __DIR__ . '/classes/PBKOrder.php';
 include __DIR__ . '/classes/PBKItem.php';
 include __DIR__ . '/classes/PBKCheck.php';
 include __DIR__ . '/classes/PBKPayment.php';
+include __DIR__ . '/classes/PBKSupport.php';
+include __DIR__ . '/classes/PBKSupportTicket.php';
 
 /*Shortcodes*/
 include('shortcodes/pbrf_showToastFunctions.php');
@@ -100,6 +102,7 @@ include('shortcodes/pbr_show_restaurant_hours.php');
 include('shortcodes/pbk_showChildPages.php');
 include('shortcodes/pbk_checkTips.php');
 include('shortcodes/pbk_directoryServices.php');
+include('shortcodes/pbk_Support.php');
 
 /*AJAX*/
 include('ajax/restClosure.php');
