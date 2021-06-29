@@ -45,6 +45,7 @@ function pbk_scripts()
     wp_enqueue_style('timepicker_style', '//cdnjs.cloudflare.com/ajax/libs/timepicker/1.3.5/jquery.timepicker.min.css');
     wp_enqueue_style('jquery-ui_style', '//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css');
     wp_enqueue_style('bootstrap_style', '//cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css');
+//    wp_enqueue_style('bootstrap_style', 'https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css');
     wp_enqueue_style('datatables_bootstrap_style', 'https://cdn.datatables.net/1.10.23/css/dataTables.bootstrap4.min.css');
     wp_enqueue_style('clockpicker_style', PBKF_URL . '/assets/css/clockpicker.css');
     wp_enqueue_style('clockpicker_standalone_style', PBKF_URL . '/assets/css/standalone.css');
@@ -56,6 +57,7 @@ function pbk_scripts()
     wp_enqueue_script('timepicker_script', '//cdnjs.cloudflare.com/ajax/libs/timepicker/1.3.5/jquery.timepicker.min.js');
     wp_enqueue_script('jquery-ui_script', '//code.jquery.com/ui/1.12.1/jquery-ui.js');
     wp_enqueue_script('popper_script', '//cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js');
+//    wp_enqueue_script('bootstrap_script', '//cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.bundle.min.js');
     wp_enqueue_script('bootstrap_script', '//cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.bundle.min.js');
     wp_enqueue_script('sort_tables_script_print', '//cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.36/pdfmake.min.js');
     wp_enqueue_script('sort_tables_script_print_fonts', '//cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.36/vfs_fonts.js');
@@ -111,6 +113,7 @@ include('ajax/Nutritional.php');
 include 'ajax/orderManagement.php';
 include 'ajax/general.php';
 include 'ajax/cashCount.php';
+include 'ajax/pbkSupport.php';
 
 /*Admin Pages*/
 include('admin-page.php'); // the plugin options page HTML and save functions
