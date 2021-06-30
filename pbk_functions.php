@@ -113,7 +113,7 @@ include('ajax/Nutritional.php');
 include 'ajax/orderManagement.php';
 include 'ajax/general.php';
 include 'ajax/cashCount.php';
-include 'ajax/pbkSupport.php';
+include 'classes/support_mods/pbkSupport.php';
 
 /*Admin Pages*/
 include('admin-page.php'); // the plugin options page HTML and save functions
