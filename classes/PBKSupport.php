@@ -20,6 +20,11 @@ class PBKSupport {
         }
     }
 
+    final public function getNextSupportItemID(): ?int{
+        global $wpdb;
+        return $wpdb->get_var("SELECT MAX(itemID)+1 as 'nextItem' FROM pbc_support_items psi WHERE itemID !=2147483646 AND itemID !=2147483647");
+    }
+
     final private function showTicketPage($page){
         if(!empty($page)) {
             require_once __DIR__ . "/support_mods/" . $page;

@@ -35,5 +35,5 @@ if (count($allIssues) > 0) {
     </div>
     <?php
 } else {
-    include "ticketStart.php";
+    include "ticketEditor.php";
 }
