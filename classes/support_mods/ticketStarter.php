@@ -57,14 +57,13 @@ if ($supportItems) {
             const steps = issue.commonIssues[issueID].steps;
 
             if (thisIssue.isEmergency === '1') {
-              $('#workArea').html('');
               $('#workArea').append('<div class="row" style="width: 100%;"><div class="alert alert-danger" style="text-align: center;">THIS IS AN EMERGENCY PLEASE CONTACT THE VENDOR BELOW</div></div>');
               return;
             }
             if (steps.length) {
 
             } else {
-              $('#workArea').hide();
+              $('#workArea').remove();
               $('#ticketContainer').show();
               $('.modal-footer').append('<button type="button" class="btn btn-success" >Save</button>');
             }
