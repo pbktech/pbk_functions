@@ -11,7 +11,7 @@ $result = $wpdb->get_results($query);
 ?>
 <div class="container">
     <div class="row">
-        <div class="col-sm-2">
+        <div class="col-2">
             <div class="form-group">
                 <label for="restaurant">Restaurant</label>
                 <?php

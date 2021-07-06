@@ -21,6 +21,14 @@ if ($supportItems) {
       function clearInputs() {
 
       }
+      function createWorkArea(html){
+        $('#workArea').remove();
+        $('.modal-body').append($('<div/>', {
+          id: 'workArea',
+          className: 'container-fluid',
+          html: html
+        }));
+      }
 
       const allIssues =  <?php echo json_encode($items);?>;
       $(document).ready(function() {
@@ -43,12 +51,8 @@ if ($supportItems) {
           for (let i = 0; i < issue.commonIssues.length; i++) {
             html += '<div class="row"><button type="button" class="btn btn-link btn-lg btn-block commonIssue" data-itemid="' + data.id + '" data-issueid="' + i + '" >' + issue.commonIssues[i].ci.issueTitle + '</button></div>';
           }
+          createWorkArea(html);
 
-          $('.modal-body').append($('<div/>', {
-            id: 'workArea',
-            className: 'container-fluid',
-            html: html
-          }));
           $('.modal-header').html('<h3>' + data.text + '</h3>');
 
           $('.commonIssue').click(function(e) {
@@ -57,7 +61,7 @@ if ($supportItems) {
             const steps = issue.commonIssues[issueID].steps;
 
             if (thisIssue.isEmergency === '1') {
-              $('#workArea').append('<div class="row" style="width: 100%;"><div class="alert alert-danger" style="text-align: center;">THIS IS AN EMERGENCY PLEASE CONTACT THE VENDOR BELOW</div></div>');
+              createWorkArea('<div class="row" style="width: 100%;"><div class="alert alert-danger" style="text-align: center;">THIS IS AN EMERGENCY PLEASE CONTACT THE VENDOR BELOW</div></div>');
               return;
             }
             if (steps.length) {
@@ -65,7 +69,7 @@ if ($supportItems) {
             } else {
               $('#workArea').remove();
               $('#ticketContainer').show();
-              $('.modal-footer').append('<button type="button" class="btn btn-success" >Save</button>');
+              $('.modal-footer').append('<button type="button" class="btn btn-success" id="saveButton" >Save</button>');
             }
             $('.closeModal').click(function() {
               /*delete data, issues, issue, issueID, thisIssue, steps;*/
@@ -74,7 +78,8 @@ if ($supportItems) {
         });
         $('#issueModal').on('hidden.bs.modal', function() {
           $('#issueSelector').val(null).trigger('change');
-          $('#workArea').html('');
+          $('#workArea').remove();
+          $('#saveButton').remove();
           $('#workArea').show();
           $('#ticketContainer').hide();
           $('.modal-header').html('');
@@ -97,9 +102,6 @@ if ($supportItems) {
                     </button>
                 </div>
                 <div class="modal-body">
-                    <div class="container-fluid" id="workArea">
-
-                    </div>
                     <div class="container-fluid" id="ticketContainer" style="display: none;">
                         <?php include "ticketEditor.php"; ?>
                     </div>
