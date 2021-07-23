@@ -11,7 +11,7 @@ $cu = wp_get_current_user();
 if (in_array("administrator", $cu->roles) || in_array("editor", $cu->roles)) {
     $toast->isAboveStore = 1;
 }
-if ($toast->isAboveStore == 0) {
+if (count($rests) === 1) {
     $_REQUEST['rid'] = $rests[0]->restaurantID;
 }
 if (isset($_REQUEST['rid']) && $_REQUEST['rid'] == 4) {
