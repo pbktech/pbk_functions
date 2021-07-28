@@ -616,7 +616,7 @@ pbc2.pbc_ToastCheckHeaders.ToastOrderID=pbc2.pbc_ToastOrderHeaders.GUID";
 	}
 	function getPaymentInfo($guid) {
 		$q="SELECT closedDate,paymentType,openedDate,totalAmount,tipAmount,paidDate,checkNumber,tabName FROM pbc2.pbc_ToastOrderPayment,pbc2.pbc_ToastCheckHeaders
-		WHERE pbc2.pbc_ToastOrderPayment.ToastCheckID=pbc_ToastCheckHeaders.GUID AND pbc_ToastCheckHeaders.GUID='".$guid."'";
+		WHERE pbc2.pbc_ToastOrderPayment.ToastCheckID=pbc_ToastCheckHeaders.GUID AND pbc_ToastOrderPayment.ToastCheckID='".$guid."'";
 		$stmt = $this->mysqli->prepare($q);
 		$stmt->execute();
 		$result = $stmt->get_result();
@@ -736,9 +736,9 @@ group by externalEmployeeId,employeeName";
 	function getAvailableRestaurants() {
 		$cu = wp_get_current_user();
 		if(in_array("administrator", $cu->roles) || in_array("editor", $cu->roles)) {
-			$q="SELECT restaurantID,restaurantName FROM  pbc_pbrestaurants WHERE isOpen='1'";
+			$q="SELECT restaurantID,restaurantName, restaurantID as 'id', restaurantName as 'text' FROM  pbc_pbrestaurants WHERE isOpen='1'";
 		}else {
-			$q="SELECT restaurantID,restaurantName FROM  pbc_pbrestaurants WHERE restaurantID IN (SELECT restaurantID  FROM pbc_pbr_managers WHERE pbc_pbr_managers.managerID='".$cu->ID."')";
+			$q="SELECT restaurantID,restaurantName,restaurantID as 'id', restaurantName as 'text' FROM  pbc_pbrestaurants WHERE restaurantID IN (SELECT restaurantID  FROM pbc_pbr_managers WHERE pbc_pbr_managers.managerID='".$cu->ID."')";
 		}
 		$stmt = $this->mysqli->prepare($q);
 		$stmt->execute();

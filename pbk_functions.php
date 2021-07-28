@@ -1,4 +1,5 @@
 <?php
+putenv('GOOGLE_APPLICATION_CREDENTIALS=/var/www/html/silicon-will-769-d21d82edbb3a.json');
 error_reporting(E_ALL);
 /*
 Plugin Name: Protein Bar & Kitchen Custom Functions
@@ -116,6 +117,7 @@ include 'ajax/orderManagement.php';
 include 'ajax/general.php';
 include 'ajax/cashCount.php';
 include 'classes/support_mods/pbkSupport.php';
+include 'ajax/tips.php';
 
 /*Admin Pages*/
 include('admin-page.php'); // the plugin options page HTML and save functions
@@ -273,7 +275,21 @@ function randomPassword(): string{
     }
     return implode($pass); //turn the array into a string
 }
+use Google\Cloud\Storage\StorageClient;
 
+function upload_object($bucketName, $objectName, $source){
+    $storage = new StorageClient();
+    $file = fopen($source, 'r');
+    $bucket = $storage->bucket($bucketName);
+    $object = $bucket->upload($file, [
+        'name' => $objectName
+    ]);
+    /*
+    echo "<pre>";
+    print_r($object);
+    echo "</pre>";
+    */
+}
 function acme_login_logo_image_styles()
 { ?>
     <style type="text/css">

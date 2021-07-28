@@ -1,6 +1,23 @@
 <?php
 add_action( 'wp_ajax_getSupportMod', 'getSupportMod' );
 add_action( 'wp_ajax_get_ticket_list', 'get_ticket_list' );
+add_action( 'wp_ajax_uploadPBKImage', 'uploadPBKImage' );
+
+function uploadPBKImage(){
+    $answer = [];
+    global $wpdb;
+
+    foreach($_FILES['files']['name'] as $f => $name){
+        $fileInfo = explode(".", $name);
+        $ext = end($fileInfo);
+        $wpdb->insert("pbc_files_stored",["fileName" => json_encode(["name" => $name, "extension" =>$ext])], ['%s']);
+        $fileID = $wpdb->insert_id;
+        $guid = $wpdb->get_var("SELECT UuidFromBin(publicUnique) FROM pbc_files_stored WHERE fileID = " . $fileID);
+        upload_object("pbk-support", $guid . "." . $ext, $_FILES["files"]["tmp_name"][$f]);
+        $answer[] = ["name" => basename($name), "fileID" => $fileID];
+    }
+    showJsonAjax($answer);
+}
 
 function get_ticket_list(){
     global $wpdb;

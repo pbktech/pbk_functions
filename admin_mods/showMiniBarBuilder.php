@@ -108,7 +108,7 @@ jQuery(document).ready(function() {
           </div>
           <div class='row'>
             <div class='col'>
-              <label for='imageFile'><strong>Order Link</strong></label>
+              <label for='linkSlug'><strong>Order Link</strong></label>
               <input type='text' class='form-control' name ='linkSlug' value='<?php echo $links['link'];?>' />
             </div>
             <div class='col'>
@@ -142,7 +142,7 @@ jQuery(document).ready(function() {
         <div id="demographics">
           <div class='row'>
             <div class='col'>
-              <label for='lat'><strong>Latitute</strong></label><br />
+              <label for='lat'><strong>Latitude</strong></label><br />
               <input type='text' class='form-control' id='lat' value='<?php echo $links['lat'];?>' disabled/><br />
               <input type='hidden' name='imageFile[lat]' value='<?php echo $links['lat'];?>'/>
             </div>
