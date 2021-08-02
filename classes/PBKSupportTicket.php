@@ -4,32 +4,178 @@
 class PBKSupportTicket {
 
     private int $id;
+    private string $guid;
+    private int $restaurantID;
+    private int $itemID;
+    private int $area;
+    private string $personName;
+    private string $description;
+    private string $openedTime;
+    private string $status;
+    private array $files;
 
     public function __construct(string $id) {
-        if($id === "_NEW"){
+        if ($id === "_NEW") {
             $this->setTicketID(0);
-        }else{
-            if($ticket = $this->checkTicketValidity($id)){
+            $this->status = "new";
+        } else {
+            if ($ticket = $this->checkTicketValidity($id)) {
                 $this->setTicketID($ticket);
+                $this->status = "update";
             }
         }
     }
 
-    private function setTicketID(string $id){
+    private function setTicketID(int $id) {
         $this->id = $id;
     }
-    public function getTicketID(): ?int{
-        if(!empty($this->id)) {
+
+    public function getTicketID(): ?int {
+        if (!empty($this->id)) {
             return $this->id;
         }
         return null;
     }
-    private function checkTicketValidity(string $id): ?string{
+
+    private function loadTicketDetails(): void {
         global $wpdb;
-        $var = $wpdb->get_var("SELECT ticketID FROM pbc_support_ticket WHERE publicUnique = UuidToBin($id)");
-        if($var){
+        $d = $wpdb->get_row("SELECT * FROM pbc_support_ticket pst, pbc_support_items psi WHERE psi.itemID = pst.areaID AND pst.ticketID = " . $this->id);
+        $this->area = $d->itemName;
+        $this->openedTime = $d->openedTime;
+        $this->restaurantID = $d->restaurantID;
+    }
+
+    private function checkTicketValidity(string $id): ?int {
+        global $wpdb;
+        $var = $wpdb->get_var("SELECT ticketID FROM pbc_support_ticket WHERE publicUnique = UuidToBin('" . $id . "')");
+        if ($var) {
+            $this->loadTicketDetails();
             return $var;
         }
         return false;
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function addNewTicket(int $uid): ?array {
+        global $wpdb;
+        $wpdb->insert(
+            "pbc_support_ticket",
+            [
+                "userID" => $uid,
+                "ticketStatus" => "Open",
+                "userName" => $this->personName,
+                "openedTime" => date("Y-m-d G:i:s"),
+                "restaurantID" => $this->restaurantID,
+                "areaID" => $this->area,
+                "itemID" => $this->itemID
+            ],
+            ["%d", "%s", "%s", "%s", "%d", "%d", "%d"]
+        );
+        $this->setTicketID($wpdb->insert_id);
+        $this->guid = $wpdb->get_var("SELECT UuidFromBin(publicUnique) FROM pbc_support_ticket WHERE ticketID = " . $this->id);
+        if (!empty($this->guid)) {
+            return $this->recordResponse($uid);
+        }
+        return null;
+    }
+
+    private function recordResponse(int $uid): ?array {
+        global $wpdb;
+        global $wp;
+        $wpdb->insert(
+            "pbc_support_ticket_responses",
+            [
+                "userID" => $uid,
+                "ticketID" => $this->id,
+                "responseName" => $this->personName,
+                "responseText" => $this->description,
+                "responseFiles" => json_encode($this->files)
+            ],
+            ["%d", "%d", "%s", "%s", "%s"]
+        );
+        $updateID = $wpdb->insert_id;
+        $restaurant = $wpdb->get_var("SELECT restaurantName FROM pbc_pbrestaurants WHERE restaurantID = " . $this->restaurantID);
+        $emails = $this->getEmails();
+
+        $userEmail = $wpdb->get_var("SELECT user_email FROM pbc_users WHERE ID = " . $uid);
+
+        if (!in_array($userEmail, $emails)) {
+            $emails[] = $userEmail;
+        }
+
+        $notify = new PBKNotify();
+        $subject = $this->status === "new" ? "New Ticket for " : "Ticket Updated for ";
+        $subject .= $restaurant;
+        if (!$issue = $wpdb->get_var("SELECT issueTitle FROM pbc_support_common psc, pbc_support_ticket pst WHERE psc.issueID = pst.itemID AND ticketID = " . $this->id)) {
+            $issue = " --- ";
+        }
+        $notify->setMethod("sendEmail");
+        $notify->setRecipients($emails);
+        $notify->setSubject($subject);
+        $notify->setTemplate("ticket.html");
+        $notify->setTemplateOptions([
+            "name" => $this->personName,
+            "restaurant" => $restaurant,
+            "device" => $wpdb->get_var("SELECT itemName FROM pbc_support_items psi, pbc_support_ticket pst WHERE psi.itemID = pst.areaID AND ticketID = " . $this->id),
+            "issue" => $issue,
+            "opened" => $wpdb->get_var("SELECT DATE_FORMAT(openedTime, '%m/%d/%Y %r') FROM pbc_support_ticket WHERE ticketID = " . $this->id),
+            "updated" => $wpdb->get_var("SELECT DATE_FORMAT(responseTime, '%m/%d/%Y %r') FROM pbc_support_ticket_responses WHERE responseID = " . $updateID),
+            "description" => $this->description,
+            "link" => add_query_arg(["id" => $this->guid], home_url($path = 'support', $scheme = 'https'))
+        ]);
+        return $notify->sendMessage();
+    }
+
+    private function getEmails(): array {
+        global $wpdb;
+        $returnEmails = [];
+        $emails = $wpdb->get_results("SELECT user_email FROM pbc_users WHERE ID IN (
+    SELECT userID FROM pbc_support_contact psc, pbc_support_items psi WHERE psc.department = psi.department AND psi.itemID = '" . $this->area . "')");
+        if ($emails) {
+            foreach ($emails as $email) {
+                $returnEmails[] = $email->user_email;
+            }
+        }
+
+        $emails = $wpdb->get_results("SELECT user_email FROM pbc_users WHERE ID IN (
+    SELECT managerID FROM pbc_pbr_managers ppm WHERE ppm.restaurantID = '" . $this->restaurantID . "')");
+        if ($emails) {
+            foreach ($emails as $email) {
+                $returnEmails[] = $email->user_email;
+            }
+        }
+
+
+        return $returnEmails;
+    }
+
+    public function setRestaurantID(int $id): void {
+        $this->restaurantID = $id;
+    }
+
+    public function setPersonName(string $name): void {
+        $this->personName = $name;
+    }
+
+    public function setAreaID(int $id): void {
+        $this->area = $id;
+    }
+
+    public function setItemId(int $id = 0): void {
+        $this->itemID = $id;
+    }
+
+    public function setFiles(array $files): void {
+        $this->files = $files;
+    }
+
+    public function getOpenTime(): string{
+        return $this->openedTime;
+    }
+
+    public function setDescription(string $description): void {
+        $this->description = $description;
     }
 }

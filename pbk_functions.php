@@ -46,7 +46,7 @@ function pbk_scripts()
     wp_enqueue_style('timepicker_style', '//cdnjs.cloudflare.com/ajax/libs/timepicker/1.3.5/jquery.timepicker.min.css');
     wp_enqueue_style('jquery-ui_style', '//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css');
     wp_enqueue_style('bootstrap_style', '//cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css');
-//    wp_enqueue_style('bootstrap_style', 'https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css');
+    wp_enqueue_style('select_bootstrap_style', 'https://cdn.jsdelivr.net/npm/@ttskch/select2-bootstrap4-theme@1.5.2/dist/select2-bootstrap4.min.css');
     wp_enqueue_style('datatables_bootstrap_style', 'https://cdn.datatables.net/1.10.23/css/dataTables.bootstrap4.min.css');
     wp_enqueue_style('clockpicker_style', PBKF_URL . '/assets/css/clockpicker.css');
     wp_enqueue_style('upload_style', PBKF_URL . '/assets/css/jquery.dm-uploader.min.css');
@@ -97,6 +97,7 @@ include __DIR__ . '/classes/PBKCheck.php';
 include __DIR__ . '/classes/PBKPayment.php';
 include __DIR__ . '/classes/PBKSupport.php';
 include __DIR__ . '/classes/PBKSupportTicket.php';
+include __DIR__ . '/classes/PBKNotify.php';
 
 /*Shortcodes*/
 include('shortcodes/pbrf_showToastFunctions.php');

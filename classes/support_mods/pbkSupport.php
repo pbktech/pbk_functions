@@ -2,6 +2,44 @@
 add_action( 'wp_ajax_getSupportMod', 'getSupportMod' );
 add_action( 'wp_ajax_get_ticket_list', 'get_ticket_list' );
 add_action( 'wp_ajax_uploadPBKImage', 'uploadPBKImage' );
+add_action( 'wp_ajax_startTicket', 'startTicket' );
+
+function startTicket(){
+    $answer = ['message' => [], 'status' => 200];
+    $itemID = 0;
+    $cu = wp_get_current_user();
+    $data = json_decode(stripslashes($_REQUEST['data']));
+    if(empty($data->restaurantID)){
+        $answer['message'][] = "Please enter your name.";
+        $answer['status'] = 400;
+    }
+    if(empty($data->personName)){
+        $answer['message'][] = "Please enter your name.";
+        $answer['status'] = 400;
+    }
+    if(empty($data->issueDescription)){
+        $answer['message'][] = "Please describe the issue.";
+        $answer['status'] = 400;
+    }
+    if(empty($data->area)){
+        $answer['message'][] = "Please select a Device.";
+        $answer['status'] = 400;
+    }
+    if(!empty($data->issue)){
+        $itemID = $data->issue;
+    }
+    if($answer["status"] === 200){
+        $ticket = new PBKSupportTicket("_NEW");
+        $ticket->setAreaID($data->area);
+        $ticket->setDescription($data->issueDescription);
+        $ticket->setItemId($itemID);
+        $ticket->setPersonName($data->personName);
+        $ticket->setRestaurantID($data->restaurantID);
+        $ticket->setFiles($data->attachedFiles);
+        $ticket->addNewTicket($cu->ID);
+    }
+    showJsonAjax($answer);
+}
 
 function uploadPBKImage(){
     $answer = [];
@@ -14,7 +52,7 @@ function uploadPBKImage(){
         $fileID = $wpdb->insert_id;
         $guid = $wpdb->get_var("SELECT UuidFromBin(publicUnique) FROM pbc_files_stored WHERE fileID = " . $fileID);
         upload_object("pbk-support", $guid . "." . $ext, $_FILES["files"]["tmp_name"][$f]);
-        $answer[] = ["name" => basename($name), "fileID" => $fileID];
+        $answer[] = ["name" => basename($name), "fileID" => $fileID, "link" => "https://storage.googleapis.com/pbk-support/" . $guid . "." . $ext];
     }
     showJsonAjax($answer);
 }
@@ -23,7 +61,7 @@ function get_ticket_list(){
     global $wpdb;
     $return = array();
     $cu = wp_get_current_user();
-    $query = "SELECT * FROM pbc_support_ticket pst, pbc_support_items psi, pbc_pbrestaurants pp WHERE pst.itemID = psi.itemID AND pst.restaurantID = pp.restaurantID AND ticketStatus != 'Closed'";
+    $query = "SELECT openedTime, restaurantName, itemName, ticketStatus, UuidFromBin(publicUnique) as 'guid' FROM pbc_support_ticket pst, pbc_support_items psi, pbc_pbrestaurants pp WHERE pst.areaID = psi.itemID AND pst.restaurantID = pp.restaurantID AND ticketStatus != 'Closed'";
     if (!in_array("administrator", $cu->roles) && !in_array("editor", $cu->roles)  && !in_array("author", $cu->roles)) {
         $query.= " AND pp.restaurantID IN (SELECT restaurantID FROM pbc_pbr_managers WHERE managerID = '" . $cu->ID . "')";
     }
@@ -34,8 +72,8 @@ function get_ticket_list(){
                 "date" => date("m/d/Y g:i a", strtotime($r->openedTime)),
                 "restaurant" => $r->restaurantName,
                 "item" => $r->itemName,
-                "status" => $r->tiketStatus,
-                "actions" => ""
+                "status" => $r->ticketStatus,
+                "actions" => "<a href='" . add_query_arg( ["id" => $r->guid], home_url( $path = 'support') ). "' target='_blank'>Update</a>"
             ];
         }
     }
