@@ -7,17 +7,18 @@ class PBKSupport {
 
     }
 
-    final public function supportRouter(): string{
+    final public function supportRouter(): ?string{
         if(!empty($_REQUEST['id'])){
             $ticket = new PBKSupportTicket($_REQUEST['id']);
             if(empty($ticket->getTicketID())){
                 return "<div class='alert alert-warning'>Ticket not found</div>";
             }else{
-                return "" . $this->showTicketPage("ticketUpdate.php");
+                $this->showTicketPage("ticketUpdate.php");
             }
         }else{
             return $this->showTicketPage("ticketStarter.php") . $this->showTicketPage("ticketList.php");
         }
+         return null;
     }
 
     final public function getNextSupportItemID(): ?int{

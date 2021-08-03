@@ -3,6 +3,29 @@ add_action( 'wp_ajax_getSupportMod', 'getSupportMod' );
 add_action( 'wp_ajax_get_ticket_list', 'get_ticket_list' );
 add_action( 'wp_ajax_uploadPBKImage', 'uploadPBKImage' );
 add_action( 'wp_ajax_startTicket', 'startTicket' );
+add_action( 'wp_ajax_updateTicket', 'updateTicket' );
+
+function updateTicket(){
+    $answer = ['message' => [], 'status' => 200];
+    $cu = wp_get_current_user();
+    $data = json_decode(stripslashes($_REQUEST['data']));
+    if(empty($data->personName)){
+        $answer['message'][] = "Please enter your name.";
+        $answer['status'] = 400;
+    }
+    if(empty($data->issueDescription)){
+        $answer['message'][] = "Please describe the issue.";
+        $answer['status'] = 400;
+    }
+    if($answer["status"] === 200){
+        $ticket = new PBKSupportTicket($data->ticketID);
+        $ticket->setDescription($data->issueDescription);
+        $ticket->setPersonName($data->personName);
+        $ticket->setFiles($data->attachedFiles);
+        $ticket->recordResponse($cu->ID);
+    }
+    showJsonAjax($answer);
+}
 
 function startTicket(){
     $answer = ['message' => [], 'status' => 200];

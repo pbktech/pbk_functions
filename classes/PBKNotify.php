@@ -48,8 +48,10 @@ class PBKNotify {
             $footer = file_get_contents(self::emailFooter);
             $m = $header . $m . $footer;
         }
+        /*
         $report = new ToastReport();
         $report->reportEmail("jon@theproteinbar.com", $m, $this->subject);
+        */
         global $wpdb;
         $wpdb->insert(
             "pbc_tasks",

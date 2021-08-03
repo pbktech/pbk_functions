@@ -22,6 +22,7 @@ class PBKSupportTicket {
             if ($ticket = $this->checkTicketValidity($id)) {
                 $this->setTicketID($ticket);
                 $this->status = "update";
+                $this->loadTicketDetails();
             }
         }
     }
@@ -40,16 +41,17 @@ class PBKSupportTicket {
     private function loadTicketDetails(): void {
         global $wpdb;
         $d = $wpdb->get_row("SELECT * FROM pbc_support_ticket pst, pbc_support_items psi WHERE psi.itemID = pst.areaID AND pst.ticketID = " . $this->id);
-        $this->area = $d->itemName;
+        $this->area = $d->itemID;
         $this->openedTime = $d->openedTime;
         $this->restaurantID = $d->restaurantID;
+        $this->personName = $d->userName;
     }
 
     private function checkTicketValidity(string $id): ?int {
         global $wpdb;
         $var = $wpdb->get_var("SELECT ticketID FROM pbc_support_ticket WHERE publicUnique = UuidToBin('" . $id . "')");
         if ($var) {
-            $this->loadTicketDetails();
+            $this->guid = $id;
             return $var;
         }
         return false;
@@ -81,7 +83,9 @@ class PBKSupportTicket {
         return null;
     }
 
-    private function recordResponse(int $uid): ?array {
+
+
+    public function recordResponse(int $uid): ?array {
         global $wpdb;
         global $wp;
         $wpdb->insert(
@@ -148,7 +152,8 @@ class PBKSupportTicket {
         }
 
 
-        return $returnEmails;
+       // return $returnEmails;
+        return ["jon@theproteinbar.com"];
     }
 
     public function setRestaurantID(int $id): void {
@@ -158,6 +163,13 @@ class PBKSupportTicket {
     public function setPersonName(string $name): void {
         $this->personName = $name;
     }
+    public function getPersonName(): string {
+        return $this->personName;
+    }
+
+    public function getRestaurantID(): int {
+        return $this->restaurantID;
+    }
 
     public function setAreaID(int $id): void {
         $this->area = $id;
@@ -165,6 +177,18 @@ class PBKSupportTicket {
 
     public function setItemId(int $id = 0): void {
         $this->itemID = $id;
+    }
+
+    public function getAreaID(): int {
+        return $this->area;
+    }
+
+    public function getItemId(): int {
+        if(empty($this->itemID)){
+            return 0;
+        }else {
+            return $this->itemID;
+        }
     }
 
     public function setFiles(array $files): void {
