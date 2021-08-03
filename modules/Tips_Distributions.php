@@ -6,9 +6,37 @@ $rests = $toast->getAvailableRestaurants();
     <script>
       const restaurants = <?php echo json_encode($rests);?>;
       const tippedOrders = [];
+      const driver = [];
+      const worked = [];
       const tipRequest = {};
       let selectedRestaurant = 0;
       let p = 0;
+
+      function goToNext(){
+        driver.splice(0, driver.length);
+        worked.splice(0, worked.length);
+        tipRequest.checkID = "";
+        tipRequest.driver = [];
+        tipRequest.worked = [];
+        tipRequest.restaurantID = 0;
+        $("input.group1").html("");
+        p+=1;
+        if(tippedOrders[p]) {
+          populateTipBuild();
+        }else{
+          const rest = [];
+          restaurants.forEach(function(r) {
+            if (r.id === parseInt(selectedRestaurant)) {
+              rest.push(r);
+            }
+          });
+          $('#tipRow').hide();
+          $('#employees').hide();
+          $('#saveRow').hide();
+          $('#message').html(rest[0].text);
+          $('#message').append('<br>There are no orders requiring assignment.');
+        }
+      }
 
       function showTipBuild() {
         const rest = [];
@@ -23,7 +51,7 @@ $rests = $toast->getAvailableRestaurants();
         };
         $('#message').addClass('alert-info').html(rest[0].text);
         jQuery.ajax({
-          url: '<?php echo admin_url('admin-ajax.php') ?>', // this will point to admin-ajax.php
+          url: '<?php echo admin_url('admin-ajax.php') ?>',
           type: 'POST',
           data: data,
           success: function(response) {
@@ -39,6 +67,7 @@ $rests = $toast->getAvailableRestaurants();
               });
               populateTipBuild();
               $('#tipRow').show();
+              $('#saveRow').show();
             }
           }
         });
@@ -47,7 +76,6 @@ $rests = $toast->getAvailableRestaurants();
       function populateTipBuild() {
         console.log(tippedOrders);
         const o = tippedOrders[p];
-        console.log(o);
         $('#checkID').html('Check # ' + o.order.checkNumber + (o.order.tabName !== '' ? ' Tab: ' + o.order.tabName : ''));
         $('#checkOpen').html(o.order.checkOpen);
         $('#checkClose').html(o.order.checkClose);
@@ -55,12 +83,12 @@ $rests = $toast->getAvailableRestaurants();
         $('#checkPayment').html(o.order.checkPayment);
         $('#checkTip').html(o.order.checkTip);
         $('#checkTotal').html(o.order.checkTotal);
-        o.employees.forEach(function(e){
-          $('#employees').append("<div class='row toDisable'><div class='col'><span style='text-transform:capitalize;'>" + e.employeeName + "</span></div>" +
-          "<div class='col'><label for='d-" + e.GUID + "'>Driver?</label> <input class='group1' type='checkbox' name='driver[]' value='" + e.GUID + "' id='d-" + e.GUID + "'/> </div>" +
-        "<div class='col'><label for='w-" + e.GUID + "'>Worked On?</label> <input class='group1' type='checkbox' name='worked[]' value='" + e.GUID + "' id='w-" + e.GUID + "'/></div>" +
-        "</div>");
-        })
+        o.employees.forEach(function(e) {
+          $('#employees').append('<div class=\'row toDisable\'><div class=\'col\'><span style=\'text-transform:capitalize;\'>' + e.employeeName + '</span></div>' +
+            '<div class=\'col\'><label for=\'d-' + e.GUID + '\'>Driver?</label> <input class=\'group1\' type=\'checkbox\' name=\'driver\' value=\'' + e.GUID + '\' id=\'d-' + e.GUID + '\'/> </div>' +
+            '<div class=\'col\'><label for=\'w-' + e.GUID + '\'>Worked On?</label> <input class=\'group1\' type=\'checkbox\' name=\'worked\' value=\'' + e.GUID + '\' id=\'w-' + e.GUID + '\'/></div>' +
+            '</div>');
+        });
       }
 
       jQuery(document).ready(function() {
@@ -68,8 +96,7 @@ $rests = $toast->getAvailableRestaurants();
           if (restaurants.length === 0) {
             $('#message').addClass('alert alert-warning').html('You are not assigned to any restaurants');
           } else if (restaurants.length === 1) {
-            $('#message').addClass('alert alert-warning').html('You are not assigned to any restaurants');
-            selectedRestaurant = restaurants.restaurantID;
+            selectedRestaurant = restaurants[0].restaurantID;
             showTipBuild();
           } else {
             $('#message').addClass('alert-warning').html('Please Select a Restaurant');
@@ -84,7 +111,62 @@ $rests = $toast->getAvailableRestaurants();
             $('#selectorRow').show();
           }
         }
+        $('#saveButton').click(function(){
 
+          $('#saveButton').hide();
+          $('#buttonSpin').show();
+          if($('#d-a0').prop('checked') === true){
+            driver.push('a0');
+            worked.push('a0');
+          }else {
+            $('input.group1').each(function(i, obj) {
+              if(obj.checked === true){
+                if(obj.name === 'driver'){
+                  driver.push(obj.value);
+                }
+                if(obj.name === 'worked'){
+                  worked.push(obj.value);
+                }
+              }
+            });
+          }
+
+          if(driver.length && worked.length){
+            $('#serverMessage').removeClass('alert-danger').removeClass('alert-success').html("");
+            let fd = new FormData();
+            tipRequest.checkID = tippedOrders[p].order.checkID;
+            tipRequest.driver = driver;
+            tipRequest.worked = worked;
+            tipRequest.restaurantID = selectedRestaurant;
+
+            fd.append('action', 'assignTips');
+            fd.append('data', JSON.stringify(tipRequest));
+            $.ajax({
+              type: 'POST',
+              url: '<?php echo admin_url('admin-ajax.php'); ?>',
+              data: fd,
+              contentType: false,
+              processData: false,
+              success: function(response) {
+                $('#buttonSpin').hide();
+                $('#saveButton').show();
+                if(response.status === 200){
+                  $('#serverMessage').removeClass('alert-danger').removeClass('alert-success').html("");
+                  $('#serverMessage').addClass("alert-success").html("Distribution Saved");
+                  goToNext();
+                } else {
+                  $('#serverMessage').addClass('alert-danger');
+                  $('#serverMessage').append(response.message.join('<br>'));
+                }
+              }
+            });
+
+          }else{
+            $('#serverMessage').addClass('alert-danger').html('You must select workers and drivers');
+            $('#buttonSpin').hide();
+            $('#saveButton').show();
+          }
+        });
         $('#restaurantID').on('select2:select', function(e) {
           $('#loading').show();
           const data = e.params.data;
@@ -93,16 +175,16 @@ $rests = $toast->getAvailableRestaurants();
           $('#selectorRow').hide();
           showTipBuild();
         });
-        jQuery('#d-a0').click(function() {
-          if (jQuery(this).prop('checked') === true) {
+        $('#d-a0').click(function() {
+          if ($(this).prop('checked') === true) {
             {
-              jQuery('input.group1').prop('checked', false);
+              $('input.group1').prop('checked', false);
             }
-            jQuery('input.group1').attr('disabled', true);
-            jQuery('.toDisable').hide();
-          } else if (jQuery(this).prop('checked') === false) {
-            jQuery('input.group1').removeAttr('disabled;');
-            jQuery('.toDisable').show();
+            $('input.group1').attr('disabled', true);
+            $('.toDisable').hide();
+          } else if ($(this).prop('checked') === false) {
+            $('input.group1').removeAttr('disabled');
+            $('.toDisable').show();
           }
         });
       });
@@ -117,6 +199,9 @@ $rests = $toast->getAvailableRestaurants();
         </div>
         <div class="row" style="width: 100%;">
             <div id="message" style="width: 100%; text-align: center;" class="alert "></div>
+        </div>
+        <div class="row" style="width: 100%;">
+            <div id="serverMessage" style="width: 100%; text-align: center;" class="alert "></div>
         </div>
         <div class="row" id="selectorRow" style="display: none;width: 100%;">
             <select class="form-control" name="restaurantID" id="restaurantID" style="width: 100%;">
@@ -150,6 +235,19 @@ $rests = $toast->getAvailableRestaurants();
                 </div>
             </div>
         </div>
+        <div class='row' style="width: 100%;">
+            <hr style="width: 100%;"/>
+        </div>
+        <div class="row" id="saveRow" style="display: none;">
+            <div class="col">
+                <button type="button" class="btn btn-success" id="saveButton">Save</button>
+                <button class="btn btn-success" type="button" id="buttonSpin" style="display: none;" disabled>
+                    <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                    <span class="sr-only">Loading...</span>
+                </button>
+            </div>
+        </div>
+    </div>
 <?php
 /*
     $time = microtime();

@@ -733,7 +733,8 @@ group by externalEmployeeId,employeeName";
 			if(!in_array($this->restaurantID,$r)) {echo "You are not authorized for this restaurant.";die();}
 		}
 	}
-	function getAvailableRestaurants() {
+	function getAvailableRestaurants(): array {
+	    $r = [];
 		$cu = wp_get_current_user();
 		if(in_array("administrator", $cu->roles) || in_array("editor", $cu->roles)) {
 			$q="SELECT restaurantID,restaurantName, restaurantID as 'id', restaurantName as 'text' FROM  pbc_pbrestaurants WHERE isOpen='1'";
