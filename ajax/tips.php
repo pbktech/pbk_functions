@@ -103,5 +103,5 @@ function tips_get_list(){
         $count = (count($orders) === 0) ? " no orders " : count($orders) ." order(s)";
         $answer = ["message" => "There are " . $count . "  requiring assignment.", "status" => 200, "orders" => $o];
     }
-    returnAJAXData($answer);
+    returnAJAXData($_REQUEST);
 }
