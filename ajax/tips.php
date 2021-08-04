@@ -83,7 +83,7 @@ function tips_get_list(){
             $orders = $wpdb->get_results("SELECT * FROM pbc2.pbc_ToastOrderPayment where ToastCheckID='" . $_REQUEST['singleOrder'] . "'");
 
         }
-        if(count($orders) !== 0){
+        if(count($orders) != 0){
             foreach ($orders as $order){
                 $p = $toast->getPaymentInfo($order->ToastCheckID);
                 $o[] = ["order" => [
@@ -103,5 +103,5 @@ function tips_get_list(){
         $count = (count($orders) === 0) ? " no orders " : count($orders) ." order(s)";
         $answer = ["message" => "There are " . $count . "  requiring assignment.", "status" => 200, "orders" => $o];
     }
-    returnAJAXData($_REQUEST);
+    returnAJAXData($answer);
 }
