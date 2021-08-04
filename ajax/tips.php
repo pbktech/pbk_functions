@@ -77,7 +77,12 @@ function tips_get_list(){
         $toast = new ToastReport($_REQUEST['restaurantID']);
         $toast->setStartTime(date("Y-m-d G:i:s", strtotime($bot)));
         $toast->setEndTime(date("Y-m-d G:i:s", strtotime($latest)));
-        $orders = $toast->getTippedOrders();
+        if(empty($_REQUEST['singleOrder'])) {
+            $orders = $toast->getTippedOrders();
+        }else{
+            $orders = $wpdb->get_results("SELECT * FROM pbc2.pbc_ToastOrderPayment where ToastCheckID='" . $_REQUEST['singleOrder'] . "'");
+
+        }
         if(count($orders) !== 0){
             foreach ($orders as $order){
                 $p = $toast->getPaymentInfo($order->ToastCheckID);

@@ -1,7 +1,19 @@
 <?php
+global $wpdb;
+$cu = wp_get_current_user();
 $latest = date("Y-m-d", time() - 60 * 60 * 24) . " 23:59:59";
 $toast = new ToastReport();
 $rests = $toast->getAvailableRestaurants();
+$checkRestaurant = 0;
+if (isset($_GET['i'])) {
+    $checkRestaurant = $wpdb->get_var("SELECT restaurantID FROM pbc_ToastOrderPayment WHERE ToastCheckID='" . $_GET['i'] . "'");
+    if (in_array($checkRestaurant, $rests) || in_array("administrator", $cu->roles) || in_array("editor", $cu->roles) || in_array("author", $cu->roles)) {
+        $_REQUEST['rid'] = $checkRestaurant;
+    } else {
+        echo "<div class='alert alert-danger'>You do not have access to this location.</div>";
+        exit;
+    }
+}
 ?>
     <script>
       const restaurants = <?php echo json_encode($rests);?>;
@@ -9,7 +21,8 @@ $rests = $toast->getAvailableRestaurants();
       const driver = [];
       const worked = [];
       const tipRequest = {};
-      let selectedRestaurant = 0;
+      const singleOrder = '<?php echo empty($_GET['i']) ? "false" : $_GET['i'];?>';
+      let selectedRestaurant = <?php echo $checkRestaurant;?>;
       let p = 0;
 
       function goToNext(){
@@ -34,7 +47,11 @@ $rests = $toast->getAvailableRestaurants();
           $('#employees').hide();
           $('#saveRow').hide();
           $('#message').html(rest[0].text);
-          $('#message').append('<br>There are no orders requiring assignment.');
+          if(singleOrder){
+            $('#message').append('<br>You can close this window.');
+          } else {
+            $('#message').append('<br>There are no orders requiring assignment.');
+          }
         }
       }
 
@@ -47,7 +64,8 @@ $rests = $toast->getAvailableRestaurants();
         });
         const data = {
           'action': 'tips_get_list',
-          'restaurantID': rest[0].id
+          'restaurantID': rest[0].id,
+          'singleOrder': singleOrder
         };
         $('#message').addClass('alert-info').html(rest[0].text);
         jQuery.ajax({
@@ -74,7 +92,6 @@ $rests = $toast->getAvailableRestaurants();
       }
 
       function populateTipBuild() {
-        console.log(tippedOrders);
         const o = tippedOrders[p];
         $('#checkID').html('Check # ' + o.order.checkNumber + (o.order.tabName !== '' ? ' Tab: ' + o.order.tabName : ''));
         $('#checkOpen').html(o.order.checkOpen);
@@ -111,6 +128,11 @@ $rests = $toast->getAvailableRestaurants();
             $('#selectorRow').show();
           }
         }
+        $( window ).on( "load", function() {
+          if(singleOrder){
+            showTipBuild();
+          }
+        });
         $('#saveButton').click(function(){
 
           $('#saveButton').hide();
