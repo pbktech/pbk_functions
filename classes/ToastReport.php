@@ -583,7 +583,6 @@ pbc2.pbc_ToastCheckHeaders.ToastOrderID=pbc2.pbc_ToastOrderHeaders.GUID";
 	    $r = array();
 		$q="SELECT * FROM pbc2.pbc_ToastOrderPayment where restaurantID is not null and tipAmount!=0 AND  restaurantID=".$this->restaurantID." AND businessDate BETWEEN '".$this->startTime."' AND '".$this->endTime."'
 		AND pbc_ToastOrderPayment.ToastCheckID NOT IN (SELECT orderGUID FROM pbc2.pbc_TipDistribution) AND pbc_ToastOrderPayment.GUID NOT IN (SELECT guid FROM pbc_DeliveryRequests) AND pbc_ToastOrderPayment.ToastCheckID NOT IN (SELECT GUID FROM pbc_ToastCheckHeaders WHERE tabName LIKE '%Grubhub Delivery%')";
-echo $q; die();
 		$stmt = $this->mysqli->prepare($q);
 		$stmt->execute();
 		$result = $stmt->get_result();
