@@ -23,37 +23,39 @@ if (isset($_GET['i'])) {
       const tipRequest = {};
       const singleOrder = '<?php echo empty($_GET['i']) ? "false" : $_GET['i'];?>';
       let selectedRestaurant = <?php echo $checkRestaurant;?>;
+      let restaurantName = "";
       let p = 0;
 
-      function goToNext(){
+      function goToNext() {
         driver.splice(0, driver.length);
         worked.splice(0, worked.length);
-        tipRequest.checkID = "";
+        restaurants.forEach(function(r) {
+          if (r.id === parseInt(selectedRestaurant)) {
+            restaurantName = r.text;
+          }
+        });
+        $('#message').html(restaurantName);
+        tipRequest.checkID = '';
         tipRequest.driver = [];
         tipRequest.worked = [];
         tipRequest.restaurantID = 0;
-        $("input.group1").html("");
-        p+=1;
-        if(tippedOrders[p]) {
+        $('input.group1').html('');
+        $('#tipRow').hide();
+        $('#noDriver').hide();
+        $('#employees').empty().hide();
+        $('#saveRow').hide();
+        $('#d-a0').prop('checked', false);
+        p += 1;
+        if (tippedOrders[p]) {
           populateTipBuild();
-        }else{
-          const rest = [];
-          restaurants.forEach(function(r) {
-            if (r.id === parseInt(selectedRestaurant)) {
-              rest.push(r);
-            }
-          });
-          $('#tipRow').hide();
-          $('.toDisable').remove();
-          $('#employees').hide();
-          $('#saveRow').hide();
-          $('#message').html(rest[0].text);
-          if(singleOrder){
+        } else {
+          if (singleOrder) {
             $('#message').append('<br>You can close this window.');
           } else {
             $('#message').append('<br>There are no orders requiring assignment.');
           }
         }
+        window.scrollTo(0, 0);
       }
 
       function showTipBuild() {
@@ -74,19 +76,17 @@ if (isset($_GET['i'])) {
           type: 'POST',
           data: data,
           success: function(response) {
+
             $('#loading').hide();
             if (response.status === 200) {
-              $('#message').append('<br>' + response.message);
-            } else {
-              $('#message').removeClass('alert-info').addClass('alert-danger').append('<br>' + response.message);
-            }
-            if (response.orders.length) {
-              response.orders.forEach(function(o) {
-                tippedOrders.push(o);
-              });
+              if (response.orders.length) {
+                response.orders.forEach(function(o) {
+                  tippedOrders.push(o);
+                });
+              } else {
+                $('#message').removeClass('alert-info').addClass('alert-danger').append('<br>' + response.message);
+              }
               populateTipBuild();
-              $('#tipRow').show();
-              $('#saveRow').show();
             }
           }
         });
@@ -94,6 +94,7 @@ if (isset($_GET['i'])) {
 
       function populateTipBuild() {
         const o = tippedOrders[p];
+        $('#message').append('<br>There are ' + (tippedOrders.length - p) + ' checks requring assignment.');
         $('#checkID').html('Check # ' + o.order.checkNumber + (o.order.tabName !== '' ? ' Tab: ' + o.order.tabName : ''));
         $('#checkOpen').html(o.order.checkOpen);
         $('#checkClose').html(o.order.checkClose);
@@ -107,6 +108,10 @@ if (isset($_GET['i'])) {
             '<div class=\'col\'><label for=\'w-' + e.GUID + '\'>Worked On?</label> <input class=\'group1\' type=\'checkbox\' name=\'worked\' value=\'' + e.GUID + '\' id=\'w-' + e.GUID + '\'/></div>' +
             '</div>');
         });
+        $('#tipRow').show();
+        $('#saveRow').show();
+        $('#employees').show();
+        $('#noDriver').show();
       }
 
       jQuery(document).ready(function() {
@@ -129,33 +134,33 @@ if (isset($_GET['i'])) {
             $('#selectorRow').show();
           }
         }
-        $( window ).on( "load", function() {
-          if(singleOrder){
+        $(window).on('load', function() {
+          if (singleOrder) {
             showTipBuild();
           }
         });
-        $('#saveButton').click(function(){
+        $('#saveButton').click(function() {
 
           $('#saveButton').hide();
           $('#buttonSpin').show();
-          if($('#d-a0').prop('checked') === true){
+          if ($('#d-a0').prop('checked') === true) {
             driver.push('a0');
             worked.push('a0');
-          }else {
+          } else {
             $('input.group1').each(function(i, obj) {
-              if(obj.checked === true){
-                if(obj.name === 'driver'){
+              if (obj.checked === true) {
+                if (obj.name === 'driver') {
                   driver.push(obj.value);
                 }
-                if(obj.name === 'worked'){
+                if (obj.name === 'worked') {
                   worked.push(obj.value);
                 }
               }
             });
           }
 
-          if(driver.length && worked.length){
-            $('#serverMessage').removeClass('alert-danger').removeClass('alert-success').html("");
+          if (driver.length && worked.length) {
+            $('#serverMessage').removeClass('alert-danger').removeClass('alert-success').html('');
             let fd = new FormData();
             tipRequest.checkID = tippedOrders[p].order.checkID;
             tipRequest.driver = driver;
@@ -173,9 +178,9 @@ if (isset($_GET['i'])) {
               success: function(response) {
                 $('#buttonSpin').hide();
                 $('#saveButton').show();
-                if(response.status === 200){
-                  $('#serverMessage').removeClass('alert-danger').removeClass('alert-success').html("");
-                  $('#serverMessage').addClass("alert-success").html("Distribution Saved");
+                if (response.status === 200) {
+                  $('#serverMessage').removeClass('alert-danger').removeClass('alert-success').html('');
+                  $('#serverMessage').addClass('alert-success').html('Distribution Saved');
                   goToNext();
                 } else {
                   $('#serverMessage').addClass('alert-danger');
@@ -184,7 +189,7 @@ if (isset($_GET['i'])) {
               }
             });
 
-          }else{
+          } else {
             $('#serverMessage').addClass('alert-danger').html('You must select workers and drivers');
             $('#buttonSpin').hide();
             $('#saveButton').show();
@@ -250,12 +255,16 @@ if (isset($_GET['i'])) {
             <div class='row' style="width: 100%;">
                 <hr style="width: 100%;"/>
             </div>
-            <div id="employees" class="col">
-                <div class='row' style="width: 100%;">
-                    <div class='col-6'>3rd Party/No One</div>
-                    <div class='col-3'><label for='d-a0'>Driver?</label> <input type='checkbox' name='driver[]'
-                                                                                value='a0' id='d-a0'/></div>
+            <div class='row' id="noDriver" style='width: 100%;'>
+                <div class='col-6'>3rd Party/No One</div>
+                <div class='col-3'>
+                    <label for='d-a0'>Driver?</label>
+                    <input type='checkbox' name='driver[]' value='a0' id='d-a0'/>
                 </div>
+            </div>
+        </div>
+        <div class="row">
+            <div id="employees" class="col-12">
             </div>
         </div>
         <div class='row' style="width: 100%;">
