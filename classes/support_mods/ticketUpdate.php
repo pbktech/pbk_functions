@@ -141,10 +141,24 @@ $issue = $wpdb->get_var("SELECT issueTitle FROM pbc_support_common WHERE issueID
             <div style="height: 300px; overflow: auto;">
                 <?php
                 if($responses){
+                    $files = [];
                     foreach ($responses as $r){
+                        if(!empty($r->responseFiles)){
+                            $attachedFiles = json_decode($r->responseFiles);
+                            foreach ($attachedFiles as $f){
+                                $files[] = "<a href='" .$f->link. "' target='_blank'>" .$f->name. "</a>";
+                            }
+                        }
                         ?>
                         <blockquote class="blockquote text-left" style="padding-bottom: 1em;">
                             <p class="mb-0"><?php echo $r->responseText;?></p>
+                            <?php
+                            if(!empty($files)){
+                            ?>
+                            <footer class="blockquote-footer">Attached Files: <?php echo implode(", ", $files);?></footer>
+                            <?php
+                            }
+                            ?>
                         </blockquote>
                         <span class="text-muted"><?php echo date("m/d/Y h:i a", strtotime($r->responseTime)); ?> by <?php echo $r->responseName;?></span>
                         <?php

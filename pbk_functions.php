@@ -52,7 +52,7 @@ function pbk_scripts()
     wp_enqueue_style('upload_style', PBKF_URL . '/assets/css/jquery.dm-uploader.min.css');
     wp_enqueue_style('clockpicker_standalone_style', PBKF_URL . '/assets/css/standalone.css');
 //    wp_enqueue_style('jAlert_style', PBKF_URL . '/assets/css/jAlert.css');
-//    wp_enqueue_style('sort_tables_style', '//cdn.datatables.net/1.10.24/css/jquery.dataTables.min.css');
+    wp_enqueue_style('bootstrap_icons', 'https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css');
     wp_enqueue_style('screen_signature_style', PBKF_URL . '/assets/css/signature.css');
     wp_enqueue_script('pbk_jquery_3x','//ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js');
     wp_enqueue_script('select_script', '//cdn.jsdelivr.net/npm/select2@4.0.12/dist/js/select2.min.js');
@@ -83,7 +83,6 @@ use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 
 require __DIR__ . '/vendor/autoload.php';
-
 include __DIR__ . '/classes/Finance.php';
 include __DIR__ . '/classes/Toast.php';
 include __DIR__ . '/classes/ToastReport.php';
@@ -98,6 +97,8 @@ include __DIR__ . '/classes/PBKPayment.php';
 include __DIR__ . '/classes/PBKSupport.php';
 include __DIR__ . '/classes/PBKSupportTicket.php';
 include __DIR__ . '/classes/PBKNotify.php';
+include __DIR__ . '/classes/PBKConfig.php';
+include __DIR__ . '/classes/PBKDelivery.php';
 
 /*Shortcodes*/
 include('shortcodes/pbrf_showToastFunctions.php');

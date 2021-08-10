@@ -71,7 +71,7 @@ function uploadPBKImage(){
     foreach($_FILES['files']['name'] as $f => $name){
         $fileInfo = explode(".", $name);
         $ext = end($fileInfo);
-        $wpdb->insert("pbc_files_stored",["fileName" => json_encode(["name" => $name, "extension" =>$ext])], ['%s']);
+        $wpdb->insert("pbc_files_stored",["fileName" => json_encode(["name" => $name, "extension" =>$ext]), "page" => "support"], ['%s','%s']);
         $fileID = $wpdb->insert_id;
         $guid = $wpdb->get_var("SELECT UuidFromBin(publicUnique) FROM pbc_files_stored WHERE fileID = " . $fileID);
         upload_object("pbk-support", $guid . "." . $ext, $_FILES["files"]["tmp_name"][$f]);

@@ -43,6 +43,7 @@ $return = array();
       const attachedFiles = [];
       const allIssues =  <?php echo json_encode($items);?>;
       $(document).ready(function() {
+        $('[data-toggle="tooltip"]').tooltip();
         $('body').on('change', '.files-data', function(e) {
           e.preventDefault;
           $('#uploadButton').hide();
@@ -230,8 +231,10 @@ $return = array();
     </script>
     <h2>Report A New Issue</h2>
     <div class="container-fluid">
-        <select class="js-example-basic-single form-control" name="issue" id="issueSelector" style="width: 100%;">
-        </select>
+        <div class="row">
+        <select class="js-example-basic-single form-control" name="issue" id="issueSelector" style="width: 90%;">
+        </select> <button type="button" class="btn btn-outline-dark" data-toggle="tooltip" data-html="true" title="You can search for your issue by clicking on the dropdown and typing in the box."><i class="bi bi-info-circle"></i></button>
+        </div>
     </div>
     <div class="alert" id="serverResponse"></div>
     <h2>Currently Open Tickets</h2>
