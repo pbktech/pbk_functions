@@ -44,6 +44,7 @@ if (isset($_GET['i'])) {
             }
           });
           $('#tipRow').hide();
+          $('.toDisable').remove();
           $('#employees').hide();
           $('#saveRow').hide();
           $('#message').html(rest[0].text);
