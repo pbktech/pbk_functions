@@ -123,7 +123,8 @@ if($ticket->getStatus() === "Closed"){
     <?php
 }else{
     ?>
-<div class="btn-group" role="group">
+    <h3 class="text-primary"><?php echo $ticket->getStatus();?></h3>
+    <div class="btn-group" role="group">
     <button class="btn btn-outline-info">Add An Update</button>
     <button class="btn btn-outline-warning">Close This Ticket</button>
 </div>
