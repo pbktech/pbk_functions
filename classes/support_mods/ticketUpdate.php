@@ -149,6 +149,17 @@ if($ticket->getStatus() === "Closed"){
         </div>
     </div>
     <div class="row">
+        <div class="col-6">
+            <strong for="device">Opened On</strong><p id="name"><?php echo date("m/d/Y h:i a", strtotime($ticket->getOpenTime())); ?></p>
+        </div>
+        <div class="col-6">
+            <strong for="issue">Total Time</strong><p id="elapsed"></p>
+        </div>
+    </div>
+    <?php
+    if(!empty($mms)){
+    ?>
+    <div class="row">
         <div class="col-4">
             <strong for="device">Make</strong><p id="name"><?php echo empty($mms['make']) ? " --- " : $mms['make']; ?></p>
         </div>
@@ -159,14 +170,10 @@ if($ticket->getStatus() === "Closed"){
             <strong for="device">Serial</strong><p id="name"><?php echo empty($mms['serial']) ? " --- " : $mms['serial']; ?></p>
         </div>
     </div>
-    <div class="row">
-        <div class="col-6">
-            <strong for="device">Opened On</strong><p id="name"><?php echo date("m/d/Y h:i a", strtotime($ticket->getOpenTime())); ?></p>
-        </div>
-        <div class="col-6">
-            <strong for="issue">Total Time</strong><p id="elapsed"></p>
-        </div>
-    </div>
+    <?php
+    }
+    ?>
+    <div class="row"><hr></div>
     <div class="row">
         <strong>Ticket Updates</strong>
         <div class="col-12">
