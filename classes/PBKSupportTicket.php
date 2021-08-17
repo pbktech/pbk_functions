@@ -48,9 +48,9 @@ class PBKSupportTicket {
         $this->restaurantID = $d->restaurantID;
         $this->personName = $d->userName;
         $this->status = $d->ticketStatus;
-        if($mms = json_decode($d->equipmentInfo, true)) {
+        if ($mms = json_decode($d->equipmentInfo, true)) {
             $this->mms = $mms;
-        }else{
+        } else {
             $this->mms = [];
         }
     }
@@ -92,7 +92,7 @@ class PBKSupportTicket {
         return null;
     }
 
-    private function recordCost(int $response, string $type): void{
+    private function recordCost(int $response, string $type): void {
         global $wpdb;
         $wpdb->insert(
             "pbc_support_ticket_response_costs",
@@ -105,7 +105,7 @@ class PBKSupportTicket {
         );
     }
 
-    public function updateStatus(string $status): void{
+    public function updateStatus(string $status): void {
         global $wpdb;
         $wpdb->update(
             "pbc_support_ticket",
@@ -180,10 +180,11 @@ class PBKSupportTicket {
                 $returnEmails[] = $email->user_email;
             }
         }
-
-
-       // return $returnEmails;
-        return ["jon@theproteinbar.com"];
+        if ($_SERVER['HTTP_HOST'] === 'localhost') {
+            return ["jon@theproteinbar.com"];
+        } else {
+            return $returnEmails;
+        }
     }
 
     public function setRestaurantID(int $id): void {
@@ -193,6 +194,7 @@ class PBKSupportTicket {
     public function setPersonName(string $name): void {
         $this->personName = $name;
     }
+
     public function getPersonName(): string {
         return $this->personName;
     }
@@ -214,9 +216,9 @@ class PBKSupportTicket {
     }
 
     public function getItemId(): int {
-        if(empty($this->itemID)){
+        if (empty($this->itemID)) {
             return 0;
-        }else {
+        } else {
             return $this->itemID;
         }
     }
@@ -225,7 +227,7 @@ class PBKSupportTicket {
         $this->files = $files;
     }
 
-    public function getOpenTime(): string{
+    public function getOpenTime(): string {
         return $this->openedTime;
     }
 
