@@ -25,8 +25,16 @@ function updateTicket(){
         $ticket->setCost(round(floatval($data->repairCost),2));
         $ticket->recordResponse($cu->ID);
         if($data->close){
-            $ticket->updateStatus("Closed");
+            $status = "Closed";
+        }else{
+            if((!in_array("administrator", $cu->roles) && !in_array("editor", $cu->roles) && !in_array("author", $cu->roles))){
+                $status = "Waiting for Vendor";
+            }else{
+                $status = "Waiting for Restaurant";
+            }
         }
+
+        $ticket->updateStatus($status);
     }
     showJsonAjax($answer);
 }
