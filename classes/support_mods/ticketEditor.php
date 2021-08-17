@@ -48,14 +48,26 @@ $result = $wpdb->get_results($query);
             </div>
         </div>
         <div class="row">
+            <div class="col-4">
+                <label for="make">Make<span class="text-muted mmsID" style="font-weight: normal; font-style: italic;"></span></label><input type="text" class="form-control mmsData" id="make" />
+            </div>
+            <div class="col-4">
+                <label for="model">Model<span class="text-muted mmsID" style="font-weight: normal; font-style: italic;"></span></label><input type="text" class="form-control mmsData" id="model" />
+            </div>
+            <div class="col-4">
+                <label for="serial">Serial<span class="text-muted mmsID" style="font-weight: normal; font-style: italic;"></span></label><input type="text" class="form-control mmsData" id="serial" />
+            </div>
+        </div>
+        <div class="row" id="vendorSection" ></div>
+        <div class="row">
             <div class="col-12">
                 <label for="issueDescription">Issue Description</label>
                 <textarea id="issueDescription" style="width: 100%;" rows="10" class="form-control"
-                          placeholder="Please be as descriptive as possible. If you've reached out to a vendor, lets us know when you called and the ticket number."></textarea>
+                          placeholder="Please be as descriptive as possible. If you've reached out to a vendor, lets us know when you called and the ticket number. A minimum of 50 characters are required"></textarea>
             </div>
         </div>
         <div class="row">
-            <div class="col-12" style="padding-top: 1em;"><label>File Upload</label></div>
+            <div class="col-12" style="padding-top: 1em;"><label>File Upload <span class="text-muted" style="font-style: italic; font-weight: normal;">Use the file upload to attach pictures, invoices, quotes or other supporting information.</span></label></div>
         </div>
         <div class="row">
             <div class="col">

@@ -4,10 +4,12 @@ $ticket = new PBKSupportTicket($_REQUEST['id']);
 
 $responses = $wpdb->get_results("SELECT * FROM pbc_support_ticket_responses WHERE ticketID = " . $ticket->getTicketID() . " ORDER BY responseTime DESC");
 $issue = $wpdb->get_var("SELECT issueTitle FROM pbc_support_common WHERE issueID = " . $ticket->getItemId());
+$mms = $ticket->getMms();
 ?>
 <script>
   const update = {};
   const attachedFiles = [];
+  let closeTicket = false;
 
   $(document).ready(function() {
     $('body').on('change', '.files-data', function(e) {
@@ -46,6 +48,10 @@ $issue = $wpdb->get_var("SELECT issueTitle FROM pbc_support_common WHERE issueID
         }
       });
     });
+    $('#updateModal').on('hidden.bs.modal', function() {
+      $('#finalCost').hide();
+    });
+
     $('#saveButton').click(function() {
       $('#buttonSpin').show();
       $('#saveButton').hide();
@@ -62,6 +68,10 @@ $issue = $wpdb->get_var("SELECT issueTitle FROM pbc_support_common WHERE issueID
         errors.push('Please enter more information in the description.');
         $('#issueDescription').addClass('is-invalid');
       }
+      if(closeTicket){
+        update.close = closeTicket;
+        update.repairCost = parseFloat($('#repairCost').val());
+      }
       if (errors.length) {
         $('#buttonSpin').hide();
         $('#saveButton').show();
@@ -73,7 +83,6 @@ $issue = $wpdb->get_var("SELECT issueTitle FROM pbc_support_common WHERE issueID
         update.attachedFiles = attachedFiles;
         update.personName= $('#personName').val();
         update.issueDescription= $('#issueDescription').val();
-
         fd.append('action', 'updateTicket');
         fd.append('data', JSON.stringify(update));
         $.ajax({
@@ -100,16 +109,27 @@ $issue = $wpdb->get_var("SELECT issueTitle FROM pbc_support_common WHERE issueID
       $('#updateModal').modal('show');
     });
     $('.btn-outline-warning').click(function(){
-      $('#closeModal').modal('show');
+      $('#updateModal').modal('show');
+      closeTicket = true;
+      $('#finalCost').show();
     });
   });
 </script>
 <h2>Update Your Issue</h2>
+<?php
+if($ticket->getStatus() === "Closed"){
+?>
+<div class="alert alert-info">This ticket has been closed.</div>
+    <?php
+}else{
+    ?>
 <div class="btn-group" role="group">
     <button class="btn btn-outline-info">Add An Update</button>
     <button class="btn btn-outline-warning">Close This Ticket</button>
 </div>
-
+    <?php
+}
+    ?>
 <div class="container-fluid">
     <div class="row">
         <div class="col-6">
@@ -125,6 +145,17 @@ $issue = $wpdb->get_var("SELECT issueTitle FROM pbc_support_common WHERE issueID
         </div>
         <div class="col-6">
             <strong for="issue">Reported Issue</strong><p id="issue"><?php echo empty($issue) ? " --- " : $issue;?></p>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-4">
+            <strong for="device">Make</strong><p id="name"><?php echo empty($mms['make']) ? " --- " : $mms['make']; ?></p>
+        </div>
+        <div class="col-4">
+            <strong for="device">Model</strong><p id="name"><?php echo empty($mms['model']) ? " --- " : $mms['model']; ?></p>
+        </div>
+        <div class="col-4">
+            <strong for="device">Serial</strong><p id="name"><?php echo empty($mms['serial']) ? " --- " : $mms['serial']; ?></p>
         </div>
     </div>
     <div class="row">
@@ -151,7 +182,7 @@ $issue = $wpdb->get_var("SELECT issueTitle FROM pbc_support_common WHERE issueID
                         }
                         ?>
                         <blockquote class="blockquote text-left" style="padding-bottom: 1em;">
-                            <p class="mb-0"><?php echo $r->responseText;?></p>
+                            <p class="mb-0"><?php echo nl2br($r->responseText);?></p>
                             <?php
                             if(!empty($files)){
                             ?>
@@ -187,7 +218,13 @@ $issue = $wpdb->get_var("SELECT issueTitle FROM pbc_support_common WHERE issueID
                     <div class="form-row">
                         <div class="col-12">
                             <label for="personName">Your Name</label>
-                            <input type="text" class="form-control" id="personName" value="" required>
+                            <input type="text" class="form-control" id="personName" value="" >
+                        </div>
+                    </div>
+                    <div class="form-row" id="finalCost" style="display: none;">
+                        <div class="col-12">
+                            <label for="personName">Cost of Repair</label>
+                            <input type="text" class="form-control" id="repairCost" value="" >
                         </div>
                     </div>
                     <div class="form-row">

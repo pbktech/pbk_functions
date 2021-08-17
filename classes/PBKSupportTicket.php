@@ -13,6 +13,8 @@ class PBKSupportTicket {
     private string $openedTime;
     private string $status;
     private array $files;
+    private array $mms;
+    private float $cost;
 
     public function __construct(string $id) {
         if ($id === "_NEW") {
@@ -45,6 +47,12 @@ class PBKSupportTicket {
         $this->openedTime = $d->openedTime;
         $this->restaurantID = $d->restaurantID;
         $this->personName = $d->userName;
+        $this->status = $d->ticketStatus;
+        if($mms = json_decode($d->equipmentInfo, true)) {
+            $this->mms = $mms;
+        }else{
+            $this->mms = [];
+        }
     }
 
     private function checkTicketValidity(string $id): ?int {
@@ -71,9 +79,10 @@ class PBKSupportTicket {
                 "openedTime" => date("Y-m-d G:i:s"),
                 "restaurantID" => $this->restaurantID,
                 "areaID" => $this->area,
-                "itemID" => $this->itemID
+                "itemID" => $this->itemID,
+                "equipmentInfo" => json_encode($this->mms)
             ],
-            ["%d", "%s", "%s", "%s", "%d", "%d", "%d"]
+            ["%d", "%s", "%s", "%s", "%d", "%d", "%d", "%s"]
         );
         $this->setTicketID($wpdb->insert_id);
         $this->guid = $wpdb->get_var("SELECT UuidFromBin(publicUnique) FROM pbc_support_ticket WHERE ticketID = " . $this->id);
@@ -83,7 +92,27 @@ class PBKSupportTicket {
         return null;
     }
 
+    private function recordCost(int $response, string $type): void{
+        global $wpdb;
+        $wpdb->insert(
+            "pbc_support_ticket_response_costs",
+            [
+                "responseID" => $response,
+                "costType" => $type,
+                "costAmount" => $this->cost
+            ],
+            ["%d", "%s", "%s"]
+        );
+    }
 
+    public function updateStatus(string $status): void{
+        global $wpdb;
+        $wpdb->update(
+            "pbc_support_ticket",
+            ["ticketStatus" => $status],
+            ["ticketID" => $this->getTicketID()]
+        );
+    }
 
     public function recordResponse(int $uid): ?array {
         global $wpdb;
@@ -100,6 +129,7 @@ class PBKSupportTicket {
             ["%d", "%d", "%s", "%s", "%s"]
         );
         $updateID = $wpdb->insert_id;
+        $this->recordCost($updateID, "Cost");
         $restaurant = $wpdb->get_var("SELECT restaurantName FROM pbc_pbrestaurants WHERE restaurantID = " . $this->restaurantID);
         $emails = $this->getEmails();
 
@@ -201,5 +231,47 @@ class PBKSupportTicket {
 
     public function setDescription(string $description): void {
         $this->description = $description;
+    }
+
+    /**
+     * @return array
+     */
+    public function getMms(): array {
+        return $this->mms;
+    }
+
+    /**
+     * @param array $mms
+     */
+    public function setMms(array $mms): void {
+        $this->mms = $mms;
+    }
+
+    /**
+     * @return float
+     */
+    public function getCost(): float {
+        return $this->cost;
+    }
+
+    /**
+     * @param float $cost
+     */
+    public function setCost(float $cost): void {
+        $this->cost = $cost;
+    }
+
+    /**
+     * @return string
+     */
+    public function getStatus(): string {
+        return $this->status;
+    }
+
+    /**
+     * @param string $status
+     */
+    public function setStatus(string $status): void {
+        $this->status = $status;
     }
 }

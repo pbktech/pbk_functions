@@ -22,7 +22,11 @@ function updateTicket(){
         $ticket->setDescription($data->issueDescription);
         $ticket->setPersonName($data->personName);
         $ticket->setFiles($data->attachedFiles);
+        $ticket->setCost(round(floatval($data->repairCost),2));
         $ticket->recordResponse($cu->ID);
+        if($data->close){
+            $ticket->updateStatus("Closed");
+        }
     }
     showJsonAjax($answer);
 }
@@ -59,6 +63,7 @@ function startTicket(){
         $ticket->setPersonName($data->personName);
         $ticket->setRestaurantID($data->restaurantID);
         $ticket->setFiles($data->attachedFiles);
+        $ticket->setMms(["make" => $data->make, "model" => $data->model, "serial" => $data->serial]);
         $ticket->addNewTicket($cu->ID);
     }
     showJsonAjax($answer);

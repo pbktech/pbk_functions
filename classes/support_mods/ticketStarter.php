@@ -1,19 +1,31 @@
 <?php
 global $wpdb;
 $items = array();
-$supportItems = $wpdb->get_results("SELECT itemID, itemName FROM pbc_support_items WHERE isActive = 1 order by itemName");
+$supportItems = $wpdb->get_results("SELECT itemID, itemName, vendorID, redirect, requireMMS FROM pbc_support_items WHERE isActive = 1 order by itemName");
 if ($supportItems) {
     $items[] = array("id" => -1, "text" => "Select an item to begin your report");
     foreach ($supportItems as $item) {
         $allIssues = [];
-        $commonIssues = $wpdb->get_results("SELECT issueID, issueTitle, isEmergency FROM pbc_support_common WHERE itemID = " . $item->itemID);
+        $commonIssues = $wpdb->get_results("SELECT issueID, issueTitle, isEmergency, vendorID FROM pbc_support_common WHERE itemID = " . $item->itemID);
         if ($commonIssues) {
             foreach ($commonIssues as $i) {
                 $faqSteps = $wpdb->get_results("SELECT * FROM pbc_support_trouble_steps psts, pbc_support_trouble_assign psta WHERE psta.issueID = " . $i->issueID . " AND psta.stepID = psts.stepID ORDER BY psta.stepOrder");
-                $allIssues[] = ["ci" => $i, "steps" => $faqSteps];
+                $vendor = "";
+                if(!empty($i->vendorID) && $i->vendorID !== 0){
+                    $vendor = $wpdb->get_var("SELECT contact from pbc_support_contacts WHERE contactID = " . $i->vendorID);
+                }elseif ($i->vendorID === 0){
+                    $vendor = "Contact Your Area Manager";
+                }
+                $allIssues[] = ["ci" => $i, "steps" => $faqSteps, "vendor" => $vendor];
             }
         }
-        $items[] = array("id" => $item->itemID, "text" => $item->itemName, "commonIssues" => $allIssues);
+        $v = "";
+        if(!empty($item->vendorID) && $item->vendorID !== 0){
+            $v = $wpdb->get_var("SELECT contact from pbc_support_contacts WHERE contactID = " . $item->vendorID);
+        }elseif ($item->vendorID === 0){
+            $v = "Contact Your Area Manager";
+        }
+        $items[] = array("id" => $item->itemID, "text" => $item->itemName, "commonIssues" => $allIssues, "vendor" => $v, "redirect" => $item->redirect, "requireMMS" => $item->requireMMS);
     }
 }
 $return = array();
@@ -37,12 +49,17 @@ $return = array();
       function ticketStart() {
         const html = $('#ticketContainer').html();
         createWorkArea(html);
+        if(requireMMS && requireMMS === '1'){
+            $('.mmsID').append(' required');
+        }
       }
 
       const problem = {};
       const attachedFiles = [];
       const allIssues =  <?php echo json_encode($items);?>;
+      let requireMMS = 0;
       $(document).ready(function() {
+        console.log(allIssues);
         $('[data-toggle="tooltip"]').tooltip();
         $('body').on('change', '.files-data', function(e) {
           e.preventDefault;
@@ -94,6 +111,7 @@ $return = array();
           const data = e.params.data;
           const issues = allIssues.filter(item => item.id === data.id);
           const issue = issues[0];
+          requireMMS = issue.requireMMS;
           problem.area= data.id;
           $('#issueModal').modal('show');
           if (issue.commonIssues.length) {
@@ -105,26 +123,35 @@ $return = array();
             createWorkArea(html);
           } else {
             ticketStart();
+            if(issue.vendor){
+              $('#vendorSection').html('<div class="alert alert-primary" style="width:100%;text-align: center;">Please contact the vendor below, first.<br>' + issue.vendor + '</div>');
+            }
           }
 
           $('.modal-header').html('<h3>' + data.text + '</h3>');
 
           $('.commonIssue').click(function(e) {
+            const issues = allIssues.filter(item => item.id === problem.area);
             const issueID = e.target.dataset.issueid;
             const thisIssue = issue.commonIssues[issueID].ci;
             const steps = issue.commonIssues[issueID].steps;
-            problem.issue= thisIssue.issueID ;
+            problem.issue= thisIssue.issueID;
+            console.log(issue.commonIssues[issueID].vendor)
             if (thisIssue.isEmergency === '1') {
               let html;
-              createWorkArea('<div class="container"><div class="row" style="width: 100%;"><div class="alert alert-danger" style="text-align: center;">THIS IS AN EMERGENCY PLEASE CONTACT THE VENDOR BELOW</div><div class="alert alert-warning" style="text-align: center;">PBK Technology <a href="tel: 312-300-2587">312-300-2587</a> </div></div></div>');
+              createWorkArea('<div class="container-fluid"><div class="row" style="width: 100%;"><div class="alert alert-danger" style="text-align: center;width: 100%;">THIS IS AN EMERGENCY PLEASE CONTACT THE VENDOR BELOW</div><div class="alert alert-warning" style="text-align: center;width: 100%;">' + issue.commonIssues[issueID].vendor + '</div></div></div>');
               return;
             }
             if (steps.length) {
 
             } else {
               ticketStart();
+              if(issue.commonIssues[issueID].vendor){
+                $('#vendorSection').html('<div class="alert alert-primary" style="width:100%;text-align: center;">Please contact the vendor below, first.<br>' + issue.commonIssues[issueID].vendor + '</div>');
+              }
             }
             $('.closeModal').click(function() {
+              $('.mmsID').html('');
               /*delete data, issues, issue, issueID, thisIssue, steps;*/
             });
           });
@@ -136,6 +163,8 @@ $return = array();
           $('#ticketContainer').hide();
           $('.modal-header').html('');
           $('.modal-body').html('');
+          $('.mmsID').html('');
+          $('#vendorSection').html('');
         });
         $('#saveButton').click(function() {
           $('#buttonSpin').show();
@@ -157,6 +186,20 @@ $return = array();
             errors.push('Please enter more information in the description.');
             $('#issueDescription').addClass('is-invalid');
           }
+          if(requireMMS && requireMMS === '1'){
+            if ($('#make').val() === '') {
+              errors.push('Please enter the make.');
+              $('#make').addClass('is-invalid');
+            }
+            if ($('#model').val() === '') {
+              errors.push('Please enter the model.');
+              $('#model').addClass('is-invalid');
+            }
+            if ($('#serial').val() === '') {
+              errors.push('Please enter the serial number.');
+              $('#serial').addClass('is-invalid');
+            }
+          }
           if (errors.length) {
             $('#buttonSpin').hide();
             $('#saveButton').show();
@@ -169,6 +212,9 @@ $return = array();
             problem.restaurantID= $('#restaurantID').val();
             problem.personName= $('#personName').val();
             problem.issueDescription= $('#issueDescription').val();
+            problem.make = $('#make').val();
+            problem.model = $('#model').val();
+            problem.serial = $('#serial').val();
 
             fd.append('action', 'startTicket');
             fd.append('data', JSON.stringify(problem));
@@ -233,7 +279,7 @@ $return = array();
     <div class="container-fluid">
         <div class="row">
         <select class="js-example-basic-single form-control" name="issue" id="issueSelector" style="width: 90%;">
-        </select> <button type="button" class="btn btn-outline-dark" data-toggle="tooltip" data-html="true" title="You can search for your issue by clicking on the dropdown and typing in the box."><i class="bi bi-info-circle"></i></button>
+        </select> <button type="button" class="btn btn-link" data-toggle="tooltip" data-html="true" title="You can search for your issue by clicking on the dropdown and typing in the box."><i class="bi bi-info-circle"></i></button>
         </div>
     </div>
     <div class="alert" id="serverResponse"></div>
