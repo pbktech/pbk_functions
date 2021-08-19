@@ -4,6 +4,39 @@ add_action( 'wp_ajax_get_ticket_list', 'get_ticket_list' );
 add_action( 'wp_ajax_uploadPBKImage', 'uploadPBKImage' );
 add_action( 'wp_ajax_startTicket', 'startTicket' );
 add_action( 'wp_ajax_updateTicket', 'updateTicket' );
+add_action( 'wp_ajax_notifyEmergency', 'notifyEmergency' );
+
+/**
+ * @throws Exception
+ */
+function notifyEmergency(){
+    global $wpdb;
+    $cu = wp_get_current_user();
+    $data = json_decode(stripslashes($_REQUEST['data']));
+    if(!empty($data->issue)){
+        $itemID = $data->issue;
+    }
+    $returnEmails = [];
+    $emails = $wpdb->get_results("SELECT user_email FROM pbc_users WHERE ID IN (
+    SELECT userID FROM pbc_support_contact psc, pbc_support_items psi WHERE psc.department = psi.department AND psi.itemID = '" . $data->area . "')");
+    if ($emails) {
+        foreach ($emails as $email) {
+            $returnEmails[] = $email->user_email;
+        }
+    }
+    $notify = new PBKNotify();
+    $subject = "[PBK Ticket] ***POSSIBLE EMERGENCY***";
+    $notify->setMethod("sendEmail");
+    $notify->setRecipients($returnEmails);
+    $notify->setSubject($subject);
+    $notify->setTemplate("ticket_emergency.html");
+    $notify->setTemplateOptions([
+        "name" => $cu->display_name,
+        "issue" => $wpdb->get_var("SELECT issueTitle FROM pbc_support_common WHERE issueID = " . $data->issue),
+        "area" => $wpdb->get_var("SELECT itemName FROM pbc_support_items psi WHERE itemID " . $data->area)
+    ]);
+    showJsonAjax($notify->sendMessage());
+}
 
 function updateTicket(){
     $answer = ['message' => [], 'status' => 200];

@@ -140,7 +140,8 @@ class PBKSupportTicket {
         }
 
         $notify = new PBKNotify();
-        $subject = $this->status === "new" ? "New Ticket for " : "Ticket Updated for ";
+        $subject = "[PBK Ticket] ";
+        $subject .= $this->status === "new" ? "New Ticket for " : "Ticket Updated for ";
         $subject .= $restaurant;
         if (!$issue = $wpdb->get_var("SELECT issueTitle FROM pbc_support_common psc, pbc_support_ticket pst WHERE psc.issueID = pst.itemID AND ticketID = " . $this->id)) {
             $issue = " --- ";
@@ -161,6 +162,7 @@ class PBKSupportTicket {
         ]);
         return $notify->sendMessage();
     }
+
 
     private function getEmails(): array {
         global $wpdb;

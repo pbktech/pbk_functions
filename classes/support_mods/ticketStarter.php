@@ -59,7 +59,6 @@ $return = array();
       const allIssues =  <?php echo json_encode($items);?>;
       let requireMMS = 0;
       $(document).ready(function() {
-        console.log(allIssues);
         $('[data-toggle="tooltip"]').tooltip();
         $('body').on('change', '.files-data', function(e) {
           e.preventDefault;
@@ -136,10 +135,25 @@ $return = array();
             const thisIssue = issue.commonIssues[issueID].ci;
             const steps = issue.commonIssues[issueID].steps;
             problem.issue= thisIssue.issueID;
-            console.log(issue.commonIssues[issueID].vendor)
             if (thisIssue.isEmergency === '1') {
               let html;
+              $('#saveButton').hide();
               createWorkArea('<div class="container-fluid"><div class="row" style="width: 100%;"><div class="alert alert-danger" style="text-align: center;width: 100%;">THIS IS AN EMERGENCY PLEASE CONTACT THE VENDOR BELOW</div><div class="alert alert-warning" style="text-align: center;width: 100%;">' + issue.commonIssues[issueID].vendor + '</div></div></div>');
+              let fd = new FormData();
+
+              fd.append('action', 'notifyEmergency');
+              fd.append('data', JSON.stringify(problem));
+              $.ajax({
+                type: 'POST',
+                url: '<?php echo admin_url('admin-ajax.php'); ?>',
+                data: fd,
+                contentType: false,
+                processData: false,
+                success: function(response) {
+                  console.log(response)
+                }
+              });
+
               return;
             }
             if (steps.length) {
