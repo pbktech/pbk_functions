@@ -124,6 +124,7 @@ $return = array();
             ticketStart();
             if(issue.vendor){
               $('#vendorSection').html('<div class="alert alert-primary" style="width:100%;text-align: center;">Please contact the vendor below, first.<br>' + issue.vendor + '</div>');
+              $('#saveButton').show();
             }
           }
 
@@ -163,6 +164,7 @@ $return = array();
               if(issue.commonIssues[issueID].vendor){
                 $('#vendorSection').html('<div class="alert alert-primary" style="width:100%;text-align: center;">Please contact the vendor below, first.<br>' + issue.commonIssues[issueID].vendor + '</div>');
               }
+              $('#saveButton').show();
             }
             $('.closeModal').click(function() {
               $('.mmsID').html('');
@@ -179,6 +181,8 @@ $return = array();
           $('.modal-body').html('');
           $('.mmsID').html('');
           $('#vendorSection').html('');
+          $('#saveButton').show();
+
         });
         $('#saveButton').click(function() {
           $('#buttonSpin').show();
