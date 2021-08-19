@@ -33,7 +33,7 @@ function notifyEmergency(){
     $notify->setTemplateOptions([
         "name" => $cu->display_name,
         "issue" => $wpdb->get_var("SELECT issueTitle FROM pbc_support_common WHERE issueID = " . $data->issue),
-        "area" => $wpdb->get_var("SELECT itemName FROM pbc_support_items psi WHERE itemID " . $data->area)
+        "area" => $wpdb->get_var("SELECT itemName FROM pbc_support_items psi WHERE itemID =" . $data->area)
     ]);
     showJsonAjax($notify->sendMessage());
 }
