@@ -52,7 +52,12 @@ class PBKNotify {
         $report = new ToastReport();
         $report->reportEmail("jon@theproteinbar.com", $m, $this->subject);
         */
+
         global $wpdb;
+        if(!isset($wpdb)){
+            define( 'SHORTINIT', true );
+            require_once( '/var/www/html/c2.theproteinbar.com/wp-load.php' );
+        }
         $wpdb->insert(
             "pbc_tasks",
             array(
