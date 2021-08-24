@@ -16,7 +16,8 @@ function task_dispatch($task, $log) {
         $email = new ToastReport();
         $recip = explode(',', $task['target']);
         foreach ($recip as $r) {
-            $email->reportEmail($r, $task['text'], $task['subject']);
+            $files = json_decode($task['files'], true);
+            $email->reportEmail($r, $task['text'], $task['subject'], $files);
         }
     } elseif($task['what'] === 'sendText'){
         $log->info("Dispatch: Run Command - Sending Text");

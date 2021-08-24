@@ -8,14 +8,19 @@ class PBKNotify {
     private array $templateOptions;
     private string $sendTime;
     private string $template;
+    private array $attachments;
 
     private const methods = ["sendEmail", "sendText"];
     private const emailHeader = __DIR__ . "/notifyTemplates/emailHeader.html";
     private const emailFooter = __DIR__ . "/notifyTemplates/emailFooter.html";
 
 
+    /**
+     * @throws Exception
+     */
     public function __construct() {
         $this->setSendTime(date("Y-m-d G:I:s"));
+        $this->setTemplate("generic.html");
     }
 
     public function setSendTime(string $date): void {
@@ -65,9 +70,11 @@ class PBKNotify {
                 'target' => implode(",", $this->recipients),
                 'text' => $m,
                 'subject' => $this->subject,
-                'dueDate' => $this->sendTime
+                'dueDate' => $this->sendTime,
+                'files' => json_encode($this->attachments)
             ),
             array(
+                '%s',
                 '%s',
                 '%s',
                 '%s',
@@ -133,4 +140,19 @@ class PBKNotify {
         }
         return $this;
     }
+
+    /**
+     * @return array
+     */
+    public function getAttachments(): array {
+        return $this->attachments;
+    }
+
+    /**
+     * @param array $attachments
+     */
+    public function setAttachments(array $attachments): void {
+        $this->attachments = $attachments;
+    }
+
 }
