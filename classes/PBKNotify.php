@@ -63,6 +63,7 @@ class PBKNotify {
             define( 'SHORTINIT', true );
             require_once( '/var/www/html/c2.theproteinbar.com/wp-load.php' );
         }
+        $files = empty($this->attachments) ? "[]" : json_encode($this->attachments);
         $wpdb->insert(
             "pbc_tasks",
             array(
@@ -71,7 +72,7 @@ class PBKNotify {
                 'text' => $m,
                 'subject' => $this->subject,
                 'dueDate' => $this->sendTime,
-                'files' => json_encode($this->attachments)
+                'files' => $files
             ),
             array(
                 '%s',
