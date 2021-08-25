@@ -129,7 +129,9 @@ class PBKSupportTicket {
             ["%d", "%d", "%s", "%s", "%s"]
         );
         $updateID = $wpdb->insert_id;
-        $this->recordCost($updateID, "Cost");
+        if(!empty($this->cost)) {
+            $this->recordCost($updateID, "Cost");
+        }
         $restaurant = $wpdb->get_var("SELECT restaurantName FROM pbc_pbrestaurants WHERE restaurantID = " . $this->restaurantID);
         $emails = $this->getEmails();
 
