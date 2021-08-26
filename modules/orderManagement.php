@@ -290,6 +290,8 @@ function omAJAX() { ?>
           $('#headerID').val("");
           $('#newTime').val("");
           $('#newDate').val("");
+          $('#duplicateBody').show();
+          $('#duplicateProcessing').hide();
           myTable.ajax.reload();
         })
       });

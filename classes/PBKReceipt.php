@@ -174,7 +174,7 @@ final class PBKReceipt {
                 foreach ($check['payments'] as $payment){
                     $paymentTotal += $payment->paymentAmount;
                     $payments .= "
-                        <tr class='row' style=''>
+                        <tr>
                             <td style='text-align: right; width: 80%;'>" . $payment->paymentType . " - " . substr($payment->cardNum, -4) . "</td>
                             <td style='text-align: right;'>" . $fmt->formatCurrency($payment->paymentAmount, "USD") . "</td>
                         </tr>";
@@ -194,10 +194,10 @@ final class PBKReceipt {
                 </div>
                 <div class='receipt-body'>
                     <table style='width: 500px;margin: auto;border: none;'>";
+            $checkTotal = 0;
             foreach ($check['items'] as $item){
                 $modLines = "";
                 $modPrice = 0;
-                $checkTotal = 0;
                 if(!empty($item['mods'])){
                     $modLines.= "<tr><td colspan='2'><ul style='list-style-type: none; font-size: 75%; font-style: italic; color: #9d9d9d; text-align: left;'>";
                     foreach($item['mods'] as $mod){

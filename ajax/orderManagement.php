@@ -79,14 +79,24 @@ function om_duplicate() {
     $mysqli = new mysqli(DB_HOST, DB_USER, DB_PASSWORD, DB_NAME);
     $mysqli->set_charset('utf8mb4');
     global $wpdb;
+    $q = $wpdb->get_row("SELECT mbUserID, minibarID, orderType, isGroup, payerType, maximumCheck, defaultPayment, messageToUser, deliveryInstructions, fulfillment, company, defaultPromo FROM pbc_minibar_order_header pmoh, pbc_minibar pm WHERE pm.idpbc_minibar = pmoh.minibarID AND headerID = '" . $_REQUEST['headerID'] . "'");
     $oldOrder = new PBKOrder($mysqli);
     $oldOrder->setOrderID($_REQUEST['headerID']);
     $orderHeader = $oldOrder->returnHeaderInfo();
+    $toast = new Toast($orderHeader->GUID);
     $toastOrder = new ToastOrder($orderHeader->GUID);
     $toastOrder->setOrderID($orderHeader->headerID);
     $toastOrder->setUserID($orderHeader->mbUserID);
+    $diningOption = $toastOrder->returnDiningOption();
     $checks = $toastOrder->returnOrderChecks();
-    $q = $wpdb->get_row("SELECT mbUserID, minibarID, orderType, isGroup, payerType, maximumCheck, defaultPayment, messageToUser, deliveryInstructions, fulfillment, company FROM pbc_minibar_order_header pmoh, pbc_minibar pm WHERE pm.idpbc_minibar = pmoh.minibarID AND headerID = '" . $_REQUEST['headerID'] . "'");
+    if (!empty($q->defaultPromo)) {
+        $toastOrder->setDefaultPromo($q->defaultPromo);
+     //   $disCheck = [ "order" => $checks, "promoCode" => $q->defaultPromo];
+     //   $discount = $toast->postOrder("applicableDiscounts", $disCheck);
+    }
+    $orderObject = (object)["entityType" => "Order", "diningOption" => ["guid" => $diningOption, "entityType" => "DiningOption"], "checks" => $checks->order];
+    $response = $toast->postOrder("prices", $orderObject);
+ //   $orderInfo = json_decode($response);
     $delDay = strtotime($_REQUEST['newDate'] . " " . $_REQUEST['newTime']);
     $fulfillment = $q->fulfillment === "pickup" ? "pickup" : "delivery";
     if ($fulfillment === "delivery") {
@@ -96,7 +106,8 @@ function om_duplicate() {
     }
     $order = new PBKOrder($mysqli);
     $headerInfo['mbUserID'] = $q->mbUserID;
-    $headerInfo['minibarID'] = $q->minibarID;
+    $headerInfo['minibarID'] = $q->mbUserID;
+    $headerInfo['deliveryDate'] = $delDay;
     $headerInfo['deliveryDate'] = date("Y-m-d G:i:s", $delDay);
     $headerInfo['orderType'] = $q->orderType;
     $headerInfo['isGroup'] = $q->isGroup;
@@ -117,6 +128,85 @@ function om_duplicate() {
         returnAJAXData($data);
     }
     $check = new PBKCheck($mysqli);
+    foreach ($response->checks as $c){
+        $h = array(
+            'orderHeaderID' => $orderID,
+            'mbUserID' => $q->mbUserID,
+            'name' => $c->tabName,
+            'subtotal' => round($c->totalAmount, 2),
+            'tax' => round($c->taxAmount, 2),
+            'smsConsent' => 0
+        );
+        if ($orderCheckID = $check->createCheckHeader($h)) {
+            foreach ($c->selections as $i) {
+                if($i->item->guid === "7a6cf320-4afa-4f84-97a9-a37b3a287aca"){continue;}
+                $wpdb->query($wpdb->prepare("INSERT INTO pbc2 . pbc_minibar_order_items(checkID, itemName, itemPrice, itemGUID, quantity) VALUES (%d,%s,%s,%s,%d)",
+                    $orderCheckID,
+                    $i->displayName,
+                    $i->receiptLinePrice,
+                    $i->itemGroup->guid . "/" . $i->item->guid,
+                    $i->quantity
+                ));
+                $newItemID = $wpdb->insert_id;
+                if (!empty($i->modifiers)) {
+                    foreach ($i->modifiers as $m) {
+                        if($m->selectionType !== "SPECIAL_REQUEST") {
+                            $wpdb->query($wpdb->prepare("INSERT INTO pbc2 . pbc_minibar_order_mods(itemID, modName, modPrice, modGUID) VALUES (%d,%s,%s,%s)",
+                                $newItemID,
+                                $m->displayName,
+                                $m->receiptLinePrice,
+                                $m->optionGroup->guid . "/" . $m->item->guid
+                            ));
+                        }
+                    }
+                }
+            }
+            if(!empty($c->appliedDiscounts)){
+                foreach ($c->appliedDiscounts as $d){
+                    $wpdb->query($wpdb->prepare("INSERT INTO pbc2 . pbc_minibar_order_discount (checkID, discountName, discountGUID, discountAmount, promoCode, discountType) VALUES (%d,%s,%s,%s,%s,%s)",
+                        $orderCheckID,
+                        $d->name,
+                        $d->discount->guid,
+                        $d->discountAmount,
+                        empty($d->appliedPromoCode) ? "Contract" : $d->appliedPromoCode,
+                        "system"
+                    ));
+                }
+            }
+            $payment = new PBKPayment($mysqli);
+            $payment->setPaymentID($q->defaultPayment);
+            $paymentInfo = $payment->returnPayementInfo();
+            $args = array(
+                'mbCheckID' => $orderCheckID,
+                'mbUserID' => $q->mbUserID,
+                'paymentType' => 'Prepay',
+                'paymentDate' => date("Y-m-d G:i:s"),
+                'paymentAmount' => $c->totalAmount,
+                'paymentStatus' => "approved",
+                'authorization' => json_encode(array()),
+                'fdsToken' => json_encode(array()),
+                'cardNum' => date('Ymd'),
+                'transactionID' => json_encode(array()),
+                'addressID' => $paymentInfo->addressID,
+                'tipAmount' => $paymentInfo->tipAmount
+            );
+            $info = $payment->addPaymentToTable($args);
+        }
+    }
+    /*
+    $orderHeader = $oldOrder->returnHeaderInfo();
+    $toastOrder = new ToastOrder($orderHeader->GUID);
+    $toastOrder->setOrderID($orderHeader->headerID);
+    $toastOrder->setUserID($orderHeader->mbUserID);
+    $checks = $toastOrder->returnOrderChecks();
+    $headerInfo['mbUserID'] = $q->mbUserID;
+    $headerInfo['minibarID'] = $q->minibarID;
+    $headerInfo['deliveryDate'] = date("Y-m-d G:i:s", $delDay);
+    $headerInfo['orderType'] = $q->orderType;
+    $headerInfo['isGroup'] = $q->isGroup;
+    $headerInfo['payerType'] = $q->payerType;
+    $headerInfo['defaultPayment'] = $q->defaultPayment;
+    $headerInfo['maximumCheck'] = empty($q->maximumCheck) ? null : $q->maximumCheck;
     $checks = $wpdb->get_results("SELECT mbUserID, tabName, subtotal, tax, smsConsent, checkID FROM pbc_minibar_order_check WHERE mbOrderID = '" . $_REQUEST['headerID'] . "'");
     if ($checks) {
         foreach ($checks as $c) {
@@ -140,18 +230,6 @@ function om_duplicate() {
                             $i->quantity
                         ));
                         $mods = $wpdb->get_results("SELECT * FROM pbc_minibar_order_mods WHERE itemID = '" . $i->itemID . "'");
-                        $newItemID = $wpdb->insert_id;
-                        if ($mods) {
-                            foreach ($mods as $m) {
-                                $wpdb->query($wpdb->prepare("INSERT INTO pbc2 . pbc_minibar_order_mods(itemID, modName, modPrice, modGUID) VALUES (%d,%s,%s,%s)",
-                                    $newItemID,
-                                    $m->modName,
-                                    $m->modPrice,
-                                    $m->modGUID
-                                )
-                                );
-                            }
-                        }
                         $discounts = $wpdb->get_results("SELECT * FROM pbc_minibar_order_discount WHERE checkID = '" . $c->checkID . "'");
                         if ($discounts) {
                             foreach ($discounts as $d) {
@@ -195,8 +273,8 @@ function om_duplicate() {
         'target' => "sh /home/jewmanfoo/toast-api/postMinibar.sh ",
         'files' => $orderID,
         'dueDate' => date('Y-m-d H:i:s', $cutoff)]);
-
-    $data = ["status" => 200, "msg" => "The order for " . $q->company . " has been duplicated and scheduled for " . date("m/d/Y h:i a", $delDay) . "."];
+*/
+   $data = ["status" => 200, "msg" => "The order for " . $q->company . " has been duplicated and scheduled for " . date("m/d/Y h:i a", $delDay) . "."];
     returnAJAXData($data);
 }
 

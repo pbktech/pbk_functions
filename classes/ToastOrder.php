@@ -6,6 +6,7 @@ class ToastOrder extends Toast {
     private int $orderID;
     private int $userID;
     private object $orderHeader;
+    private string $defaultPromo;
     public const TODAY_FORMAT = "Y-m-d G:i:s";
 
     public function __construct($guid){
@@ -13,6 +14,13 @@ class ToastOrder extends Toast {
     }
 
     final public function returnOrderChecks(): object{
+        if(!empty($this->defaultPromo)){
+            $promo = explode("%", $this->defaultPromo);
+            $appliedDiscounts = (object)[
+                "discount" => (object)[$promo[0]],
+                "appliedPromoCode" => $promo[1]
+            ];
+        }
         $check = new PBKCheck($this->mysqli);
         $check->setOrderID($this->orderHeader->headerID);
         $grandTotal = 0;
@@ -60,7 +68,7 @@ class ToastOrder extends Toast {
                 "entityType" => "Check",
                 "selections" => $selections,
                 "customer" => $this->returnCustomerObject(),
-                "appliedDiscounts" => $this->buildDiscounts($check->returnDiscounts()),
+                "appliedDiscounts" => empty($appliedDiscounts) ? $this->buildDiscounts($check->returnDiscounts()) : $appliedDiscounts,
                 "payments" => $p->payments,
                 "tabName" => $orderCheck->tabName
             ];
@@ -213,4 +221,19 @@ class ToastOrder extends Toast {
     final public function setUserID(int $userID): void{
         $this->userID = $userID;
     }
+
+    /**
+     * @return string
+     */
+    public function getDefaultPromo(): string {
+        return $this->defaultPromo;
+    }
+
+    /**
+     * @param string $defaultPromo
+     */
+    public function setDefaultPromo(string $defaultPromo): void {
+        $this->defaultPromo = $defaultPromo;
+    }
+
 }
