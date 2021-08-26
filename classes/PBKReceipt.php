@@ -111,151 +111,96 @@ final class PBKReceipt {
         return array("checks" => $orderChecks, "payment" => $orderPayment, "minibar" => $orderCheckID[0]->company, "delivery" => date("m/d/y g:i:s a", strtotime($orderCheckID[0]->dateDue)));
     }
 
+    private function paymentLine(string $name, string $amount, string $style = ""): string {
+        return "
+            <tr style='".$style."'>
+                <td style='text-align: right; width: 80%;'>" . $name . "</td>
+                <td style='text-align: right;'>" . $amount . "</td>
+            </tr>
+        ";
+    }
+
     public function buildPBKReceipt(array $d): string {
-        $fmt = new NumberFormatter( 'en_US', NumberFormatter::CURRENCY );
-        $receiptBody = "";
-        $receiptHeader = "
-<style>
-.receipt {
-    padding: 8px 10px;
-    max-width: 500px;
-}
-.receipt-header {
-    height: 4px;
-    max-width: 500px;
-}
-.receipt-body {
-    padding: 10px;
-    background-color: #FFFFFF;
-    max-width: 500px;
-    margin: auto;    
-}
-.receipt-footer {
-    height: 4px;
-    max-width: 500px;
-}
-.receipt-body hr {
-    margin: 5px 0;
-}
-.receipt table td {
-    border:none;
-    padding:0;
-    max-width: 500px;
-}
-</style>
-<div class='container' style='text-align: center; padding-top: 1em; font-family: Lora; padding-bottom: 2em; overflow-y: auto; overflow-x: hidden;'>
-    <h2>Thank you for your order!</h2>
-    <div class='receipt' style='textAlign: center; padding-top: 1em; padding-bottom: 1em; margin: auto;'>
-        <div class='row' style='padding-bottom: 1em;'>
-            <div class='col'>
-                <div><img src='https://www.pbkgrouporder.com/assets/images/receipt-logo_1519923720_400.png' alt='Protein Bar & Kitchen' /></div>
-                <div style=' padding: 1em;'>Due on " . $d['delivery'] . "<br /><strong>" . $d['minibar'] . "</strong></div>
-            </div>
-        </div>";
-    if(!empty($d['checks'])){
-        $grandTotal = 0;
-        foreach($d['checks'] as $check){
-            $discounts = "";
-            $discountTotal = 0;
-            $payments = "";
-            $paymentTotal = 0;
-            $tipTotal = 0;
-            if(!empty($check['discounts'])){
-                foreach($check['discounts'] as $discount) {
-                    $discountTotal+= $discount->discountAmount;
-                    $discounts .= "
-                        <tr style='color: #dc3545; font-style: italic;'>
-                            <td style='text-align: right; width: 80%;'>" . $discount->discountName . " (" . $discount->promoCode . ")</td>
-                            <td style='text-align: right;'>" . $fmt->formatCurrency($discount->discountAmount, "USD") . "</td>
-                        </tr>";
-                }
-            }
-            if(!empty($check['payments'])){
-                foreach ($check['payments'] as $payment){
-                    $paymentTotal += $payment->paymentAmount;
-                    $payments .= "
-                        <tr>
-                            <td style='text-align: right; width: 80%;'>" . $payment->paymentType . " - " . substr($payment->cardNum, -4) . "</td>
-                            <td style='text-align: right;'>" . $fmt->formatCurrency($payment->paymentAmount, "USD") . "</td>
-                        </tr>";
-                    if(!empty($payment->tipAmount) && is_numeric($payment->tipAmount)){
-                        $tipTotal+=$payment->tipAmount;
-                    }
-                    if($payment->paymentType === "Prepay"){
-                        $grandTotal += $payment->paymentAmount;
+        $fmt = new NumberFormatter('en_US', NumberFormatter::CURRENCY);
+        $receipt = "";
+        $loader = new \Twig\Loader\FilesystemLoader(__DIR__ . '/notifyTemplates');
+        $twig = new \Twig\Environment($loader);
+        $template = $twig->load("receipt.html");
+        if (!empty($d['checks'])) {
+            $grandTotal = 0;
+            foreach ($d['checks'] as $check) {
+                $discounts = "";
+                $discountTotal = 0;
+                $payments = "";
+                $paymentTotal = 0;
+                $tipTotal = 0;
+                if (!empty($check['discounts'])) {
+                    foreach ($check['discounts'] as $discount) {
+                        $discountTotal += $discount->discountAmount;
+                        $discounts .= $this->paymentLine($discount->discountName . " (" . $discount->promoCode . ")",$fmt->formatCurrency($discount->discountAmount, "USD"),"color: #dc3545; font-style: italic;");
                     }
                 }
-            }
-            $receiptBody.="
-            <div class='container-fluid'>
-                <div class='receipt-header' >&nbsp;</div>
-                <div class='receipt-body'>
-                    <div style='text-align: left; font-weight: bold; width: 500px;margin: auto;'>" . $check['tab'] ." : " . $check['ordered'] ."<hr /></div>
-                </div>
-                <div class='receipt-body'>
-                    <table style='width: 500px;margin: auto;border: none;'>";
-            $checkTotal = 0;
-            foreach ($check['items'] as $item){
-                $modLines = "";
-                $modPrice = 0;
-                if(!empty($item['mods'])){
-                    $modLines.= "<tr><td colspan='2'><ul style='list-style-type: none; font-size: 75%; font-style: italic; color: #9d9d9d; text-align: left;'>";
-                    foreach($item['mods'] as $mod){
-                        $modPrice += $mod['price'];
-                        $modLines.="<li>" . $mod['name'] . "</li>";
+                if (!empty($check['payments'])) {
+                    foreach ($check['payments'] as $payment) {
+                        $paymentTotal += $payment->paymentAmount;
+                        $payments .= $this->paymentLine( $payment->paymentType . " - " . substr($payment->cardNum, -4), $fmt->formatCurrency($payment->paymentAmount, "USD"));
+                        if (!empty($payment->tipAmount) && is_numeric($payment->tipAmount)) {
+                            $tipTotal += $payment->tipAmount;
+                        }
+                        if ($payment->paymentType === "Prepay") {
+                            $grandTotal += $payment->paymentAmount;
+                        }
                     }
-                    $modLines.= "</ul></td> </tr>";
                 }
-                $linePrice = round($item['price'] + $modPrice, 2);
-                $checkTotal+=$linePrice;
-                $receiptBody.="
+                $receiptBody= "";
+                $checkTotal = 0;
+                foreach ($check['items'] as $item) {
+                    $modLines = "";
+                    $modPrice = 0;
+                    if (!empty($item['mods'])) {
+                        $modLines .= "<tr><td colspan='2'><ul style='list-style-type: none; font-size: 75%; font-style: italic; color: #9d9d9d; text-align: left;'>";
+                        foreach ($item['mods'] as $mod) {
+                            $modPrice += $mod['price'];
+                            $modLines .= "<li>" . $mod['name'] . "</li>";
+                        }
+                        $modLines .= "</ul></td> </tr>";
+                    }
+                    $linePrice = round($item['price'] + $modPrice, 2);
+                    $checkTotal += $linePrice;
+                    $receiptBody .= "
                     <tr>
                         <td style='text-align: left; width: 80%;'>" . $item['quantity'] . " <span style='color: #F36C21; font-weight: bold;'>" . $item['name'] . "</span></td>
-                        <td style='text-align: right;'>".$fmt->formatCurrency($linePrice,"USD")."</td>
+                        <td style='text-align: right;'>" . $fmt->formatCurrency($linePrice, "USD") . "</td>
                     </tr>
                 " . $modLines;
-            }
-            $receiptBody.="
-                    </table>                
-                </div>
-                <div class='receipt-body' style='font-size: 85%; text-align: right;'>
-                        
-                    <table style='width: 500px;margin: auto;border: none;'>
-                        <tr><td colspan='2'><hr /></td></tr>
-                        <tr>
-                            <td style='text-align: right; width: 80%;'>Subtotal:</td>
-                            <td style='text-align: right;'>".$fmt->formatCurrency($checkTotal,"USD")."</td>
-                        </tr><tr>
-                            <td style='text-align: right; width: 80%;'>Tax:</td>
-                            <td style='text-align: right;'>".$fmt->formatCurrency($check['totals']['tax'],"USD")."</td>
-                        </tr>" . $discounts;
-            if($tipTotal > 0){
-                $receiptBody.="
-                <tr>
-                            <td style='text-align: right; width: 80%;'>Tip:</td>
-                            <td style='text-align: right;'>".$fmt->formatCurrency($tipTotal,"USD")."</td>
-                        </tr>
-                ";
-            }
-            $receiptBody.=$payments . "
-                    </table>                
-                </div>
-            </div>
-            ";
+                }
+                $subtotal = $this->paymentLine("Subtotal:", $fmt->formatCurrency($checkTotal, "USD"));
+                $tax = $this->paymentLine("Tax:", $fmt->formatCurrency($check['totals']['tax'], "USD"));
+                $tip = $tipTotal > 0 ?  $this->paymentLine("tip:", $fmt->formatCurrency($tipTotal, "USD")) : "";
+                $receipt.= $template->render([
+                    "image" => "https://www.pbkgrouporder.com/assets/images/receipt-logo_1519923720_400.png",
+                    "delivery" => $d['delivery'],
+                    "minibar" => $d['minibar'],
+                    "tab" => $check['tab'],
+                    "ordered" => $check['ordered'],
+                    "receiptItems" => $receiptBody,
+                    "subtotal" => $subtotal,
+                    "discounts" => $discounts,
+                    "tax" => $tax,
+                    "tips" => $tip,
+                    "payment" => $payments
+                ]);
 
-        }
-        if($grandTotal !==0 && !empty($d['payment'])){
-                $receiptBody .= "
-            <div class='row' style='padding-top: 1em;'>
-                <div class='col'>Amount applied to " . $d['payment'][0]->paymentType . " ending in " . $d['payment'][0]->cardNum . ": ".$fmt->formatCurrency($grandTotal,"USD")."</div>
+            }
+            if ($grandTotal !== 0 && !empty($d['payment'])) {
+                $receipt .= "
+            <div class='row' style='padding-top: 1em; text-align: center;'>
+                <div class='col'>Amount applied to " . $d['payment'][0]->paymentType . " ending in " . $d['payment'][0]->cardNum . ": " . $fmt->formatCurrency($grandTotal, "USD") . "</div>
 </div>
             ";
+            }
         }
-    }
-$receiptFooter = "        
-    </div>
-</div>";
-    return $receiptHeader . $receiptBody . $receiptFooter;
+        return $receipt;
     }
 
 }

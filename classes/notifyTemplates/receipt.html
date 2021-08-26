@@ -1,0 +1,68 @@
+<style>
+    .receipt {
+        padding: 8px 10px;
+        max-width: 500px;
+    }
+
+    .receipt-header {
+        height: 4px;
+        max-width: 500px;
+    }
+
+    .receipt-body {
+        padding: 10px;
+        background-color: #FFFFFF;
+        max-width: 500px;
+        margin: auto;
+    }
+
+    .receipt-footer {
+        height: 4px;
+        max-width: 500px;
+    }
+
+    .receipt-body hr {
+        margin: 5px 0;
+    }
+
+    .receipt table td {
+        border: none;
+        padding: 0;
+        max-width: 500px;
+    }
+</style>
+<div class='container' style='text-align: center; padding-top: 1em; font-family: Lora; padding-bottom: 2em; overflow-y: auto; overflow-x: hidden;'>
+    <h2>Thank you for your order!</h2>
+    <div class='receipt' style='textAlign: center; padding-top: 1em; padding-bottom: 1em; margin: auto;'>
+        <div class='row' style='padding-bottom: 1em;'>
+            <div class='col'>
+                <div><img src='{{image}}' alt='Protein Bar & Kitchen'/></div>
+                <div style=' padding: 1em;'>Due on {{delivery}}<br/><strong>{{minibar}}</strong></div>
+            </div>
+        </div>
+        <div class='container-fluid'>
+            <div class='receipt-header'>&nbsp;</div>
+            <div class='receipt-body'>
+                <div style='text-align: left; font-weight: bold; width: 500px;margin: auto;'>{{tab}} : {{ordered}}
+                    <hr/>
+                </div>
+            </div>
+            <div class='receipt-body'>
+                <table style='width: 500px;margin: auto;border: none;'>
+                    {{receiptItems | raw}}
+                </table>
+            </div>
+            <div class='receipt-body' style='font-size: 85%; text-align: right;'>
+                <table style='width: 500px;margin: auto;border: none;'>
+                    <tr><td colspan='2'><hr /></td></tr>
+                    {{subtotal | raw}}
+                    {{discounts | raw}}
+                    {{tax | raw}}
+                    {{tips | raw}}
+                    {{paymnet | raw}}
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
