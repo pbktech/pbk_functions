@@ -4,7 +4,7 @@ $return = array();
 $cu = wp_get_current_user();
 $query = "SELECT restaurantID as 'id', restaurantName as 'text' FROM pbc_pbrestaurants WHERE isOpen = 1 ";
 if (!in_array("administrator", $cu->roles) && !in_array("editor", $cu->roles) && !in_array("author", $cu->roles)) {
-    $query .= "restaurantID IN (SELECT restaurantID FROM pbc_pbr_managers WHERE managerID = '" . $cu->ID . "')";
+    $query .= "AND restaurantID IN (SELECT restaurantID FROM pbc_pbr_managers WHERE managerID = '" . $cu->ID . "')";
 }
 $result = $wpdb->get_results($query);
 
@@ -71,8 +71,6 @@ $result = $wpdb->get_results($query);
         </div>
         <div class="row">
             <div class="col">
-
-                <!-- Our markup, the important part here! -->
                 <div id="drag-and-drop-zone" class="dm-uploader p-5" style="border: dashed;">
                     <div class="upload-response"></div>
                     <div class="btn btn-primary btn-block mb-5" id="uploadButton">
@@ -85,7 +83,6 @@ $result = $wpdb->get_results($query);
                         </div>
                     </div>
                 </div>
-
             </div>
             <div class="col">
                 <div class="card h-100">

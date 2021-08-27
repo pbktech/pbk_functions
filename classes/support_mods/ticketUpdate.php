@@ -98,6 +98,8 @@ $mms = $ticket->getMms();
               $('#updateModal').modal('hide');
               location.reload();
             } else {
+              $('#buttonSpin').hide();
+              $('#saveButton').show();
               $('#ticketResponse').addClass('alert-danger');
               $('#ticketResponse').append(response.message.join('<br>'));
             }
@@ -239,7 +241,7 @@ if($ticket->getStatus() === "Closed"){
                         <div class="col-12">
                             <label for="issueDescription">Your Update</label>
                             <textarea id="issueDescription" required style="width: 100%;" rows="10" class="form-control"
-                                      placeholder="Please be as descriptive as possible. If you've reached out to a vendor, lets us know when you called and the ticket number."></textarea>
+                                      placeholder="Please be as descriptive as possible. If you've reached out to a vendor, lets us know when you called and the ticket number. A minimum of 50 characters are required"></textarea>
                         </div>
                     </div>
                     <div class="form-row">
