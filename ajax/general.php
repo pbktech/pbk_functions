@@ -223,40 +223,50 @@ function addGoogleUser(){
                 }
             }
         }
-        require_once dirname(__DIR__) . "/templates/email/public.php";
-        $m = getHeader() . "<br><br>
-Hi " . $name[0] . ",<br><br>
-Welcome to Protein Bar & Kitchen! This email has your PBK Email (powered by Gmail) and Compeat setup and credentials.<br><br>
-<strong>PBK Email</strong><br>
-Go to https://mail.google.com. Sign in with the credentials below and accept the terms of Gmail. Gmail will require you to change your password when you first login. After signing in for the first time, you can add your email to your phone. <br>
-<a href='https://support.apple.com/en-us/HT201320'>How to Add PBK Email To iPhone</a><br>
-<a href='https://gsuitetips.com/tips/more/android/android-gmail-setup-instructions/'>How to Add PBK Email to Android</a><br>
-<br><br>
-U: " . $email . "<br>
-P: " . $password . "<br>
-<br><br>
-<strong>Compeat</strong><br>
-Compeat will require you to change your password when you first login.<br><br>
-U: " . $data['email'] . "<br>
-P: " . $password . "<br>";
-        $wpdb->insert(
-            "pbc_tasks",
-            array(
-                'what' => 'sendEmail',
-                'target' => $data['notify'] . ", jon@theproteinbar.com",
-                'text' => $m,
-                'subject' => "Welcome to Protein Bar & Kitchen!",
-                'dueDate' => date('Y-m-d H:i:s')
-            ),
-            array(
-                '%s',
-                '%s',
-                '%s',
-                '%s',
-                '%s'
-            )
-        );
+        $notify = new PBKNotify();
+        $notify->setMethod("sendEmail");
+        $notify->setRecipients($data['notify'] . ", tech@theproteinbar.com");
+        $notify->setSubject("Welcome to Protein Bar & Kitchen!");
+        $notify->setTemplate("newuser.html");
+        $notify->setTemplateOptions([
+            "name" => $name[0],
+            "email" => $data['email'],
+            "password" => $password
+        ]);
+        $notify->sendMessage();
+
         setSignatureTask(["name" => $data['name'], "title" => $title, "address" => $restaurant->address, "phone" => $restaurant->phone, "email" => $email]);
+        $user_id = wp_insert_user( array(
+            'user_login' => $email,
+            'user_pass' => $password,
+            'user_email' => $email,
+            'first_name' => $name[0],
+            'last_name' => $name[1],
+            'display_name' => $name[0] . " " . $name[1],
+            'role' => 'subscriber'
+        ));
+        if($user_id){
+            if(in_array($data['title'],['General Manager', 'Assistant Manager'])) {
+                $mgrType = $data['title'] === 'General Manager' ? "GM" : "AM";
+                $existing = $wpdb->get_row("SELECT * FROM pbc_pbr_managers WHERE restaurantID = ". $data['restaurant'] . " AND mgrType = '" . $mgrType . "'");
+                if($existing){
+                    $access = "AA" . $user_id;
+                }else{
+                    $access= $mgrType;
+                }
+                $wpdb->insert(
+                    "pbc_pbr_managers",
+                    [
+                        "restaurantID" => $data['restaurant'],
+                        "mgrType" => $access,
+                        "managerID" => $user_id
+                    ],
+                    [
+                        "%d", "%s", "%d"
+                    ]
+                );
+            }
+        }
         $message[]= $data['name'] . " has been setup";
     }
     catch (Google_IO_Exception $gioe){
