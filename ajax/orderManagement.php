@@ -268,12 +268,12 @@ function om_duplicate() {
         $data = ["status" => 400, "msg" => "There were no checks found"];
         returnAJAXData($data);
     }
+*/
     $tasks = new task_engine($mysqli);
     $tasks->add_task(['what' => 'execBackground',
         'target' => "sh /home/jewmanfoo/toast-api/postMinibar.sh ",
         'files' => $orderID,
         'dueDate' => date('Y-m-d H:i:s', $cutoff)]);
-*/
    $data = ["status" => 200, "msg" => "The order for " . $q->company . " has been duplicated and scheduled for " . date("m/d/Y h:i a", $delDay) . "."];
     returnAJAXData($data);
 }
