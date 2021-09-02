@@ -92,8 +92,6 @@ $mms = $ticket->getMms();
           contentType: false,
           processData: false,
           success: function(response) {
-            $('#buttonSpin').hide();
-            $('#saveButton').show();
             if(response.status === 200){
               $('#updateModal').modal('hide');
               location.reload();

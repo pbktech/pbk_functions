@@ -47,4 +47,16 @@ final class PBKConfig {
         return PBKConfig::$config->$key;
     }
 
+    public function getString(string $key): ?string{
+        try {
+            if (PBKConfig::$config === null) {
+                $this->getConfigFile();
+            }
+        } catch (Exception $e) {
+            return null;
+        }
+
+        return PBKConfig::$config->$key;
+    }
+
 }
