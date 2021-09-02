@@ -20,20 +20,21 @@ class PBKDelivery {
     private object $guest;
     protected const textIdentifier = "7a6cf320-4afa-4f84-97a9-a37b3a287aca";
 
-    public function __construct(string $service = null){
-        if(!empty($service)){
+    public function __construct(string $service = null) {
+        if (!empty($service)) {
             $this->setService($service);
         }
     }
 
-    public function sendRequest(string $endpoint): ?object{
+    public function sendRequest(string $endpoint): ?object {
         $ch = curl_init();
-        curl_setopt($ch, CURLOPT_HEADER, 0);
-        curl_setopt ($ch, CURLOPT_RETURNTRANSFER, 1);
-        curl_setopt ($ch, CURLOPT_HTTPHEADER, $this->headers);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($this->postFields));
-        curl_setopt($ch, CURLOPT_URL,$endpoint);
-        $result=curl_exec($ch);
+        curl_setopt($ch, CURLOPT_HEADER, 1);
+        curl_setopt($ch, CURLOPT_VERBOSE, true);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, $this->headers);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($this->request));
+        curl_setopt($ch, CURLOPT_URL, $endpoint);
+        $result = curl_exec($ch);
         return json_decode($result);
     }
 
@@ -250,14 +251,15 @@ class PBKDelivery {
     /**
      * @return array
      */
-    public function getGuest(): array {
+    public function getGuest(): object {
         return $this->guest;
     }
 
     /**
      * @param array $guest
      */
-    public function setGuest(array $guest): void {
+    public function setGuest(object $guest): void {
         $this->guest = $guest;
     }
+
 }

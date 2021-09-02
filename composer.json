@@ -18,7 +18,8 @@
         "google/recaptcha": "^1.2",
         "google/cloud-recaptcha-enterprise": "^1.0",
         "google/cloud-storage": "^1.24",
-        "twig/twig": "^3.0"
+        "twig/twig": "^3.0",
+        "campaignmonitor/createsend-php": "^6.1"
     },
     "require-dev": {
         "phpunit/phpunit": "^9"

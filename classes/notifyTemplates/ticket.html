@@ -1,32 +1,41 @@
-<table style="border: none;padding-top: 1em;">
-  <tr>
-      <td style="vertical-align: top;">
-          <strong for="name">Name</strong><br><p  id="name">{{name}}</p>
-      </td>
-      <td style="vertical-align: top;">
-          <strong for="restaurant">Restaurant</strong><br><p  id="restaurant">{{restaurant}}</p>
-      </td>
-  </tr>
-    <tr>
-        <td>
-            <strong for="device">Equipment/Device</strong><br><p id="name">{{device}}</p>
-        </td>
-        <td>
-            <strong for="issue">Reported Issue</strong><br><p id="restaurant">{{issue}}</p>
-        </td>
-    </tr>
-    <tr>
-        <td>
-            <strong for="device">Ticket Opened</strong><br><p  id="name">{{opened}}</p>
-        </td>
-        <td>
-            <strong for="issue">Last Updated</strong><br><p  id="restaurant">{{updated}}</p>
-        </td>
-    </tr>
-    <tr>
-        <td colspan="2">
-            <strong for="description">Description of Issue</strong><br><p id="description">{{description}}</p>
-        </td>
-    </tr>
-</table>
-<div style="padding-top: 1em;">You can view or edit this ticket <a href="{{link}}" >here</a>.</div>
+<div style="width: 75%; text-align: center;">
+    <table style="border: none;padding-top: 1em;">
+        <tr>
+            <td style="vertical-align: top;">
+                <strong for="name">Name</strong><br>
+                <p id="name">{{name}}</p>
+            </td>
+            <td style="vertical-align: top;">
+                <strong for="restaurant">Restaurant</strong><br>
+                <p id="restaurant">{{restaurant}}</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <strong for="device">Equipment/Device</strong><br>
+                <p id="name">{{device}}</p>
+            </td>
+            <td>
+                <strong for="issue">Reported Issue</strong><br>
+                <p id="restaurant">{{issue}}</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <strong for="device">Ticket Opened</strong><br>
+                <p id="name">{{opened}}</p>
+            </td>
+            <td>
+                <strong for="issue">Last Updated</strong><br>
+                <p id="restaurant">{{updated}}</p>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2">
+                <strong for="description">Description of Issue</strong><br>
+                <p id="description">{{description | raw}}</p>
+            </td>
+        </tr>
+    </table>
+    <div style="padding-top: 1em;">You can view or edit this ticket <a href="{{link}}">here</a>.</div>
+</div>

@@ -16,20 +16,26 @@ add_action('admin_post_pbk-save-devices', 'pbr_edit_devices');
 add_action('admin_post_pbr_nho_attendance_update', 'pbr_nho_attendance');
 add_action('admin_post_pbk_save_minibar', 'pbk_saveMinibar');
 add_action('admin_post_pbk-update-order', 'pbr_orders');
-$pbkAdminPages[] = array("Name" => "Manage Restaurants", "Access" => "manage_options", "Slug" => "pbr-edit-restaurant", "Function" => "pbr_edit_restaurant");
-$pbkAdminPages[] = array("Name" => "Manage NHO Events", "Access" => "manage_options", "Slug" => "pbr-nho", "Function" => "pbr_nho_setup");
-$pbkAdminPages[] = array("Name" => "NHO Archive", "Access" => "delete_posts", "Slug" => "pbr-nho-archive", "Function" => "pbr_nho_history");
-$pbkAdminPages[] = array("Name" => "Incident Archive", "Access" => "upload_files", "Slug" => "pbr-incident-history", "Function" => "pbr_search_incident");
-$pbkAdminPages[] = array("Name" => "Manage MiniBar", "Access" => "manage_options", "Slug" => "pbr-edit-minibar", "Function" => "pbr_edit_minibar");
-$pbkAdminPages[] = array("Name" => "Manage Devices", "Access" => "manage_options", "Slug" => "pbr-edit-devices", "Function" => "pbr_edit_devices");
-$pbkAdminPages[] = array("Name" => "Restaurant Orders", "Access" => "upload_files", "Slug" => "pbr-orders", "Function" => "pbr_orders");
-$pbkAdminPages[] = array("Name" => "Health Screen Archive", "Access" => "upload_files", "Slug" => "pbr-hs-archive", "Function" => "pbr_hs_archive");
-$pbkAdminPages[] = array("Name" => "Cash Log Archive", "Access" => "delete_posts", "Slug" => "pbk-cs-archive", "Function" => "pbk_cs_archive");
+$pbkAdminPages['Manage-PBK'][] = array("Name" => "Manage Restaurants", "Access" => "manage_options", "Slug" => "pbr-edit-restaurant", "Function" => "pbr_edit_restaurant");
+$pbkAdminPages['Manage-PBK'][] = array("Name" => "Manage NHO Events", "Access" => "manage_options", "Slug" => "pbr-nho", "Function" => "pbr_nho_setup");
+$pbkAdminPages['Manage-PBK'][] = array("Name" => "NHO Archive", "Access" => "delete_posts", "Slug" => "pbr-nho-archive", "Function" => "pbr_nho_history");
+$pbkAdminPages['Manage-PBK'][] = array("Name" => "Incident Archive", "Access" => "upload_files", "Slug" => "pbr-incident-history", "Function" => "pbr_search_incident");
+$pbkAdminPages['Manage-PBK'][] = array("Name" => "Manage MiniBar", "Access" => "manage_options", "Slug" => "pbr-edit-minibar", "Function" => "pbr_edit_minibar");
+$pbkAdminPages['Manage-PBK'][] = array("Name" => "Manage Devices", "Access" => "manage_options", "Slug" => "pbr-edit-devices", "Function" => "pbr_edit_devices");
+$pbkAdminPages['Manage-PBK'][] = array("Name" => "Restaurant Orders", "Access" => "upload_files", "Slug" => "pbr-orders", "Function" => "pbr_orders");
+$pbkAdminPages['Manage-PBK'][] = array("Name" => "Health Screen Archive", "Access" => "upload_files", "Slug" => "pbr-hs-archive", "Function" => "pbr_hs_archive");
+$pbkAdminPages['Manage-PBK'][] = array("Name" => "Cash Log Archive", "Access" => "delete_posts", "Slug" => "pbk-cs-archive", "Function" => "pbk_cs_archive");
+$pbkAdminPages['pbk-support'][] = array("Name" => "Equipment", "Access" => "delete_posts", "Slug" => "pbk-support-equipment", "Function" => "pbk-support-equipment");
+$pbkAdminPages['pbk-support'][] = array("Name" => "Common Issues", "Access" => "delete_posts", "Slug" => "pbk-support-common", "Function" => "pbk-support-common");
+
 function pbr_setup_menu() {
     global $pbkAdminPages;
     add_menu_page('PBK Functions', 'PBK Functions', 'delete_posts', 'Manage-PBK', 'pbr_show_admin_functions', PBKF_URL . '/assets/images/PBK-Logo-ONLY-LG-2018_White_new.png');
-    foreach ($pbkAdminPages as $value) {
-        add_submenu_page('Manage-PBK', $value['Name'], $value['Name'], $value['Access'], $value['Slug'], $value['Function']);
+    add_menu_page('PBK Support', 'PBK Support', 'delete_posts', 'pbk-support', 'pbr_show_admin_support', PBKF_URL . '/assets/images/PBK-Logo-ONLY-LG-2018_White_new.png');
+    foreach ($pbkAdminPages as $slug => $values) {
+        foreach ($values as $value) {
+            add_submenu_page($slug, $value['Name'], $value['Name'], $value['Access'], $value['Slug'], $value['Function']);
+        }
     }
 }
 
@@ -46,7 +52,7 @@ function wpb_custom_toolbar_link($wp_admin_bar) {
         )
     );
     $wp_admin_bar->add_node($args);
-    foreach ($pbkAdminPages as $value) {
+    foreach ($pbkAdminPages['Manage-PBK'] as $value) {
         $args = array(
             'id' => $value['Slug'],
             'title' => $value['Name'],
@@ -244,6 +250,24 @@ function pbr_edit_minibar() {
         echo $report->showResultsTable($restaurant->getMiniBarLocations());
     }
     echo "</div>";
+}
+
+function pbr_show_admin_support(){
+    echo '<div class="wrap">
+      <h2></h2><nav>
+  <div class="nav nav-tabs" id="nav-tab" role="tablist">
+    <a class="nav-link active" id="nav-home-tab" data-toggle="tab" href="#nav-home" role="tab" aria-controls="nav-home" aria-selected="true">Home</a>
+    <a class="nav-link" id="nav-profile-tab" data-toggle="tab" href="#nav-profile" role="tab" aria-controls="nav-profile" aria-selected="false">Profile</a>
+    <a class="nav-link" id="nav-contact-tab" data-toggle="tab" href="#nav-contact" role="tab" aria-controls="nav-contact" aria-selected="false">Contact</a>
+  </div>
+</nav>
+<div class="tab-content" id="nav-tabContent">
+  <div class="tab-pane fade show active" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab">...</div>
+  <div class="tab-pane fade" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab">2</div>
+  <div class="tab-pane fade" id="nav-contact" role="tabpanel" aria-labelledby="nav-contact-tab">3</div>
+</div>
+</div>
+';
 }
 
 function pbr_show_admin_functions() {
