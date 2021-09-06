@@ -17,21 +17,21 @@ add_action('wp_ajax_supportGetAllVendors', 'supportGetAllVendors');
 add_action('wp_ajax_supportUpdateVendor', 'supportUpdateVendor');
 add_action('wp_ajax_supportGetVendorInfo', 'supportGetVendorInfo');
 
-function supportGetVendorInfo(){
+function supportGetVendorInfo() {
     global $wpdb;
     $answer = ["status" => 404, "msg" => "Vendor Not Found"];
     $item = $wpdb->get_row("SELECT * FROM pbc_support_contacts WHERE contactID = " . $_REQUEST['equipmentID']);
-    if($item){
+    if ($item) {
         $answer = ["status" => 200, "info" => $item];
     }
     showJsonAjax($answer);
 
 }
 
-function supportUpdateVendor(){
+function supportUpdateVendor() {
     global $wpdb;
     $answer = ["status" => 200, "msg" => $_REQUEST['platform'] . " as been updated."];
-    if($_REQUEST['vendorID'] === '-1'){
+    if ($_REQUEST['vendorID'] === '-1') {
         $_REQUEST['vendorID'] = $wpdb->get_var("SELECT MAX(contactID) +1 as 'nextID' FROM pbc_support_contacts psi");
     }
     $wpdb->replace("pbc_support_contacts",
@@ -42,11 +42,11 @@ function supportUpdateVendor(){
             "services" => $_REQUEST['services'],
             "contact" => ($_REQUEST['contact']),
             "pbk_contact" => ($_REQUEST['pbk_contact']),
-            "isActive" => $_REQUEST['isActive'] === 'true' ?1:0
+            "isActive" => $_REQUEST['isActive'] === 'true' ? 1 : 0
         ],
         ["%d", "%s", "%s", "%s", "%s", "%s", "%d"]
     );
-    if(!empty($wpdb->last_error)){
+    if (!empty($wpdb->last_error)) {
         $answer = ["status" => 400, "msg" => "There was an error saving: " . $wpdb->last_error];
     }
     showJsonAjax($answer);
@@ -58,10 +58,10 @@ function supportGetAllVendors() {
     $items = $wpdb->get_results("SELECT * FROM pbc_support_contacts");
     if ($items) {
         foreach ($items as $i) {
-            if($i->isActive == 1){
-                $active = '<button class="btn btn-link text-danger statusVendorButton" data-status="deactivate" data-vendor-id="'.$i->contactID.'" title="Deactivate"><i data-status="deactivate" data-vendor-id="'.$i->contactID.'" class="bi bi-x-square"></i></button>';
-            }else{
-                $active = '<button class="btn btn-link text-success statusVendorButton" data-status="activate" data-vendor-id="'.$i->contactID.'" title="Activate"><i data-status="activate" data-vendor-id="'.$i->contactID.'" class="bi bi-check-square"></i></button>';
+            if ($i->isActive == 1) {
+                $active = '<button class="btn btn-link text-danger statusVendorButton" data-status="deactivate" data-vendor-id="' . $i->contactID . '" title="Deactivate"><i data-status="deactivate" data-vendor-id="' . $i->contactID . '" class="bi bi-x-square"></i></button>';
+            } else {
+                $active = '<button class="btn btn-link text-success statusVendorButton" data-status="activate" data-vendor-id="' . $i->contactID . '" title="Activate"><i data-status="activate" data-vendor-id="' . $i->contactID . '" class="bi bi-check-square"></i></button>';
             }
             $data['data'][] = [
                 "department" => $i->category,
@@ -69,8 +69,8 @@ function supportGetAllVendors() {
                 "name" => $i->platform,
                 "actions" => '
                 <div class="btn-group">
-                        <button class="btn btn-link editVendorButton" data-vendor-id="'.$i->contactID.'" title="Edit"><i data-vendor-id="'.$i->contactID.'" class="bi bi-pencil-square"></i></button>
-                        '.$active.'
+                        <button class="btn btn-link editVendorButton" data-vendor-id="' . $i->contactID . '" title="Edit"><i data-vendor-id="' . $i->contactID . '" class="bi bi-pencil-square"></i></button>
+                        ' . $active . '
                  </div>'
             ];
         }
@@ -78,27 +78,27 @@ function supportGetAllVendors() {
     showJsonAjax($data);
 }
 
-function supportSaveCommonIssues(){
+function supportSaveCommonIssues() {
     global $wpdb;
     $item = $wpdb->get_var("SELECT itemName FROM pbc_support_items psi WHERE itemID = " . $_REQUEST['equipmentID']);
     $data = json_decode(stripslashes($_REQUEST['data']));
     $answer = ["status" => 200, "msg" => $item . " as been updated."];
-    foreach ($data as $d){
-        if($d->issueID === '0'){
+    foreach ($data as $d) {
+        if ($d->issueID === '0') {
             $d->issueID = $wpdb->get_var("SELECT MAX(issueID) +1 as 'nextID' FROM pbc_support_common");
         }
         $wpdb->replace("pbc_support_common",
             [
-              "issueTitle" => $d->issueTitle,
-              "itemId" => $_REQUEST['equipmentID'],
-              "isActive" => $d->isActive === 'true' ?1:0,
-              "isEmergency" => $d->equipmentID === 'true' ?1:0,
-              "vendorID" => $d->vendorID,
-              "issueID" =>  $d->issueID
+                "issueTitle" => $d->issueTitle,
+                "itemId" => $_REQUEST['equipmentID'],
+                "isActive" => $d->isActive === 'true' ? 1 : 0,
+                "isEmergency" => $d->equipmentID === 'true' ? 1 : 0,
+                "vendorID" => $d->vendorID,
+                "issueID" => $d->issueID
             ],
             ["%s", "%d", "%d", "%d", "%d", "%d"]
         );
-        if(!empty($wpdb->last_error)){
+        if (!empty($wpdb->last_error)) {
             $answer = ["status" => 400, "msg" => "There was an error saving " . $_REQUEST['issueTitle'] . "<br>" . $wpdb->last_error];
             break;
         }
@@ -106,11 +106,11 @@ function supportSaveCommonIssues(){
     showJsonAjax($answer);
 }
 
-function supportChangeEquipment(){
+function supportChangeEquipment() {
     global $wpdb;
     $item = $wpdb->get_var("SELECT itemName FROM pbc_support_items psi WHERE itemID = " . $_REQUEST['equipmentID']);
     $answer = ["status" => 200, "msg" => $item . " as been updated."];
-    if($_REQUEST['equipmentID'] === '0'){
+    if ($_REQUEST['equipmentID'] === '0') {
         $_REQUEST['equipmentID'] = $wpdb->get_var("SELECT MAX(itemID) +1 as 'nextID' FROM pbc_support_items psi WHERE itemID !=2147483646 AND itemID != 2147483647");
     }
     $wpdb->replace("pbc_support_items",
@@ -118,63 +118,63 @@ function supportChangeEquipment(){
             "itemID" => $_REQUEST['equipmentID'],
             "department" => $_REQUEST['department'],
             "itemName" => $_REQUEST['itemName'],
-            "isActive" => $_REQUEST['isActive'] === 'true' ?1:0,
-            "requireMMS" => $_REQUEST['requireMMS'] === 'true' ?1:0,
+            "isActive" => $_REQUEST['isActive'] === 'true' ? 1 : 0,
+            "requireMMS" => $_REQUEST['requireMMS'] === 'true' ? 1 : 0,
             "vendorID" => $_REQUEST['vendorID'],
             "redirect" => $_REQUEST['redirect']
         ],
         ["%d", "%s", "%s", "%d", "%d", "%d", "%s"]
     );
-    if(!empty($wpdb->last_error)){
+    if (!empty($wpdb->last_error)) {
         $answer = ["status" => 400, "msg" => "There was an error saving: " . $wpdb->last_error];
     }
     showJsonAjax($answer);
 }
 
-function supportChangeEquipmentStatus(){
+function supportChangeEquipmentStatus() {
     global $wpdb;
     $item = $wpdb->get_var("SELECT itemName FROM pbc_support_items psi WHERE itemID = " . $_REQUEST['equipmentID']);
     $answer = ["status" => 200, "msg" => $item . " as been " . $_REQUEST['status'] . "d."];
     $wpdb->update("pbc_support_items",
-        ["isActive" => $_REQUEST['status'] === "activate" ? 1:0],
+        ["isActive" => $_REQUEST['status'] === "activate" ? 1 : 0],
         ["itemID" => $_REQUEST['equipmentID']]
     );
-    if(!empty($wpdb->last_error)){
+    if (!empty($wpdb->last_error)) {
         $answer = ["status" => 400, "msg" => "There was an error saving: " . $wpdb->last_error];
     }
     showJsonAjax($answer);
 }
 
-function supportChangeVendorStatus(){
+function supportChangeVendorStatus() {
     global $wpdb;
     $item = $wpdb->get_var("SELECT platform FROM pbc_support_contacts psi WHERE contactID = " . $_REQUEST['equipmentID']);
     $answer = ["status" => 200, "msg" => $item . " as been " . $_REQUEST['status'] . "d."];
     $wpdb->update("pbc_support_contacts",
-        ["isActive" => $_REQUEST['status'] === "activate" ? 1:0],
+        ["isActive" => $_REQUEST['status'] === "activate" ? 1 : 0],
         ["contactID" => $_REQUEST['equipmentID']]
     );
-    if(!empty($wpdb->last_error)){
+    if (!empty($wpdb->last_error)) {
         $answer = ["status" => 400, "msg" => "There was an error saving: " . $wpdb->last_error];
     }
     showJsonAjax($answer);
 }
 
-function supportGetEquipmentInfo(){
+function supportGetEquipmentInfo() {
     global $wpdb;
     $answer = ["status" => 404, "msg" => "Equipment Not Found"];
     $item = $wpdb->get_row("SELECT * FROM pbc_support_items WHERE itemID = " . $_REQUEST['equipmentID']);
-    if($item){
+    if ($item) {
         $answer = ["status" => 200, "info" => $item];
     }
     showJsonAjax($answer);
 }
 
-function supportGetEquipmentCommonList(){
+function supportGetEquipmentCommonList() {
     global $wpdb;
     $name = $wpdb->get_var("SELECT itemName FROM pbc_support_items psi WHERE itemID = " . $_REQUEST['equipmentID']);
-    if(empty($name)){
+    if (empty($name)) {
         $answer = ["status" => 404, "msg" => "The equipment was not found."];
-    }else {
+    } else {
         $answer = ["status" => 200, "name" => $name];
         $item = $wpdb->get_results("SELECT * FROM pbc_support_common WHERE itemID = " . $_REQUEST['equipmentID']);
         if ($item) {
@@ -191,10 +191,10 @@ function supportGetEquipmentList() {
     $items = $wpdb->get_results("SELECT * FROM pbc_support_items");
     if ($items) {
         foreach ($items as $i) {
-            if($i->isActive == 1){
-                $active = '<button class="btn btn-link text-danger statusButton" data-status="deactivate" data-equipment-id="'.$i->itemID.'" title="Deactivate"><i data-status="deactivate" data-equipment-id="'.$i->itemID.'" class="bi bi-x-square"></i></button>';
-            }else{
-                $active = '<button class="btn btn-link text-success statusButton" data-status="activate" data-equipment-id="'.$i->itemID.'" title="Activate"><i data-status="activate" data-equipment-id="'.$i->itemID.'" class="bi bi-check-square"></i></button>';
+            if ($i->isActive == 1) {
+                $active = '<button class="btn btn-link text-danger statusButton" data-status="deactivate" data-equipment-id="' . $i->itemID . '" title="Deactivate"><i data-status="deactivate" data-equipment-id="' . $i->itemID . '" class="bi bi-x-square"></i></button>';
+            } else {
+                $active = '<button class="btn btn-link text-success statusButton" data-status="activate" data-equipment-id="' . $i->itemID . '" title="Activate"><i data-status="activate" data-equipment-id="' . $i->itemID . '" class="bi bi-check-square"></i></button>';
             }
             $data['data'][] = [
                 "name" => $i->itemName,
@@ -202,9 +202,9 @@ function supportGetEquipmentList() {
                 "isActive" => $i->isActive,
                 "actions" => '
                 <div class="btn-group">
-                        <button class="btn btn-link editButton" data-equipment-id="'.$i->itemID.'" title="Edit"><i data-equipment-id="'.$i->itemID.'" class="bi bi-pencil-square"></i></button>
-                        <button class="btn btn-link text-info commonIssueButton" data-equipment-id="'.$i->itemID.'" title="Common Issues"><i data-equipment-id="'.$i->itemID.'" class="bi bi-clipboard"></i></button>
-                        '.$active.'
+                        <button class="btn btn-link editButton" data-equipment-id="' . $i->itemID . '" title="Edit"><i data-equipment-id="' . $i->itemID . '" class="bi bi-pencil-square"></i></button>
+                        <button class="btn btn-link text-info commonIssueButton" data-equipment-id="' . $i->itemID . '" title="Common Issues"><i data-equipment-id="' . $i->itemID . '" class="bi bi-clipboard"></i></button>
+                        ' . $active . '
                  </div>'
             ];
         }
