@@ -3,6 +3,16 @@
 
 class PBKSupport {
 
+    private array $adminPages = [
+        "Tickets" => "ticketStarter.php",
+        "Department" => "adminDepartment.php",
+        "Equipment" => "adminEquipment.php",
+        "Common" => "adminCommon.php",
+        "Vendors" => "adminVendors.php"
+    ];
+
+    private array $departments = ["Repair", "Technology", "Marketing"];
+
     public function __construct() {
 
     }
@@ -30,5 +40,26 @@ class PBKSupport {
         if(!empty($page)) {
             require_once __DIR__ . "/support_mods/" . $page;
         }
+    }
+
+    /**
+     * @return array
+     */
+    public function getAdminPages(): array {
+        return $this->adminPages;
+    }
+
+    /**
+     * @param array $adminPages
+     */
+    public function setAdminPages(array $adminPages): void {
+        $this->adminPages = $adminPages;
+    }
+
+    /**
+     * @return array|string[]
+     */
+    public function getDepartments(): array {
+        return $this->departments;
     }
 }

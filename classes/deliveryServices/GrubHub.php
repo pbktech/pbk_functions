@@ -9,7 +9,8 @@ final class GrubHub extends PBKDelivery {
     public function buildRequest(string $grubHubID): void {
         $this->setHeaders([
             "Authorization: " . $grubHubID,
-            "Content-Type: application/json"
+            "Content-Type: application/json",
+            'Accept: application/json'
         ]);
         $request = (object)[
             "delivery_quote" => (object)[

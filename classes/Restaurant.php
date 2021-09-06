@@ -1030,7 +1030,7 @@ if($_GET['nhoDate']!="_new"){
 			return $wpdb->get_results("SELECT nhoDate,nhoID,restaurantName,display_name FROM pbc2.pbc_NHOSchedule,pbc_users,pbc_pbrestaurants WHERE nhoDate >= DATE_SUB(curdate(),INTERVAL ".$months." MONTH)
 AND pbc_users.id=nhoHost AND pbc_pbrestaurants.restaurantID=nhoLocation");
 		}
-		private function getUserNames() {
+		public function getUserNames() {
 			global $wpdb;
 			return $wpdb->get_results("SELECT ID, display_name FROM $wpdb->users WHERE user_status = '0' ");
 		}

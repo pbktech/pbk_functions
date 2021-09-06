@@ -25,8 +25,6 @@ $pbkAdminPages['Manage-PBK'][] = array("Name" => "Manage Devices", "Access" => "
 $pbkAdminPages['Manage-PBK'][] = array("Name" => "Restaurant Orders", "Access" => "upload_files", "Slug" => "pbr-orders", "Function" => "pbr_orders");
 $pbkAdminPages['Manage-PBK'][] = array("Name" => "Health Screen Archive", "Access" => "upload_files", "Slug" => "pbr-hs-archive", "Function" => "pbr_hs_archive");
 $pbkAdminPages['Manage-PBK'][] = array("Name" => "Cash Log Archive", "Access" => "delete_posts", "Slug" => "pbk-cs-archive", "Function" => "pbk_cs_archive");
-$pbkAdminPages['pbk-support'][] = array("Name" => "Equipment", "Access" => "delete_posts", "Slug" => "pbk-support-equipment", "Function" => "pbk-support-equipment");
-$pbkAdminPages['pbk-support'][] = array("Name" => "Common Issues", "Access" => "delete_posts", "Slug" => "pbk-support-common", "Function" => "pbk-support-common");
 
 function pbr_setup_menu() {
     global $pbkAdminPages;
@@ -253,19 +251,43 @@ function pbr_edit_minibar() {
 }
 
 function pbr_show_admin_support(){
+    if(empty($_REQUEST['action'])){
+        $active = "Tickets";
+    }else{
+        $active = $_REQUEST['action'];
+    }
+    $support = new PBKSupport();
+    $pages = $support->getAdminPages();
+    $tabs = "";
+    foreach ($pages as $tab => $page){
+        $tabClass = "";
+        if(file_exists(__DIR__ . "/classes/support_mods/" . $page)){
+            if($tab === $active){
+                $tabClass = " active ";
+            }
+            $tabs .= '<a class="nav-link' . $tabClass . '" id="nav-'.$tab.'-tab" data-toggle="tab" href="#nav-'.$tab.'" role="tab" aria-controls="nav-'.$tab.'" aria-selected="">'.$tab.'</a>';
+        }
+    }
     echo '<div class="wrap">
       <h2></h2><nav>
   <div class="nav nav-tabs" id="nav-tab" role="tablist">
-    <a class="nav-link active" id="nav-home-tab" data-toggle="tab" href="#nav-home" role="tab" aria-controls="nav-home" aria-selected="true">Home</a>
-    <a class="nav-link" id="nav-profile-tab" data-toggle="tab" href="#nav-profile" role="tab" aria-controls="nav-profile" aria-selected="false">Profile</a>
-    <a class="nav-link" id="nav-contact-tab" data-toggle="tab" href="#nav-contact" role="tab" aria-controls="nav-contact" aria-selected="false">Contact</a>
+  '. $tabs . '
   </div>
 </nav>
-<div class="tab-content" id="nav-tabContent">
-  <div class="tab-pane fade show active" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab">...</div>
-  <div class="tab-pane fade" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab">2</div>
-  <div class="tab-pane fade" id="nav-contact" role="tabpanel" aria-labelledby="nav-contact-tab">3</div>
-</div>
+<div class="tab-content" id="nav-tabContent">';
+    foreach ($pages as $tab => $page){
+        $tabClass = "";
+        if(file_exists(__DIR__ . "/classes/support_mods/" . $page)){
+            if($tab === $active){
+                $tabClass = " show active";
+            }
+            echo '
+            <div class="tab-pane fade' . $tabClass . '" id="nav-'.$tab.'" role="tabpanel" aria-labelledby="'.$tab.'-tab" style="padding:1em;">';
+            require_once __DIR__ . "/classes/support_mods/" . $page;
+            echo '</div>';
+        }
+    }
+    echo '</div>
 </div>
 ';
 }
