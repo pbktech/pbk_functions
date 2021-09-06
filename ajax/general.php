@@ -47,7 +47,7 @@ function availableRestaurants(){
 
 function supportContacts(){
     global $wpdb;
-    $contacts = $wpdb->get_results("SELECT category, platform, services, contact, pbk_contact FROM pbc_support_contacts WHERE isActive=1");
+    $contacts = $wpdb->get_results("SELECT category, platform, services, contact, pbk_contact FROM pbc_support_contacts WHERE isActive=1 and contactID!=0");
     header('Content-Type: application/json');
     echo json_encode((object)["data" => $contacts]);
     wp_die();

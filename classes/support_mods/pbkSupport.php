@@ -9,8 +9,103 @@ add_action('wp_ajax_supportUpdateContacts', 'supportUpdateContacts');
 add_action('wp_ajax_supportGetEquipmentList', 'supportGetEquipmentList');
 add_action('wp_ajax_supportGetEquipmentInfo', 'supportGetEquipmentInfo');
 add_action('wp_ajax_supportChangeEquipmentStatus', 'supportChangeEquipmentStatus');
+add_action('wp_ajax_supportChangeVendorStatus', 'supportChangeVendorStatus');
 add_action('wp_ajax_supportChangeEquipment', 'supportChangeEquipment');
 add_action('wp_ajax_supportGetEquipmentCommonList', 'supportGetEquipmentCommonList');
+add_action('wp_ajax_supportSaveCommonIssues', 'supportSaveCommonIssues');
+add_action('wp_ajax_supportGetAllVendors', 'supportGetAllVendors');
+add_action('wp_ajax_supportUpdateVendor', 'supportUpdateVendor');
+add_action('wp_ajax_supportGetVendorInfo', 'supportGetVendorInfo');
+
+function supportGetVendorInfo(){
+    global $wpdb;
+    $answer = ["status" => 404, "msg" => "Vendor Not Found"];
+    $item = $wpdb->get_row("SELECT * FROM pbc_support_contacts WHERE contactID = " . $_REQUEST['equipmentID']);
+    if($item){
+        $answer = ["status" => 200, "info" => $item];
+    }
+    showJsonAjax($answer);
+
+}
+
+function supportUpdateVendor(){
+    global $wpdb;
+    $item = $wpdb->get_var("SELECT platform FROM pbc_support_contacts psi WHERE contactID = " . $_REQUEST['vendorID']);
+    $answer = ["status" => 200, "msg" => $item . " as been updated."];
+    if($_REQUEST['vendorID'] === '-1'){
+        $_REQUEST['vendorID'] = $wpdb->get_var("SELECT MAX(contactID) +1 as 'nextID' FROM pbc_support_contacts psi");
+    }
+    $wpdb->replace("pbc_support_contacts",
+        [
+            "contactID" => $_REQUEST['vendorID'],
+            "category" => $_REQUEST['category'],
+            "platform" => $_REQUEST['platform'],
+            "services" => $_REQUEST['services'],
+            "contact" => ($_REQUEST['contact']),
+            "pbk_contact" => ($_REQUEST['pbk_contact']),
+            "isActive" => $_REQUEST['isActive'] === 'true' ?1:0
+        ],
+        ["%d", "%s", "%s", "%s", "%s", "%s", "%d"]
+    );
+    if(!empty($wpdb->last_error)){
+        $answer = ["status" => 400, "msg" => "There was an error saving: " . $wpdb->last_error];
+    }
+    showJsonAjax($answer);
+}
+
+function supportGetAllVendors() {
+    global $wpdb;
+    $data = array("data" => array());
+    $items = $wpdb->get_results("SELECT * FROM pbc_support_contacts");
+    if ($items) {
+        foreach ($items as $i) {
+            if($i->isActive == 1){
+                $active = '<button class="btn btn-link text-danger statusVendorButton" data-status="deactivate" data-vendor-id="'.$i->contactID.'" title="Deactivate"><i data-status="deactivate" data-vendor-id="'.$i->contactID.'" class="bi bi-x-square"></i></button>';
+            }else{
+                $active = '<button class="btn btn-link text-success statusVendorButton" data-status="activate" data-vendor-id="'.$i->contactID.'" title="Activate"><i data-status="activate" data-vendor-id="'.$i->contactID.'" class="bi bi-check-square"></i></button>';
+            }
+            $data['data'][] = [
+                "department" => $i->category,
+                "isActive" => $i->isActive,
+                "name" => $i->platform,
+                "actions" => '
+                <div class="btn-group">
+                        <button class="btn btn-link editVendorButton" data-vendor-id="'.$i->contactID.'" title="Edit"><i data-vendor-id="'.$i->contactID.'" class="bi bi-pencil-square"></i></button>
+                        '.$active.'
+                 </div>'
+            ];
+        }
+    }
+    showJsonAjax($data);
+}
+
+function supportSaveCommonIssues(){
+    global $wpdb;
+    $item = $wpdb->get_var("SELECT itemName FROM pbc_support_items psi WHERE itemID = " . $_REQUEST['equipmentID']);
+    $data = json_decode(stripslashes($_REQUEST['data']));
+    $answer = ["status" => 200, "msg" => $item . " as been updated."];
+    foreach ($data as $d){
+        if($d->issueID === '0'){
+            $d->issueID = $wpdb->get_var("SELECT MAX(issueID) +1 as 'nextID' FROM pbc_support_common");
+        }
+        $wpdb->replace("pbc_support_common",
+            [
+              "issueTitle" => $d->issueTitle,
+              "itemId" => $_REQUEST['equipmentID'],
+              "isActive" => $d->isActive === 'true' ?1:0,
+              "isEmergency" => $d->equipmentID === 'true' ?1:0,
+              "vendorID" => $d->vendorID,
+              "issueID" =>  $d->issueID
+            ],
+            ["%s", "%d", "%d", "%d", "%d", "%d"]
+        );
+        if(!empty($wpdb->last_error)){
+            $answer = ["status" => 400, "msg" => "There was an error saving " . $_REQUEST['issueTitle'] . "<br>" . $wpdb->last_error];
+            break;
+        }
+    }
+    showJsonAjax($answer);
+}
 
 function supportChangeEquipment(){
     global $wpdb;
@@ -42,8 +137,22 @@ function supportChangeEquipmentStatus(){
     $item = $wpdb->get_var("SELECT itemName FROM pbc_support_items psi WHERE itemID = " . $_REQUEST['equipmentID']);
     $answer = ["status" => 200, "msg" => $item . " as been " . $_REQUEST['status'] . "d."];
     $wpdb->update("pbc_support_items",
-    ["isActive" => $_REQUEST['status'] === "activate" ? 1:0],
-    ["itemID" => $_REQUEST['equipmentID']]
+        ["isActive" => $_REQUEST['status'] === "activate" ? 1:0],
+        ["itemID" => $_REQUEST['equipmentID']]
+    );
+    if(!empty($wpdb->last_error)){
+        $answer = ["status" => 400, "msg" => "There was an error saving: " . $wpdb->last_error];
+    }
+    showJsonAjax($answer);
+}
+
+function supportChangeVendorStatus(){
+    global $wpdb;
+    $item = $wpdb->get_var("SELECT platform FROM pbc_support_contacts psi WHERE contactID = " . $_REQUEST['equipmentID']);
+    $answer = ["status" => 200, "msg" => $item . " as been " . $_REQUEST['status'] . "d."];
+    $wpdb->update("pbc_support_contacts",
+        ["isActive" => $_REQUEST['status'] === "activate" ? 1:0],
+        ["contactID" => $_REQUEST['equipmentID']]
     );
     if(!empty($wpdb->last_error)){
         $answer = ["status" => 400, "msg" => "There was an error saving: " . $wpdb->last_error];

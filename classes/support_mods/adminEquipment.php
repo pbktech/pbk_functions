@@ -5,8 +5,8 @@ $departments = $support->getDepartments();
 $vendors = $wpdb->get_results("SELECT contactID, platform FROM pbc_support_contacts WHERE isActive=1");
 ?>
     <script>
-      let equipmentID = 0;
-      const vendors = JSON.parse('<?php echo json_encode($vendors);?>')
+      let equipmentID, commonIssues, issuesSave;
+      const vendors = JSON.parse('<?php echo json_encode($vendors);?>');
 
       function equipmentPageMessage(message, alertClass) {
         let div = $('<div/>', {
@@ -163,6 +163,7 @@ $vendors = $wpdb->get_results("SELECT contactID, platform FROM pbc_support_conta
         });
         $('#commonIssueModal').on('shown.bs.modal', function() {
           if (equipmentID !== 0) {
+            commonIssues = [];
             let fd = new FormData();
             fd.append('action', 'supportGetEquipmentCommonList');
             fd.append('equipmentID', equipmentID);
@@ -173,10 +174,10 @@ $vendors = $wpdb->get_results("SELECT contactID, platform FROM pbc_support_conta
               contentType: false,
               processData: false,
               success: function(response) {
-                console.log(response);
                 if (response.status === 200) {
                   $('#commonIssueModalHeader').html(response.name + ' common issues');
                   if (response.info && response.info.length) {
+                    commonIssues = response.info;
                     for(let i=0; i<=response.info.length; i++){
                       commonIssueRow(response.info[i]);
                     }
@@ -195,6 +196,10 @@ $vendors = $wpdb->get_results("SELECT contactID, platform FROM pbc_support_conta
         $('#commonIssueModal').on('hidden.bs.modal', function() {
           $('#collapseOne').removeClass('show');
           $('.clearRow').remove();
+          $('#commonIssueNameNew').val("");
+          $('#commonIssueEmergencyNew').prop('checked', false);
+          $('#commonIssueActiveNew').prop('checked', true);
+          $('#commonIssueVendorNew').val([]).trigger('change');
         });
         $('#addEquipmentModal').click(function() {
           equipmentID = 0;
@@ -282,6 +287,52 @@ $vendors = $wpdb->get_results("SELECT contactID, platform FROM pbc_support_conta
               }
             }
           });
+        });
+        $('#saveCommonIssueButton').click(function(){
+          issuesSave = [];
+          if($('#commonIssueNameNew').val()){
+            issuesSave.push({
+              issueTitle: $('#commonIssueNameNew').val(),
+              itemId: equipmentID,
+              isActive: $('#commonIssueActiveNew').prop('checked'),
+              isEmergency: $('#commonIssueEmergencyNew').prop('checked'),
+              vendorID: $('#commonIssueVendorNew').val(),
+              issueID: 0
+            });
+          }
+          if($('#commonIssueEmergencyNew').prop('checked') && !$('#commonIssueVendorNew').val()){
+            alert($('#commonIssueNameNew').val() + ' has been identified as an emergency. You must select a vendor.');
+            return;
+          }
+          for(let i=0; i<commonIssues.length; i++){
+            issuesSave.push({
+              issueTitle: $('#commonIssueName' + commonIssues[i].issueID).val(),
+              itemId: equipmentID,
+              isActive: $('#commonIssueActive' + commonIssues[i].issueID).prop('checked'),
+              isEmergency: $('#commonIssueEmergency' + commonIssues[i].issueID).prop('checked'),
+              vendorID: $('#commonIssueVendor' + commonIssues[i].issueID).val(),
+              issueID:  commonIssues[i].issueID
+            });
+            if($('#commonIssueEmergency' + commonIssues[i].issueID).prop('checked') && !$('#commonIssueVendor' + commonIssues[i].issueID).val()){
+              alert($('#commonIssueName' + commonIssues[i].issueID).val() + ' has been identified as an emergency. You must select a vendor.');
+              return;
+            }
+          }
+          let fd = new FormData();
+          fd.append('action', 'supportSaveCommonIssues');
+          fd.append('equipmentID', equipmentID);
+          fd.append('data', JSON.stringify(issuesSave));
+          jQuery.ajax({
+            url: '<?php echo admin_url('admin-ajax.php') ?>',
+            type: 'POST',
+            data: fd,
+            contentType: false,
+            processData: false,
+            success: function(response) {
+            }
+          });
+          $('#commonIssueModal').modal('hide');
+          equipmentPageMessage("Common Issue List Updated", 'alert-success');
         });
         $('#equipmentModal').on('hidden.bs.modal', function(event) {
           $('#equipmentModalHeader').html('');
@@ -474,7 +525,7 @@ $vendors = $wpdb->get_results("SELECT contactID, platform FROM pbc_support_conta
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary closeModal" data-dismiss="modal">Cancel</button>
-                    <button type="button" class="btn btn-success" data-issue-id="New" id="saveCommonIssueButton">Save</button>
+                    <button type="button" class="btn btn-success" id="saveCommonIssueButton">Save</button>
                 </div>
             </div>
         </div>
