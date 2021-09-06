@@ -30,8 +30,7 @@ function supportGetVendorInfo(){
 
 function supportUpdateVendor(){
     global $wpdb;
-    $item = $wpdb->get_var("SELECT platform FROM pbc_support_contacts psi WHERE contactID = " . $_REQUEST['vendorID']);
-    $answer = ["status" => 200, "msg" => $item . " as been updated."];
+    $answer = ["status" => 200, "msg" => $_REQUEST['platform'] . " as been updated."];
     if($_REQUEST['vendorID'] === '-1'){
         $_REQUEST['vendorID'] = $wpdb->get_var("SELECT MAX(contactID) +1 as 'nextID' FROM pbc_support_contacts psi");
     }

@@ -99,6 +99,7 @@ $vendorCategories = ['HR/Benefits','IT & Restaurant Resources','R&M/Facilities',
               $('#vendorCategory').val([response.info.category]).trigger('change');
               $('#vendorCompanyContact').val(response.info.contact.replace(/<br ?\/?>/g, "\n"));
               $('#vendorPBKContact').val(response.info.pbk_contact.replace(/<br ?\/?>/g, "\n"));
+              $('#vendorActive').prop('checked', response.info.isActive==='1');
 
             } else {
               $('#vendorModal').modal('hide');
@@ -117,6 +118,7 @@ $vendorCategories = ['HR/Benefits','IT & Restaurant Resources','R&M/Facilities',
       $('#vendorCompanyContact').val('');
       $('#vendorPBKContact').val('');
       $('#vendorModalMessage').removeClass('alert-danger').html('');
+      $('#vendorActive').prop('checked', true);
     });
     $('#saveVendorButton').click(function(){
       let fd = new FormData();
@@ -124,7 +126,7 @@ $vendorCategories = ['HR/Benefits','IT & Restaurant Resources','R&M/Facilities',
       fd.append('vendorID', vendorID);
       fd.append('category', $('#vendorCategory').val());
       fd.append('platform', $('#vendorName').val());
-      fd.append('isActive', $('#equipmentActive').prop('checked'));
+      fd.append('isActive', $('#vendorActive').prop('checked'));
       fd.append('services', $('#vendorServices').val());
       fd.append('contact', $('#vendorCompanyContact').val());
       fd.append('pbk_contact', $('#vendorPBKContact').val());
